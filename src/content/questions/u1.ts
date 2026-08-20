@@ -436,11 +436,11 @@ export const U1_QUESTIONS: Question[] = [
     unit: "u1",
     conceptIds: ["c-pitot-static"],
     prompt: "Tap the component that senses TOTAL pressure.",
-    diagram: { id: "pitot-static" },
+    diagram: { id: "pitot-static", props: { labels: false } },
     targets: [
-      { id: "pitot", label: "Pitot tube", x: 108, y: 96, r: 34 },
-      { id: "static", label: "Static port", x: 268, y: 138, r: 30 },
-      { id: "gauge", label: "Differential gauge", x: 400, y: 106, r: 34 },
+      { id: "pitot", label: "Pitot tube", x: 110, y: 97, r: 34 },
+      { id: "static", label: "Static port", x: 208, y: 212, r: 30 },
+      { id: "gauge", label: "Differential gauge", x: 364, y: 133, r: 34 },
     ],
     answer: "pitot",
     explanation:
@@ -596,12 +596,16 @@ export const U1_QUESTIONS: Question[] = [
     prompt: "Label the airfoil geometry.",
     diagram: { id: "airfoil-geometry", props: { camber: 0.06, labels: false } },
     labels: ["Chord line", "Mean camber line", "Leading edge", "Trailing edge", "Camber"],
+    // Pills sit in clear space above/below the section; tx/ty anchor each one to
+    // the exact feature. With camber 0.06 on a 340px chord the chord line lies at
+    // y=152 and the mean camber line peaks near y=132 — close enough together that
+    // the pills have to be anchored rather than simply parked on top of them.
     slots: [
-      { id: "s-chord", label: "", x: 240, y: 132 },
-      { id: "s-mcl", label: "", x: 240, y: 96 },
-      { id: "s-le", label: "", x: 62, y: 118 },
-      { id: "s-te", label: "", x: 424, y: 130 },
-      { id: "s-camber", label: "", x: 168, y: 78 },
+      { id: "s-le", label: "", x: 80, y: 205, tx: 76, ty: 152 },
+      { id: "s-te", label: "", x: 410, y: 205, tx: 416, ty: 152 },
+      { id: "s-chord", label: "", x: 250, y: 232, tx: 300, ty: 152 },
+      { id: "s-mcl", label: "", x: 350, y: 66, tx: 330, ty: 137 },
+      { id: "s-camber", label: "", x: 140, y: 88, tx: 219, ty: 142 },
     ],
     answer: {
       "s-chord": "Chord line",
@@ -708,11 +712,13 @@ export const U1_QUESTIONS: Question[] = [
     unit: "u1",
     conceptIds: ["c-axes"],
     prompt: "Tap the LONGITUDINAL axis.",
-    diagram: { id: "axes-3d" },
+    diagram: { id: "axes-3d", props: { labels: false } },
+    // All three axes intersect at the CG (250,150), so each target sits well out
+    // along its own axis line where only that axis passes through it.
     targets: [
-      { id: "longitudinal", label: "Longitudinal (roll)", x: 250, y: 150, r: 40 },
-      { id: "lateral", label: "Lateral (pitch)", x: 250, y: 74, r: 34 },
-      { id: "vertical", label: "Vertical (yaw)", x: 336, y: 196, r: 34 },
+      { id: "longitudinal", label: "Longitudinal (roll)", x: 150, y: 150, r: 30 },
+      { id: "lateral", label: "Lateral (pitch)", x: 250, y: 66, r: 26 },
+      { id: "vertical", label: "Vertical (yaw)", x: 203, y: 220, r: 26 },
     ],
     answer: "longitudinal",
     explanation:
@@ -842,12 +848,14 @@ export const U1_QUESTIONS: Question[] = [
     unit: "u1",
     conceptIds: ["c-pitch-vs-aoa"],
     prompt: "Tap the RELATIVE WIND vector.",
-    diagram: { id: "aoa-vs-pitch", props: { pitch: 8, flightPath: -4 } },
+    diagram: { id: "aoa-vs-pitch", props: { pitch: 8, flightPath: -4, labels: false } },
+    // Chord line and flight path leave the aircraft only 12° apart, so the two
+    // targets are kept small and spaced along their respective lines.
     targets: [
-      { id: "relwind", label: "Relative wind", x: 118, y: 178, r: 32 },
-      { id: "flightpath", label: "Flight path", x: 376, y: 196, r: 32 },
-      { id: "chord", label: "Chord line", x: 330, y: 128, r: 28 },
-      { id: "horizon", label: "Horizon", x: 420, y: 150, r: 26 },
+      { id: "relwind", label: "Relative wind", x: 165, y: 157, r: 26 },
+      { id: "flightpath", label: "Flight path", x: 378, y: 170, r: 24 },
+      { id: "chord", label: "Chord line", x: 330, y: 143, r: 22 },
+      { id: "horizon", label: "Horizon", x: 85, y: 158, r: 22 },
     ],
     answer: "relwind",
     explanation:

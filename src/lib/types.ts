@@ -184,8 +184,13 @@ export interface DragLabelQuestion extends QuestionBase {
   type: "dragLabel";
   diagram: DiagramSpec;
   labels: string[];
-  /** Drop zones in the diagram's viewBox coordinates. */
-  slots: { id: string; label: string; x: number; y: number }[];
+  /**
+   * Drop zones in the diagram's viewBox coordinates. `x`/`y` position the drop
+   * pill itself, which needs clear space; `tx`/`ty` optionally anchor it to the
+   * exact feature being labelled, drawn as a leader line so a pill sitting in
+   * open space still points unambiguously at one part of the diagram.
+   */
+  slots: { id: string; label: string; x: number; y: number; tx?: number; ty?: number }[];
   /** slot id -> correct label. */
   answer: Record<string, string>;
 }

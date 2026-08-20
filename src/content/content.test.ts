@@ -380,3 +380,157 @@ describe("diagram and widget registries", () => {
     }
   });
 });
+
+/**
+ * Diagram labelling integrity.
+ *
+ * A "tap the diagram" or "drag the label" question is worthless if the diagram
+ * has already printed the answer next to the thing being asked about, and it is
+ * actively misleading if a drop zone sits on top of the wrong feature. These
+ * checks pin both down.
+ */
+describe("diagram labelling for tap and drag questions", () => {
+  const read = (rel: string) => readFileSync(join(process.cwd(), rel), "utf8");
+
+  const DIAGRAM_SOURCES = [
+    "src/components/diagrams/basics.tsx",
+    "src/components/diagrams/airfoil.tsx",
+    "src/components/diagrams/drag.tsx",
+    "src/components/diagrams/performance.tsx",
+    "src/components/diagrams/maneuvering.tsx",
+  ].map(read);
+
+  /** diagram id -> React component name, from the registry. */
+  const componentFor = new Map(
+    [
+      ...read("src/components/diagrams/registry.tsx").matchAll(
+        /^\s{2}"?([a-z0-9-]+)"?:\s+([A-Z][A-Za-z0-9]*)/gm,
+      ),
+    ].map((m) => [m[1], m[2]] as const),
+  );
+
+  /** The source text of one diagram component, so we can inspect what it renders. */
+  const bodyOf = (component: string): string | null => {
+    for (const src of DIAGRAM_SOURCES) {
+      const start = src.indexOf(`export function ${component}(`);
+      if (start === -1) continue;
+      const next = src.indexOf("\nexport function ", start + 1);
+      return src.slice(start, next === -1 ? undefined : next);
+    }
+    return null;
+  };
+
+  const supportsLabels = (diagramId: string): boolean => {
+    const component = componentFor.get(diagramId);
+    if (!component) return false;
+    const body = bodyOf(component);
+    return body !== null && body.includes("p.labels");
+  };
+
+  const labelQuestions = QUESTIONS.filter(
+    (q) => q.type === "tapDiagram" || q.type === "dragLabel",
+  );
+
+  it("has label questions to check", () => {
+    expect(labelQuestions.length).toBeGreaterThan(0);
+  });
+
+  it("every diagram used by a tap or drag question can hide its labels", () => {
+    for (const q of labelQuestions) {
+      const id = q.diagram.id;
+      expect(
+        supportsLabels(id),
+        `${q.id} uses "${id}", which has no labels prop, so it always prints the answer`,
+      ).toBe(true);
+    }
+  });
+
+  it("every tap or drag question actually turns those labels off", () => {
+    for (const q of labelQuestions) {
+      expect(
+        q.diagram.props?.labels,
+        `${q.id} does not pass labels:false, so the diagram names the answer`,
+      ).toBe(false);
+    }
+  });
+
+  it("tap targets sit inside the diagram viewBox", () => {
+    for (const q of QUESTIONS) {
+      if (q.type !== "tapDiagram") continue;
+      for (const t of q.targets) {
+        expect(t.x - t.r, `${q.id}/${t.id} off the left edge`).toBeGreaterThanOrEqual(0);
+        expect(t.x + t.r, `${q.id}/${t.id} off the right edge`).toBeLessThanOrEqual(500);
+        expect(t.y - t.r, `${q.id}/${t.id} off the top edge`).toBeGreaterThanOrEqual(0);
+        expect(t.y + t.r, `${q.id}/${t.id} off the bottom edge`).toBeLessThanOrEqual(300);
+      }
+    }
+  });
+
+  it("tap targets never overlap, so no tap is ambiguous", () => {
+    for (const q of QUESTIONS) {
+      if (q.type !== "tapDiagram") continue;
+      for (let i = 0; i < q.targets.length; i++) {
+        for (let j = i + 1; j < q.targets.length; j++) {
+          const a = q.targets[i];
+          const b = q.targets[j];
+          const gap = Math.hypot(a.x - b.x, a.y - b.y) - (a.r + b.r);
+          expect(
+            gap,
+            `${q.id}: "${a.id}" and "${b.id}" overlap by ${(-gap).toFixed(1)}px`,
+          ).toBeGreaterThanOrEqual(0);
+        }
+      }
+    }
+  });
+
+  it("drop pills fit on the canvas once filled with their answer", () => {
+    for (const q of QUESTIONS) {
+      if (q.type !== "dragLabel") continue;
+      for (const slot of q.slots) {
+        const text = q.answer[slot.id] ?? "";
+        // Mirrors the width formula in DragLabelBody.
+        const w = Math.max(64, text.length * 6.4 + 18);
+        expect(slot.x - w / 2, `${q.id}/${slot.id} overflows left`).toBeGreaterThanOrEqual(0);
+        expect(slot.x + w / 2, `${q.id}/${slot.id} overflows right`).toBeLessThanOrEqual(500);
+        expect(slot.y - 11, `${q.id}/${slot.id} overflows top`).toBeGreaterThanOrEqual(0);
+        expect(slot.y + 11, `${q.id}/${slot.id} overflows bottom`).toBeLessThanOrEqual(300);
+      }
+    }
+  });
+
+  it("drop pills never overlap each other", () => {
+    for (const q of QUESTIONS) {
+      if (q.type !== "dragLabel") continue;
+      const box = (slot: (typeof q.slots)[number]) => {
+        const w = Math.max(64, (q.answer[slot.id] ?? "").length * 6.4 + 18);
+        return { x0: slot.x - w / 2, x1: slot.x + w / 2, y0: slot.y - 11, y1: slot.y + 11 };
+      };
+      for (let i = 0; i < q.slots.length; i++) {
+        for (let j = i + 1; j < q.slots.length; j++) {
+          const a = box(q.slots[i]);
+          const b = box(q.slots[j]);
+          const overlaps = a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+          expect(
+            overlaps,
+            `${q.id}: "${q.slots[i].id}" and "${q.slots[j].id}" pills overlap`,
+          ).toBe(false);
+        }
+      }
+    }
+  });
+
+  it("anchored drop pills point at a spot inside the diagram", () => {
+    for (const q of QUESTIONS) {
+      if (q.type !== "dragLabel") continue;
+      for (const slot of q.slots) {
+        if (slot.tx === undefined && slot.ty === undefined) continue;
+        expect(slot.tx, `${q.id}/${slot.id} has ty but no tx`).toBeTypeOf("number");
+        expect(slot.ty, `${q.id}/${slot.id} has tx but no ty`).toBeTypeOf("number");
+        expect(slot.tx!).toBeGreaterThanOrEqual(0);
+        expect(slot.tx!).toBeLessThanOrEqual(500);
+        expect(slot.ty!).toBeGreaterThanOrEqual(0);
+        expect(slot.ty!).toBeLessThanOrEqual(300);
+      }
+    }
+  });
+});

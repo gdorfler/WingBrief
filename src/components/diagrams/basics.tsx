@@ -228,7 +228,8 @@ export function Streamtube(p: DiagramProps) {
 
 /* ------------------------------------------------------------------ */
 
-export function PitotStatic() {
+export function PitotStatic(p: DiagramProps = {}) {
+  const labels = bool(p.labels, true);
   return (
     <Diagram title="Pitot-static system">
       <ArrowDefs colors={{ air: BRAND }} />
@@ -240,12 +241,16 @@ export function PitotStatic() {
       <g>
         <rect x={64} y={84} width={92} height={26} rx={13} fill="var(--color-surface-2)" stroke={NAVY} strokeWidth={2.5} />
         <circle cx={70} cy={97} r={7} fill="var(--color-brand-soft)" stroke={BRAND} strokeWidth={2} />
-        <text x={110} y={72} textAnchor="middle" fontWeight={750} fill={NAVY} fontSize={12}>
-          Pitot tube
-        </text>
-        <text x={110} y={58} textAnchor="middle" fill={BRAND} fontWeight={700} fontSize={11}>
-          Total pressure H
-        </text>
+        {labels && (
+          <>
+            <text x={110} y={72} textAnchor="middle" fontWeight={750} fill={NAVY} fontSize={12}>
+              Pitot tube
+            </text>
+            <text x={110} y={58} textAnchor="middle" fill={BRAND} fontWeight={700} fontSize={11}>
+              Total pressure H
+            </text>
+          </>
+        )}
       </g>
 
       <path d="M180 200 C180 200 300 200 300 200" stroke={NAVY} strokeWidth={2.5} fill="none" />
@@ -263,37 +268,49 @@ export function PitotStatic() {
         {[184, 196, 208, 220, 232].map((x) => (
           <circle key={x} cx={x} cy={200} r={2.4} fill={NAVY} />
         ))}
-        <text x={208} y={252} textAnchor="middle" fontWeight={750} fill={NAVY} fontSize={12}>
-          Static port
-        </text>
-        <text x={208} y={266} textAnchor="middle" fill={GO} fontWeight={700} fontSize={11}>
-          Static pressure Pₛ
-        </text>
+        {labels && (
+          <>
+            <text x={208} y={252} textAnchor="middle" fontWeight={750} fill={NAVY} fontSize={12}>
+              Static port
+            </text>
+            <text x={208} y={266} textAnchor="middle" fill={GO} fontWeight={700} fontSize={11}>
+              Static pressure Pₛ
+            </text>
+          </>
+        )}
       </g>
       <path d="M246 214 C280 214 280 150 300 150" stroke={GO} strokeWidth={2.5} fill="none" />
 
       <g>
         <rect x={300} y={96} width={128} height={78} rx={12} fill="var(--color-surface)" stroke={NAVY} strokeWidth={2.5} />
-        <text x={364} y={120} textAnchor="middle" fontWeight={750} fill={NAVY} fontSize={11.5}>
-          Differential gauge
-        </text>
-        <text x={364} y={142} textAnchor="middle" fontWeight={800} fill={CAUTION} fontSize={16}>
-          q = H − Pₛ
-        </text>
-        <text x={364} y={160} textAnchor="middle" fill={MUTED} fontSize={10}>
-          dynamic pressure
-        </text>
+        {labels && (
+          <>
+            <text x={364} y={120} textAnchor="middle" fontWeight={750} fill={NAVY} fontSize={11.5}>
+              Differential gauge
+            </text>
+            <text x={364} y={142} textAnchor="middle" fontWeight={800} fill={CAUTION} fontSize={16}>
+              q = H − Pₛ
+            </text>
+            <text x={364} y={160} textAnchor="middle" fill={MUTED} fontSize={10}>
+              dynamic pressure
+            </text>
+          </>
+        )}
       </g>
 
       <path d="M364 174 L364 196" stroke={NAVY} strokeWidth={2} markerEnd="url(#arrow-air)" />
       <g>
         <rect x={306} y={200} width={116} height={48} rx={10} fill="var(--color-brand-soft)" stroke={BRAND} strokeWidth={2} />
-        <text x={364} y={220} textAnchor="middle" fontWeight={750} fill={BRAND} fontSize={11.5}>
-          Airspeed indicator
-        </text>
-        <text x={364} y={238} textAnchor="middle" fontWeight={800} fill={NAVY} fontSize={13}>
-          INDICATED
-        </text>
+        {labels && (
+          <>
+            <text x={364} y={220} textAnchor="middle" fontWeight={750} fill={BRAND} fontSize={11.5}>
+              Airspeed indicator
+            </text>
+            <text x={364} y={238} textAnchor="middle" fontWeight={800} fill={NAVY} fontSize={13}>
+              INDICATED
+            </text>
+          </>
+        )}
       </g>
     </Diagram>
   );
@@ -584,7 +601,8 @@ export function EquilibriumForces(p: DiagramProps) {
 
 /* ------------------------------------------------------------------ */
 
-export function Axes3d() {
+export function Axes3d(p: DiagramProps = {}) {
+  const labels = bool(p.labels, true);
   return (
     <Diagram title="Airplane three-axis reference system">
       <ArrowDefs colors={{ lon: BRAND, lat: GO, vert: CAUTION }} />
@@ -594,27 +612,37 @@ export function Axes3d() {
       </g>
 
       <line x1={92} y1={150} x2={412} y2={150} stroke={BRAND} strokeWidth={2.5} strokeDasharray="7 5" />
-      <text x={104} y={140} fill={BRAND} fontWeight={750} fontSize={11.5}>
-        Longitudinal — ROLL — ailerons
-      </text>
+      {labels && (
+        <text x={104} y={140} fill={BRAND} fontWeight={750} fontSize={11.5}>
+          Longitudinal — ROLL — ailerons
+        </text>
+      )}
 
       <line x1={250} y1={44} x2={250} y2={256} stroke={GO} strokeWidth={2.5} strokeDasharray="7 5" />
-      <text x={258} y={62} fill={GO} fontWeight={750} fontSize={11.5}>
-        Lateral — PITCH — elevator
-      </text>
+      {labels && (
+        <text x={258} y={62} fill={GO} fontWeight={750} fontSize={11.5}>
+          Lateral — PITCH — elevator
+        </text>
+      )}
 
       <line x1={186} y1={244} x2={318} y2={62} stroke={CAUTION} strokeWidth={2.5} strokeDasharray="7 5" />
-      <text x={322} y={198} fill={CAUTION} fontWeight={750} fontSize={11.5}>
-        Vertical
-      </text>
-      <text x={322} y={212} fill={CAUTION} fontWeight={750} fontSize={11.5}>
-        YAW — rudder
-      </text>
+      {labels && (
+        <>
+          <text x={322} y={198} fill={CAUTION} fontWeight={750} fontSize={11.5}>
+            Vertical
+          </text>
+          <text x={322} y={212} fill={CAUTION} fontWeight={750} fontSize={11.5}>
+            YAW — rudder
+          </text>
+        </>
+      )}
 
       <circle cx={250} cy={150} r={5.5} fill={NAVY} />
-      <text x={250} y={176} textAnchor="middle" fontWeight={750} fill={NAVY} fontSize={11}>
-        CG
-      </text>
+      {labels && (
+        <text x={250} y={176} textAnchor="middle" fontWeight={750} fill={NAVY} fontSize={11}>
+          CG
+        </text>
+      )}
     </Diagram>
   );
 }
@@ -638,6 +666,7 @@ export function AoaVsPitch(p: DiagramProps) {
   const pitch = num(p.pitch, 8);
   const flightPath = num(p.flightPath, 0);
   const highlight = str<"none" | "pitch" | "aoa" | "both">(p.highlight, "none");
+  const labels = bool(p.labels, true);
   const aoa = pitch - flightPath;
 
   const cx = 236;
@@ -661,9 +690,11 @@ export function AoaVsPitch(p: DiagramProps) {
       <ArrowDefs colors={{ fp: BRAND, rw: NOGO, ch: NAVY, hz: MUTED }} />
 
       <line x1={70} y1={cy} x2={horizon.x + 34} y2={cy} stroke={MUTED} strokeWidth={2} strokeDasharray="6 5" opacity={dim(highlight === "pitch" || highlight === "both")} />
-      <text x={420} y={cy - 8} textAnchor="end" fill={MUTED} fontWeight={700} fontSize={11} opacity={dim(highlight === "pitch" || highlight === "both")}>
-        Horizon
-      </text>
+      {labels && (
+        <text x={420} y={cy - 8} textAnchor="end" fill={MUTED} fontWeight={700} fontSize={11} opacity={dim(highlight === "pitch" || highlight === "both")}>
+          Horizon
+        </text>
+      )}
 
       <g transform={`translate(${cx} ${cy}) rotate(${-pitch})`} opacity={dim(true)}>
         <AircraftSide x={0} y={0} scale={1.05} />
@@ -679,19 +710,25 @@ export function AoaVsPitch(p: DiagramProps) {
         strokeDasharray="4 4"
         opacity={dim(highlight === "aoa" || highlight === "both" || highlight === "pitch")}
       />
-      <text x={chord.x + 6} y={chord.y - 6} fill={NAVY} fontWeight={700} fontSize={11} opacity={dim(highlight !== "none")}>
-        Chord line
-      </text>
+      {labels && (
+        <text x={chord.x + 6} y={chord.y - 6} fill={NAVY} fontWeight={700} fontSize={11} opacity={dim(highlight !== "none")}>
+          Chord line
+        </text>
+      )}
 
       <Arrow x1={cx} y1={cy} x2={fp.x} y2={fp.y} color={BRAND} id="fp" width={2.8} opacity={dim(highlight === "aoa" || highlight === "both")} />
-      <text x={fp.x + 4} y={fp.y + 18} fill={BRAND} fontWeight={750} fontSize={11} opacity={dim(highlight === "aoa" || highlight === "both")}>
-        Flight path
-      </text>
+      {labels && (
+        <text x={fp.x + 4} y={fp.y + 18} fill={BRAND} fontWeight={750} fontSize={11} opacity={dim(highlight === "aoa" || highlight === "both")}>
+          Flight path
+        </text>
+      )}
 
       <Arrow x1={rw.x} y1={rw.y} x2={cx - 44} y2={cy + Math.sin(rad(flightPath)) * 44} color={NOGO} id="rw" width={2.8} opacity={dim(highlight === "aoa" || highlight === "both")} />
-      <text x={rw.x - 4} y={rw.y - 12} textAnchor="middle" fill={NOGO} fontWeight={750} fontSize={11} opacity={dim(highlight === "aoa" || highlight === "both")}>
-        Relative wind
-      </text>
+      {labels && (
+        <text x={rw.x - 4} y={rw.y - 12} textAnchor="middle" fill={NOGO} fontWeight={750} fontSize={11} opacity={dim(highlight === "aoa" || highlight === "both")}>
+          Relative wind
+        </text>
+      )}
 
       <g transform="translate(392 42)">
         <rect x={-76} y={-18} width={152} height={44} rx={11} fill={highlight === "aoa" || highlight === "both" ? "var(--color-nogo-soft)" : "var(--color-surface-2)"} />

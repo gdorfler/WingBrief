@@ -720,12 +720,35 @@ function DragLabelBody({
               const ok = graded && value === q.answer[slot.id];
               const bad = graded && value !== undefined && !ok;
               const w = Math.max(64, (value ?? "drop").length * 6.4 + 18);
+              const accent = ok
+                ? "var(--color-go)"
+                : bad
+                  ? "var(--color-nogo)"
+                  : value
+                    ? "var(--color-brand)"
+                    : "var(--color-navy-faint)";
+              const hasAnchor = slot.tx !== undefined && slot.ty !== undefined;
               return (
                 <g
                   key={slot.id}
                   className={graded ? "" : "cursor-pointer"}
                   onClick={() => place(slot.id)}
                 >
+                  {hasAnchor && (
+                    <>
+                      <line
+                        x1={slot.x}
+                        y1={slot.y}
+                        x2={slot.tx}
+                        y2={slot.ty}
+                        stroke={accent}
+                        strokeWidth={1.4}
+                        strokeDasharray="3 3"
+                        opacity={0.75}
+                      />
+                      <circle cx={slot.tx} cy={slot.ty} r={3.6} fill={accent} />
+                    </>
+                  )}
                   <rect
                     x={slot.x - w / 2}
                     y={slot.y - 11}
