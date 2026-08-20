@@ -1,0 +1,256 @@
+@import "tailwindcss";
+
+/* ============================================================
+   WINGBRIEF — DESIGN SYSTEM
+   Light-first "technical briefing" palette. Dark "instrument
+   panel" surfaces are used deliberately for the dashboard hero,
+   exam mode, and results screens.
+   ============================================================ */
+
+@theme {
+  /* Surfaces ------------------------------------------------ */
+  --color-canvas: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef4fa;
+  --color-surface-3: #e3ecf6;
+  --color-line: #dbe6f1;
+  --color-line-strong: #c3d4e6;
+
+  /* Ink (dark instrument surfaces) -------------------------- */
+  --color-ink-900: #071322;
+  --color-ink-800: #0d1c2e;
+  --color-ink-700: #14273d;
+  --color-ink-600: #1d3652;
+  --color-ink-line: #24405e;
+
+  /* Text ---------------------------------------------------- */
+  --color-navy: #0a1e38;
+  --color-navy-soft: #48627f;
+  --color-navy-faint: #7b91aa;
+
+  /* Brand --------------------------------------------------- */
+  --color-brand: #1b72f2;
+  --color-brand-dark: #1259c8;
+  --color-brand-light: #5fa0ff;
+  --color-brand-soft: #e7f0fe;
+  --color-brand-soft-2: #cfe1fd;
+
+  /* Semantic ------------------------------------------------ */
+  --color-go: #10a154;
+  --color-go-dark: #0b7f41;
+  --color-go-soft: #e4f6ec;
+  --color-caution: #d98200;
+  --color-caution-soft: #fff2dd;
+  --color-nogo: #d92d20;
+  --color-nogo-soft: #fdeceb;
+  --color-gold: #c1912a;
+  --color-gold-soft: #fbf2dc;
+
+  /* Chart series -------------------------------------------- */
+  --color-series-parasite: #d98200;
+  --color-series-induced: #1b72f2;
+  --color-series-total: #0a1e38;
+  --color-series-available: #10a154;
+  --color-series-ghost: #9db2c9;
+  --color-series-alt: #8b5cf6;
+
+  /* Typography ---------------------------------------------- */
+  --font-sans: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont,
+    "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-mono: "SFMono-Regular", "JetBrains Mono", "Cascadia Mono", Consolas,
+    "Liberation Mono", Menlo, monospace;
+
+  /* Radii --------------------------------------------------- */
+  --radius-card: 1rem;
+  --radius-card-lg: 1.375rem;
+
+  /* Motion -------------------------------------------------- */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-navy);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.021em;
+  font-weight: 650;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Numeric readouts should never jitter while animating */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ============================================================
+   Component utilities
+   ============================================================ */
+
+@utility card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 1px 2px rgb(10 30 56 / 0.04),
+    0 1px 1px rgb(10 30 56 / 0.02);
+}
+
+@utility card-ink {
+  background: var(--color-ink-800);
+  border: 1px solid var(--color-ink-line);
+  border-radius: var(--radius-card);
+  color: #eaf2fb;
+}
+
+@utility eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Hide scrollbar but keep scrolling (horizontal chip rails) */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================================
+   SVG diagram defaults — diagrams are interface, not decoration
+   ============================================================ */
+
+.diagram {
+  --grid: #e3ecf6;
+  --axis: #9db2c9;
+  --label: #48627f;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram text {
+  font-family: var(--font-sans);
+  fill: var(--label);
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.diagram .axis {
+  stroke: var(--axis);
+  stroke-width: 1.25;
+}
+
+.diagram .grid {
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.diagram-ink {
+  --grid: #1d3652;
+  --axis: #3d5f85;
+  --label: #93aecb;
+}
+
+/* ============================================================
+   Motion — respect the user's preference
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* KaTeX sizing inside our cards */
+.katex {
+  font-size: 1.05em;
+}
+
+.katex-display {
+  margin: 0.5rem 0;
+}
+
+/* ============================================================
+   Range inputs used by the Sim Lab and lesson widgets
+   ============================================================ */
+
+.lab-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--track);
+}
+
+.lab-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -7px;
+  height: 20px;
+  width: 20px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2.5px solid #fff;
+  box-shadow: 0 1px 4px rgb(10 30 56 / 0.28);
+}
+
+.lab-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--track);
+}
+
+.lab-range::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2.5px solid #fff;
+  box-shadow: 0 1px 4px rgb(10 30 56 / 0.28);
+}
+
+.lab-range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}

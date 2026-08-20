@@ -1,0 +1,160 @@
+/**
+ * Persistence.
+ *
+ * The app is fully usable with zero configuration: everything lives in
+ * localStorage. The `ProgressStore` interface is the seam where a Supabase (or
+ * any server) adapter drops in later — `load`/`save` are already async, so
+ * swapping the implementation does not change a single call site.
+ */
+
+import { PROGRESS_SCHEMA_VERSION, type ProgressState } from "./types";
+import { emptyStreak } from "./xp";
+
+export const STORAGE_KEY = "nife-aero:progress:v1";
+
+export function emptyProgress(): ProgressState {
+  return {
+    version: PROGRESS_SCHEMA_VERSION,
+    xp: 0,
+    streak: emptyStreak(),
+    mastery: {},
+    lessons: {},
+    attempts: [],
+    exams: [],
+    achievements: [],
+    savedQuestionIds: [],
+    savedKnowColdIds: [],
+    watchedExplainerIds: [],
+    onboarded: false,
+  };
+}
+
+/** Keeps localStorage bounded on a heavy user. */
+const MAX_ATTEMPTS = 1500;
+const MAX_EXAMS = 40;
+
+export function pruneProgress(state: ProgressState): ProgressState {
+  if (state.attempts.length <= MAX_ATTEMPTS && state.exams.length <= MAX_EXAMS) {
+    return state;
+  }
+  return {
+    ...state,
+    attempts: state.attempts.slice(-MAX_ATTEMPTS),
+    exams: state.exams.slice(-MAX_EXAMS),
+  };
+}
+
+/**
+ * Defensive migration. Anything missing from a stored blob is filled from the
+ * empty state so a schema addition can never white-screen a returning student.
+ */
+export function migrate(raw: unknown): ProgressState {
+  const base = emptyProgress();
+  if (!raw || typeof raw !== "object") return base;
+  const input = raw as Partial<ProgressState>;
+
+  return {
+    version: PROGRESS_SCHEMA_VERSION,
+    xp: typeof input.xp === "number" && Number.isFinite(input.xp) ? input.xp : 0,
+    streak: { ...base.streak, ...(input.streak ?? {}) },
+    mastery: isRecord(input.mastery) ? input.mastery : {},
+    lessons: isRecord(input.lessons) ? input.lessons : {},
+    attempts: Array.isArray(input.attempts) ? input.attempts : [],
+    exams: Array.isArray(input.exams) ? input.exams : [],
+    achievements: Array.isArray(input.achievements) ? input.achievements : [],
+    savedQuestionIds: Array.isArray(input.savedQuestionIds)
+      ? input.savedQuestionIds
+      : [],
+    savedKnowColdIds: Array.isArray(input.savedKnowColdIds)
+      ? input.savedKnowColdIds
+      : [],
+    watchedExplainerIds: Array.isArray(input.watchedExplainerIds)
+      ? input.watchedExplainerIds
+      : [],
+    onboarded: input.onboarded === true,
+  };
+}
+
+function isRecord<T>(v: unknown): v is Record<string, T> {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+/* ------------------------------------------------------------------ */
+/* Store adapter                                                       */
+/* ------------------------------------------------------------------ */
+
+export interface ProgressStore {
+  load(): Promise<ProgressState>;
+  save(state: ProgressState): Promise<void>;
+  clear(): Promise<void>;
+}
+
+export class LocalProgressStore implements ProgressStore {
+  constructor(private key: string = STORAGE_KEY) {}
+
+  async load(): Promise<ProgressState> {
+    if (typeof window === "undefined") return emptyProgress();
+    try {
+      const raw = window.localStorage.getItem(this.key);
+      if (!raw) return emptyProgress();
+      return migrate(JSON.parse(raw));
+    } catch {
+      // Corrupt blob: start clean rather than trapping the student on a crash.
+      return emptyProgress();
+    }
+  }
+
+  async save(state: ProgressState): Promise<void> {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(this.key, JSON.stringify(pruneProgress(state)));
+    } catch {
+      // Quota exceeded — drop history and retry once with the essentials.
+      try {
+        const lean: ProgressState = {
+          ...state,
+          attempts: state.attempts.slice(-200),
+          exams: state.exams.slice(-5),
+        };
+        window.localStorage.setItem(this.key, JSON.stringify(lean));
+      } catch {
+        /* Give up silently; the session still works in memory. */
+      }
+    }
+  }
+
+  async clear(): Promise<void> {
+    if (typeof window === "undefined") return;
+    window.localStorage.removeItem(this.key);
+  }
+}
+
+/** In-memory store, used by tests and by SSR. */
+export class MemoryProgressStore implements ProgressStore {
+  private state: ProgressState = emptyProgress();
+  async load() {
+    return this.state;
+  }
+  async save(state: ProgressState) {
+    this.state = state;
+  }
+  async clear() {
+    this.state = emptyProgress();
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Import / export                                                     */
+/* ------------------------------------------------------------------ */
+
+export function exportProgress(state: ProgressState): string {
+  return JSON.stringify(state, null, 2);
+}
+
+export function importProgress(json: string): ProgressState | null {
+  try {
+    return migrate(JSON.parse(json));
+  } catch {
+    return null;
+  }
+}
