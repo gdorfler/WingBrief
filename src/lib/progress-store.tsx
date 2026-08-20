@@ -17,8 +17,12 @@ import {
   useRef,
   useState,
 } from "react";
+import { useAuth } from "./auth";
 import { applyAttempt, markIntroduced } from "./mastery";
+import { isEmptyProgress } from "./merge-progress";
 import { LocalProgressStore, emptyProgress, type ProgressStore } from "./storage";
+import { getSupabase } from "./supabase";
+import { SupabaseProgressStore, readGuestProgress } from "./supabase-store";
 import {
   XP,
   evaluateAchievements,
@@ -56,6 +60,8 @@ export interface AnswerInput {
 export interface ProgressApi {
   state: ProgressState;
   ready: boolean;
+  /** True while a store swap or first account sync is in flight. */
+  syncing: boolean;
   /** Achievements unlocked since the last render, for the toast queue. */
   pendingAwards: string[];
   clearAwards: () => void;
@@ -87,31 +93,95 @@ export function ProgressProvider({
   children: React.ReactNode;
   store?: ProgressStore;
 }) {
+  const { user, ready: authReady } = useAuth();
+  /** Tests inject a store directly; that bypasses all account handling. */
+  const injected = store !== undefined;
+
   const storeRef = useRef<ProgressStore>(store ?? new LocalProgressStore());
   const [state, setState] = useState<ProgressState>(emptyProgress);
   const [ready, setReady] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [pendingAwards, setPendingAwards] = useState<string[]>([]);
   const exploredLabs = useRef<Set<string>>(new Set());
 
+  /**
+   * Which account the live store belongs to. `undefined` means nothing has been
+   * hydrated yet; `null` is the signed-out guest store.
+   */
+  const boundUserId = useRef<string | null | undefined>(undefined);
+  /** Bumped on every store swap so an in-flight debounced save can be dropped. */
+  const generation = useRef(0);
+
   useEffect(() => {
+    if (injected) {
+      let cancelled = false;
+      void storeRef.current.load().then((loaded) => {
+        if (cancelled) return;
+        setState(loaded);
+        setReady(true);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    // Wait for the session check, otherwise we would hydrate the guest store
+    // and immediately throw it away when the session resolves.
+    if (!authReady) return;
+
+    const userId = user?.id ?? null;
+    if (boundUserId.current === userId) return;
+    boundUserId.current = userId;
+
+    const gen = ++generation.current;
     let cancelled = false;
-    storeRef.current.load().then((loaded) => {
-      if (cancelled) return;
+    const stale = () => cancelled || gen !== generation.current;
+
+    setReady(false);
+    setSyncing(true);
+
+    void (async () => {
+      const supabase = getSupabase();
+      let next: ProgressStore;
+      let loaded: ProgressState;
+
+      if (userId && supabase) {
+        const remote = new SupabaseProgressStore(supabase, userId);
+        // Work done before signing in follows the student into the account.
+        const guest = await readGuestProgress();
+        loaded = isEmptyProgress(guest)
+          ? await remote.load()
+          : await remote.adoptGuestProgress(guest);
+        next = remote;
+      } else {
+        const local = new LocalProgressStore();
+        loaded = await local.load();
+        next = local;
+      }
+
+      if (stale()) return;
+      storeRef.current = next;
       setState(loaded);
       setReady(true);
-    });
+      setSyncing(false);
+    })();
+
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [authReady, user?.id, injected]);
 
   // Persist on every change once hydrated. Debounced so rapid-fire answering
-  // does not hit localStorage on every keystroke-speed interaction.
+  // does not hit storage on every keystroke-speed interaction.
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     if (!ready) return;
+    const gen = generation.current;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
+      // A store swap between scheduling and firing would file this state under
+      // the wrong account, so anything from a previous generation is discarded.
+      if (gen !== generation.current) return;
       void storeRef.current.save(state);
     }, 250);
     return () => {
@@ -296,6 +366,7 @@ export function ProgressProvider({
     () => ({
       state,
       ready,
+      syncing,
       pendingAwards,
       clearAwards,
       recordAnswer,
@@ -313,6 +384,7 @@ export function ProgressProvider({
     [
       state,
       ready,
+      syncing,
       pendingAwards,
       clearAwards,
       recordAnswer,

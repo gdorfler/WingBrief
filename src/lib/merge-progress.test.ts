@@ -1,0 +1,236 @@
+import { describe, expect, it } from "vitest";
+import { isEmptyProgress, mergeProgress } from "./merge-progress";
+import { emptyProgress } from "./storage";
+import type { Attempt, ExamResult, ProgressState } from "./types";
+
+const DAY = 86_400_000;
+const T0 = Date.UTC(2026, 0, 10, 12, 0, 0);
+
+function attempt(questionId: string, at: number, correct = true): Attempt {
+  return { questionId, conceptIds: ["c-lift-def"], correct, elapsedMs: 4000, at, context: "lesson" };
+}
+
+function exam(id: string, at: number, score: number): ExamResult {
+  return {
+    id,
+    at,
+    mode: "quick",
+    label: "Quick check",
+    questionIds: ["q1"],
+    answers: { q1: "i:0" },
+    correctIds: ["q1"],
+    incorrectIds: [],
+    flaggedIds: [],
+    elapsedMs: 60_000,
+    timed: false,
+    score,
+  };
+}
+
+/** A state with some of everything, so merges exercise every branch. */
+function populated(overrides: Partial<ProgressState> = {}): ProgressState {
+  return {
+    ...emptyProgress(),
+    xp: 400,
+    streak: {
+      current: 2,
+      longest: 3,
+      lastActiveDay: "2026-01-10",
+      history: ["2026-01-10", "2026-01-09"],
+    },
+    mastery: {
+      "c-lift-def": {
+        conceptId: "c-lift-def",
+        level: 3,
+        seen: 6,
+        correct: 5,
+        recent: [true, true, false, true],
+        lastSeenAt: T0,
+        dueAt: T0 + 3 * DAY,
+        intervalDays: 3,
+      },
+    },
+    lessons: {
+      l01: {
+        lessonId: "l01",
+        started: true,
+        completed: true,
+        bestScore: 0.8,
+        attempts: 1,
+        lastCompletedAt: T0,
+        perfect: false,
+      },
+    },
+    attempts: [attempt("q1", T0)],
+    exams: [exam("e1", T0, 0.8)],
+    achievements: [{ id: "first-flight", unlockedAt: T0 }],
+    savedQuestionIds: ["q1"],
+    savedKnowColdIds: ["k1"],
+    watchedExplainerIds: ["x1"],
+    onboarded: true,
+    ...overrides,
+  };
+}
+
+describe("mergeProgress", () => {
+  it("returns the other side when one is empty", () => {
+    const local = populated();
+    expect(mergeProgress(local, emptyProgress()).xp).toBe(400);
+    expect(mergeProgress(emptyProgress(), local).xp).toBe(400);
+  });
+
+  it("is idempotent — a retried sync changes nothing", () => {
+    const state = populated();
+    const once = mergeProgress(state, state);
+    const twice = mergeProgress(once, state);
+    expect(once).toEqual(twice);
+    expect(once.attempts).toHaveLength(1);
+    expect(once.lessons.l01.attempts).toBe(1);
+    expect(once.xp).toBe(400);
+  });
+
+  it("is commutative — sync order between devices does not matter", () => {
+    const phone = populated({ xp: 500, attempts: [attempt("q2", T0 + 1000)] });
+    const laptop = populated({ xp: 300, attempts: [attempt("q3", T0 + 2000)] });
+    expect(mergeProgress(phone, laptop)).toEqual(mergeProgress(laptop, phone));
+  });
+
+  it("unions attempts from both devices without duplicating shared ones", () => {
+    const shared = attempt("q1", T0);
+    const phone = populated({ attempts: [shared, attempt("q2", T0 + 1000)] });
+    const laptop = populated({ attempts: [shared, attempt("q3", T0 + 2000)] });
+    const merged = mergeProgress(phone, laptop);
+    expect(merged.attempts.map((a) => a.questionId)).toEqual(["q1", "q2", "q3"]);
+  });
+
+  it("treats the same question answered at different times as two attempts", () => {
+    const phone = populated({ attempts: [attempt("q1", T0)] });
+    const laptop = populated({ attempts: [attempt("q1", T0 + 5000)] });
+    expect(mergeProgress(phone, laptop).attempts).toHaveLength(2);
+  });
+
+  it("keeps the mastery record built from more practice", () => {
+    const weak = populated();
+    const strong = populated({
+      mastery: {
+        "c-lift-def": {
+          ...populated().mastery["c-lift-def"],
+          level: 5,
+          seen: 20,
+          correct: 19,
+        },
+      },
+    });
+    expect(mergeProgress(weak, strong).mastery["c-lift-def"].level).toBe(5);
+    expect(mergeProgress(strong, weak).mastery["c-lift-def"].seen).toBe(20);
+  });
+
+  it("never demotes a concept when both sides saw the same amount", () => {
+    const low = populated();
+    const high = populated({
+      mastery: { "c-lift-def": { ...populated().mastery["c-lift-def"], level: 5 } },
+    });
+    expect(mergeProgress(low, high).mastery["c-lift-def"].level).toBe(5);
+    expect(mergeProgress(high, low).mastery["c-lift-def"].level).toBe(5);
+  });
+
+  it("keeps a lesson completed even if the other device never finished it", () => {
+    const done = populated();
+    const partial = populated({
+      lessons: {
+        l01: {
+          lessonId: "l01",
+          started: true,
+          completed: false,
+          bestScore: 0.2,
+          attempts: 1,
+          lastCompletedAt: null,
+          perfect: false,
+        },
+      },
+    });
+    const merged = mergeProgress(done, partial);
+    expect(merged.lessons.l01.completed).toBe(true);
+    expect(merged.lessons.l01.bestScore).toBe(0.8);
+  });
+
+  it("dates an achievement from when it was first earned", () => {
+    const early = populated({ achievements: [{ id: "first-flight", unlockedAt: T0 }] });
+    const late = populated({ achievements: [{ id: "first-flight", unlockedAt: T0 + DAY }] });
+    const merged = mergeProgress(late, early);
+    expect(merged.achievements).toHaveLength(1);
+    expect(merged.achievements[0].unlockedAt).toBe(T0);
+  });
+
+  it("rebuilds a streak split across two devices", () => {
+    // Neither device alone shows a 4-day run; together they do.
+    const phone = populated({
+      streak: { current: 2, longest: 2, lastActiveDay: "2026-01-10", history: ["2026-01-10", "2026-01-09"] },
+    });
+    const laptop = populated({
+      streak: { current: 2, longest: 2, lastActiveDay: "2026-01-08", history: ["2026-01-08", "2026-01-07"] },
+    });
+    const merged = mergeProgress(phone, laptop);
+    expect(merged.streak.history).toEqual([
+      "2026-01-10",
+      "2026-01-09",
+      "2026-01-08",
+      "2026-01-07",
+    ]);
+    expect(merged.streak.current).toBe(4);
+    expect(merged.streak.longest).toBe(4);
+  });
+
+  it("does not invent a streak across a missed day", () => {
+    const a = populated({
+      streak: { current: 1, longest: 1, lastActiveDay: "2026-01-10", history: ["2026-01-10"] },
+    });
+    const b = populated({
+      streak: { current: 1, longest: 1, lastActiveDay: "2026-01-08", history: ["2026-01-08"] },
+    });
+    // 2026-01-09 is missing, so the live run is just the most recent day.
+    expect(mergeProgress(a, b).streak.current).toBe(1);
+  });
+
+  it("remembers a long run that has aged out of the retained history", () => {
+    const veteran = populated({
+      streak: { current: 1, longest: 30, lastActiveDay: "2026-01-10", history: ["2026-01-10"] },
+    });
+    expect(mergeProgress(veteran, emptyProgress()).streak.longest).toBe(30);
+  });
+
+  it("takes the higher XP rather than summing the same work twice", () => {
+    const merged = mergeProgress(populated({ xp: 500 }), populated({ xp: 300 }));
+    expect(merged.xp).toBe(500);
+  });
+
+  it("unions saved and watched lists", () => {
+    const a = populated({ savedQuestionIds: ["q1", "q2"], watchedExplainerIds: ["x1"] });
+    const b = populated({ savedQuestionIds: ["q2", "q3"], watchedExplainerIds: ["x2"] });
+    const merged = mergeProgress(a, b);
+    expect(merged.savedQuestionIds.sort()).toEqual(["q1", "q2", "q3"]);
+    expect(merged.watchedExplainerIds.sort()).toEqual(["x1", "x2"]);
+  });
+
+  it("dedupes exams by id and keeps them in order", () => {
+    const a = populated({ exams: [exam("e1", T0, 0.8), exam("e2", T0 + DAY, 0.9)] });
+    const b = populated({ exams: [exam("e1", T0, 0.8), exam("e3", T0 + 2 * DAY, 0.7)] });
+    const merged = mergeProgress(a, b);
+    expect(merged.exams.map((e) => e.id)).toEqual(["e1", "e2", "e3"]);
+  });
+});
+
+describe("isEmptyProgress", () => {
+  it("recognises a fresh state", () => {
+    expect(isEmptyProgress(emptyProgress())).toBe(true);
+  });
+
+  it("recognises a state with real work in it", () => {
+    expect(isEmptyProgress(populated())).toBe(false);
+    expect(isEmptyProgress({ ...emptyProgress(), attempts: [attempt("q1", T0)] })).toBe(false);
+  });
+
+  it("ignores the onboarding flag, which is not progress", () => {
+    expect(isEmptyProgress({ ...emptyProgress(), onboarded: true })).toBe(true);
+  });
+});

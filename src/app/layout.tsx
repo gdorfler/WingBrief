@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "katex/dist/katex.min.css";
 import "./globals.css";
+import { AuthProvider } from "@/lib/auth";
 import { ProgressProvider } from "@/lib/progress-store";
 import { AppShell } from "@/components/shell";
 
@@ -27,9 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <ProgressProvider>
-          <AppShell>{children}</AppShell>
-        </ProgressProvider>
+        <AuthProvider>
+          <ProgressProvider>
+            <AppShell>{children}</AppShell>
+          </ProgressProvider>
+        </AuthProvider>
       </body>
     </html>
   );

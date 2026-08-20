@@ -13,6 +13,8 @@ import { overallReadiness, unitReadiness } from "@/lib/review";
 import { ACHIEVEMENTS, dayKey, levelFromXp, liveStreak } from "@/lib/xp";
 import { exportProgress, importProgress } from "@/lib/storage";
 import { useProgress } from "@/lib/progress-store";
+import { useAuth } from "@/lib/auth";
+import { AccountCard } from "@/components/account-card";
 import { AchievementIcon } from "@/components/achievement-icon";
 import {
   Button,
@@ -28,6 +30,7 @@ import {
 
 export default function ProfilePage() {
   const { state, resetProgress, importState } = useProgress();
+  const { user: account } = useAuth();
   const [confirmReset, setConfirmReset] = useState(false);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -89,7 +92,11 @@ export default function ProfilePage() {
       <PageHeader
         eyebrow="Your record"
         title="Profile"
-        subtitle="Everything is stored locally in this browser. Export it if you want a backup or to move to another device."
+        subtitle={
+          account
+            ? `Synced to ${account.email}. Sign in with the same email anywhere to pick up where you left off.`
+            : "Stored in this browser. Sign in to sync it across devices, or export a backup."
+        }
       />
 
       {/* Overview */}
@@ -280,14 +287,16 @@ export default function ProfilePage() {
         </Card>
       </section>
 
+      <AccountCard />
+
       {/* Data */}
       <section>
-        <SectionHeading eyebrow="Local only" title="Your data" />
+        <SectionHeading eyebrow={account ? "Synced" : "Local only"} title="Your data" />
         <Card className="space-y-4">
           <p className="text-[13px] leading-relaxed text-navy-soft">
-            Progress, mastery, XP, streak and exam history are stored in this browser&rsquo;s local
-            storage. Nothing is sent anywhere. Clearing site data will erase it, so export a backup
-            if it matters.
+            {account
+              ? "Progress, mastery, XP, streak and exam history are saved to your account and cached in this browser, so a dropped connection never costs you a lesson."
+              : "Progress, mastery, XP, streak and exam history are stored in this browser’s local storage. Clearing site data will erase it, so sign in or export a backup if it matters."}
           </p>
 
           <div className="flex flex-wrap gap-2">
