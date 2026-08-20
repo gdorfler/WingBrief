@@ -169,6 +169,7 @@ export function Curve({
   opacity = 1,
   label,
   labelAt,
+  draw = true,
 }: {
   d: string;
   color: string;
@@ -177,7 +178,15 @@ export function Curve({
   opacity?: number;
   label?: string;
   labelAt?: { x: number; y: number };
+  /** Trace the curve on when it first appears. Off for dashed reference lines. */
+  draw?: boolean;
 }) {
+  /**
+   * pathLength="1" normalises the curve so a single CSS rule can trace any
+   * shape. It also redefines what strokeDasharray means for this element, so a
+   * dashed curve has to opt out of the animation entirely.
+   */
+  const traced = draw && !dashed;
   return (
     <g>
       <path
@@ -188,6 +197,8 @@ export function Curve({
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeDasharray={dashed ? "6 5" : undefined}
+        pathLength={traced ? 1 : undefined}
+        className={traced ? "draw-in" : undefined}
         opacity={opacity}
       />
       {label && labelAt && (

@@ -37,6 +37,55 @@ npm run lint && npm run typecheck && npm test
 > stable. If the dev server starts returning 404s or "Cannot find module ./vendor-chunks/…",
 > stop it, `rm -rf .next`, and restart.
 
+
+---
+
+## Accounts and cross-device sync
+
+Optional. With no configuration the app runs entirely in the browser — every
+feature works, progress just does not follow you to another device.
+
+To turn sync on:
+
+1. Create a free project at [supabase.com](https://supabase.com)
+2. Open **SQL Editor → New query**, paste [supabase/schema.sql](supabase/schema.sql), run it
+3. Copy `.env.local.example` to `.env.local` and fill in the two values from
+   **Project Settings → API**:
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+   ```
+
+4. In **Authentication → URL Configuration**, set **Site URL** to your deployed
+   origin and add `<your-site>/auth/callback` to **Redirect URLs**. Add
+   `http://localhost:3000/auth/callback` too if you want sign-in to work locally.
+5. Restart the dev server
+
+Sign-in is a magic link — no passwords to store or reset. On Vercel, add the same
+two variables under **Settings → Environment Variables** and redeploy.
+
+Both values are safe to expose in the browser. The anon key grants nothing on its
+own; the row-level security policies in `schema.sql` are what keep each
+student's row private to them.
+
+### How merging works
+
+Progress is one JSONB document per user, and sync **merges** rather than
+overwrites. Every rule is commutative and idempotent, so it does not matter which
+device syncs first and a retried upload cannot double-count:
+
+- Answers are keyed on question + timestamp, so the same answer arriving from two
+  devices collapses into one
+- Mastery keeps whichever record came from more practice; a tie never demotes a concept
+- Streaks rebuild from the union of active days, so a run split across a phone and
+  a laptop is recognised as one continuous streak
+- XP takes the larger total rather than the sum
+
+Anything done signed-out is folded into the account the first time you sign in.
+Writes hit localStorage before the network, so losing signal mid-lesson costs
+nothing — the next successful save carries it up.
+
 ---
 
 ## What's in it

@@ -170,13 +170,17 @@ export function Streamtube(p: DiagramProps) {
         const yWide = cy + f * wideH;
         const yNarrow = cy + f * narrowH;
         return (
+          // Marching dashes: the point of continuity is that this is the same
+          // air speeding up, which a static line cannot say.
           <path
             key={i}
             d={`M64 ${yWide} C164 ${yWide}, 192 ${yNarrow}, ${throatX} ${yNarrow} C308 ${yNarrow}, 336 ${yWide}, 436 ${yWide}`}
             fill="none"
             stroke={BRAND}
-            strokeWidth={1.4}
-            opacity={0.42}
+            strokeWidth={1.6}
+            opacity={0.5}
+            className="flow-line"
+            style={{ animationDelay: `${i * 0.18}s` }}
           />
         );
       })}

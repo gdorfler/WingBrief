@@ -192,6 +192,11 @@ export interface FlightItem {
   href: string;
   /** Concepts or lesson this item addresses, for the "why" line. */
   meta?: string[];
+  /**
+   * The lesson diagram glyph to show, when this item is a specific lesson.
+   * Lets the plan show what the lesson is about rather than a generic play icon.
+   */
+  art?: string;
 }
 
 export interface DailyFlight {
@@ -263,6 +268,7 @@ export function buildDailyFlight(
       minutes: nextLesson.estimatedMinutes,
       href: `/lessons/${nextLesson.id}`,
       meta: [nextLesson.subtitle],
+      art: nextLesson.mapIcon,
     });
   } else {
     items.push({

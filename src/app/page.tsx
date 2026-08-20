@@ -33,6 +33,7 @@ import {
   cn,
 } from "@/components/ui";
 import { AchievementIcon } from "@/components/achievement-icon";
+import { LessonIcon } from "@/components/lesson-icon";
 import { achievementById } from "@/lib/xp";
 
 const UNIT_TONE = {
@@ -142,7 +143,7 @@ export default function HomePage() {
                     href={item.href}
                     className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-4 transition-all hover:border-brand/40 hover:shadow-sm"
                   >
-                    <FlightIcon kind={item.kind} index={i} />
+                    <FlightIcon kind={item.kind} index={i} art={item.art} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <p className="truncate text-[15px] font-semibold text-navy">{item.title}</p>
@@ -354,7 +355,16 @@ export default function HomePage() {
   );
 }
 
-function FlightIcon({ kind, index }: { kind: string; index: number }) {
+function FlightIcon({
+  kind,
+  index,
+  art,
+}: {
+  kind: string;
+  index: number;
+  /** When the item is a specific lesson, its own diagram beats a generic icon. */
+  art?: string;
+}) {
   const map: Record<string, { tone: string; glyph: React.ReactNode }> = {
     spacedReview: { tone: "bg-caution-soft text-caution", glyph: <Clock size={17} /> },
     weakConcepts: { tone: "bg-nogo-soft text-nogo", glyph: <TrendingUp size={17} /> },
@@ -366,8 +376,14 @@ function FlightIcon({ kind, index }: { kind: string; index: number }) {
   return (
     <span className="flex shrink-0 items-center gap-2.5">
       <span className="tabular w-4 text-[11px] font-bold text-navy-faint">{index + 1}</span>
-      <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl", entry.tone)}>
-        {entry.glyph}
+      <span
+        className={cn(
+          "flex items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-[1.06]",
+          art ? "h-12 w-12 border border-brand/25" : "h-10 w-10",
+          entry.tone,
+        )}
+      >
+        {art ? <LessonIcon name={art} className="h-7 w-7" /> : entry.glyph}
       </span>
     </span>
   );

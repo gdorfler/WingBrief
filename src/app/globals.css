@@ -121,13 +121,18 @@ button,
    Component utilities
    ============================================================ */
 
+/*
+ * Cards sit on the canvas rather than being drawn onto it: a tight contact
+ * shadow for the edge, plus a wide, very soft one for lift. Kept well under
+ * the threshold where it would read as a drop shadow effect.
+ */
 @utility card {
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
   box-shadow:
-    0 1px 2px rgb(10 30 56 / 0.04),
-    0 1px 1px rgb(10 30 56 / 0.02);
+    0 1px 2px rgb(10 30 56 / 0.05),
+    0 10px 24px -18px rgb(10 30 56 / 0.35);
 }
 
 @utility card-ink {
@@ -187,6 +192,62 @@ button,
   --grid: #1d3652;
   --axis: #3d5f85;
   --label: #93aecb;
+}
+
+/* ------------------------------------------------------------
+   Diagram motion.
+
+   Two effects, both cheap and both meaning something:
+
+   `.flow-line` marches dashes along a path so airflow reads as moving
+   air rather than a static arrow — the difference between seeing a
+   streamtube and understanding that the same air is being squeezed
+   through a smaller area.
+
+   `.draw-in` traces a curve on as it appears, so a student watches the
+   shape being built instead of meeting it finished. It relies on the
+   element carrying pathLength="1", which normalises any path to a
+   single unit and lets one rule animate every curve regardless of its
+   real length.
+
+   Both are switched off wholesale by the reduced-motion block below.
+   ------------------------------------------------------------ */
+
+@keyframes flow-march {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+
+.flow-line {
+  stroke-dasharray: 5 11;
+  animation: flow-march 1.4s linear infinite;
+}
+
+.flow-line-slow {
+  stroke-dasharray: 4 12;
+  animation: flow-march 2.4s linear infinite;
+}
+
+@keyframes curve-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.draw-in {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: curve-draw 0.85s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+.draw-in-delayed {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: curve-draw 0.85s cubic-bezier(0.33, 1, 0.68, 1) 0.2s forwards;
 }
 
 /* ============================================================
