@@ -1,9 +1,26 @@
 # WingBrief
 
-A gamified, visual learning portal for the NIFE / API Aerodynamics course, built for
-Student Naval Aviators and Student Naval Flight Officers.
+A gamified, visual learning platform for NIFE / API, built for Student Naval Aviators
+and Student Naval Flight Officers.
 
 Duolingo-style progression + NotebookLM-style visual explainers + NIFE exam-focused content.
+
+Two courses ship today. They share one engine, one design language and one streak, but
+keep separate mastery, review queues, exams and visual identity — the way two languages
+sit inside one language app.
+
+| | Aerodynamics | Engines |
+|---|---|---|
+| Identity | Aviation blue · air and flow | Burnt amber · power and machinery |
+| Units | 6 | 7 |
+| Lessons | 30 (~209 min) | 30 (~172 min) |
+| Concepts | 119 | 100 |
+| Questions | 242 | 145 |
+| Explainers · Labs | 20 · 8 | 12 · 8 |
+| Know Cold cards | 78 | 61 |
+| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed |
+
+Weather, Navigation and Flight Rules can be added without touching the learning engine.
 
 ---
 
@@ -90,29 +107,29 @@ nothing — the next successful save carries it up.
 
 ## What's in it
 
-| | |
+| | Total |
 |---|---|
-| Units | 6 |
-| Lessons | 30 (~209 minutes of instruction) |
-| Concepts tracked for mastery | 119 |
-| Questions | 242 (85 modelled on official review/practice questions) |
-| Visual explainers | 20 |
-| Sim Labs | 8 |
-| Parametric SVG diagrams | 40 |
-| Interactive widgets | 30 |
-| Know Cold cards | 78 |
-| Enabling Objectives mapped | 219 — all taught **and** assessed |
+| Courses | 2 |
+| Lessons | 60 |
+| Concepts tracked for mastery | 219 |
+| Questions | 387 |
+| Visual explainers | 32 |
+| Sim Labs | 16 |
+| Parametric SVG diagrams | 60 |
+| Know Cold cards | 139 |
+| Enabling Objectives mapped | 248 — all taught **and** assessed |
 
 ### Screens
 
-- **Home** — Aero Readiness, streak, XP, Today's Flight, weak areas, explainers, achievements
-- **Lessons** — the flight path: a snaking route through six units with per-node state
+- **Course switcher** — sidebar, mobile header and profile; shows each course's readiness
+- **Home** — course readiness, streak, XP, Today's Flight, weak areas, explainers, achievements
+- **Lessons** — the flight path: a snaking route through the course's units, per-node state
 - **Lesson player** — hook → visual model → manipulation → cause-effect chain → Know Cold → retrieval
 - **Review** — spaced review, weak areas, mistakes, saved, plus per-concept detail pages
-- **Sim Lab** — eight interactive labs
+- **Sim Lab** — eight interactive labs per course
 - **Exam** — quick / full / unit / weak-area / custom, timed or untimed, with results and review
 - **Know Cold** — the pre-exam compression layer, searchable and filterable
-- **Explainers** — 20 animated 60–120 second visual explainers
+- **Explainers** — animated 60–120 second visual explainers
 - **Profile** — mastery, achievements, activity, the EO coverage matrix, export/import/reset
 
 ---
@@ -139,6 +156,23 @@ was written from.
    history, anecdote and repetition.
 
 Where the guide and the condensed notes disagree, the guide wins.
+
+### Engines
+
+1. **Principles of Gas Turbine/Reciprocating Operation** — authoritative for
+   pressure/velocity, nozzles and diffusers, the gas generator, both cycles, and every
+   factor affecting thrust.
+2. **Gas Turbine/Reciprocating Engines** — inlet, compressor, burner, turbine,
+   exhaust, afterburner and reciprocating components.
+3. **Compressor Stalls** — blade AOA, indications, causes, avoidance, prevention
+   and recovery.
+4. **Engines Condensed Notes** — the only supplied source covering engine types and the
+   surrounding aircraft systems.
+
+Units e1–e5 come from the official lectures and carry enabling objectives. Units e6–e7
+(engine types, fuel, lubrication, starting, hydraulics, electrics) exist only in the
+condensed notes, which state no EOs — so those lessons **claim none** rather than
+inventing them. The EO matrix on the profile shows exactly that split.
 
 ---
 
@@ -171,27 +205,32 @@ T-6B specific values (18 units stall AOA, +7.0/−3.5 G, Va 227 KIAS, 125 KIAS b
 11:1 glide ratio, 1,100 SHP, 2-minute takeoff / 3-minute landing wake spacing, 31,000 ft
 ceiling) are quoted from the guide, never invented.
 
+For Engines the same rule applies harder, because the sources publish almost no absolute
+numbers. **Stated exactly** where the sources state them: the 25/75 burner air split, the
+75/25 turbine energy split, 15:1–30:1 axial compression, the 36,000 ft thrust break point,
+30% RPM at fuel-on, fuel flash points, and the 90/10 turboprop thrust split. **Relative or
+indexed** everywhere else — the thrust-versus-factor curves carry a relative y-axis and say
+so on the diagram, and the sim labs are relationship simulators, not engine models. No
+compressor map, thrust table or airframe-specific engine value appears anywhere.
+
 ---
 
 ## Architecture
 
-Curriculum **data** is completely separate from UI **code**, so Engines, Weather, Navigation
+Curriculum **data** is completely separate from UI **code**, so Weather, Navigation
 and Flight Rules can be added later without touching the learning engine.
 
 ```
 src/
   content/            curriculum data only — no React
-    units.ts          six units
-    concepts.ts       119 concepts: definition, relationships, formula, traps, source
-    questions/        242 questions across ten interaction types
-    lessons/          30 lessons as screen sequences
-    explainers.ts     20 animated explainers as frame lists
-    labs.ts           8 sim lab definitions
-    know-cold.ts      78 pre-exam cards
-    index.ts          aggregation + buildEoMatrix()
+    courses.ts        the course registry: id, name, icon, accent
+    index.ts          aggregation, global id lookups, buildEoMatrix(course)
+    aero/             units, concepts, questions, lessons, explainers, labs, know-cold
+    engines/          the same shape, and the template for any future course
 
   lib/                the engine — pure, testable, no UI
     types.ts          Course/Unit/Lesson/Concept/Question/Mastery/Attempt/Exam
+    course.tsx        active course context + data-course theming
     aero.ts           the aerodynamic models
     mastery.ts        0–5 concept mastery + deterministic spaced repetition
     scoring.ts        answer serialization, grading, exam scoring, question selection
