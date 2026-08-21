@@ -41,7 +41,7 @@ const UNIT_TONE = {
 
 export default function HomePage() {
   const { state, ready } = useProgress();
-  const { content, stats } = useCourse();
+  const { content, stats, meta } = useCourse();
   const now = Date.now();
 
   const readiness = overallReadiness(content.concepts, state.mastery);
@@ -79,7 +79,7 @@ export default function HomePage() {
               </span>
             </ProgressRing>
             <div>
-              <p className="eyebrow text-[#8fb0d4]">Aero readiness</p>
+              <p className="eyebrow text-[#8fb0d4]">{meta.name} readiness</p>
               <p className="mt-1 max-w-[15rem] text-[15px] font-semibold leading-snug text-white">
                 {readiness >= 85
                   ? "Checkride ready. Hold the edge with exams."

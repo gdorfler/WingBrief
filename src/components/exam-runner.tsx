@@ -50,7 +50,26 @@ export function poolFor(
   return content.questions;
 }
 
+/**
+ * The paper is frozen at mount so it cannot reshuffle under the student. That
+ * makes hydration order load-bearing: on a cold page load the progress store
+ * starts on the DEFAULT course and only then resolves the stored one, so a
+ * runner mounted before that resolves would freeze the wrong course's
+ * questions. Gate on `ready` and let the inner component mount once.
+ */
 export function ExamRunner({ config }: { config: ExamConfig }) {
+  const { ready } = useProgress();
+  if (!ready) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <p className="text-[13px] font-semibold text-navy-faint">Building your paper…</p>
+      </div>
+    );
+  }
+  return <ExamPaper config={config} />;
+}
+
+function ExamPaper({ config }: { config: ExamConfig }) {
   const router = useRouter();
   const { state, recordAnswer, recordExam } = useProgress();
   const { content } = useCourse();

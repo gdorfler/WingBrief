@@ -28,7 +28,7 @@
   --color-navy-soft: #48627f;
   --color-navy-faint: #7b91aa;
 
-  /* Brand --------------------------------------------------- */
+  /* Brand — repointed per course, see the course palettes below --- */
   --color-brand: #1b72f2;
   --color-brand-dark: #1259c8;
   --color-brand-light: #5fa0ff;
@@ -115,6 +115,73 @@ button,
 .tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
+}
+
+/* ============================================================
+   COURSE PALETTES
+
+   WingBrief is the platform; each course is a colour identity inside
+   it. Rather than every component learning about courses, the active
+   course writes data-course on the document root and these blocks
+   repoint the brand ramp. Anything already using text-brand, bg-brand
+   or --color-brand re-themes for free.
+
+   Deliberately narrow: navy typography, the light canvas, success
+   green and danger red are platform constants and never move. Only
+   the accent changes, which is what keeps two courses recognisably
+   the same product.
+   ============================================================ */
+
+:root[data-course="aero"] {
+  /* Air, flow, sky. The original identity. */
+  --color-brand: #1b72f2;
+  --color-brand-dark: #1259c8;
+  --color-brand-light: #5fa0ff;
+  --color-brand-soft: #e7f0fe;
+  --color-brand-soft-2: #cfe1fd;
+  --color-course-ink: #0d1c2e;
+  --color-course-ink-soft: #1d3652;
+}
+
+:root[data-course="engines"] {
+  /* Power, heat, machinery. Burnt amber against a warmer charcoal. */
+  --color-brand: #e8752a;
+  --color-brand-dark: #c25b17;
+  --color-brand-light: #f59b5e;
+  --color-brand-soft: #fdf0e6;
+  --color-brand-soft-2: #fadcc6;
+  --color-course-ink: #24170f;
+  --color-course-ink-soft: #3c2617;
+
+  /* The dark instrument surfaces warm up too, or the amber accent
+     reads as a mistake sitting on a cold navy panel. */
+  --color-ink-900: #170d06;
+  --color-ink-800: #241710;
+  --color-ink-700: #332116;
+  --color-ink-600: #47301f;
+  --color-ink-line: #5a3d28;
+
+  /* A trace of warmth in the canvas, well short of looking orange. */
+  --color-canvas: #faf7f4;
+  --color-surface-2: #f5f0ea;
+  --color-surface-3: #ece3d9;
+  --color-line: #e6ddd3;
+  --color-line-strong: #d4c7b8;
+}
+
+/*
+ * Course transition. Only the accent-bearing properties animate, and
+ * only for a beat — long enough to read as a deliberate change of
+ * course, short enough not to feel slow.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-course] body,
+  :root[data-course] .card,
+  :root[data-course] .card-ink {
+    transition:
+      background-color 280ms ease,
+      border-color 280ms ease;
+  }
 }
 
 /* ============================================================

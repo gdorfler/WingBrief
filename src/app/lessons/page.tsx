@@ -9,7 +9,7 @@ import { ChipRail, PageHeader, Pill } from "@/components/ui";
 
 export default function LessonsPage() {
   const { state } = useProgress();
-  const { content, stats } = useCourse();
+  const { content, stats, meta } = useCourse();
   const states = lessonStates(content.lessons, state);
   const readiness = unitReadiness(content.units, content.concepts, content.lessons, state);
   const readinessByUnit = Object.fromEntries(readiness.map((r) => [r.unit, r.readiness]));
@@ -19,7 +19,7 @@ export default function LessonsPage() {
     <>
       <PageHeader
         eyebrow="Your flight path"
-        title="Aerodynamics course map"
+        title={`${meta.name} course map`}
         subtitle={`${stats.lessons} lessons across six units, about ${stats.totalMinutes} minutes of instruction. Every enabling objective in the trainee guide is mapped to a lesson and assessed by a question.`}
         actions={
           <Pill tone="brand">

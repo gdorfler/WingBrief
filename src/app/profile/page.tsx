@@ -10,6 +10,7 @@ import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { useAuth } from "@/lib/auth";
 import { AccountCard } from "@/components/account-card";
+import { CourseSwitcher } from "@/components/course-switcher";
 import { AchievementIcon } from "@/components/achievement-icon";
 import {
   Button,
@@ -25,7 +26,7 @@ import {
 
 export default function ProfilePage() {
   const { state, resetProgress, exportState, importState } = useProgress();
-  const { content, stats } = useCourse();
+  const { content, stats, meta } = useCourse();
   const { user: account } = useAuth();
   const { id: course } = useCourse();
   const [confirmReset, setConfirmReset] = useState(false);
@@ -244,9 +245,8 @@ export default function ProfilePage() {
           </div>
           <p className="mt-4 text-[12px] leading-relaxed text-navy-soft">
             Every lesson, concept and question carries the document, chapter and enabling
-            objectives it was written from — the Naval Aviation Fundamentals Aerodynamics trainee
-            guide (Q-9B-0020L) and lecture decks the systems lectures. The matrix above is
-            rebuilt from the content at runtime, so it cannot drift.
+            objectives it was written from — for this course, {meta.sourceLabel}. The matrix
+            above is rebuilt from the content at runtime, so it cannot drift.
           </p>
           <details className="mt-3">
             <summary className="cursor-pointer text-[12.5px] font-semibold text-brand">
@@ -281,6 +281,19 @@ export default function ProfilePage() {
               </table>
             </div>
           </details>
+        </Card>
+      </section>
+
+      <section className="mb-6">
+        <SectionHeading eyebrow="Platform" title="Active course" />
+        <Card>
+          <div className="max-w-sm">
+            <CourseSwitcher />
+          </div>
+          <p className="mt-3 text-[12.5px] leading-relaxed text-navy-soft">
+            Each course keeps its own mastery, exams and review queue. Your streak
+            and achievements span the whole platform.
+          </p>
         </Card>
       </section>
 

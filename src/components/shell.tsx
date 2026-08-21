@@ -27,6 +27,7 @@ import { liveStreak } from "@/lib/xp";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { ProgressRing, cn } from "./ui";
+import { CourseSwitcher } from "./course-switcher";
 import { AwardToasts } from "./awards";
 
 const NAV = [
@@ -93,21 +94,20 @@ function NavItem({
 
 function SideNav() {
   const { state, ready } = useProgress();
-  const { content } = useCourse();
+  const { content, meta } = useCourse();
   const readiness = overallReadiness(content.concepts, state.mastery);
   const streak = liveStreak(state.streak, Date.now());
 
   return (
     <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-line bg-surface px-3 py-5 lg:flex xl:w-64">
-      <Link href="/" className="mb-6 flex items-center gap-2.5 px-2">
+      <Link href="/" className="mb-3 flex items-center gap-2.5 px-2">
         <WingMark />
-        <div className="leading-none">
-          <p className="text-[15px] font-extrabold tracking-tight text-navy">WINGBRIEF</p>
-          <p className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-navy-faint">
-            NIFE Aerodynamics
-          </p>
-        </div>
+        <p className="text-[15px] font-extrabold tracking-tight text-navy">WINGBRIEF</p>
       </Link>
+
+      <div className="mb-4">
+        <CourseSwitcher />
+      </div>
 
       <div className="mb-5 rounded-2xl bg-ink-800 p-4">
         <div className="flex items-center gap-3.5">
@@ -121,7 +121,7 @@ function SideNav() {
             <span className="tabular text-[15px] font-extrabold text-white">{readiness}</span>
           </ProgressRing>
           <div className="min-w-0">
-            <p className="eyebrow text-[#8fb0d4]">Aero readiness</p>
+            <p className="eyebrow text-[#8fb0d4]">{meta.name} readiness</p>
             <p className="mt-1 text-[11.5px] font-semibold leading-tight text-[#c9dcf0]">
               {readiness >= 85
                 ? "Checkride ready"
@@ -156,8 +156,7 @@ function SideNav() {
 
       <div className="mt-auto px-3 pt-4">
         <p className="text-[10px] leading-relaxed text-navy-faint">
-          Content traced to the Naval Aviation Fundamentals Aerodynamics trainee guide
-          and Aerodynamics.
+          Content traced to {meta.sourceLabel}.
         </p>
       </div>
     </aside>
@@ -171,10 +170,14 @@ function TopBarMobile() {
   const streak = liveStreak(state.streak, Date.now());
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface/90 px-4 backdrop-blur-md lg:hidden">
-      <Link href="/" className="flex items-center gap-2">
-        <WingMark size={26} />
-        <span className="text-[15px] font-extrabold tracking-tight text-navy">WINGBRIEF</span>
-      </Link>
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <Link href="/" className="shrink-0">
+          <WingMark size={26} />
+        </Link>
+        <div className="min-w-0 max-w-[11rem]">
+          <CourseSwitcher compact />
+        </div>
+      </div>
       <div className="flex items-center gap-3">
         {streak > 0 && (
           <span className="tabular flex items-center gap-1 text-[13px] font-bold text-caution">

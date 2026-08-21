@@ -40,7 +40,7 @@ const MODES: {
   {
     id: "full",
     title: "Full exam",
-    body: "Fifty questions — the length and spread of the real NIFE Aerodynamics exam.",
+    body: "Fifty questions — the length and spread of the real NIFE exam.",
     count: 50,
     minutes: 50,
     icon: ClipboardCheck,
