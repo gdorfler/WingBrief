@@ -3,6 +3,7 @@ import "katex/dist/katex.min.css";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
 import { ProgressProvider } from "@/lib/progress-store";
+import { CourseProvider } from "@/lib/course";
 import { AppShell } from "@/components/shell";
 
 export const metadata: Metadata = {
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body className="antialiased">
         <AuthProvider>
           <ProgressProvider>
-            <AppShell>{children}</AppShell>
+            <CourseProvider>
+              <AppShell>{children}</AppShell>
+            </CourseProvider>
           </ProgressProvider>
         </AuthProvider>
       </body>

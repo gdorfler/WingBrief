@@ -1,21 +1,23 @@
 "use client";
 
-import { CONCEPTS, QUESTIONS } from "@/content";
+
 import { isDue, reviewPriority } from "@/lib/mastery";
 import { selectReviewQuestions } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { ReviewSession } from "@/components/review-session";
 
 export default function SpacedReviewPage() {
   const { state, ready } = useProgress();
+  const { content } = useCourse();
   const now = Date.now();
 
-  const due = CONCEPTS.filter((c) => isDue(state.mastery[c.id], now)).sort(
+  const due = content.concepts.filter((c) => isDue(state.mastery[c.id], now)).sort(
     (a, b) =>
       reviewPriority(state.mastery[b.id], now) - reviewPriority(state.mastery[a.id], now),
   );
   const questions = selectReviewQuestions(
-    QUESTIONS,
+    content.questions,
     due.map((c) => c.id),
     state,
     12,

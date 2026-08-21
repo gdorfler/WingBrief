@@ -13,12 +13,12 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { AlertTriangle, ChevronLeft, ChevronRight, Clock, Flag, Grid3x3, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ExamResult, Question, UnitId } from "@/lib/types";
-import { CONCEPT_BY_ID, QUESTIONS, UNIT_BY_ID } from "@/content";
+import type { CourseContent, ExamResult, Question, UnitId } from "@/lib/types";
+import { CONCEPT_BY_ID, UNIT_BY_ID } from "@/content";
 import { buildExamResult, scoreExam, selectExamQuestions } from "@/lib/scoring";
 import { weakConcepts } from "@/lib/review";
-import { CONCEPTS } from "@/content";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { QuestionPlayer } from "./questions";
 import { Button, Pill, ProgressBar, cn } from "./ui";
 
@@ -34,25 +34,30 @@ export interface ExamConfig {
 }
 
 /** Builds the question pool for a configuration. */
-export function poolFor(config: ExamConfig, weakIds: string[]): Question[] {
+export function poolFor(
+  config: ExamConfig,
+  weakIds: string[],
+  content: CourseContent,
+): Question[] {
   if (config.mode === "unit" && config.unit) {
-    return QUESTIONS.filter((q) => q.unit === config.unit);
+    return content.questions.filter((q) => q.unit === config.unit);
   }
   if (config.mode === "weak") {
     const wanted = new Set(weakIds);
-    const targeted = QUESTIONS.filter((q) => q.conceptIds.some((c) => wanted.has(c)));
-    return targeted.length >= config.count ? targeted : QUESTIONS;
+    const targeted = content.questions.filter((q) => q.conceptIds.some((c) => wanted.has(c)));
+    return targeted.length >= config.count ? targeted : content.questions;
   }
-  return QUESTIONS;
+  return content.questions;
 }
 
 export function ExamRunner({ config }: { config: ExamConfig }) {
   const router = useRouter();
   const { state, recordAnswer, recordExam } = useProgress();
+  const { content } = useCourse();
 
   const weakIds = useMemo(
     () =>
-      weakConcepts(CONCEPTS, QUESTIONS, state.mastery, Date.now(), { limit: 12 }).map(
+      weakConcepts(content.concepts, content.questions, state.mastery, Date.now(), { limit: 12 }).map(
         (w) => w.concept.id,
       ),
     // Frozen at mount so the paper does not change as the student answers.
@@ -61,7 +66,7 @@ export function ExamRunner({ config }: { config: ExamConfig }) {
   );
 
   const questions = useMemo(
-    () => selectExamQuestions(poolFor(config, weakIds), config.count, state.mastery, config.seed),
+    () => selectExamQuestions(poolFor(config, weakIds, content), config.count, state.mastery, config.seed),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [config.seed],
   );

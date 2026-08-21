@@ -3,16 +3,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Check, Clock, Play } from "lucide-react";
-import { EXPLAINERS, UNITS } from "@/content";
+
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { DiagramHost } from "@/components/diagrams/registry";
 import { ChipRail, FilterChip, PageHeader, Pill, cn } from "@/components/ui";
 
 export default function ExplainersPage() {
   const { state } = useProgress();
+  const { content } = useCourse();
   const [unit, setUnit] = useState<string>("all");
 
-  const shown = EXPLAINERS.filter((e) => unit === "all" || e.unit === unit);
+  const shown = content.explainers.filter((e) => unit === "all" || e.unit === unit);
   const watched = state.watchedExplainerIds.length;
 
   return (
@@ -22,8 +24,8 @@ export default function ExplainersPage() {
         title="Sixty seconds each"
         subtitle="One concept, one animated diagram, one line of caption per frame. Built for the moment a lesson has not quite landed."
         actions={
-          <Pill tone={watched === EXPLAINERS.length ? "go" : "brand"}>
-            {watched}/{EXPLAINERS.length} watched
+          <Pill tone={watched === content.explainers.length ? "go" : "brand"}>
+            {watched}/{content.explainers.length} watched
           </Pill>
         }
       >
@@ -32,7 +34,7 @@ export default function ExplainersPage() {
             <FilterChip active={unit === "all"} onClick={() => setUnit("all")}>
               All
             </FilterChip>
-            {UNITS.map((u) => (
+            {content.units.map((u) => (
               <FilterChip key={u.id} active={unit === u.id} onClick={() => setUnit(u.id)}>
                 {u.title}
               </FilterChip>

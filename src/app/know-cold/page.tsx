@@ -5,8 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
 import { Bookmark, BookmarkCheck, Search } from "lucide-react";
 import type { KnowColdCard } from "@/lib/types";
-import { KNOW_COLD, KNOW_COLD_CATEGORIES, UNIT_BY_ID } from "@/content";
+import { KNOW_COLD_CATEGORIES, UNIT_BY_ID } from "@/content";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import {
   Card,
   ChipRail,
@@ -28,13 +29,14 @@ export default function KnowColdPage() {
 function KnowCold() {
   const params = useSearchParams();
   const { state, toggleSavedKnowCold } = useProgress();
+  const { content } = useCourse();
   const [category, setCategory] = useState<string>(params.get("category") ?? "all");
   const [query, setQuery] = useState("");
   const [savedOnly, setSavedOnly] = useState(false);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return KNOW_COLD.filter((c) => {
+    return content.knowCold.filter((c) => {
       if (category !== "all" && c.category !== category) return false;
       if (savedOnly && !state.savedKnowColdIds.includes(c.id)) return false;
       if (!q) return true;
@@ -44,7 +46,7 @@ function KnowCold() {
         (c.formula ?? "").toLowerCase().includes(q)
       );
     });
-  }, [category, query, savedOnly, state.savedKnowColdIds]);
+  }, [content.knowCold, category, query, savedOnly, state.savedKnowColdIds]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, KnowColdCard[]>();
@@ -64,7 +66,7 @@ function KnowCold() {
         subtitle="Everything worth memorising, compressed. This does not replace the lessons — it is the layer you read the night before."
         actions={
           <Pill tone="gold">
-            {KNOW_COLD.length} cards
+            {content.knowCold.length} cards
           </Pill>
         }
       >

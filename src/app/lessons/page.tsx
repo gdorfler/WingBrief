@@ -1,15 +1,17 @@
 "use client";
 
-import { CONCEPTS, CURRICULUM_STATS, LESSONS, UNITS } from "@/content";
+
 import { lessonStates, unitReadiness } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { LessonMap } from "@/components/lesson-map";
 import { ChipRail, PageHeader, Pill } from "@/components/ui";
 
 export default function LessonsPage() {
   const { state } = useProgress();
-  const states = lessonStates(LESSONS, state);
-  const readiness = unitReadiness(UNITS, CONCEPTS, LESSONS, state);
+  const { content, stats } = useCourse();
+  const states = lessonStates(content.lessons, state);
+  const readiness = unitReadiness(content.units, content.concepts, content.lessons, state);
   const readinessByUnit = Object.fromEntries(readiness.map((r) => [r.unit, r.readiness]));
   const completed = Object.values(states).filter((s) => s !== "locked" && s !== "current").length;
 
@@ -18,16 +20,16 @@ export default function LessonsPage() {
       <PageHeader
         eyebrow="Your flight path"
         title="Aerodynamics course map"
-        subtitle={`${CURRICULUM_STATS.lessons} lessons across six units, about ${CURRICULUM_STATS.totalMinutes} minutes of instruction. Every enabling objective in the trainee guide is mapped to a lesson and assessed by a question.`}
+        subtitle={`${stats.lessons} lessons across six units, about ${stats.totalMinutes} minutes of instruction. Every enabling objective in the trainee guide is mapped to a lesson and assessed by a question.`}
         actions={
           <Pill tone="brand">
-            {completed}/{CURRICULUM_STATS.lessons} complete
+            {completed}/{stats.lessons} complete
           </Pill>
         }
       >
         <div className="mt-4">
           <ChipRail>
-            {UNITS.map((u) => (
+            {content.units.map((u) => (
               <a
                 key={u.id}
                 href={`#${u.id}`}
@@ -42,8 +44,8 @@ export default function LessonsPage() {
       </PageHeader>
 
       <LessonMap
-        units={UNITS}
-        lessons={LESSONS}
+        units={content.units}
+        lessons={content.lessons}
         states={states}
         readinessByUnit={readinessByUnit}
       />

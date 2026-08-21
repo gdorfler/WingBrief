@@ -3,17 +3,10 @@
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { AlertTriangle, ArrowRight, BookOpen, FlaskConical, Sparkles } from "lucide-react";
-import {
-  CONCEPT_BY_ID,
-  EXPLAINERS,
-  KNOW_COLD,
-  LABS,
-  UNIT_BY_ID,
-  lessonsForConcept,
-  questionsForConcept,
-} from "@/content";
+import { CONCEPT_BY_ID, UNIT_BY_ID, lessonsForConcept, questionsForConcept } from "@/content";
 import { MASTERY_LABELS } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { QuestionReview } from "@/components/questions";
 import {
   ButtonLink,
@@ -29,6 +22,7 @@ import {
 export default function ConceptPage() {
   const params = useParams<{ id: string }>();
   const { state } = useProgress();
+  const { content } = useCourse();
   const concept = CONCEPT_BY_ID[params.id];
   if (!concept) notFound();
 
@@ -36,9 +30,9 @@ export default function ConceptPage() {
   const level = record?.level ?? 0;
   const questions = questionsForConcept(concept.id);
   const lessons = lessonsForConcept(concept.id);
-  const explainers = EXPLAINERS.filter((e) => e.conceptIds.includes(concept.id));
-  const labs = LABS.filter((l) => l.conceptIds.includes(concept.id));
-  const cards = KNOW_COLD.filter((k) => k.conceptIds.includes(concept.id));
+  const explainers = content.explainers.filter((e) => e.conceptIds.includes(concept.id));
+  const labs = content.labs.filter((l) => l.conceptIds.includes(concept.id));
+  const cards = content.knowCold.filter((k) => k.conceptIds.includes(concept.id));
   const unit = UNIT_BY_ID[concept.unit];
 
   const answered = state.attempts.filter((a) => a.conceptIds.includes(concept.id));

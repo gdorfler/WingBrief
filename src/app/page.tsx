@@ -10,17 +10,11 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
-import {
-  CONCEPTS,
-  CURRICULUM_STATS,
-  EXPLAINERS,
-  LESSONS,
-  QUESTIONS,
-  UNITS,
-} from "@/content";
+
 import { buildDailyFlight, overallReadiness, unitReadiness, weakConcepts } from "@/lib/review";
 import { levelFromXp, liveStreak } from "@/lib/xp";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import {
   ButtonLink,
   Card,
@@ -47,20 +41,21 @@ const UNIT_TONE = {
 
 export default function HomePage() {
   const { state, ready } = useProgress();
+  const { content, stats } = useCourse();
   const now = Date.now();
 
-  const readiness = overallReadiness(CONCEPTS, state.mastery);
-  const units = unitReadiness(UNITS, CONCEPTS, LESSONS, state);
+  const readiness = overallReadiness(content.concepts, state.mastery);
+  const units = unitReadiness(content.units, content.concepts, content.lessons, state);
   const streak = liveStreak(state.streak, now);
   const level = levelFromXp(state.xp);
   const flight = buildDailyFlight(
-    { lessons: LESSONS, concepts: CONCEPTS, questions: QUESTIONS, explainers: EXPLAINERS },
+    { lessons: content.lessons, concepts: content.concepts, questions: content.questions, explainers: content.explainers },
     state,
     now,
   );
-  const weak = weakConcepts(CONCEPTS, QUESTIONS, state.mastery, now, { limit: 4 });
+  const weak = weakConcepts(content.concepts, content.questions, state.mastery, now, { limit: 4 });
   const recentAwards = [...state.achievements].sort((a, b) => b.unlockedAt - a.unlockedAt).slice(0, 4);
-  const unwatched = EXPLAINERS.filter((e) => !state.watchedExplainerIds.includes(e.id)).slice(0, 4);
+  const unwatched = content.explainers.filter((e) => !state.watchedExplainerIds.includes(e.id)).slice(0, 4);
   const lessonsDone = Object.values(state.lessons).filter((l) => l.completed).length;
   const isNew = ready && lessonsDone === 0 && state.attempts.length === 0;
 
@@ -100,12 +95,12 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:px-4">
             <StatTile ink label="Streak" value={`${streak}`} hint={streak === 1 ? "day" : "days"} tone={streak > 0 ? "caution" : "neutral"} />
             <StatTile ink label="XP" value={state.xp.toLocaleString()} hint={`Level ${level.level}`} tone="brand" />
-            <StatTile ink label="Lessons" value={`${lessonsDone}/${CURRICULUM_STATS.lessons}`} hint="completed" />
+            <StatTile ink label="Lessons" value={`${lessonsDone}/${stats.lessons}`} hint="completed" />
             <StatTile
               ink
               label="Mastered"
               value={Object.values(state.mastery).filter((m) => m.level >= 5).length}
-              hint={`of ${CURRICULUM_STATS.concepts} concepts`}
+              hint={`of ${stats.concepts} concepts`}
               tone="go"
             />
           </div>
@@ -184,7 +179,7 @@ export default function HomePage() {
             <Card padded={false}>
               <ul className="divide-y divide-line">
                 {units.map((u) => {
-                  const unit = UNITS.find((x) => x.id === u.unit)!;
+                  const unit = content.units.find((x) => x.id === u.unit)!;
                   const tone = UNIT_TONE[unit.accent];
                   return (
                     <li key={u.unit}>
@@ -290,7 +285,7 @@ export default function HomePage() {
               title="Quick visual explainers"
               action={
                 <Link href="/explainers" className="text-[13px] font-semibold text-brand hover:underline">
-                  All {EXPLAINERS.length}
+                  All {content.explainers.length}
                 </Link>
               }
             />

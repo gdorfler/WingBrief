@@ -1,54 +1,128 @@
-import type { Lesson, UnitId } from "@/lib/types";
-import { LESSONS_A } from "./lessons/part-a";
-import { LESSONS_B } from "./lessons/part-b";
+/**
+ * Curriculum aggregation across every course on the platform.
+ *
+ * Two access patterns, deliberately separated:
+ *
+ * - **Course-scoped** (`contentFor(courseId)`, `statsFor`, `buildEoMatrix`) —
+ *   what a screen uses. Only ever returns one course's material, which is what
+ *   keeps Engines work out of an Aerodynamics review queue.
+ * - **Global by id** (`CONCEPT_BY_ID`, `LESSON_BY_ID`, …) — what a stored
+ *   record uses. A saved attempt only knows a question id, and ids are unique
+ *   across courses, so these resolve without the caller knowing the course.
+ */
 
-export { UNITS, UNIT_BY_ID } from "./units";
-export { CONCEPTS, CONCEPT_BY_ID, CONCEPT_IDS } from "./concepts";
-export { QUESTIONS, QUESTION_BY_ID, questionsForConcept } from "./questions";
-export { EXPLAINERS, EXPLAINER_BY_ID } from "./explainers";
-export { LABS, LAB_BY_ID } from "./labs";
-export { KNOW_COLD, KNOW_COLD_BY_ID, KNOW_COLD_CATEGORIES } from "./know-cold";
+import type {
+  Concept,
+  CourseContent,
+  CourseId,
+  Explainer,
+  KnowColdCard,
+  Lab,
+  Lesson,
+  Question,
+  Unit,
+} from "@/lib/types";
+import { AERO_CONTENT } from "./aero";
+import { ENGINES_CONTENT } from "./engines";
+import { COURSES, COURSE_ORDER } from "./courses";
 
-import { UNITS } from "./units";
-import { CONCEPTS } from "./concepts";
-import { QUESTIONS } from "./questions";
-import { EXPLAINERS } from "./explainers";
-import { LABS } from "./labs";
-import { KNOW_COLD } from "./know-cold";
+export { COURSES, COURSE_ORDER, DEFAULT_COURSE, PLANNED_COURSES, isCourseId } from "./courses";
+export { KNOW_COLD_CATEGORIES } from "./aero/know-cold";
 
-export const LESSONS: Lesson[] = [...LESSONS_A, ...LESSONS_B].sort(
-  (a, b) => a.index - b.index,
+export const COURSE_CONTENT: Record<CourseId, CourseContent> = {
+  aero: AERO_CONTENT,
+  engines: ENGINES_CONTENT,
+};
+
+export function contentFor(course: CourseId): CourseContent {
+  return COURSE_CONTENT[course];
+}
+
+/* ------------------------------------------------------------------ */
+/* Global id lookups                                                   */
+/* ------------------------------------------------------------------ */
+
+const ALL: CourseContent[] = COURSE_ORDER.map((id) => COURSE_CONTENT[id]);
+
+function index<T extends { id: string }>(pick: (c: CourseContent) => T[]): Record<string, T> {
+  return Object.fromEntries(ALL.flatMap(pick).map((item) => [item.id, item]));
+}
+
+export const UNIT_BY_ID: Record<string, Unit> = index((c) => c.units);
+export const CONCEPT_BY_ID: Record<string, Concept> = index((c) => c.concepts);
+export const LESSON_BY_ID: Record<string, Lesson> = index((c) => c.lessons);
+export const QUESTION_BY_ID: Record<string, Question> = index((c) => c.questions);
+export const EXPLAINER_BY_ID: Record<string, Explainer> = index((c) => c.explainers);
+export const LAB_BY_ID: Record<string, Lab> = index((c) => c.labs);
+export const KNOW_COLD_BY_ID: Record<string, KnowColdCard> = index((c) => c.knowCold);
+
+/** Which course a given entity belongs to, for records that only carry an id. */
+export const COURSE_OF_UNIT: Record<string, CourseId> = Object.fromEntries(
+  COURSE_ORDER.flatMap((id) => COURSE_CONTENT[id].units.map((u) => [u.id, id])),
 );
 
-export const LESSON_BY_ID: Record<string, Lesson> = Object.fromEntries(
-  LESSONS.map((l) => [l.id, l]),
-);
+export function courseOfConcept(conceptId: string): CourseId | undefined {
+  const concept = CONCEPT_BY_ID[conceptId];
+  return concept ? COURSE_OF_UNIT[concept.unit] : undefined;
+}
 
-export const ALL_CONCEPT_IDS: string[] = CONCEPTS.map((c) => c.id);
+export function courseOfQuestion(questionId: string): CourseId | undefined {
+  const q = QUESTION_BY_ID[questionId];
+  return q ? COURSE_OF_UNIT[q.unit] : undefined;
+}
+
+/* ------------------------------------------------------------------ */
+/* Course-scoped helpers                                               */
+/* ------------------------------------------------------------------ */
+
+export function conceptIdsFor(course: CourseId): string[] {
+  return COURSE_CONTENT[course].concepts.map((c) => c.id);
+}
 
 export function unitConceptIds(unit: string): string[] {
-  return CONCEPTS.filter((c) => c.unit === unit).map((c) => c.id);
+  const course = COURSE_OF_UNIT[unit];
+  if (!course) return [];
+  return COURSE_CONTENT[course].concepts.filter((c) => c.unit === unit).map((c) => c.id);
 }
 
 export function unitLessonIds(unit: string): string[] {
-  return LESSONS.filter((l) => l.unit === unit).map((l) => l.id);
+  const course = COURSE_OF_UNIT[unit];
+  if (!course) return [];
+  return COURSE_CONTENT[course].lessons.filter((l) => l.unit === unit).map((l) => l.id);
 }
 
-export function lessonsForUnit(unit: UnitId): Lesson[] {
-  return LESSONS.filter((l) => l.unit === unit).sort((a, b) => a.index - b.index);
+export function lessonsForUnit(unit: string): Lesson[] {
+  const course = COURSE_OF_UNIT[unit];
+  if (!course) return [];
+  return COURSE_CONTENT[course].lessons
+    .filter((l) => l.unit === unit)
+    .sort((a, b) => a.index - b.index);
 }
 
-export function explainersForLesson(lessonId: string) {
-  return EXPLAINERS.filter((e) => e.lessonId === lessonId);
-}
-
-export function labsForUnit(unit: UnitId) {
-  return LABS.filter((l) => l.unit === unit);
-}
-
-/** Every lesson that teaches a given concept. */
+/** Every lesson that teaches a concept, within that concept's own course. */
 export function lessonsForConcept(conceptId: string): Lesson[] {
-  return LESSONS.filter((l) => l.conceptIds.includes(conceptId));
+  const course = courseOfConcept(conceptId);
+  if (!course) return [];
+  return COURSE_CONTENT[course].lessons.filter((l) => l.conceptIds.includes(conceptId));
+}
+
+export function questionsForConcept(conceptId: string): Question[] {
+  const course = courseOfConcept(conceptId);
+  if (!course) return [];
+  return COURSE_CONTENT[course].questions.filter((q) => q.conceptIds.includes(conceptId));
+}
+
+export function explainersForLesson(lessonId: string): Explainer[] {
+  const lesson = LESSON_BY_ID[lessonId];
+  const course = lesson ? COURSE_OF_UNIT[lesson.unit] : undefined;
+  if (!course) return [];
+  return COURSE_CONTENT[course].explainers.filter((e) => e.lessonId === lessonId);
+}
+
+export function labsForUnit(unit: string): Lab[] {
+  const course = COURSE_OF_UNIT[unit];
+  if (!course) return [];
+  return COURSE_CONTENT[course].labs.filter((l) => l.unit === unit);
 }
 
 /* ------------------------------------------------------------------ */
@@ -65,11 +139,12 @@ export interface EoCoverage {
 }
 
 /**
- * Builds the EO → lesson → concept → question matrix at runtime so it can
- * never drift from the content. `/profile` renders it, and the content test
- * asserts that every EO taught is also assessed.
+ * Builds one course's EO → lesson → concept → question matrix at runtime so it
+ * can never drift from the content. `/profile` renders it, and the content
+ * test asserts that every EO taught is also assessed.
  */
-export function buildEoMatrix(): EoCoverage[] {
+export function buildEoMatrix(course: CourseId): EoCoverage[] {
+  const { lessons, concepts, questions } = COURSE_CONTENT[course];
   const map = new Map<string, EoCoverage>();
 
   const ensure = (eo: string) => {
@@ -81,7 +156,7 @@ export function buildEoMatrix(): EoCoverage[] {
     return row;
   };
 
-  for (const lesson of LESSONS) {
+  for (const lesson of lessons) {
     for (const eo of lesson.enablingObjectives) {
       const row = ensure(eo);
       if (!row.lessonIds.includes(lesson.id)) row.lessonIds.push(lesson.id);
@@ -91,22 +166,22 @@ export function buildEoMatrix(): EoCoverage[] {
     }
   }
 
-  for (const concept of CONCEPTS) {
+  for (const concept of concepts) {
     for (const eo of concept.source.eo ?? []) {
       const row = ensure(eo);
       if (!row.conceptIds.includes(concept.id)) row.conceptIds.push(concept.id);
     }
   }
 
-  for (const q of QUESTIONS) {
+  const conceptById = new Map(concepts.map((c) => [c.id, c]));
+  for (const q of questions) {
     for (const eo of q.source.eo ?? []) {
       const row = ensure(eo);
       if (!row.questionIds.includes(q.id)) row.questionIds.push(q.id);
     }
     // A question also assesses every EO its concepts are mapped to.
     for (const conceptId of q.conceptIds) {
-      const concept = CONCEPTS.find((c) => c.id === conceptId);
-      for (const eo of concept?.source.eo ?? []) {
+      for (const eo of conceptById.get(conceptId)?.source.eo ?? []) {
         const row = ensure(eo);
         if (!row.questionIds.includes(q.id)) row.questionIds.push(q.id);
       }
@@ -117,24 +192,46 @@ export function buildEoMatrix(): EoCoverage[] {
     row.covered = row.lessonIds.length > 0 && row.questionIds.length > 0;
   }
 
-  return [...map.values()].sort((a, b) => {
-    const [aMaj, aMin] = a.eo.split(".").map(Number);
-    const [bMaj, bMin] = b.eo.split(".").map(Number);
-    return aMaj - bMaj || aMin - bMin;
-  });
+  return [...map.values()].sort(compareEo);
+}
+
+/** EOs sort numerically by section then item, e.g. 2.9 before 2.10. */
+function compareEo(a: EoCoverage, b: EoCoverage): number {
+  const [aMaj, aMin] = a.eo.split(".").map(Number);
+  const [bMaj, bMin] = b.eo.split(".").map(Number);
+  return (aMaj - bMaj) || (aMin - bMin);
 }
 
 /* ------------------------------------------------------------------ */
 /* Curriculum stats, used on the dashboard and profile                 */
 /* ------------------------------------------------------------------ */
 
-export const CURRICULUM_STATS = {
-  units: UNITS.length,
-  lessons: LESSONS.length,
-  concepts: CONCEPTS.length,
-  questions: QUESTIONS.length,
-  explainers: EXPLAINERS.length,
-  labs: LABS.length,
-  knowColdCards: KNOW_COLD.length,
-  totalMinutes: LESSONS.reduce((sum, l) => sum + l.estimatedMinutes, 0),
-};
+export interface CurriculumStats {
+  units: number;
+  lessons: number;
+  concepts: number;
+  questions: number;
+  explainers: number;
+  labs: number;
+  knowColdCards: number;
+  totalMinutes: number;
+}
+
+export function statsFor(course: CourseId): CurriculumStats {
+  const c = COURSE_CONTENT[course];
+  return {
+    units: c.units.length,
+    lessons: c.lessons.length,
+    concepts: c.concepts.length,
+    questions: c.questions.length,
+    explainers: c.explainers.length,
+    labs: c.labs.length,
+    knowColdCards: c.knowCold.length,
+    totalMinutes: c.lessons.reduce((sum, l) => sum + l.estimatedMinutes, 0),
+  };
+}
+
+/** Course metadata plus its headline numbers, for the switcher and landing copy. */
+export function courseSummaries() {
+  return COURSE_ORDER.map((id) => ({ ...COURSES[id], stats: statsFor(id) }));
+}

@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { EXPLAINERS, EXPLAINER_BY_ID } from "@/content";
+import { EXPLAINER_BY_ID, COURSE_ORDER, contentFor } from "@/content";
 import { ExplainerPlayer } from "@/components/explainer-player";
 
 export function generateStaticParams() {
-  return EXPLAINERS.map((e) => ({ id: e.id }));
+  // Build time: prerender every course's pages, not just the active one.
+  return COURSE_ORDER.flatMap((c) => contentFor(c).explainers).map((e) => ({ id: e.id }));
 }
 
 export async function generateMetadata({

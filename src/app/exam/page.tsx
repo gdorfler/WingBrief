@@ -5,9 +5,10 @@ import Link from "next/link";
 import { Suspense, useMemo, useState } from "react";
 import { ClipboardCheck, Clock, History, Play, Target, Timer } from "lucide-react";
 import type { UnitId } from "@/lib/types";
-import { CONCEPTS, QUESTIONS, UNITS } from "@/content";
+
 import { weakConcepts } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import {
   Button,
   Card,
@@ -74,6 +75,7 @@ function ExamConfigurator() {
   const router = useRouter();
   const params = useSearchParams();
   const { state } = useProgress();
+  const { content } = useCourse();
 
   const [mode, setMode] = useState<Mode>((params.get("mode") as Mode) ?? "quick");
   const [unit, setUnit] = useState<UnitId>((params.get("unit") as UnitId) ?? "u1");
@@ -81,21 +83,21 @@ function ExamConfigurator() {
   const [customCount, setCustomCount] = useState(30);
 
   const weak = useMemo(
-    () => weakConcepts(CONCEPTS, QUESTIONS, state.mastery, Date.now(), { limit: 12 }),
-    [state.mastery],
+    () => weakConcepts(content.concepts, content.questions, state.mastery, Date.now(), { limit: 12 }),
+    [content.concepts, content.questions, state.mastery],
   );
 
   const selected = MODES.find((m) => m.id === mode);
   const count = mode === "custom" ? customCount : (selected?.count ?? 20);
 
   const available = useMemo(() => {
-    if (mode === "unit") return QUESTIONS.filter((q) => q.unit === unit).length;
+    if (mode === "unit") return content.questions.filter((q) => q.unit === unit).length;
     if (mode === "weak") {
       const ids = new Set(weak.map((w) => w.concept.id));
-      return QUESTIONS.filter((q) => q.conceptIds.some((c) => ids.has(c))).length;
+      return content.questions.filter((q) => q.conceptIds.some((c) => ids.has(c))).length;
     }
-    return QUESTIONS.length;
-  }, [mode, unit, weak]);
+    return content.questions.length;
+  }, [content.questions, mode, unit, weak]);
 
   const effectiveCount = Math.min(count, available);
   const minutes = Math.max(5, Math.round(effectiveCount * 1.0));
@@ -176,8 +178,8 @@ function ExamConfigurator() {
             <Card className="mt-4">
               <p className="eyebrow mb-2.5 text-navy-faint">Which unit</p>
               <div className="grid gap-2 sm:grid-cols-2">
-                {UNITS.map((u) => {
-                  const n = QUESTIONS.filter((q) => q.unit === u.id).length;
+                {content.units.map((u) => {
+                  const n = content.questions.filter((q) => q.unit === u.id).length;
                   return (
                     <button
                       key={u.id}

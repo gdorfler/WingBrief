@@ -11,7 +11,7 @@ import type {
   ConceptId,
   Lesson,
   MasteryRecord,
-  ProgressState,
+  CourseProgressView,
   Question,
   UnitId,
 } from "./types";
@@ -75,7 +75,7 @@ export function unitReadiness(
   units: { id: UnitId; title: string }[],
   concepts: Concept[],
   lessons: Lesson[],
-  state: ProgressState,
+  state: CourseProgressView,
 ): UnitReadiness[] {
   return units.map((u) => {
     const unitConcepts = concepts.filter((c) => c.unit === u.id);
@@ -132,7 +132,7 @@ export type LessonNodeState =
  */
 export function lessonStates(
   lessons: Lesson[],
-  state: ProgressState,
+  state: CourseProgressView,
 ): Record<string, LessonNodeState> {
   const ordered = [...lessons].sort((a, b) => a.index - b.index);
   const out: Record<string, LessonNodeState> = {};
@@ -216,7 +216,7 @@ export function buildDailyFlight(
     questions: Question[];
     explainers: { id: string; title: string; conceptIds: ConceptId[] }[];
   },
-  state: ProgressState,
+  state: CourseProgressView,
   now: number,
 ): DailyFlight {
   const { lessons, concepts, questions, explainers } = params;
@@ -315,7 +315,7 @@ export function buildDailyFlight(
 export function selectReviewQuestions(
   questions: Question[],
   conceptIds: ConceptId[],
-  state: ProgressState,
+  state: CourseProgressView,
   count: number,
 ): Question[] {
   const wanted = new Set(conceptIds);
@@ -340,7 +340,7 @@ export function selectReviewQuestions(
 /** Every question the student has ever got wrong and not since fixed. */
 export function outstandingMistakes(
   questions: Question[],
-  state: ProgressState,
+  state: CourseProgressView,
 ): Question[] {
   const byQuestion = new Map<string, boolean>();
   for (const a of state.attempts) {

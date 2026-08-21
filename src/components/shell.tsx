@@ -21,10 +21,11 @@ import {
   Sparkles,
   User,
 } from "lucide-react";
-import { CONCEPTS } from "@/content";
+
 import { overallReadiness } from "@/lib/review";
 import { liveStreak } from "@/lib/xp";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { ProgressRing, cn } from "./ui";
 import { AwardToasts } from "./awards";
 
@@ -92,7 +93,8 @@ function NavItem({
 
 function SideNav() {
   const { state, ready } = useProgress();
-  const readiness = overallReadiness(CONCEPTS, state.mastery);
+  const { content } = useCourse();
+  const readiness = overallReadiness(content.concepts, state.mastery);
   const streak = liveStreak(state.streak, Date.now());
 
   return (
@@ -164,7 +166,8 @@ function SideNav() {
 
 function TopBarMobile() {
   const { state } = useProgress();
-  const readiness = overallReadiness(CONCEPTS, state.mastery);
+  const { content } = useCourse();
+  const readiness = overallReadiness(content.concepts, state.mastery);
   const streak = liveStreak(state.streak, Date.now());
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface/90 px-4 backdrop-blur-md lg:hidden">

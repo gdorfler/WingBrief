@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { LESSONS, LESSON_BY_ID } from "@/content";
+import { LESSON_BY_ID, COURSE_ORDER, contentFor } from "@/content";
 import { LessonPlayer } from "@/components/lesson-player";
 
 export function generateStaticParams() {
-  return LESSONS.map((l) => ({ id: l.id }));
+  // Build time: prerender every course's pages, not just the active one.
+  return COURSE_ORDER.flatMap((c) => contentFor(c).lessons).map((l) => ({ id: l.id }));
 }
 
 export async function generateMetadata({

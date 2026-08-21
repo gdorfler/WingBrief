@@ -2,17 +2,12 @@
 
 import { useMemo, useRef, useState } from "react";
 import { Check, Download, Trash2, Upload } from "lucide-react";
-import {
-  CONCEPTS,
-  CURRICULUM_STATS,
-  LESSONS,
-  UNITS,
-  buildEoMatrix,
-} from "@/content";
+import { buildEoMatrix } from "@/content";
 import { overallReadiness, unitReadiness } from "@/lib/review";
 import { ACHIEVEMENTS, dayKey, levelFromXp, liveStreak } from "@/lib/xp";
 import { exportProgress, importProgress } from "@/lib/storage";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { useAuth } from "@/lib/auth";
 import { AccountCard } from "@/components/account-card";
 import { AchievementIcon } from "@/components/achievement-icon";
@@ -29,20 +24,22 @@ import {
 } from "@/components/ui";
 
 export default function ProfilePage() {
-  const { state, resetProgress, importState } = useProgress();
+  const { state, resetProgress, exportState, importState } = useProgress();
+  const { content, stats } = useCourse();
   const { user: account } = useAuth();
+  const { id: course } = useCourse();
   const [confirmReset, setConfirmReset] = useState(false);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const now = Date.now();
 
-  const readiness = overallReadiness(CONCEPTS, state.mastery);
-  const units = unitReadiness(UNITS, CONCEPTS, LESSONS, state);
+  const readiness = overallReadiness(content.concepts, state.mastery);
+  const units = unitReadiness(content.units, content.concepts, content.lessons, state);
   const level = levelFromXp(state.xp);
   const streak = liveStreak(state.streak, now);
   const owned = new Set(state.achievements.map((a) => a.id));
 
-  const eoMatrix = useMemo(() => buildEoMatrix(), []);
+  const eoMatrix = useMemo(() => buildEoMatrix(course), [course]);
   const eoCovered = eoMatrix.filter((r) => r.covered).length;
 
   const totals = useMemo(() => {
@@ -67,11 +64,11 @@ export default function ProfilePage() {
   const maxDay = Math.max(1, ...last30.map((d) => d.count));
 
   const doExport = () => {
-    const blob = new Blob([exportProgress(state)], { type: "application/json" });
+    const blob = new Blob([exportProgress(exportState())], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `nife-aero-progress-${dayKey(now)}.json`;
+    a.download = `wingbrief-progress-${dayKey(now)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -242,8 +239,8 @@ export default function ProfilePage() {
               hint={`${Math.round((eoCovered / Math.max(1, eoMatrix.length)) * 100)}% of mapped`}
               tone="go"
             />
-            <StatTile label="Questions" value={CURRICULUM_STATS.questions} hint="in the bank" />
-            <StatTile label="Concepts" value={CURRICULUM_STATS.concepts} hint="tracked for mastery" />
+            <StatTile label="Questions" value={stats.questions} hint="in the bank" />
+            <StatTile label="Concepts" value={stats.concepts} hint="tracked for mastery" />
           </div>
           <p className="mt-4 text-[12px] leading-relaxed text-navy-soft">
             Every lesson, concept and question carries the document, chapter and enabling

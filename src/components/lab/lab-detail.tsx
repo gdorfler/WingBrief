@@ -4,14 +4,16 @@ import Link from "next/link";
 import { ArrowLeft, BookOpen, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import type { Lab } from "@/lib/types";
-import { CONCEPT_BY_ID, EXPLAINERS, UNIT_BY_ID, lessonsForConcept } from "@/content";
+import { CONCEPT_BY_ID, UNIT_BY_ID, lessonsForConcept } from "@/content";
 import { conceptFraction } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { Card, PageHeader, Pill, ProgressBar, SectionHeading, cn } from "@/components/ui";
 import { LabHost } from "./labs";
 
 export function LabDetail({ lab }: { lab: Lab }) {
   const { state, markLabExplored } = useProgress();
+  const { content } = useCourse();
   const unit = UNIT_BY_ID[lab.unit];
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export function LabDetail({ lab }: { lab: Lab }) {
       lab.conceptIds.flatMap((id) => lessonsForConcept(id)).map((l) => [l.id, l]),
     ).values(),
   ];
-  const relatedExplainers = EXPLAINERS.filter((e) =>
+  const relatedExplainers = content.explainers.filter((e) =>
     e.conceptIds.some((c) => lab.conceptIds.includes(c)),
   );
 

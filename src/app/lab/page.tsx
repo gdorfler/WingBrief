@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { ArrowRight, FlaskConical } from "lucide-react";
-import { LABS, UNIT_BY_ID } from "@/content";
+import { UNIT_BY_ID } from "@/content";
 import { conceptFraction } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { Card, PageHeader, ProgressBar } from "@/components/ui";
 
 export default function LabIndexPage() {
   const { state } = useProgress();
+  const { content } = useCourse();
 
   return (
     <>
@@ -19,7 +21,7 @@ export default function LabIndexPage() {
       />
 
       <ul className="grid gap-4 md:grid-cols-2">
-        {LABS.map((lab) => {
+        {content.labs.map((lab) => {
           const unit = UNIT_BY_ID[lab.unit];
           const mastery =
             lab.conceptIds.reduce((s, id) => s + conceptFraction(state.mastery[id]), 0) /

@@ -12,7 +12,7 @@
  * which device syncs first, and a retried upload can never double-count.
  */
 
-import { PROGRESS_SCHEMA_VERSION, type ProgressState } from "./types";
+import { PROGRESS_SCHEMA_VERSION, type CourseId, type CourseProgress, type ProgressState } from "./types";
 import type {
   AchievementState,
   Attempt,
@@ -21,7 +21,7 @@ import type {
   MasteryRecord,
   StreakState,
 } from "./types";
-import { emptyProgress } from "./storage";
+import { COURSE_ORDER } from "@/content/courses";
 
 /** Union of two string lists, order-stable and duplicate-free. */
 function unionIds(a: string[], b: string[]): string[] {
@@ -162,41 +162,59 @@ function mergeStreak(a: StreakState, b: StreakState): StreakState {
 }
 
 /**
- * Merge two progress states into one.
- *
- * XP is recomputed as the larger of the two totals rather than the sum: XP is a
- * running score of the same underlying work, so adding them would pay a
+ * Merge one course's buckets. XP is the larger of the two totals rather than
+ * the sum: XP scores the same underlying work, so adding them would pay a
  * student twice for answers that synced from both directions.
  */
-export function mergeProgress(a: ProgressState, b: ProgressState): ProgressState {
+function mergeCourse(a: CourseProgress, b: CourseProgress): CourseProgress {
   return {
-    version: PROGRESS_SCHEMA_VERSION,
     xp: Math.max(a.xp, b.xp),
-    streak: mergeStreak(a.streak, b.streak),
     mastery: mergeMastery(a.mastery, b.mastery),
     lessons: mergeLessons(a.lessons, b.lessons),
     attempts: mergeAttempts(a.attempts, b.attempts),
     exams: mergeExams(a.exams, b.exams),
-    achievements: mergeAchievements(a.achievements, b.achievements),
     savedQuestionIds: unionIds(a.savedQuestionIds, b.savedQuestionIds),
     savedKnowColdIds: unionIds(a.savedKnowColdIds, b.savedKnowColdIds),
     watchedExplainerIds: unionIds(a.watchedExplainerIds, b.watchedExplainerIds),
+  };
+}
+
+/**
+ * Merge two progress documents into one.
+ *
+ * Courses merge independently, so syncing Engines work can never disturb an
+ * Aerodynamics number. Streak and achievements are platform-wide and merge
+ * once across the whole document.
+ */
+export function mergeProgress(a: ProgressState, b: ProgressState): ProgressState {
+  const courses = {} as Record<CourseId, CourseProgress>;
+  for (const id of COURSE_ORDER) {
+    courses[id] = mergeCourse(a.courses[id], b.courses[id]);
+  }
+  return {
+    version: PROGRESS_SCHEMA_VERSION,
+    // The device merging in wins the pointer; it is a preference, not progress.
+    activeCourse: a.activeCourse,
+    streak: mergeStreak(a.streak, b.streak),
+    achievements: mergeAchievements(a.achievements, b.achievements),
     onboarded: a.onboarded || b.onboarded,
+    courses,
   };
 }
 
 /** True when a state holds nothing worth merging — used to skip pointless syncs. */
 export function isEmptyProgress(state: ProgressState): boolean {
-  const empty = emptyProgress();
-  return (
-    state.xp === empty.xp &&
-    state.attempts.length === 0 &&
-    state.exams.length === 0 &&
-    Object.keys(state.mastery).length === 0 &&
-    Object.keys(state.lessons).length === 0 &&
-    state.achievements.length === 0 &&
-    state.savedQuestionIds.length === 0 &&
-    state.savedKnowColdIds.length === 0 &&
-    state.watchedExplainerIds.length === 0
-  );
+  return COURSE_ORDER.every((id) => {
+    const c = state.courses[id];
+    return (
+      c.xp === 0 &&
+      c.attempts.length === 0 &&
+      c.exams.length === 0 &&
+      Object.keys(c.mastery).length === 0 &&
+      Object.keys(c.lessons).length === 0 &&
+      c.savedQuestionIds.length === 0 &&
+      c.savedKnowColdIds.length === 0 &&
+      c.watchedExplainerIds.length === 0
+    );
+  }) && state.achievements.length === 0;
 }

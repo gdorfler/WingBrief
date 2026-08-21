@@ -56,6 +56,28 @@ import {
   WakeVortex,
   WindShear,
 } from "./maneuvering";
+import {
+  AxialCompressor,
+  BladeAoa,
+  BurnerAirSplit,
+  CentrifugalCompressor,
+  CycleCompare,
+  DuctFlow,
+  ElectricalBuses,
+  EngineCutaway,
+  EngineTypeSplit,
+  FuelSystem,
+  HydraulicCircuit,
+  OilSystem,
+  PressureSplit,
+  SpoolLayout,
+  StallIndications,
+  StartSequence,
+  StationChanges,
+  ThrustFactor,
+  TurbineEnergySplit,
+  TurbopropPowerFlow,
+} from "./engines";
 
 export type DiagramRenderer = (props: DiagramProps) => ReactElement;
 
@@ -111,6 +133,28 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
   "wake-vortex": WakeVortex,
   "wind-shear": WindShear,
   "stability-ball": StabilityBall,
+
+  /* ---- Engines ---- */
+  "eng-cutaway": EngineCutaway,
+  "eng-station-changes": StationChanges,
+  "eng-duct": DuctFlow,
+  "eng-pressure-split": PressureSplit,
+  "eng-cycles": CycleCompare,
+  "eng-thrust-factor": ThrustFactor,
+  "eng-centrifugal": CentrifugalCompressor,
+  "eng-axial": AxialCompressor,
+  "eng-spools": SpoolLayout,
+  "eng-burner-split": BurnerAirSplit,
+  "eng-turbine-energy": TurbineEnergySplit,
+  "eng-blade-aoa": BladeAoa,
+  "eng-stall-indications": StallIndications,
+  "eng-type-split": EngineTypeSplit,
+  "eng-turboprop-flow": TurbopropPowerFlow,
+  "eng-fuel-system": FuelSystem,
+  "eng-oil-system": OilSystem,
+  "eng-start-sequence": StartSequence,
+  "eng-electrical": ElectricalBuses,
+  "eng-hydraulic": HydraulicCircuit,
 };
 
 export const DIAGRAM_IDS = Object.keys(DIAGRAMS);

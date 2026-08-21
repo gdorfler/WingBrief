@@ -1,9 +1,11 @@
 /**
- * Domain model for the NIFE Aerodynamics learning engine.
+ * Domain model for the WingBrief learning engine.
  *
- * Curriculum DATA (src/content) is kept strictly separate from UI code so the
- * same engine can later host Engines, Weather, Navigation and Flight Rules
- * without touching the learning/mastery/exam logic.
+ * Curriculum DATA (src/content) is kept strictly separate from UI code, so one
+ * engine hosts every NIFE course. Aerodynamics and Engines are two courses on
+ * the same platform, the way two languages sit inside one language app;
+ * Weather, Navigation and Flight Rules can join without the mastery, review or
+ * exam logic changing at all.
  */
 
 /* ------------------------------------------------------------------ */
@@ -12,6 +14,10 @@
 
 export type SourceDocument =
   | "Aerodynamics Trainee Guide"
+  | "Principles of Gas Turbine/Reciprocating Operation"
+  | "Gas Turbine/Reciprocating Engines"
+  | "Compressor Stalls"
+  | "Engines Condensed Notes"
   | "Basic Theory and Lift Production"
   | "Drag and Stalls"
   | "Performance Characteristics"
@@ -31,7 +37,52 @@ export interface SourceReference {
 /* Curriculum structure                                                */
 /* ------------------------------------------------------------------ */
 
-export type UnitId = "u1" | "u2" | "u3" | "u4" | "u5" | "u6";
+/* ------------------------------------------------------------------ */
+/* Courses                                                             */
+/* ------------------------------------------------------------------ */
+
+/** One course on the WingBrief platform. Adding a course adds an id here. */
+export type CourseId = "aero" | "engines";
+
+export interface CourseMeta {
+  id: CourseId;
+  /** Short name used in the switcher and headers, e.g. "Aerodynamics". */
+  name: string;
+  /** One line describing what the course covers. */
+  tagline: string;
+  /** Which NIFE lecture series this course is built from. */
+  sourceLabel: string;
+  /** Registry key for the course mark, resolved by <CourseIcon>. */
+  icon: string;
+  /**
+   * Value written to data-course on the document root. The stylesheet keys the
+   * whole accent palette off it, so one attribute re-themes the app.
+   */
+  theme: CourseId;
+  /** Accent used where a raw colour is unavoidable (SVG fills, gradients). */
+  accent: string;
+  accentSoft: string;
+}
+
+/**
+ * Everything one course teaches. The engine only ever sees this shape, which
+ * is what keeps courses from knowing about each other.
+ */
+export interface CourseContent {
+  units: Unit[];
+  concepts: Concept[];
+  lessons: Lesson[];
+  questions: Question[];
+  explainers: Explainer[];
+  labs: Lab[];
+  knowCold: KnowColdCard[];
+}
+
+/**
+ * Unit ids are namespaced per course ("u1" for Aero, "e1" for Engines) so a
+ * single global lookup can never collide across courses.
+ */
+export type UnitId = string;
 
 export interface Unit {
   id: UnitId;
@@ -425,20 +476,50 @@ export interface AchievementState {
   unlockedAt: number;
 }
 
-export const PROGRESS_SCHEMA_VERSION = 1;
+export const PROGRESS_SCHEMA_VERSION = 2;
 
-export interface ProgressState {
-  version: number;
+/**
+ * Everything a student has done in ONE course. Kept in its own bucket so
+ * studying Engines can never move an Aerodynamics number.
+ */
+export interface CourseProgress {
   xp: number;
-  streak: StreakState;
   mastery: Record<ConceptId, MasteryRecord>;
   lessons: Record<string, LessonProgress>;
   attempts: Attempt[];
   exams: ExamResult[];
-  achievements: AchievementState[];
   savedQuestionIds: string[];
   savedKnowColdIds: string[];
   watchedExplainerIds: string[];
+}
+
+/**
+ * The stored progress document.
+ *
+ * Streak, achievements and onboarding sit at the platform level rather than
+ * inside a course: a student who studies Engines today has kept their streak
+ * alive, and being asked to redo the first-run tour after switching courses
+ * would be nonsense. Everything measuring *subject* progress lives per course.
+ */
+export interface ProgressState {
+  version: number;
+  /** Which course the app opens into. */
+  activeCourse: CourseId;
+  streak: StreakState;
+  achievements: AchievementState[];
   /** Set once the student has seen the first-run tour. */
   onboarded: boolean;
+  courses: Record<CourseId, CourseProgress>;
+}
+
+/**
+ * The flattened view a screen actually consumes: one course's progress plus
+ * the platform-level fields. Components never index into `courses` themselves,
+ * which is what lets a screen stay course-agnostic.
+ */
+export interface CourseProgressView extends CourseProgress {
+  streak: StreakState;
+  achievements: AchievementState[];
+  onboarded: boolean;
+  activeCourse: CourseId;
 }

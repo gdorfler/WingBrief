@@ -1,13 +1,15 @@
 "use client";
 
-import { QUESTIONS } from "@/content";
+
 import { outstandingMistakes } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { ReviewSession } from "@/components/review-session";
 
 export default function MistakesPage() {
   const { state, ready } = useProgress();
-  const questions = outstandingMistakes(QUESTIONS, state).slice(0, 15);
+  const { content } = useCourse();
+  const questions = outstandingMistakes(content.questions, state).slice(0, 15);
 
   if (!ready) return null;
 

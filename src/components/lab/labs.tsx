@@ -38,6 +38,16 @@ import {
 import { DiagramHost } from "@/components/diagrams/registry";
 import { Formula, type Tone, cn } from "@/components/ui";
 import { ChainStrip, Readout, Segmented, Slider, Toggle } from "./controls";
+import {
+  CompressorLab,
+  CompressorStallLab,
+  DuctLab,
+  EngineFlowLab,
+  MalfunctionLab,
+  SystemsTraceLab,
+  ThrustFactorLab,
+  TurbopropLab,
+} from "./engine-labs";
 
 /* ------------------------------------------------------------------ */
 /* Frame                                                               */
@@ -841,6 +851,16 @@ export const LAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   VnLab,
   SpinLab,
   WakeLab,
+
+  /* Engines */
+  EngineFlowLab,
+  DuctLab,
+  ThrustFactorLab,
+  CompressorLab,
+  CompressorStallLab,
+  TurbopropLab,
+  SystemsTraceLab,
+  MalfunctionLab,
 };
 
 export function LabHost({ component }: { component: string }) {

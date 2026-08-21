@@ -15,10 +15,11 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, BookOpen, Check, FlaskConical, Sparkles, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Lesson, LessonScreen } from "@/lib/types";
-import { CONCEPT_BY_ID, EXPLAINER_BY_ID, LAB_BY_ID, LESSONS, QUESTION_BY_ID } from "@/content";
+import { CONCEPT_BY_ID, EXPLAINER_BY_ID, LAB_BY_ID, QUESTION_BY_ID } from "@/content";
 import { summarizeLesson } from "@/lib/scoring";
 import { MASTERY_LABELS } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { DiagramHost } from "./diagrams/registry";
 import { Widget } from "./lab/widgets";
 import { QuestionPlayer, type QuestionResult } from "./questions";
@@ -415,7 +416,8 @@ function LessonComplete({
   masteryBefore: Record<string, number>;
 }) {
   const { state } = useProgress();
-  const next = LESSONS.find((l) => l.index === lesson.index + 1);
+  const { content } = useCourse();
+  const next = content.lessons.find((l) => l.index === lesson.index + 1);
   const xpEarned =
     summary.firstTryCorrect * 10 +
     (summary.answered - summary.firstTryCorrect) * 4 +

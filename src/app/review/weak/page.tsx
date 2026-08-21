@@ -1,16 +1,18 @@
 "use client";
 
-import { CONCEPTS, QUESTIONS } from "@/content";
+
 import { selectReviewQuestions, weakConcepts } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import { ReviewSession } from "@/components/review-session";
 
 export default function WeakReviewPage() {
   const { state, ready } = useProgress();
+  const { content } = useCourse();
   const now = Date.now();
-  const weak = weakConcepts(CONCEPTS, QUESTIONS, state.mastery, now, { limit: 6 });
+  const weak = weakConcepts(content.concepts, content.questions, state.mastery, now, { limit: 6 });
   const questions = selectReviewQuestions(
-    QUESTIONS,
+    content.questions,
     weak.map((w) => w.concept.id),
     state,
     10,

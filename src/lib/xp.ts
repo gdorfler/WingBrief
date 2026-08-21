@@ -12,7 +12,7 @@ import type {
   ExamResult,
   LessonProgress,
   MasteryRecord,
-  ProgressState,
+  CourseProgressView,
   StreakState,
 } from "./types";
 
@@ -125,19 +125,19 @@ export interface AchievementDef {
   name: string;
   description: string;
   icon: string;
-  test: (s: ProgressState, now: number) => boolean;
+  test: (s: CourseProgressView, now: number) => boolean;
 }
 
-const lessonsCompleted = (s: ProgressState) =>
+const lessonsCompleted = (s: CourseProgressView) =>
   Object.values(s.lessons).filter((l: LessonProgress) => l.completed).length;
 
-const masteredCount = (s: ProgressState, unitPrefix?: string) =>
+const masteredCount = (s: CourseProgressView, unitPrefix?: string) =>
   Object.values(s.mastery).filter(
     (m: MasteryRecord) =>
       m.level >= 5 && (!unitPrefix || m.conceptId.startsWith(unitPrefix)),
   ).length;
 
-const bestExam = (s: ProgressState) =>
+const bestExam = (s: CourseProgressView) =>
   s.exams.reduce((best: number, e: ExamResult) => Math.max(best, e.score), 0);
 
 export const ACHIEVEMENTS: AchievementDef[] = [
@@ -249,7 +249,7 @@ export function registerCurriculumHooks(hooks: typeof curriculumHooks) {
   curriculumHooks = hooks;
 }
 
-function unitCompleted(s: ProgressState): number {
+function unitCompleted(s: CourseProgressView): number {
   const units = ["u1", "u2", "u3", "u4", "u5", "u6"];
   return units.filter((u) => {
     const ids = curriculumHooks.unitLessonIds(u);
@@ -257,12 +257,12 @@ function unitCompleted(s: ProgressState): number {
   }).length;
 }
 
-function unitFullyMastered(s: ProgressState, unit: string): boolean {
+function unitFullyMastered(s: CourseProgressView, unit: string): boolean {
   const ids = curriculumHooks.unitConceptIds(unit);
   return ids.length > 0 && ids.every((id) => (s.mastery[id]?.level ?? 0) >= 5);
 }
 
-function overallReadinessFromState(s: ProgressState): number {
+function overallReadinessFromState(s: CourseProgressView): number {
   const ids = curriculumHooks.allConceptIds();
   if (ids.length === 0) return 0;
   const total = ids.reduce((sum, id) => sum + (s.mastery[id]?.level ?? 0) / 5, 0);
@@ -270,7 +270,7 @@ function overallReadinessFromState(s: ProgressState): number {
 }
 
 export function evaluateAchievements(
-  state: ProgressState,
+  state: CourseProgressView,
   now: number,
 ): AchievementState[] {
   const owned = new Set(state.achievements.map((a) => a.id));

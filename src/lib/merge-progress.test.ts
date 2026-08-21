@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { isEmptyProgress, mergeProgress } from "./merge-progress";
 import { emptyProgress } from "./storage";
-import type { Attempt, ExamResult, ProgressState } from "./types";
+import type { Attempt, CourseProgress, ExamResult, ProgressState } from "./types";
 
 const DAY = 86_400_000;
 const T0 = Date.UTC(2026, 0, 10, 12, 0, 0);
@@ -27,17 +27,20 @@ function exam(id: string, at: number, score: number): ExamResult {
   };
 }
 
-/** A state with some of everything, so merges exercise every branch. */
-function populated(overrides: Partial<ProgressState> = {}): ProgressState {
-  return {
-    ...emptyProgress(),
+/**
+ * A document with some of everything, so merges exercise every branch.
+ *
+ * Overrides may name either course fields or platform fields; they are split
+ * to the right place, which keeps the tests reading as plain progress rather
+ * than as document plumbing.
+ */
+type Over = Partial<CourseProgress> & Partial<Pick<ProgressState, "streak" | "achievements" | "onboarded">>;
+
+function populated(overrides: Over = {}): ProgressState {
+  const { streak, achievements, onboarded, ...course } = overrides;
+  const base = emptyProgress();
+  const aero: CourseProgress = {
     xp: 400,
-    streak: {
-      current: 2,
-      longest: 3,
-      lastActiveDay: "2026-01-10",
-      history: ["2026-01-10", "2026-01-09"],
-    },
     mastery: {
       "c-lift-def": {
         conceptId: "c-lift-def",
@@ -63,20 +66,33 @@ function populated(overrides: Partial<ProgressState> = {}): ProgressState {
     },
     attempts: [attempt("q1", T0)],
     exams: [exam("e1", T0, 0.8)],
-    achievements: [{ id: "first-flight", unlockedAt: T0 }],
     savedQuestionIds: ["q1"],
     savedKnowColdIds: ["k1"],
     watchedExplainerIds: ["x1"],
-    onboarded: true,
-    ...overrides,
+    ...course,
+  };
+  return {
+    ...base,
+    streak: streak ?? {
+      current: 2,
+      longest: 3,
+      lastActiveDay: "2026-01-10",
+      history: ["2026-01-10", "2026-01-09"],
+    },
+    achievements: achievements ?? [{ id: "first-flight", unlockedAt: T0 }],
+    onboarded: onboarded ?? true,
+    courses: { ...base.courses, aero },
   };
 }
+
+/** The Aerodynamics bucket of a merged result, which is what most tests assert on. */
+const aeroOf = (s: ProgressState) => s.courses.aero;
 
 describe("mergeProgress", () => {
   it("returns the other side when one is empty", () => {
     const local = populated();
-    expect(mergeProgress(local, emptyProgress()).xp).toBe(400);
-    expect(mergeProgress(emptyProgress(), local).xp).toBe(400);
+    expect(aeroOf(mergeProgress(local, emptyProgress())).xp).toBe(400);
+    expect(aeroOf(mergeProgress(emptyProgress(), local)).xp).toBe(400);
   });
 
   it("is idempotent — a retried sync changes nothing", () => {
@@ -84,9 +100,9 @@ describe("mergeProgress", () => {
     const once = mergeProgress(state, state);
     const twice = mergeProgress(once, state);
     expect(once).toEqual(twice);
-    expect(once.attempts).toHaveLength(1);
-    expect(once.lessons.l01.attempts).toBe(1);
-    expect(once.xp).toBe(400);
+    expect(aeroOf(once).attempts).toHaveLength(1);
+    expect(aeroOf(once).lessons.l01.attempts).toBe(1);
+    expect(aeroOf(once).xp).toBe(400);
   });
 
   it("is commutative — sync order between devices does not matter", () => {
@@ -100,13 +116,13 @@ describe("mergeProgress", () => {
     const phone = populated({ attempts: [shared, attempt("q2", T0 + 1000)] });
     const laptop = populated({ attempts: [shared, attempt("q3", T0 + 2000)] });
     const merged = mergeProgress(phone, laptop);
-    expect(merged.attempts.map((a) => a.questionId)).toEqual(["q1", "q2", "q3"]);
+    expect(aeroOf(merged).attempts.map((a) => a.questionId)).toEqual(["q1", "q2", "q3"]);
   });
 
   it("treats the same question answered at different times as two attempts", () => {
     const phone = populated({ attempts: [attempt("q1", T0)] });
     const laptop = populated({ attempts: [attempt("q1", T0 + 5000)] });
-    expect(mergeProgress(phone, laptop).attempts).toHaveLength(2);
+    expect(aeroOf(mergeProgress(phone, laptop)).attempts).toHaveLength(2);
   });
 
   it("keeps the mastery record built from more practice", () => {
@@ -114,24 +130,24 @@ describe("mergeProgress", () => {
     const strong = populated({
       mastery: {
         "c-lift-def": {
-          ...populated().mastery["c-lift-def"],
+          ...aeroOf(populated()).mastery["c-lift-def"],
           level: 5,
           seen: 20,
           correct: 19,
         },
       },
     });
-    expect(mergeProgress(weak, strong).mastery["c-lift-def"].level).toBe(5);
-    expect(mergeProgress(strong, weak).mastery["c-lift-def"].seen).toBe(20);
+    expect(aeroOf(mergeProgress(weak, strong)).mastery["c-lift-def"].level).toBe(5);
+    expect(aeroOf(mergeProgress(strong, weak)).mastery["c-lift-def"].seen).toBe(20);
   });
 
   it("never demotes a concept when both sides saw the same amount", () => {
     const low = populated();
     const high = populated({
-      mastery: { "c-lift-def": { ...populated().mastery["c-lift-def"], level: 5 } },
+      mastery: { "c-lift-def": { ...aeroOf(populated()).mastery["c-lift-def"], level: 5 } },
     });
-    expect(mergeProgress(low, high).mastery["c-lift-def"].level).toBe(5);
-    expect(mergeProgress(high, low).mastery["c-lift-def"].level).toBe(5);
+    expect(aeroOf(mergeProgress(low, high)).mastery["c-lift-def"].level).toBe(5);
+    expect(aeroOf(mergeProgress(high, low)).mastery["c-lift-def"].level).toBe(5);
   });
 
   it("keeps a lesson completed even if the other device never finished it", () => {
@@ -150,8 +166,8 @@ describe("mergeProgress", () => {
       },
     });
     const merged = mergeProgress(done, partial);
-    expect(merged.lessons.l01.completed).toBe(true);
-    expect(merged.lessons.l01.bestScore).toBe(0.8);
+    expect(aeroOf(merged).lessons.l01.completed).toBe(true);
+    expect(aeroOf(merged).lessons.l01.bestScore).toBe(0.8);
   });
 
   it("dates an achievement from when it was first earned", () => {
@@ -201,22 +217,22 @@ describe("mergeProgress", () => {
 
   it("takes the higher XP rather than summing the same work twice", () => {
     const merged = mergeProgress(populated({ xp: 500 }), populated({ xp: 300 }));
-    expect(merged.xp).toBe(500);
+    expect(aeroOf(merged).xp).toBe(500);
   });
 
   it("unions saved and watched lists", () => {
     const a = populated({ savedQuestionIds: ["q1", "q2"], watchedExplainerIds: ["x1"] });
     const b = populated({ savedQuestionIds: ["q2", "q3"], watchedExplainerIds: ["x2"] });
     const merged = mergeProgress(a, b);
-    expect(merged.savedQuestionIds.sort()).toEqual(["q1", "q2", "q3"]);
-    expect(merged.watchedExplainerIds.sort()).toEqual(["x1", "x2"]);
+    expect(aeroOf(merged).savedQuestionIds.sort()).toEqual(["q1", "q2", "q3"]);
+    expect(aeroOf(merged).watchedExplainerIds.sort()).toEqual(["x1", "x2"]);
   });
 
   it("dedupes exams by id and keeps them in order", () => {
     const a = populated({ exams: [exam("e1", T0, 0.8), exam("e2", T0 + DAY, 0.9)] });
     const b = populated({ exams: [exam("e1", T0, 0.8), exam("e3", T0 + 2 * DAY, 0.7)] });
     const merged = mergeProgress(a, b);
-    expect(merged.exams.map((e) => e.id)).toEqual(["e1", "e2", "e3"]);
+    expect(aeroOf(merged).exams.map((e) => e.id)).toEqual(["e1", "e2", "e3"]);
   });
 });
 
@@ -227,7 +243,9 @@ describe("isEmptyProgress", () => {
 
   it("recognises a state with real work in it", () => {
     expect(isEmptyProgress(populated())).toBe(false);
-    expect(isEmptyProgress({ ...emptyProgress(), attempts: [attempt("q1", T0)] })).toBe(false);
+    const withWork = emptyProgress();
+    withWork.courses.aero.attempts = [attempt("q1", T0)];
+    expect(isEmptyProgress(withWork)).toBe(false);
   });
 
   it("ignores the onboarding flag, which is not progress", () => {

@@ -20,7 +20,12 @@ import {
 import { useAuth } from "./auth";
 import { applyAttempt, markIntroduced } from "./mastery";
 import { isEmptyProgress } from "./merge-progress";
-import { LocalProgressStore, emptyProgress, type ProgressStore } from "./storage";
+import {
+  LocalProgressStore,
+  emptyCourseProgress,
+  emptyProgress,
+  type ProgressStore,
+} from "./storage";
 import { getSupabase } from "./supabase";
 import { SupabaseProgressStore, readGuestProgress } from "./supabase-store";
 import {
@@ -33,20 +38,12 @@ import {
 import type {
   Attempt,
   ConceptId,
+  CourseId,
+  CourseProgressView,
   ExamResult,
   ProgressState,
 } from "./types";
-import {
-  ALL_CONCEPT_IDS,
-  unitConceptIds,
-  unitLessonIds,
-} from "@/content";
-
-registerCurriculumHooks({
-  unitConceptIds,
-  unitLessonIds,
-  allConceptIds: () => ALL_CONCEPT_IDS,
-});
+import { conceptIdsFor, unitConceptIds, unitLessonIds } from "@/content";
 
 export interface AnswerInput {
   questionId: string;
@@ -58,7 +55,11 @@ export interface AnswerInput {
 }
 
 export interface ProgressApi {
-  state: ProgressState;
+  /**
+   * The active course's progress plus the platform-level fields. Screens read
+   * this and never touch the stored multi-course document.
+   */
+  state: CourseProgressView;
   ready: boolean;
   /** True while a store swap or first account sync is in flight. */
   syncing: boolean;
@@ -80,8 +81,40 @@ export interface ProgressApi {
   toggleSavedQuestion: (id: string) => void;
   toggleSavedKnowCold: (id: string) => void;
   setOnboarded: (v: boolean) => void;
+  setActiveCourse: (id: CourseId) => void;
+  /** Wipes the active course only. Other courses are untouched. */
   resetProgress: () => void;
+  /** The full multi-course document, for export. */
+  exportState: () => ProgressState;
   importState: (state: ProgressState) => void;
+}
+
+/**
+ * Flatten the stored document into the single-course view screens consume.
+ * Course fields come from the active bucket; streak, achievements and
+ * onboarding are platform-wide.
+ */
+function toView(stored: ProgressState): CourseProgressView {
+  return {
+    ...stored.courses[stored.activeCourse],
+    streak: stored.streak,
+    achievements: stored.achievements,
+    onboarded: stored.onboarded,
+    activeCourse: stored.activeCourse,
+  };
+}
+
+/** The inverse: file a mutated view back into the right course bucket. */
+function fromView(stored: ProgressState, view: CourseProgressView): ProgressState {
+  const { streak, achievements, onboarded, activeCourse, ...course } = view;
+  return {
+    ...stored,
+    activeCourse,
+    streak,
+    achievements,
+    onboarded,
+    courses: { ...stored.courses, [activeCourse]: course },
+  };
 }
 
 const ProgressContext = createContext<ProgressApi | null>(null);
@@ -98,7 +131,7 @@ export function ProgressProvider({
   const injected = store !== undefined;
 
   const storeRef = useRef<ProgressStore>(store ?? new LocalProgressStore());
-  const [state, setState] = useState<ProgressState>(emptyProgress);
+  const [stored, setStored] = useState<ProgressState>(emptyProgress);
   const [ready, setReady] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [pendingAwards, setPendingAwards] = useState<string[]>([]);
@@ -117,7 +150,7 @@ export function ProgressProvider({
       let cancelled = false;
       void storeRef.current.load().then((loaded) => {
         if (cancelled) return;
-        setState(loaded);
+        setStored(loaded);
         setReady(true);
       });
       return () => {
@@ -161,7 +194,7 @@ export function ProgressProvider({
 
       if (stale()) return;
       storeRef.current = next;
-      setState(loaded);
+      setStored(loaded);
       setReady(true);
       setSyncing(false);
     })();
@@ -182,26 +215,53 @@ export function ProgressProvider({
       // A store swap between scheduling and firing would file this state under
       // the wrong account, so anything from a previous generation is discarded.
       if (gen !== generation.current) return;
-      void storeRef.current.save(state);
+      void storeRef.current.save(stored);
     }, 250);
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [state, ready]);
+  }, [stored, ready]);
 
   /**
    * Single funnel for state changes. Runs the achievement pass on the result so
    * every mutation can unlock awards without each caller remembering to.
    */
+  const view = useMemo(() => toView(stored), [stored]);
+
+  /**
+   * Achievement rules ask questions like "how many concepts are in this unit".
+   * Those answers are course-dependent, so the hooks are re-pointed whenever
+   * the active course changes rather than being registered once at module load.
+   */
+  useEffect(() => {
+    registerCurriculumHooks({
+      unitConceptIds,
+      unitLessonIds,
+      allConceptIds: () => conceptIdsFor(stored.activeCourse),
+    });
+  }, [stored.activeCourse]);
+
+  /** A view mutation that cannot unlock an achievement, so it skips that pass. */
+  const setViewState = useCallback(
+    (fn: (prev: CourseProgressView) => CourseProgressView) => {
+      setStored((prevStored) => fromView(prevStored, fn(toView(prevStored))));
+    },
+    [],
+  );
+
   const mutate = useCallback(
-    (fn: (prev: ProgressState) => ProgressState) => {
-      setState((prev) => {
-        const next = fn(prev);
+    (fn: (prev: CourseProgressView) => CourseProgressView) => {
+      setStored((prevStored) => {
+        const next = fn(toView(prevStored));
         const now = Date.now();
         const newly = evaluateAchievements(next, now);
-        if (newly.length === 0) return next;
-        setPendingAwards((q) => [...q, ...newly.map((a) => a.id)]);
-        return { ...next, achievements: [...next.achievements, ...newly] };
+        if (newly.length > 0) {
+          setPendingAwards((q) => [...q, ...newly.map((a) => a.id)]);
+        }
+        return fromView(prevStored, {
+          ...next,
+          achievements: newly.length > 0 ? [...next.achievements, ...newly] : next.achievements,
+        });
       });
     },
     [],
@@ -240,7 +300,7 @@ export function ProgressProvider({
     (conceptIds: ConceptId[]) => {
       if (conceptIds.length === 0) return;
       const now = Date.now();
-      setState((prev) => {
+      setViewState((prev) => {
         const mastery = markIntroduced(prev.mastery, conceptIds, now);
         // Reference equality check keeps this from looping when a screen
         // re-renders with the same concept list.
@@ -250,7 +310,7 @@ export function ProgressProvider({
         return changed ? { ...prev, mastery } : prev;
       });
     },
-    [],
+    [setViewState],
   );
 
   const completeLesson = useCallback(
@@ -329,42 +389,58 @@ export function ProgressProvider({
   );
 
   const toggleSavedQuestion = useCallback((id: string) => {
-    setState((prev) => ({
+    setViewState((prev) => ({
       ...prev,
       savedQuestionIds: prev.savedQuestionIds.includes(id)
         ? prev.savedQuestionIds.filter((x) => x !== id)
         : [...prev.savedQuestionIds, id],
     }));
-  }, []);
+  }, [setViewState]);
 
   const toggleSavedKnowCold = useCallback((id: string) => {
-    setState((prev) => ({
+    setViewState((prev) => ({
       ...prev,
       savedKnowColdIds: prev.savedKnowColdIds.includes(id)
         ? prev.savedKnowColdIds.filter((x) => x !== id)
         : [...prev.savedKnowColdIds, id],
     }));
-  }, []);
+  }, [setViewState]);
 
   const setOnboarded = useCallback((v: boolean) => {
-    setState((prev) => (prev.onboarded === v ? prev : { ...prev, onboarded: v }));
-  }, []);
+    setViewState((prev) => (prev.onboarded === v ? prev : { ...prev, onboarded: v }));
+  }, [setViewState]);
 
+  /**
+   * Resets the ACTIVE course only. Wiping Engines should not cost a student
+   * their Aerodynamics history, so the other buckets and the streak survive.
+   */
   const resetProgress = useCallback(() => {
     exploredLabs.current.clear();
-    setState(emptyProgress());
-    void storeRef.current.clear();
+    setStored((prev) => {
+      const next: ProgressState = {
+        ...prev,
+        courses: { ...prev.courses, [prev.activeCourse]: emptyCourseProgress() },
+      };
+      void storeRef.current.save(next);
+      return next;
+    });
   }, []);
 
+  const setActiveCourse = useCallback((id: CourseId) => {
+    setStored((prev) => (prev.activeCourse === id ? prev : { ...prev, activeCourse: id }));
+  }, []);
+
+  const exportState = useCallback(() => stored, [stored]);
+
   const importState = useCallback((next: ProgressState) => {
-    setState(next);
+    setStored(next);
   }, []);
 
   const clearAwards = useCallback(() => setPendingAwards([]), []);
 
   const api = useMemo<ProgressApi>(
     () => ({
-      state,
+      state: view,
       ready,
       syncing,
       pendingAwards,
@@ -378,11 +454,13 @@ export function ProgressProvider({
       toggleSavedQuestion,
       toggleSavedKnowCold,
       setOnboarded,
+      setActiveCourse,
       resetProgress,
+      exportState,
       importState,
     }),
     [
-      state,
+      view,
       ready,
       syncing,
       pendingAwards,
@@ -396,7 +474,9 @@ export function ProgressProvider({
       toggleSavedQuestion,
       toggleSavedKnowCold,
       setOnboarded,
+      setActiveCourse,
       resetProgress,
+      exportState,
       importState,
     ],
   );

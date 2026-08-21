@@ -868,6 +868,276 @@ export const WIDGETS: Record<string, WidgetSpec> = {
         ? "This is the killer. Nose already low, power already back, and the lift has just gone."
         : "A microburst gives you the performance INCREASE first. That is what sets up the trap.",
   },
+
+  /* ---------------- Engines ---------------- */
+
+  EnginePressureSplit: {
+    diagram: "eng-pressure-split",
+    controls: [
+      {
+        kind: "slider",
+        key: "dynamic",
+        label: "Dynamic share (velocity)",
+        min: 0.05,
+        max: 0.85,
+        step: 0.01,
+        initial: 0.35,
+        format: pct,
+        tone: "caution",
+      },
+    ],
+    toProps: (s) => ({ dynamic: s.dynamic }),
+    readouts: (s) => [
+      { label: "Static (pressure)", value: pct(1 - s.dynamic), tone: "brand" },
+      { label: "Dynamic (velocity)", value: pct(s.dynamic), tone: "caution" },
+      { label: "Total", value: "100%", tone: "go", hint: "never changes" },
+    ],
+    chain: (s) =>
+      s.dynamic > 0.35
+        ? [
+            { label: "Velocity", trend: "up" },
+            { label: "Static pressure", trend: "down" },
+            { label: "Total pressure", trend: "same" },
+          ]
+        : [
+            { label: "Velocity", trend: "down" },
+            { label: "Static pressure", trend: "up" },
+            { label: "Total pressure", trend: "same" },
+          ],
+    note: () => "Total pressure is a fixed budget. Spend one side and the other grows to match.",
+  },
+
+  DuctRegimeToggle: {
+    diagram: "eng-duct",
+    controls: [
+      {
+        kind: "segmented",
+        key: "shape",
+        label: "Duct shape",
+        initial: 0,
+        options: [
+          { value: 0, label: "Convergent" },
+          { value: 1, label: "Divergent" },
+        ],
+      },
+      {
+        kind: "segmented",
+        key: "regime",
+        label: "Flow regime",
+        initial: 0,
+        options: [
+          { value: 0, label: "Subsonic" },
+          { value: 1, label: "Supersonic" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      shape: s.shape === 0 ? "convergent" : "divergent",
+      regime: s.regime === 0 ? "subsonic" : "supersonic",
+    }),
+    readouts: (s) => {
+      // Subsonic follows Bernoulli; supersonic inverts it.
+      const convergent = s.shape === 0;
+      const velocityUp = s.regime === 0 ? convergent : !convergent;
+      return [
+        { label: "Velocity", value: velocityUp ? "Increases" : "Decreases", tone: velocityUp ? "go" : "nogo" },
+        { label: "Pressure", value: velocityUp ? "Decreases" : "Increases", tone: velocityUp ? "nogo" : "go" },
+        { label: "Acting as a", value: velocityUp ? "Nozzle" : "Diffuser", tone: "brand" },
+      ];
+    },
+    note: () =>
+      "Flip only the regime and the same duct reverses. Shape never decides the outcome on its own.",
+  },
+
+  ThrustFactorExplorer: {
+    diagram: "eng-thrust-factor",
+    controls: [
+      {
+        kind: "segmented",
+        key: "factor",
+        label: "Factor",
+        initial: 1,
+        options: [
+          { value: 0, label: "Temp" },
+          { value: 1, label: "Altitude" },
+          { value: 2, label: "RPM" },
+          { value: 3, label: "Airspeed" },
+        ],
+      },
+      { kind: "slider", key: "point", label: "Operating point", min: 0, max: 1, step: 0.01, initial: 0.4, format: pct },
+    ],
+    toProps: (s) => {
+      const factor = ["temperature", "altitude", "rpm", "airspeed"][s.factor];
+      const range = [
+        [-40, 45],
+        [0, 50],
+        [30, 100],
+        [0, 100],
+      ][s.factor];
+      return { factor, marker: range[0] + (range[1] - range[0]) * s.point };
+    },
+    readouts: (s) => {
+      const labels: { label: string; value: string; tone: Tone }[] = [
+        { label: "Colder air", value: "Denser, more thrust", tone: "go" },
+        { label: "Higher altitude", value: "Less thrust", tone: "nogo" },
+        { label: "Higher RPM", value: "More thrust, non-linear", tone: "go" },
+        { label: "Higher airspeed", value: "Less thrust, before ram", tone: "caution" },
+      ];
+      const extra: { label: string; value: string; tone: Tone; hint?: string }[] =
+        s.factor === 1
+          ? [{ label: "Break point", value: "36,000 ft", tone: "nogo", hint: "temperature stops helping" }]
+          : [];
+      return [labels[s.factor], ...extra];
+    },
+    note: (s) =>
+      s.factor === 1
+        ? "Pressure loss beats temperature gain, and above 36,000 ft nothing offsets it any more."
+        : "Every atmospheric factor reaches thrust through density, and so through the mass term of T = m x a.",
+  },
+
+  AxialStageBuilder: {
+    diagram: "eng-axial",
+    controls: [
+      { kind: "slider", key: "stages", label: "Compressor stages", min: 2, max: 8, step: 1, initial: 4, format: (v) => String(v) },
+    ],
+    toProps: (s) => ({ stages: s.stages }),
+    readouts: (s) => [
+      { label: "Stages", value: String(s.stages), tone: "brand" },
+      { label: "Blade rows", value: String(s.stages * 2), tone: "neutral", hint: "one rotor + one stator each" },
+      {
+        label: "Overall ratio",
+        value: s.stages >= 7 ? "Approaching 30:1" : s.stages >= 5 ? "Mid range" : "Toward 15:1",
+        tone: "go",
+        hint: "axial compressors run 15:1 to 30:1",
+      },
+    ],
+    chain: () => [
+      { label: "Rotor: velocity and pressure", trend: "up" },
+      { label: "Stator: velocity", trend: "down" },
+      { label: "Stator: pressure", trend: "up" },
+    ],
+    note: () =>
+      "One rotor plus one stator is a single stage. Stacking them is what buys the high overall compression ratio.",
+  },
+
+  BladeAoaWidget: {
+    diagram: "eng-blade-aoa",
+    controls: [
+      { kind: "slider", key: "inletFlow", label: "Inlet airflow", min: 0.25, max: 1.4, step: 0.01, initial: 1, format: x, tone: "brand" },
+      { kind: "slider", key: "rpm", label: "Compressor RPM", min: 0.4, max: 1.5, step: 0.01, initial: 1, format: x, tone: "caution" },
+    ],
+    toProps: (s) => ({ inletFlow: s.inletFlow, rpm: s.rpm }),
+    readouts: (s) => {
+      // Mirrors the geometry inside the diagram, so the two cannot disagree.
+      const rwAngle = (Math.atan2(92 * s.rpm, 92 * s.inletFlow) * 180) / Math.PI;
+      const aoa = rwAngle - 32;
+      const stalled = aoa > 18;
+      return [
+        { label: "Blade AOA", value: deg(aoa), tone: stalled ? "nogo" : "neutral" },
+        { label: "State", value: stalled ? "STALLED" : "Attached", tone: stalled ? "nogo" : "go" },
+        { label: "If stalled", value: "RPM down, ITT up", tone: "caution", hint: "the indication pair" },
+      ];
+    },
+    chain: (s) => {
+      const rwAngle = (Math.atan2(92 * s.rpm, 92 * s.inletFlow) * 180) / Math.PI;
+      return [
+        { label: "Inlet airflow", trend: s.inletFlow < 1 ? "down" : s.inletFlow > 1 ? "up" : "same" },
+        { label: "Compressor RPM", trend: s.rpm > 1 ? "up" : s.rpm < 1 ? "down" : "same" },
+        { label: "Blade AOA", trend: rwAngle - 32 > 18 ? "up" : "same" },
+      ];
+    },
+    note: () =>
+      "Less inlet airflow or more RPM both swing the relative wind the same way, toward a stall.",
+  },
+
+  EngineStationStepper: {
+    diagram: "eng-cutaway",
+    controls: [
+      {
+        kind: "segmented",
+        key: "station",
+        label: "Station",
+        initial: 0,
+        options: [
+          { value: 0, label: "Inlet" },
+          { value: 1, label: "Compressor" },
+          { value: 2, label: "Burner" },
+          { value: 3, label: "Turbine" },
+          { value: 4, label: "Exhaust" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      highlight: ["inlet", "compressor", "burner", "turbine", "exhaust"][s.station],
+    }),
+    readouts: (s) => {
+      // Straight from slide 28, Thrust Development.
+      const row = [
+        { p: "Increases", t: "Unchanged", v: "Decreases" },
+        { p: "Increases", t: "Increases", v: "Increases" },
+        { p: "Slightly decreases", t: "Increases", v: "Increases" },
+        { p: "Decreases", t: "Decreases", v: "Increases" },
+        { p: "Decreases", t: "Decreases", v: "Increases" },
+      ][s.station];
+      return [
+        { label: "Pressure", value: row.p, tone: row.p.startsWith("Increase") ? "go" : "nogo" },
+        { label: "Temperature", value: row.t, tone: row.t.startsWith("Increase") ? "nogo" : "neutral" },
+        { label: "Velocity", value: row.v, tone: row.v.startsWith("Increase") ? "go" : "nogo" },
+      ];
+    },
+    note: (s) =>
+      s.station === 2
+        ? "Combustion is the one that surprises people: pressure drops slightly, because the heat goes into temperature and velocity."
+        : "Step through all five and the gas path becomes one continuous story.",
+  },
+
+  TurbopropFlowStepper: {
+    diagram: "eng-turboprop-flow",
+    controls: [
+      {
+        kind: "segmented",
+        key: "step",
+        label: "Stage",
+        initial: 0,
+        options: [
+          { value: 0, label: "Burn" },
+          { value: 1, label: "Turbine" },
+          { value: 2, label: "Shaft" },
+          { value: 3, label: "RGB" },
+          { value: 4, label: "Prop" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      highlight: ["combustion", "turbine", "shaft", "rgb", "prop"][s.step],
+    }),
+    readouts: (s) => {
+      const rows: { label: string; value: string; tone: Tone }[] = [
+        { label: "Combustion", value: "Heat energy released", tone: "nogo" },
+        { label: "Turbine", value: "Extracts 75%", tone: "caution" },
+        { label: "Shaft", value: "High RPM, low torque", tone: "neutral" },
+        { label: "Reduction gear box", value: "Trades RPM for torque", tone: "brand" },
+        { label: "Propeller", value: "90% of thrust", tone: "go" },
+      ];
+      return [rows[s.step]];
+    },
+    note: () =>
+      "The gear box exists to keep propeller tips subsonic. Without it, efficiency collapses.",
+  },
+
+  HydraulicAdvantage: {
+    diagram: "eng-hydraulic",
+    controls: [
+      { kind: "slider", key: "ratio", label: "Output area", min: 1, max: 6, step: 1, initial: 3, format: (v) => "x" + v },
+    ],
+    toProps: (s) => ({ ratio: s.ratio }),
+    readouts: (s) => [
+      { label: "Force", value: "x" + s.ratio, tone: "go" },
+      { label: "Travel", value: "x" + (1 / s.ratio).toFixed(2), tone: "caution" },
+      { label: "Pressure", value: "Constant", tone: "brand", hint: "Pascal's law" },
+    ],
+    note: () => "You buy force with distance. Pressure through the confined fluid never changes.",
+  },
 };
 
 /* ------------------------------------------------------------------ */

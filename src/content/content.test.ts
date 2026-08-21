@@ -2,17 +2,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
-  CONCEPTS,
+  COURSES,
+  COURSE_ORDER,
   CONCEPT_BY_ID,
-  EXPLAINERS,
-  KNOW_COLD,
-  LABS,
-  LESSONS,
   LESSON_BY_ID,
-  QUESTIONS,
   QUESTION_BY_ID,
-  UNITS,
   buildEoMatrix,
+  contentFor,
 } from "./index";
 import { correctKey } from "@/lib/scoring";
 
@@ -21,10 +17,24 @@ import { correctKey } from "@/lib/scoring";
  * silently producing an unanswerable question or an orphaned concept.
  */
 
-describe("curriculum shape", () => {
-  it("has the six planned units", () => {
-    expect(UNITS).toHaveLength(6);
-    expect(UNITS.map((u) => u.id)).toEqual(["u1", "u2", "u3", "u4", "u5", "u6"]);
+/** Every course's content at once, for the suites that check global registries. */
+const ALL_QUESTIONS = COURSE_ORDER.flatMap((c) => contentFor(c).questions);
+const ALL_LESSONS = COURSE_ORDER.flatMap((c) => contentFor(c).lessons);
+const ALL_EXPLAINERS = COURSE_ORDER.flatMap((c) => contentFor(c).explainers);
+const ALL_LABS = COURSE_ORDER.flatMap((c) => contentFor(c).labs);
+
+/**
+ * Every suite below runs once per course. A new course therefore inherits the
+ * whole integrity contract automatically rather than needing its own tests.
+ */
+for (const course of COURSE_ORDER) {
+  const { units: UNITS, concepts: CONCEPTS, lessons: LESSONS, questions: QUESTIONS, explainers: EXPLAINERS, labs: LABS, knowCold: KNOW_COLD } = contentFor(course);
+  const NAME = COURSES[course].name;
+
+describe(`${NAME} · curriculum shape`, () => {
+  it("has the planned units, numbered in order", () => {
+    expect(UNITS.length).toBeGreaterThanOrEqual(6);
+    expect(UNITS.map((u) => u.index)).toEqual(UNITS.map((_, i) => i + 1));
   });
 
   it("has 24–30 lessons as scoped", () => {
@@ -52,7 +62,7 @@ describe("curriculum shape", () => {
   });
 });
 
-describe("identifier uniqueness", () => {
+describe(`${NAME} · identifier uniqueness`, () => {
   const dupes = (ids: string[]) =>
     ids.filter((id, i) => ids.indexOf(id) !== i);
 
@@ -75,7 +85,7 @@ describe("identifier uniqueness", () => {
   });
 });
 
-describe("referential integrity", () => {
+describe(`${NAME} · referential integrity`, () => {
   it("every lesson concept exists", () => {
     for (const lesson of LESSONS) {
       for (const id of lesson.conceptIds) {
@@ -150,7 +160,7 @@ describe("referential integrity", () => {
   });
 });
 
-describe("question wellformedness", () => {
+describe(`${NAME} · question wellformedness`, () => {
   it("every question has a resolvable correct answer", () => {
     for (const q of QUESTIONS) {
       expect(() => correctKey(q), q.id).not.toThrow();
@@ -226,7 +236,7 @@ describe("question wellformedness", () => {
   });
 });
 
-describe("coverage", () => {
+describe(`${NAME} · coverage`, () => {
   it("every concept is assessed by at least one question", () => {
     const tested = new Set(QUESTIONS.flatMap((q) => q.conceptIds));
     const untested = CONCEPTS.filter((c) => !tested.has(c.id)).map((c) => c.id);
@@ -279,12 +289,16 @@ describe("coverage", () => {
   });
 });
 
-describe("enabling objective matrix", () => {
-  const matrix = buildEoMatrix();
+describe(`${NAME} · enabling objective matrix`, () => {
+  const matrix = buildEoMatrix(course);
 
-  it("maps a substantial share of the course's enabling objectives", () => {
-    // The trainee guide lists 198 unit-2 EOs plus 29 unit-3 EOs.
-    expect(matrix.length).toBeGreaterThanOrEqual(180);
+  it("maps the enabling objectives its sources actually publish", () => {
+    // Aerodynamics draws on the trainee guide, which lists 198 unit-2 EOs plus
+    // 29 unit-3 EOs. The Engines lectures publish far fewer, and units e6–e7
+    // come only from the condensed notes, which state no EOs at all — so the
+    // floor is per course rather than one shared number.
+    const floor = { aero: 180, engines: 25 }[course];
+    expect(matrix.length).toBeGreaterThanOrEqual(floor);
   });
 
   it("assesses every EO that a lesson claims to teach", () => {
@@ -312,6 +326,8 @@ describe("enabling objective matrix", () => {
  * Registry coverage. Read from source rather than importing the client
  * components, so this stays a fast node-environment test.
  */
+}
+
 describe("diagram and widget registries", () => {
   const read = (rel: string) =>
     readFileSync(join(process.cwd(), rel), "utf8");
@@ -333,7 +349,7 @@ describe("diagram and widget registries", () => {
   });
 
   it("every diagram referenced by a lesson screen is registered", () => {
-    for (const lesson of LESSONS) {
+    for (const lesson of ALL_LESSONS) {
       for (const screen of lesson.screens) {
         const id =
           screen.kind === "model" || screen.kind === "hook"
@@ -345,7 +361,7 @@ describe("diagram and widget registries", () => {
   });
 
   it("every widget referenced by a lesson screen is registered", () => {
-    for (const lesson of LESSONS) {
+    for (const lesson of ALL_LESSONS) {
       for (const screen of lesson.screens) {
         if (screen.kind !== "manipulate") continue;
         expect(widgetIds.has(screen.widget), `${lesson.id} → ${screen.widget}`).toBe(true);
@@ -354,28 +370,29 @@ describe("diagram and widget registries", () => {
   });
 
   it("every diagram referenced by a question is registered", () => {
-    for (const q of QUESTIONS) {
+    for (const q of ALL_QUESTIONS) {
       const id = "diagram" in q ? q.diagram?.id : undefined;
       if (id) expect(diagramIds.has(id), `${q.id} → ${id}`).toBe(true);
     }
   });
 
   it("every widget referenced by a question is registered", () => {
-    for (const q of QUESTIONS) {
+    for (const q of ALL_QUESTIONS) {
       if (q.type !== "sliderPredict") continue;
       expect(widgetIds.has(q.widget), `${q.id} → ${q.widget}`).toBe(true);
     }
   });
 
   it("every explainer diagram is registered", () => {
-    for (const e of EXPLAINERS) {
+    for (const e of ALL_EXPLAINERS) {
       expect(diagramIds.has(e.diagram.id), `${e.id} → ${e.diagram.id}`).toBe(true);
     }
   });
 
   it("every lab component is implemented", () => {
-    const labSource = read("src/components/lab/labs.tsx");
-    for (const lab of LABS) {
+    const labSource =
+      read("src/components/lab/labs.tsx") + read("src/components/lab/engine-labs.tsx");
+    for (const lab of ALL_LABS) {
       expect(labSource.includes(`export function ${lab.component}`), lab.component).toBe(true);
     }
   });
@@ -398,6 +415,7 @@ describe("diagram labelling for tap and drag questions", () => {
     "src/components/diagrams/drag.tsx",
     "src/components/diagrams/performance.tsx",
     "src/components/diagrams/maneuvering.tsx",
+    "src/components/diagrams/engines.tsx",
   ].map(read);
 
   /** diagram id -> React component name, from the registry. */
@@ -427,7 +445,7 @@ describe("diagram labelling for tap and drag questions", () => {
     return body !== null && body.includes("p.labels");
   };
 
-  const labelQuestions = QUESTIONS.filter(
+  const labelQuestions = ALL_QUESTIONS.filter(
     (q) => q.type === "tapDiagram" || q.type === "dragLabel",
   );
 
@@ -455,7 +473,7 @@ describe("diagram labelling for tap and drag questions", () => {
   });
 
   it("tap targets sit inside the diagram viewBox", () => {
-    for (const q of QUESTIONS) {
+    for (const q of ALL_QUESTIONS) {
       if (q.type !== "tapDiagram") continue;
       for (const t of q.targets) {
         expect(t.x - t.r, `${q.id}/${t.id} off the left edge`).toBeGreaterThanOrEqual(0);
@@ -467,7 +485,7 @@ describe("diagram labelling for tap and drag questions", () => {
   });
 
   it("tap targets never overlap, so no tap is ambiguous", () => {
-    for (const q of QUESTIONS) {
+    for (const q of ALL_QUESTIONS) {
       if (q.type !== "tapDiagram") continue;
       for (let i = 0; i < q.targets.length; i++) {
         for (let j = i + 1; j < q.targets.length; j++) {
@@ -484,7 +502,7 @@ describe("diagram labelling for tap and drag questions", () => {
   });
 
   it("drop pills fit on the canvas once filled with their answer", () => {
-    for (const q of QUESTIONS) {
+    for (const q of ALL_QUESTIONS) {
       if (q.type !== "dragLabel") continue;
       for (const slot of q.slots) {
         const text = q.answer[slot.id] ?? "";
@@ -499,7 +517,7 @@ describe("diagram labelling for tap and drag questions", () => {
   });
 
   it("drop pills never overlap each other", () => {
-    for (const q of QUESTIONS) {
+    for (const q of ALL_QUESTIONS) {
       if (q.type !== "dragLabel") continue;
       const box = (slot: (typeof q.slots)[number]) => {
         const w = Math.max(64, (q.answer[slot.id] ?? "").length * 6.4 + 18);
@@ -520,7 +538,7 @@ describe("diagram labelling for tap and drag questions", () => {
   });
 
   it("anchored drop pills point at a spot inside the diagram", () => {
-    for (const q of QUESTIONS) {
+    for (const q of ALL_QUESTIONS) {
       if (q.type !== "dragLabel") continue;
       for (const slot of q.slots) {
         if (slot.tx === undefined && slot.ty === undefined) continue;

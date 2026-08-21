@@ -12,7 +12,7 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
-import { CONCEPTS, EXPLAINERS, KNOW_COLD, LESSONS, QUESTIONS, UNITS } from "@/content";
+
 import {
   buildDailyFlight,
   outstandingMistakes,
@@ -21,6 +21,7 @@ import {
 } from "@/lib/review";
 import { isDue } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
 import {
   Card,
   PageHeader,
@@ -32,19 +33,20 @@ import {
 
 export default function ReviewPage() {
   const { state } = useProgress();
+  const { content } = useCourse();
   const now = Date.now();
 
-  const weak = weakConcepts(CONCEPTS, QUESTIONS, state.mastery, now, { limit: 8 });
-  const dueCount = CONCEPTS.filter((c) => isDue(state.mastery[c.id], now)).length;
-  const mistakes = outstandingMistakes(QUESTIONS, state);
+  const weak = weakConcepts(content.concepts, content.questions, state.mastery, now, { limit: 8 });
+  const dueCount = content.concepts.filter((c) => isDue(state.mastery[c.id], now)).length;
+  const mistakes = outstandingMistakes(content.questions, state);
   const saved = state.savedQuestionIds.length;
   const flight = buildDailyFlight(
-    { lessons: LESSONS, concepts: CONCEPTS, questions: QUESTIONS, explainers: EXPLAINERS },
+    { lessons: content.lessons, concepts: content.concepts, questions: content.questions, explainers: content.explainers },
     state,
     now,
   );
-  const units = unitReadiness(UNITS, CONCEPTS, LESSONS, state);
-  const formulas = KNOW_COLD.filter((k) => k.category === "equation").length;
+  const units = unitReadiness(content.units, content.concepts, content.lessons, state);
+  const formulas = content.knowCold.filter((k) => k.category === "equation").length;
 
   const tiles = [
     {
@@ -96,13 +98,13 @@ export default function ReviewPage() {
       href: "/know-cold",
       icon: Snowflake,
       title: "Know Cold",
-      body: `${KNOW_COLD.length} high-yield cards for the night before.`,
+      body: `${content.knowCold.length} high-yield cards for the night before.`,
     },
     {
       href: "/explainers",
       icon: Sparkles,
       title: "Visual explainers",
-      body: `${EXPLAINERS.length} sixty-second animated walkthroughs.`,
+      body: `${content.explainers.length} sixty-second animated walkthroughs.`,
     },
     {
       href: "/lab",
