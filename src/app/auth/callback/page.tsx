@@ -3,10 +3,13 @@
 /**
  * Landing point for the emailed sign-in link.
  *
- * Supabase sends the student back here with a one-time `code`, which we trade
- * for a session. Once that lands, `AuthProvider` picks it up and
- * `ProgressProvider` swaps to the account-backed store and pulls their history
- * down, so we can send them straight on to studying.
+ * With the implicit auth flow, Supabase puts the session tokens directly in
+ * this URL's hash fragment (#access_token=...) rather than a `?code=` param to
+ * exchange — so there is no server round trip to make here. The Supabase
+ * client parses that hash itself the moment it initialises (detectSessionInUrl
+ * defaults to true), so this page's job is just to wait for that session to
+ * appear and then hand off to `AuthProvider` / `ProgressProvider`, which pull
+ * the student's history down once they see a signed-in user.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -17,11 +20,13 @@ import { Button, ButtonLink, Card } from "@/components/ui";
 
 type Phase = "working" | "done" | "error";
 
+const POLL_MS = 200;
+const TIMEOUT_MS = 6000;
+
 export default function AuthCallbackPage() {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("working");
   const [message, setMessage] = useState<string | null>(null);
-  // React runs effects twice in dev; exchanging a one-time code twice fails.
   const started = useRef(false);
 
   useEffect(() => {
@@ -35,41 +40,37 @@ export default function AuthCallbackPage() {
       return;
     }
 
+    const params = new URLSearchParams(window.location.search);
+    const described = params.get("error_description");
+    if (described) {
+      setPhase("error");
+      setMessage(described);
+      return;
+    }
+
+    let cancelled = false;
     void (async () => {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-      const described = params.get("error_description");
-
-      if (described) {
-        setPhase("error");
-        setMessage(described);
-        return;
-      }
-
-      if (!code) {
-        // Already signed in and revisiting the URL is a success, not a failure.
+      const deadline = Date.now() + TIMEOUT_MS;
+      while (!cancelled) {
         const { data } = await supabase.auth.getSession();
         if (data.session) {
-          setPhase("done");
+          if (!cancelled) setPhase("done");
           return;
         }
-        setPhase("error");
-        setMessage("That link is missing its sign-in code. Try requesting a new one.");
-        return;
+        if (Date.now() >= deadline) break;
+        await new Promise((r) => setTimeout(r, POLL_MS));
       }
-
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
-      if (error) {
+      if (!cancelled) {
         setPhase("error");
         setMessage(
-          /expired|invalid/i.test(error.message)
-            ? "That link has expired or was already used. Request a fresh one."
-            : error.message,
+          "That link has expired, was already used, or was opened somewhere the session could not be read. Request a fresh one.",
         );
-        return;
       }
-      setPhase("done");
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
