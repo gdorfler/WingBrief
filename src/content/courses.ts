@@ -62,10 +62,26 @@ export const COURSES: Record<CourseId, CourseMeta> = {
         "Regulations have no curve to plot, so these are decision engines: change the conditions and watch which clause of the rule produces the answer.",
     },
   },
+  weather: {
+    id: "weather",
+    name: "Weather",
+    tagline: "What the atmosphere is doing, and what happens next",
+    sourceLabel: "Weather Condensed Notes · WX 1–4",
+    icon: "atmosphere",
+    theme: "weather",
+    accent: "#0d9aa8",
+    accentSoft: "#e2f6f8",
+    labLabel: "Weather Lab",
+    labIntro: {
+      title: "Change a condition, watch the atmosphere answer",
+      blurb:
+        "The atmosphere is one system with a few inputs. These labs let you move temperature, moisture, pressure and altitude and watch what the air does about it.",
+    },
+  },
 };
 
 /** Display order in the switcher. */
-export const COURSE_ORDER: CourseId[] = ["aero", "engines", "frr"];
+export const COURSE_ORDER: CourseId[] = ["aero", "engines", "frr", "weather"];
 
 export const DEFAULT_COURSE: CourseId = "aero";
 
@@ -74,4 +90,4 @@ export function isCourseId(value: unknown): value is CourseId {
 }
 
 /** Courses named in the switcher's "coming soon" footer. Not yet built. */
-export const PLANNED_COURSES = ["Weather", "Navigation"];
+export const PLANNED_COURSES = ["Navigation"];

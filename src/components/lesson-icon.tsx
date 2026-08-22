@@ -448,6 +448,213 @@ export function LessonIcon({ name, className }: { name: string; className?: stri
         <circle cx="16" cy="22" r="1.3" fill="currentColor" stroke="none" />
       </>
     ),
+    /* ---------------- Weather ---------------- */
+    "wx-atmosphere": (
+      <>
+        <path d="M4 25 H28" strokeWidth={2} strokeLinecap="round" />
+        <path d="M6 19 H26" strokeWidth={1.7} strokeLinecap="round" opacity={0.7} />
+        <path d="M8 13 H24" strokeWidth={1.5} strokeLinecap="round" strokeDasharray="3 2.5" opacity={0.55} />
+        <path d="M10 7 H22" strokeWidth={1.3} strokeLinecap="round" opacity={0.35} />
+      </>
+    ),
+    "wx-pressure": (
+      <>
+        <ellipse cx="16" cy="16" rx="11" ry="8" strokeWidth={1.4} opacity={0.4} />
+        <ellipse cx="16" cy="16" rx="7" ry="5" strokeWidth={1.6} opacity={0.7} />
+        <text x="16" y="20" textAnchor="middle" fontSize="11" fontWeight="800" fill="currentColor" stroke="none">H</text>
+      </>
+    ),
+    "wx-gradient": (
+      <>
+        <path d="M6 6 V26" strokeWidth={1.6} opacity={0.45} />
+        <path d="M13 6 V26" strokeWidth={1.6} opacity={0.6} />
+        <path d="M22 6 V26" strokeWidth={1.6} opacity={0.8} />
+        <path d="M8 16 H26" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M22 12 L27 16 L22 20" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "wx-altitude": (
+      <>
+        <path d="M4 27 H28" strokeWidth={2} strokeLinecap="round" />
+        <path d="M6 20 L13 20 L18 13 L26 13" strokeWidth={1.8} strokeLinejoin="round" />
+        <path d="M16 5 V27" strokeWidth={1.5} strokeDasharray="3 2.5" opacity={0.6} />
+        <path d="M11 8 H21 M13 5.5 L16 3 L19 5.5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "wx-altimeter": (
+      <>
+        <circle cx="16" cy="16" r="11" strokeWidth={2} />
+        <path d="M16 16 L16 8" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M16 16 L21 20" strokeWidth={1.7} strokeLinecap="round" />
+        <circle cx="16" cy="16" r="1.6" fill="currentColor" stroke="none" />
+      </>
+    ),
+    "wx-moisture": (
+      <>
+        <path d="M5 10 H27" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M5 22 H27" strokeWidth={2.2} strokeLinecap="round" opacity={0.55} />
+        <path d="M16 12 V20" strokeWidth={1.5} strokeDasharray="2 2" />
+        <path d="M22 15 C25 18 25 21 22 21 C19 21 19 18 22 15 Z" strokeWidth={1.5} />
+      </>
+    ),
+    "wx-stability": (
+      <>
+        <rect x="6" y="5" width="20" height="22" rx="3" strokeWidth={1.4} strokeDasharray="3 2.5" opacity={0.5} />
+        <circle cx="16" cy="19" r="5.4" strokeWidth={2} />
+        <path d="M16 12 V6 M13 8.5 L16 5 L19 8.5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "wx-wind": (
+      <>
+        <path d="M4 11 H19 C22 11 22 6 19 6" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 17 H24 C27 17 27 12 24 12" strokeWidth={2} strokeLinecap="round" opacity={0.75} />
+        <path d="M4 23 H16 C19 23 19 27 16 27" strokeWidth={2} strokeLinecap="round" opacity={0.5} />
+      </>
+    ),
+    "wx-breeze": (
+      <>
+        <path d="M4 22 H15" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M16 22 H28 L28 27 H4 V22 H4" strokeWidth={0} fill="none" />
+        <path d="M4 22 H28" strokeWidth={2} strokeLinecap="round" opacity={0.4} />
+        <path d="M22 20 C22 14 26 12 26 8" strokeWidth={1.9} strokeLinecap="round" />
+        <path d="M8 20 C8 15 12 13 12 9" strokeWidth={1.9} strokeLinecap="round" opacity={0.6} />
+        <path d="M12 12 L12 8 L15 10" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" opacity={0.6} />
+      </>
+    ),
+    "wx-jetstream": (
+      <>
+        <path d="M3 12 C10 8 22 16 29 11" strokeWidth={2.4} strokeLinecap="round" />
+        <path d="M3 19 C10 15 22 23 29 18" strokeWidth={1.9} strokeLinecap="round" opacity={0.6} />
+        <path d="M25 8 L29 11 L25 14" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "wx-lifting": (
+      <>
+        <path d="M4 26 L12 14 L20 26" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M25 26 V10 M22 13 L25 9 L28 13" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M3 26 H29" strokeWidth={1.6} opacity={0.5} />
+      </>
+    ),
+    "wx-cloud": (
+      <>
+        <path d="M9 22 C5 22 5 16 9 16 C9 10 18 9 19 15 C24 14 26 22 21 22 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M11 26 L10 29 M16 26 L15 29 M21 26 L20 29" strokeWidth={1.6} strokeLinecap="round" opacity={0.65} />
+      </>
+    ),
+    "wx-front": (
+      <>
+        <path d="M3 24 L3 12 L19 24 Z" strokeWidth={1.9} strokeLinejoin="round" />
+        <path d="M20 22 L26 10" strokeWidth={2} strokeLinecap="round" />
+        <path d="M23 14 L26.5 8 L29 15" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M2 24 H30" strokeWidth={1.8} />
+      </>
+    ),
+    "wx-occluded": (
+      <>
+        <path d="M3 16 H29" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M6 16 L9.5 10 L13 16 Z" fill="currentColor" stroke="none" />
+        <path d="M17 16 A3.5 3.5 0 0 1 24 16 Z" fill="currentColor" stroke="none" />
+        <path d="M3 24 H29" strokeWidth={1.4} opacity={0.35} />
+      </>
+    ),
+    "wx-turbulence": (
+      <>
+        <path d="M3 12 C7 6 11 18 15 12 C19 6 23 18 29 12" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M3 22 C7 16 11 28 15 22 C19 16 23 28 29 22" strokeWidth={1.8} strokeLinecap="round" opacity={0.55} />
+      </>
+    ),
+    "wx-causes": (
+      <>
+        <path d="M4 8 H14" strokeWidth={2} strokeLinecap="round" />
+        <path d="M18 8 H28" strokeWidth={2} strokeLinecap="round" opacity={0.6} />
+        <path d="M4 16 C7 12 10 20 14 16" strokeWidth={2} strokeLinecap="round" />
+        <rect x="18" y="13" width="6" height="6" strokeWidth={1.7} />
+        <path d="M4 26 L10 20 L16 26" strokeWidth={1.9} strokeLinejoin="round" />
+        <path d="M20 26 H28" strokeWidth={2} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "wx-technique": (
+      <>
+        <circle cx="16" cy="16" r="11" strokeWidth={2} />
+        <path d="M6 16 H26" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M12 16 L16 12 L20 16" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" opacity={0.6} />
+      </>
+    ),
+    "wx-icing": (
+      <>
+        <path d="M4 18 C10 14 14 20 20 16 C24 13 27 15 29 14" strokeWidth={2} strokeLinecap="round" />
+        <path d="M6 18 L5 22 M11 17 L10 21 M16 18 L15 22 M21 16 L20 20" strokeWidth={1.7} strokeLinecap="round" />
+        <path d="M3 10 H29" strokeWidth={1.4} strokeDasharray="3 2.5" opacity={0.5} />
+      </>
+    ),
+    "wx-icetype": (
+      <>
+        <path d="M16 4 V28 M6 10 L26 22 M26 10 L6 22" strokeWidth={1.9} strokeLinecap="round" />
+        <path d="M13 7 L16 4 L19 7 M13 25 L16 28 L19 25" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "wx-deice": (
+      <>
+        <path d="M5 20 C11 16 15 22 21 18 C24 16 26 17 28 16" strokeWidth={2} strokeLinecap="round" />
+        <circle cx="11" cy="9" r="5" strokeWidth={1.8} />
+        <path d="M8.5 9 L13.5 9" strokeWidth={2} strokeLinecap="round" />
+        <path d="M20 6 L26 12 M26 6 L20 12" strokeWidth={1.8} strokeLinecap="round" opacity={0.55} />
+      </>
+    ),
+    "wx-thunderstorm": (
+      <>
+        <path d="M8 17 C4 17 4 11 8 11 C8 5 18 4 19 10 C24 9 26 17 21 17 Z" strokeWidth={1.9} strokeLinejoin="round" />
+        <path d="M16 18 L12 24 H16 L13 29" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M22 20 L21 24 M8 20 L7 24" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "wx-microburst": (
+      <>
+        <ellipse cx="16" cy="7" rx="10" ry="3.6" strokeWidth={1.8} />
+        <path d="M16 11 V20 M12.5 17 L16 21.5 L19.5 17" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 22 C10 27 6 26 4 22" strokeWidth={1.9} strokeLinecap="round" />
+        <path d="M18 22 C22 27 26 26 28 22" strokeWidth={1.9} strokeLinecap="round" />
+      </>
+    ),
+    "wx-fog": (
+      <>
+        <path d="M4 14 H26" strokeWidth={2} strokeLinecap="round" opacity={0.4} />
+        <path d="M6 19 H28" strokeWidth={2} strokeLinecap="round" opacity={0.65} />
+        <path d="M4 24 H24" strokeWidth={2} strokeLinecap="round" opacity={0.85} />
+        <path d="M3 28 H29" strokeWidth={1.8} />
+      </>
+    ),
+    "wx-ceiling": (
+      <>
+        <path d="M4 9 H28" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M4 27 H28" strokeWidth={2} strokeLinecap="round" />
+        <path d="M16 11 V25 M13 14 L16 11 L19 14 M13 22 L16 25 L19 22" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "wx-metar": (
+      <>
+        <circle cx="12" cy="22" r="3.4" strokeWidth={2} />
+        <path d="M12 18.6 V6" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M12 7 L21 10" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M12 12 L21 15" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M12 17 L17 18.6" strokeWidth={2.2} strokeLinecap="round" />
+      </>
+    ),
+    "wx-chart": (
+      <>
+        <rect x="4" y="6" width="24" height="20" rx="2.5" strokeWidth={1.9} />
+        <ellipse cx="12" cy="16" rx="5" ry="3.5" strokeWidth={1.3} opacity={0.6} />
+        <path d="M20 10 C22 14 20 18 22 22" strokeWidth={1.6} strokeLinecap="round" />
+        <path d="M20.5 12 L23 13.5 L20.5 15" strokeWidth={1.4} strokeLinejoin="round" fill="currentColor" />
+      </>
+    ),
+    "wx-advisory": (
+      <>
+        <path d="M16 5 L28 26 H4 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M16 13 V19" strokeWidth={2.2} strokeLinecap="round" />
+        <circle cx="16" cy="22.5" r="1.3" fill="currentColor" stroke="none" />
+      </>
+    ),
   };
 
   return (

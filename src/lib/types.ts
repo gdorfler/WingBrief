@@ -20,6 +20,8 @@ export type SourceDocument =
   | "Engines Condensed Notes"
   | "Flight Rules and Regulations Trainee Guide"
   | "FR&R Condensed Notes"
+  | "Weather Condensed Notes"
+  | "Weather Dump Sheet"
   | "Basic Theory and Lift Production"
   | "Drag and Stalls"
   | "Performance Characteristics"
@@ -44,7 +46,7 @@ export interface SourceReference {
 /* ------------------------------------------------------------------ */
 
 /** One course on the WingBrief platform. Adding a course adds an id here. */
-export type CourseId = "aero" | "engines" | "frr";
+export type CourseId = "aero" | "engines" | "frr" | "weather";
 
 export interface CourseMeta {
   id: CourseId;

@@ -333,7 +333,10 @@ describe(`${NAME} · enabling objective matrix`, () => {
     // come only from the condensed notes, which state no EOs at all. Flight
     // Rules publishes a contiguous block, 2.345 through 2.386 — so the floor
     // is per course rather than one shared number.
-    const floor = { aero: 180, engines: 25, frr: 42 }[course];
+    // Weather has NO official trainee guide and no enabling objectives — the
+    // supplied sources are the condensed notes and a dump sheet. So its floor
+    // is zero, and every Weather lesson correctly claims no EOs.
+    const floor = { aero: 180, engines: 25, frr: 42, weather: 0 }[course];
     expect(matrix.length).toBeGreaterThanOrEqual(floor);
   });
 
@@ -429,7 +432,8 @@ describe("diagram and widget registries", () => {
     const labSource =
       read("src/components/lab/labs.tsx") +
       read("src/components/lab/engine-labs.tsx") +
-      read("src/components/lab/frr-labs.tsx");
+      read("src/components/lab/frr-labs.tsx") +
+      read("src/components/lab/weather-labs.tsx");
     for (const lab of ALL_LABS) {
       expect(labSource.includes(`export function ${lab.component}`), lab.component).toBe(true);
     }
@@ -455,6 +459,8 @@ describe("diagram labelling for tap and drag questions", () => {
     "src/components/diagrams/maneuvering.tsx",
     "src/components/diagrams/engines.tsx",
     "src/components/diagrams/frr.tsx",
+    "src/components/diagrams/weather.tsx",
+    "src/components/diagrams/gaps.tsx",
   ].map(read);
 
   /** diagram id -> React component name, from the registry. */

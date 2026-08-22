@@ -45,7 +45,24 @@ export function CourseIcon({
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden className="shrink-0">
       {tone === "solid" && <rect width="32" height="32" rx="9" fill={bg} />}
 
-      {name === "waypoint" ? (
+      {name === "atmosphere" ? (
+        <>
+          {/* Layered air with a cloud and wind streaming through it: the
+              course is about a moving system, not a single object. */}
+          <path d="M3.5 9.5 H14" stroke={fg} strokeWidth="1.6" strokeLinecap="round" opacity="0.45" />
+          <path d="M20 9.5 H28.5" stroke={fg} strokeWidth="1.6" strokeLinecap="round" opacity="0.45" />
+          <path
+            d="M9 20.5 C5.6 20.5 5.6 15.6 9 15.6 C9.2 10.8 17 10 18.2 14.8 C22.6 13.8 24.6 20.5 20.4 20.5 Z"
+            fill="none"
+            stroke={fg}
+            strokeWidth="1.9"
+            strokeLinejoin="round"
+          />
+          <path d="M6 25 H17" stroke={fg} strokeWidth="1.9" strokeLinecap="round" />
+          <path d="M14.5 22.8 L17.4 25 L14.5 27.2" fill="none" stroke={fg} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M20.5 28.4 H26" stroke={fg} strokeWidth="1.6" strokeLinecap="round" opacity="0.6" />
+        </>
+      ) : name === "waypoint" ? (
         <>
           {/* A route between two waypoints: the course is about getting from
               a rule to the action it requires. */}

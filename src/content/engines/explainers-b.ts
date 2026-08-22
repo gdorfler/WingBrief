@@ -8,6 +8,10 @@ const L202: SourceReference = {
   document: "Gas Turbine/Reciprocating Engines",
   chapter: "Gas Turbine/Reciprocating Engines",
 };
+const L203: SourceReference = {
+  document: "Compressor Stalls",
+  chapter: "Compressor Stalls",
+};
 const NOTES = (chapter: string): SourceReference => ({
   document: "Engines Condensed Notes",
   chapter,
@@ -269,5 +273,81 @@ export const EXPLAINERS_B: Explainer[] = [
     ],
     knowCold: "Essential = safety, primary = mission, monitor = convenience.",
     source: NOTES("Electrical"),
+  },
+];
+
+/** Lessons that had no diagram at all until the gap-fill set was added. */
+export const EXPLAINERS_C: Explainer[] = [
+  {
+    id: "ex-thrust-equation",
+    title: "Gross and Net",
+    promise: "Why the same engine produces less thrust once the aircraft is moving.",
+    unit: "e2",
+    conceptIds: ["e-thrust-equation", "e-gross-thrust", "e-net-thrust"],
+    lessonId: "el05-thrust-equation",
+    diagram: { id: "eng-thrust-equation" },
+    frames: [
+      { caption: "Thrust is mass times acceleration. Nothing more complicated.", hold: 3000, props: { airspeed: 0 } },
+      { caption: "Static on the ramp, inlet velocity is zero.", hold: 3000, props: { airspeed: 0 } },
+      { caption: "So all of the exhaust velocity counts. Gross equals net.", hold: 3200, props: { airspeed: 0 } },
+      { caption: "Start moving, and the air is already arriving fast.", hold: 3200, props: { airspeed: 40 } },
+      { caption: "The engine only gets credit for the DIFFERENCE it adds.", hold: 3400, props: { airspeed: 70 } },
+    ],
+    knowCold: "Thrust = mass flow × (V₂ − V₁).",
+    source: L201,
+  },
+  {
+    id: "ex-stall-causes",
+    title: "Two Families of Cause",
+    promise: "Everything that stalls a compressor does it the same way.",
+    unit: "e5",
+    conceptIds: ["e-airflow-distortion", "e-mechanical-malfunctions"],
+    lessonId: "el20-stall-causes",
+    diagram: { id: "eng-stall-causes" },
+    frames: [
+      { caption: "Relative wind inside the compressor is inlet airflow plus RPM.", hold: 3200, props: { cause: "none" } },
+      { caption: "Disturb the inlet, and the blade's angle of attack changes.", hold: 3200, props: { cause: "distortion" } },
+      { caption: "High aircraft AOA, yaw, turbulence, FOD, inlet icing.", hold: 3200, props: { cause: "distortion" } },
+      { caption: "Or break something, and the RPM side changes instead.", hold: 3200, props: { cause: "mechanical" } },
+      { caption: "Either route ends at the same place: the blade stalls.", hold: 3400, props: { cause: "none" } },
+    ],
+    knowCold: "Airflow distortion or mechanical. Both change blade AOA.",
+    source: L203,
+  },
+  {
+    id: "ex-stall-response",
+    title: "Three Moments",
+    promise: "Avoid, prevent and recover happen at three different times.",
+    unit: "e5",
+    conceptIds: ["e-stall-avoidance", "e-stall-prevention", "e-stall-recovery"],
+    lessonId: "el21-avoid-prevent-recover",
+    diagram: { id: "eng-stall-response" },
+    frames: [
+      { caption: "Avoidance happens before anything is wrong.", hold: 3000, props: { stage: "avoid" } },
+      { caption: "Smooth throttle movements, and stay inside the envelope.", hold: 3000, props: { stage: "avoid" } },
+      { caption: "Prevention acts once the conditions start developing.", hold: 3200, props: { stage: "prevent" } },
+      { caption: "Recovery is what is left when it has already stalled.", hold: 3200, props: { stage: "recover" } },
+      { caption: "Recovery is the last resort, not the plan.", hold: 3000, props: { stage: "none" } },
+    ],
+    knowCold: "Avoid, prevent, recover — in that order of preference.",
+    source: L203,
+  },
+  {
+    id: "ex-thrust-ratings",
+    title: "Rated by Temperature",
+    promise: "Three thrust ratings, and the one the turbine limit does not govern.",
+    unit: "e7",
+    conceptIds: ["e-thrust-ratings", "e-fuel-types"],
+    lessonId: "el26-fuels-and-ratings",
+    diagram: { id: "eng-thrust-ratings" },
+    frames: [
+      { caption: "Thrust ratings are set by allowable turbine inlet temperature.", hold: 3200, props: { rating: "none" } },
+      { caption: "Normal: maximum CONTINUOUS turbine temperature. No time limit.", hold: 3200, props: { rating: "normal" } },
+      { caption: "Military: maximum turbine temperature, roughly 30 minutes.", hold: 3200, props: { rating: "military" } },
+      { caption: "Combat uses the afterburner — which burns AFT of the turbine.", hold: 3400, props: { rating: "combat" } },
+      { caption: "So combat alone is not based on turbine temperature limits.", hold: 3200, props: { rating: "combat" } },
+    ],
+    knowCold: "Normal unlimited, military ~30 min, combat is afterburner.",
+    source: NOTES("Fuel System"),
   },
 ];

@@ -289,3 +289,43 @@ export const EXPLAINERS_B: Explainer[] = [
     source: PERF,
   },
 ];
+
+/** Lessons that had no diagram at all until the gap-fill set was added. */
+export const EXPLAINERS_C: Explainer[] = [
+  {
+    id: "x-mass-force-weight",
+    title: "Material, Space, Force",
+    promise: "Three quantities the exam swaps for each other, separated once.",
+    unit: "u1",
+    conceptIds: ["c-mass-volume", "c-force-weight"],
+    lessonId: "l01b-mass-force-weight",
+    diagram: { id: "mass-weight-density" },
+    frames: [
+      { caption: "Mass is the quantity of molecular material in an object.", hold: 3000, props: { highlight: "dense" } },
+      { caption: "Volume is the space it occupies. Two boxes, same mass.", hold: 3000, props: { highlight: "none" } },
+      { caption: "Spread that mass over twice the volume and density halves.", hold: 3200, props: { highlight: "less dense" } },
+      { caption: "Weight is none of these — it is a FORCE.", hold: 3000, props: { highlight: "none" } },
+      { caption: "Mass times the acceleration of gravity. Measured in pounds.", hold: 3200, props: { highlight: "none" } },
+    ],
+    knowCold: "Mass is material. Volume is space. Weight is force.",
+    source: BASIC,
+  },
+  {
+    id: "x-stability-trade",
+    title: "The Beam Tips One Way",
+    promise: "Stability and maneuverability are the same beam, not two dials.",
+    unit: "u6",
+    conceptIds: ["c-increasing-maneuverability"],
+    lessonId: "l28b-maneuverability",
+    diagram: { id: "stability-trade" },
+    frames: [
+      { caption: "Stability resists leaving equilibrium. Maneuverability leaves it easily.", hold: 3200, props: { bias: 0 } },
+      { caption: "They are opposites, so the beam cannot favour both.", hold: 3000, props: { bias: 0 } },
+      { caption: "A transport tips left: stable, easy to fly for hours.", hold: 3200, props: { bias: -1 } },
+      { caption: "A fighter tips right: it departs equilibrium on demand.", hold: 3200, props: { bias: 1 } },
+      { caption: "Two ways to tip it: weaken stability, or enlarge the control surfaces.", hold: 3400, props: { bias: 0.6 } },
+    ],
+    knowCold: "Weaker stability, or bigger control surfaces.",
+    source: PERF,
+  },
+];

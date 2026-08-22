@@ -5,20 +5,22 @@ and Student Naval Flight Officers.
 
 Duolingo-style progression + NotebookLM-style visual explainers + NIFE exam-focused content.
 
-Three courses ship today. They share one engine, one design language and one streak, but
-keep separate mastery, review queues, exams and visual identity — the way three languages
+Four courses ship today. They share one engine, one design language and one streak, but
+keep separate mastery, review queues, exams and visual identity — the way four languages
 sit inside one language app.
 
-| | Aerodynamics | Engines | Flight Rules |
-|---|---|---|---|
-| Identity | Aviation blue · air and flow | Burnt amber · power and machinery | Indigo · rules and charts |
-| Units | 6 | 7 | 8 |
-| Lessons | 33 (~226 min) | 30 (~172 min) | 32 (~162 min) |
-| Concepts | 136 | 100 | 106 |
-| Questions | 344 | 205 | 220 |
-| Explainers · Labs | 35 · 8 | 26 · 9 | 26 · 8 |
-| Know Cold cards | 78 | 61 | 58 |
-| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed | 42, all taught **and** assessed |
+| | Aerodynamics | Engines | Flight Rules | Weather |
+|---|---|---|---|---|
+| Identity | Aviation blue · air and flow | Burnt amber · power and machinery | Indigo · rules and charts | Teal · the moving atmosphere |
+| Units | 6 | 7 | 8 | 10 |
+| Lessons | 33 (~226 min) | 30 (~172 min) | 32 (~162 min) | 27 (~151 min) |
+| Concepts | 136 | 100 | 106 | 73 |
+| Questions | 344 | 205 | 220 | 163 |
+| Explainers · Labs | 37 · 8 | 30 · 9 | 32 · 8 | 28 · 10 |
+| Know Cold cards | 78 | 61 | 58 | 60 |
+| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed | 42, all taught **and** assessed | none published — see below |
+
+Every lesson in every course has a visual explainer, and every unit has a lab.
 
 Lesson counts follow the material rather than a template. An earlier version of the
 curriculum test capped every course at 30 lessons, and Aerodynamics and Engines both came
@@ -27,7 +29,7 @@ defect. The cap is gone. What is enforced instead is depth: **every concept and 
 enabling objective is assessed by at least two questions**, and no single lesson may claim
 more than fifteen objectives.
 
-Weather and Navigation can be added without touching the learning engine.
+Navigation can be added without touching the learning engine.
 
 ---
 
@@ -116,7 +118,7 @@ nothing — the next successful save carries it up.
 
 | | Total |
 |---|---|
-| Courses | 3 |
+| Courses | 4 |
 | Lessons | 60 |
 | Concepts tracked for mastery | 219 |
 | Questions | 387 |
@@ -133,9 +135,10 @@ nothing — the next successful save carries it up.
 - **Lessons** — the flight path: a snaking route through the course's units, per-node state
 - **Lesson player** — hook → visual model → manipulation → cause-effect chain → Know Cold → retrieval
 - **Review** — spaced review, weak areas, mistakes, saved, plus per-concept detail pages
-- **Sim Lab / Scenario Lab** — interactive labs per course. Aerodynamics and Engines
-  simulate a physical relationship; Flight Rules resolves a situation, so it names the
-  section differently and its labs are decision engines rather than sliders
+- **Sim Lab / Scenario Lab / Weather Lab** — interactive labs per course, each named for
+  what it actually does. Aerodynamics and Engines simulate a physical relationship;
+  Flight Rules resolves a situation; Weather changes an atmospheric condition and shows
+  what the air does about it
 - **Exam** — quick / full / unit / weak-area / custom, timed or untimed, with results and review
 - **Know Cold** — the pre-exam compression layer, searchable and filterable
 - **Explainers** — animated 60–120 second visual explainers
@@ -211,6 +214,29 @@ alternate's forecast is below 3,000 ft and 3 SM during ETA ± 1 hour — and nev
 the table's own thresholds for *whether* an alternate is required. Questions on that point
 name the table as the authority instead of quoting numbers it does not supply.
 
+### Weather
+
+**Weather is the one course with no official material.** The other three are built on
+trainee guides or lecture PDFs that publish numbered enabling objectives. The supplied
+Weather sources are:
+
+1. **Weather Condensed Notes** — four blocks: WX 1 Theory, WX 2 Mechanics, WX 3 Hazards,
+   WX 4 Planning and Resources. This is level 4 in the source hierarchy.
+2. **Exhaustive Weather Dump Sheet** — the mnemonics: IWRUM, TDWP, FOCT, WTFM, HI MELT,
+   COUT and the turbulence intensity ladder. Level 5.
+
+There is no Weather trainee guide and there are **no enabling objectives**, so no Weather
+lesson claims one — exactly as Engines units e6–e7 do, for the same reason. The EO matrix
+on the profile is empty for Weather, which is the correct answer rather than a gap. What
+is enforced instead is the coverage rule that applies to every course: every concept is
+taught by a lesson and assessed by at least two questions.
+
+Every number in the course is quoted from the notes: 29.92 and 15 °C, the 2 °C and 1 inHg
+lapse rates, 2,000 ft AGL for the wind layer, FL300 for the jet stream, the clear/rime/mixed
+temperature bands, 2,000–6,000 fpm for a microburst, 50 ft and 20 ft and ⅝ SM for fog, and
+the 2 / 4 / 6 hour advisory validity periods. Where the notes state a relationship, the
+direction is preserved; nothing is filled in from general meteorology.
+
 ---
 
 ## Model fidelity
@@ -250,6 +276,13 @@ indexed** everywhere else — the thrust-versus-factor curves carry a relative y
 so on the diagram, and the sim labs are relationship simulators, not engine models. No
 compressor map, thrust table or airframe-specific engine value appears anywhere.
 
+Weather is the same discipline again, one layer out: its labs are relationship models,
+not meteorological simulations. The Cloud Lab closes a dew point spread when a lifting
+mechanism is applied because the notes say lifting cools a parcel toward saturation — it
+does not compute a lapse rate the source never published. The Storm Lab computes the
+over-the-top clearance from the one rule that exists, 1,000 ft per 10 kt of wind at the
+top, and nothing else.
+
 Flight Rules has no physics to model, so its equivalent discipline is numerical: every
 threshold in the course — 1,000 and 3, 3,000 and 3, brief + 3 hours or ETD + 30 minutes,
 10,000 ft cabin altitude, 250 below 10,000 and 200 under the Class B shelf, 175 / 230 /
@@ -272,6 +305,7 @@ src/
     aero/             units, concepts, questions, lessons, explainers, labs, know-cold
     engines/          the same shape, and the template for any future course
     frr/              Flight Rules and Regulations
+    weather/          Weather
 
   lib/                the engine — pure, testable, no UI
     types.ts          Course/Unit/Lesson/Concept/Question/Mastery/Attempt/Exam

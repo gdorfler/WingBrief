@@ -5,7 +5,7 @@ import { UNITS } from "./units";
 import { CONCEPTS } from "./concepts";
 import { QUESTIONS } from "./questions";
 import { EXPLAINERS } from "./explainers";
-import { EXPLAINERS_B } from "./explainers-b";
+import { EXPLAINERS_B, EXPLAINERS_C } from "./explainers-b";
 import { LABS } from "./labs";
 import { KNOW_COLD } from "./know-cold";
 import { LESSONS_A } from "./lessons/part-a";
@@ -20,7 +20,7 @@ export const AERO_CONTENT: CourseContent = {
   concepts: CONCEPTS,
   lessons: LESSONS,
   questions: QUESTIONS,
-  explainers: [...EXPLAINERS, ...EXPLAINERS_B],
+  explainers: [...EXPLAINERS, ...EXPLAINERS_B, ...EXPLAINERS_C],
   labs: LABS,
   knowCold: KNOW_COLD,
 };

@@ -1275,6 +1275,120 @@ export const WIDGETS: Record<string, WidgetSpec> = {
         ? "Above this ceiling the flight is prohibited, not merely time-limited."
         : "10,000 ft cabin altitude is the trigger. What happens above it depends on the equipment fitted.",
   },
+
+  /* ---------------- Weather ---------------- */
+  LapseRateWidget: {
+    diagram: "wx-lapse-rates",
+    controls: [
+      { kind: "slider", key: "altitude", label: "Altitude", min: 0, max: 20000, step: 500, initial: 0, format: ft },
+    ],
+    toProps: (s) => ({ altitude: s.altitude }),
+    readouts: (s) => [
+      { label: "Temperature", value: `${(15 - (s.altitude / 1000) * 2).toFixed(0)} °C`, tone: "nogo" },
+      { label: "Pressure", value: `${(29.92 - s.altitude / 1000).toFixed(2)} inHg`, tone: "brand" },
+      { label: "Temp lapse", value: "2 °C / 1,000 ft", tone: "neutral" },
+      { label: "Pressure lapse", value: "1 inHg / 1,000 ft", tone: "neutral" },
+    ],
+    note: () => "Two variables, two lapse rates, two units. Both start from the standard sea level values.",
+  },
+
+  DewPointWidget: {
+    diagram: "wx-dewpoint-spread",
+    controls: [
+      { kind: "slider", key: "spread", label: "Dew point spread", min: 0, max: 20, step: 1, initial: 10, format: (v) => `${Math.round(v)} °C` },
+    ],
+    toProps: (s) => ({ spread: s.spread }),
+    readouts: (s) => [
+      { label: "Temperature", value: "20 °C", tone: "nogo" },
+      { label: "Dew point", value: `${(20 - s.spread).toFixed(0)} °C`, tone: "brand" },
+      { label: "Condensation", value: s.spread <= 0.5 ? "Saturated" : s.spread < 6 ? "Increasing" : "Little", tone: s.spread < 6 ? "caution" : "neutral" },
+    ],
+    note: (s) =>
+      s.spread <= 0.5
+        ? "Spread zero means 100% relative humidity — the air cannot hold any more."
+        : "The smaller the depression, the more moisture will condense.",
+  },
+
+  IcingWidget: {
+    diagram: "wx-icing-ladder",
+    controls: [
+      { kind: "slider", key: "temp", label: "Free air temperature", min: -25, max: 5, step: 1, initial: -5, format: (v) => `${Math.round(v)} °C` },
+    ],
+    toProps: (s) => ({ temp: s.temp }),
+    readouts: (s) => {
+      const t = s.temp;
+      const type =
+        t > 0 ? "None" : t >= -10 ? "Clear" : t >= -20 ? "Rime" : "Below the bands";
+      const mixed = t <= -8 && t >= -15;
+      return [
+        { label: "Primary type", value: type, tone: t > 0 ? "go" : t >= -10 ? "nogo" : "brand" },
+        { label: "Mixed possible", value: mixed ? "Yes, −8 to −15" : "No", tone: mixed ? "caution" : "neutral" },
+        { label: "Conditions", value: t >= -10 && t <= 0 ? "Unstable" : t < -10 && t >= -20 ? "Stable" : "—", tone: "neutral" },
+      ];
+    },
+    note: (s) =>
+      s.temp < -20
+        ? "Colder than −20 °C is where you climb to in order to escape icing."
+        : "The mixed band overlaps both clear and rime — it is not a gap between them.",
+  },
+
+  StationModelWidget: {
+    diagram: "wx-station-model",
+    controls: [
+      { kind: "slider", key: "knots", label: "Wind speed", min: 0, max: 95, step: 5, initial: 25, format: kt },
+    ],
+    toProps: (s) => ({ knots: s.knots }),
+    readouts: (s) => {
+      let left = Math.round(s.knots / 5) * 5;
+      const flags = Math.floor(left / 50);
+      left -= flags * 50;
+      const fulls = Math.floor(left / 10);
+      left -= fulls * 10;
+      return [
+        { label: "Flags (50 kt)", value: String(flags), tone: "nogo" },
+        { label: "Full lines (10 kt)", value: String(fulls), tone: "brand" },
+        { label: "Half lines (5 kt)", value: String(Math.floor(left / 5)), tone: "caution" },
+      ];
+    },
+    note: () => "Build the barb from 50s first, then 10s, then a single 5.",
+  },
+
+  PressureFieldWidget: {
+    diagram: "wx-pressure-field",
+    controls: [
+      { kind: "segmented", key: "level", label: "Altitude band", initial: 2, options: [
+        { value: 0, label: "Gradient" },
+        { value: 1, label: "Surface" },
+        { value: 2, label: "Both" },
+      ] },
+    ],
+    toProps: (s) => ({ level: ["gradient", "surface", "both"][s.level] }),
+    readouts: (s) => [
+      { label: "Band", value: ["Above 2,000 AGL", "Below 2,000 AGL", "Both"][s.level], tone: "brand" },
+      { label: "Around a LOW", value: "Counter-clockwise", tone: "nogo" },
+      { label: "Around a HIGH", value: "Clockwise", tone: "brand" },
+      { label: "Friction", value: s.level === 0 ? "Negligible" : "Turns the wind", tone: "caution" },
+    ],
+    note: () => "2,000 ft AGL is the dividing line. Below it, friction turns the wind across the isobars.",
+  },
+
+  StabilityWidget: {
+    diagram: "wx-stability",
+    controls: [
+      { kind: "segmented", key: "state", label: "Parcel vs surroundings", initial: 0, options: [
+        { value: 0, label: "Colder" },
+        { value: 1, label: "Same" },
+        { value: 2, label: "Hotter" },
+      ] },
+    ],
+    toProps: (s) => ({ state: ["stable", "neutral", "unstable"][s.state] }),
+    readouts: (s) => [
+      { label: "Classification", value: ["Stable", "Neutral", "Unstable"][s.state], tone: (["brand", "neutral", "nogo"] as const)[s.state] },
+      { label: "What it does", value: ["Sinks back", "Stays put", "Keeps rising"][s.state], tone: "neutral" },
+      { label: "Air mass", value: ["Warm mass", "—", "Cold mass"][s.state], tone: "neutral" },
+    ],
+    note: () => "Stability is always relative to the surrounding air, never to an absolute temperature.",
+  },
 };
 
 /* ------------------------------------------------------------------ */

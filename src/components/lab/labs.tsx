@@ -59,6 +59,18 @@ import {
   WeatherBriefLab,
   OxygenLab,
 } from "./frr-labs";
+import {
+  AtmosphereLab,
+  AltimeterLab,
+  CloudTypeLab,
+  TurbulenceLab,
+  CloudLab,
+  FrontLab,
+  StormLab,
+  IcingLab,
+  WindLab,
+  ProductLab,
+} from "./weather-labs";
 
 /* ------------------------------------------------------------------ */
 /* Frame                                                               */
@@ -883,6 +895,18 @@ export const LAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   PublicationLab,
   WeatherBriefLab,
   OxygenLab,
+
+  /* Weather */
+  AtmosphereLab,
+  AltimeterLab,
+  CloudTypeLab,
+  TurbulenceLab,
+  CloudLab,
+  FrontLab,
+  StormLab,
+  IcingLab,
+  WindLab,
+  ProductLab,
 };
 
 export function LabHost({ component }: { component: string }) {

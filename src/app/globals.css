@@ -194,6 +194,53 @@ button,
   --color-line-strong: #cac4e2;
 }
 
+:root[data-course="weather"] {
+  /* Atmosphere, moisture, motion. Teal against a pale sky-white. */
+  --color-brand: #0d9aa8;
+  --color-brand-dark: #067a86;
+  --color-brand-light: #4fc6d1;
+  --color-brand-soft: #e2f6f8;
+  --color-brand-soft-2: #c4ecf0;
+  --color-course-ink: #06222b;
+  --color-course-ink-soft: #0b3340;
+
+  /* Deep storm blue rather than the Aero navy. */
+  --color-ink-900: #04161d;
+  --color-ink-800: #06222b;
+  --color-ink-700: #0b3340;
+  --color-ink-600: #14495a;
+  --color-ink-line: #1d6478;
+
+  /* Pale atmospheric white — cooler and lighter than any other course. */
+  --color-canvas: #f2f9fa;
+  --color-surface-2: #e9f5f7;
+  --color-surface-3: #dcedf0;
+  --color-line: #d5e9ec;
+  --color-line-strong: #b6d8dd;
+
+  /* Weather reserves magenta for hazards the other courses never need. */
+  --color-series-alt: #b5359c;
+}
+
+/*
+ * Weather atmospheric field.
+ *
+ * A very faint horizontal banding behind the page, standing in for
+ * atmospheric layers. It has to survive being read over, so it is a
+ * two-stop gradient at a few percent alpha and nothing more.
+ */
+:root[data-course="weather"] body {
+  background-image:
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-brand) 7%, transparent) 0%,
+      transparent 22%,
+      transparent 78%,
+      color-mix(in srgb, var(--color-ink-700) 5%, transparent) 100%
+    );
+  background-attachment: fixed;
+}
+
 /*
  * Course transition. Only the accent-bearing properties animate, and
  * only for a beat — long enough to read as a deliberate change of
