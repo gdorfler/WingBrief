@@ -1,0 +1,358 @@
+import type { Explainer, SourceReference } from "@/lib/types";
+
+const ORG: SourceReference = {
+  document: "Flight Rules and Regulations Trainee Guide",
+  chapter: "Federal Aviation Organization",
+};
+const VIFR: SourceReference = {
+  document: "Flight Rules and Regulations Trainee Guide",
+  chapter: "Visual / Instrument Flight Rules",
+};
+const AIR: SourceReference = {
+  document: "Flight Rules and Regulations Trainee Guide",
+  chapter: "Airspace and General Flight Rules",
+};
+
+/**
+ * Second explainer set.
+ *
+ * Regulations do not animate as naturally as airflow does, so these lean on
+ * the decision-tree diagram: the frames walk a question to its answer rather
+ * than showing a thing change shape.
+ */
+export const EXPLAINERS_B: Explainer[] = [
+  {
+    id: "fx-four-authors",
+    title: "Four Authors",
+    promise: "Who wrote each publication, and how wide an audience each writes for.",
+    unit: "f1",
+    conceptIds: ["fr-far", "fr-aim", "fr-flip", "fr-cnaf", "fr-natops"],
+    lessonId: "fl01-who-writes-the-rules",
+    diagram: { id: "frr-priority" },
+    frames: [
+      { caption: "The FAA writes for everyone who flies in US airspace.", hold: 3000, props: { highlight: "far" } },
+      { caption: "FAR Part 91 regulates. The AIM only explains.", hold: 3200, props: { highlight: "far" } },
+      { caption: "The DOD writes FLIP — charts and plates, for every service.", hold: 3200, props: { highlight: "flip" } },
+      { caption: "The Navy writes CNAF M-3710.7, for all naval aircraft.", hold: 3200, props: { highlight: "cnaf" } },
+      { caption: "And your aircraft's NATOPS is written for your model alone.", hold: 3200, props: { highlight: "natops" } },
+    ],
+    knowCold: "FAR regulates. The AIM explains. FLIP charts. CNAF and NATOPS command.",
+    source: ORG,
+  },
+  {
+    id: "fx-deviation",
+    title: "When You May Deviate",
+    promise: "The one provision that lets a pilot in command break a rule.",
+    unit: "f2",
+    conceptIds: ["fr-pic", "fr-deviation"],
+    lessonId: "fl06-pilot-in-command",
+    diagram: { id: "frr-decision" },
+    frames: [
+      {
+        caption: "The PIC is the final authority as to the operation of the aircraft.",
+        hold: 3200,
+        props: { question: "Is this an emergency situation?", yes: "Deviation authorised", no: "Follow the instruction", chosen: "none" },
+      },
+      {
+        caption: "No emergency, and the specified instructions govern.",
+        hold: 3200,
+        props: { question: "Is this an emergency situation?", yes: "Deviation authorised", no: "Follow the instruction", chosen: "no" },
+      },
+      {
+        caption: "In an emergency, the second test is the PIC's own judgment.",
+        hold: 3200,
+        props: { question: "Does safety justify the deviation?", yes: "Deviate", no: "Follow the instruction", chosen: "none" },
+      },
+      {
+        caption: "Both yes, and deviation is authorised. Mission need alone is not enough.",
+        hold: 3400,
+        props: { question: "Does safety justify the deviation?", yes: "Deviate", no: "Follow the instruction", chosen: "yes" },
+      },
+    ],
+    knowCold: "Emergency, plus the PIC's judgment that safety justifies it.",
+    source: ORG,
+  },
+  {
+    id: "fx-preflight",
+    title: "Five Things, Every Flight",
+    promise: "The preflight minimum, and the exemptions that do not exist.",
+    unit: "f2",
+    conceptIds: ["fr-preflight", "fr-flight-plan"],
+    lessonId: "fl07-preflight-and-flight-plans",
+    diagram: { id: "frr-decision" },
+    frames: [
+      {
+        caption: "Weather, NOTAMs, fuel, alternates, delays. That is the minimum.",
+        hold: 3200,
+        props: { question: "Is this a local training flight?", yes: "Still required", no: "Still required", chosen: "none" },
+      },
+      {
+        caption: "A familiar local flight? Preflight planning is still required.",
+        hold: 3200,
+        props: { question: "Is this a local training flight?", yes: "Still required", no: "Still required", chosen: "yes" },
+      },
+      {
+        caption: "An urgent combat mission? Still required.",
+        hold: 3200,
+        props: { question: "Is the mission urgent?", yes: "Still required", no: "Still required", chosen: "yes" },
+      },
+      {
+        caption: "There is no familiarity exemption and no urgency exemption.",
+        hold: 3400,
+        props: { question: "Is there any exemption?", yes: "No", no: "No", chosen: "no" },
+      },
+    ],
+    knowCold: "Weather, NOTAMs, fuel, alternates, delays — every flight.",
+    source: ORG,
+  },
+  {
+    id: "fx-oxygen-ladder",
+    title: "Climbing Past 10,000",
+    promise: "One trigger altitude, then three different ceilings.",
+    unit: "f3",
+    conceptIds: ["fr-oxygen", "fr-oxygen-unpressurized", "fr-oxygen-tacjet"],
+    lessonId: "fl12-human-performance",
+    diagram: { id: "frr-oxygen" },
+    frames: [
+      { caption: "Below 10,000 ft cabin altitude, nothing is required.", hold: 2800, props: { altitude: 8000, equipped: true } },
+      { caption: "Past 10,000, all occupants use supplemental oxygen.", hold: 3000, props: { altitude: 11000, equipped: true } },
+      { caption: "With a system fitted, that band is limited to 3 hours.", hold: 3200, props: { altitude: 12500, equipped: true } },
+      { caption: "Above 13,000, flight is prohibited, not merely limited.", hold: 3200, props: { altitude: 14500, equipped: true } },
+      { caption: "With no system at all: 1 hour, and the ceiling drops to 12,000.", hold: 3400, props: { altitude: 12500, equipped: false } },
+    ],
+    knowCold: "10,000 triggers it. 13,000 with a system, 12,000 without.",
+    source: ORG,
+  },
+  {
+    id: "fx-runway-number",
+    title: "Heading to Number",
+    promise: "Turn a magnetic heading into the number painted on the runway.",
+    unit: "f4",
+    conceptIds: ["fr-runway-numbering"],
+    lessonId: "fl13-runway-orientation",
+    diagram: { id: "frr-runway-numbering" },
+    frames: [
+      { caption: "Approach on a heading of 093°.", hold: 2600, props: { heading: 93 } },
+      { caption: "Round to the nearest ten: 090.", hold: 2800, props: { heading: 90 } },
+      { caption: "Drop the last digit. Runway 09.", hold: 3000, props: { heading: 90 } },
+      { caption: "Turn around and the same strip is runway 27.", hold: 3000, props: { heading: 270 } },
+      { caption: "355° rounds to 360, so it is runway 36 — never 00.", hold: 3400, props: { heading: 355 } },
+    ],
+    knowCold: "Round to ten, drop a digit. The far end is 18 away.",
+    source: VIFR,
+  },
+  {
+    id: "fx-vmc-imc",
+    title: "Weather or Rules",
+    promise: "Four terms, and the line that runs between them.",
+    unit: "f5",
+    conceptIds: ["fr-vmc", "fr-imc", "fr-vfr-ifr-terms", "fr-see-and-avoid"],
+    lessonId: "fl17-vmc-imc-vfr-ifr",
+    diagram: { id: "frr-cloud-clearance" },
+    frames: [
+      { caption: "VMC and IMC describe the WEATHER, measured against minima.", hold: 3200, props: { regime: "standard" } },
+      { caption: "VFR and IFR describe the RULES you are operating under.", hold: 3200, props: { regime: "standard" } },
+      { caption: "So an IFR flight plan flown in VMC is entirely normal.", hold: 3200, props: { regime: "standard" } },
+      { caption: "CNAF adds: no distinguishable horizon means IMC, whatever the numbers say.", hold: 3400, props: { regime: "classb" } },
+      { caption: "And see-and-avoid applies under both sets of rules.", hold: 3200, props: { regime: "standard" } },
+    ],
+    knowCold: "VMC/IMC is the sky. VFR/IFR is the rulebook.",
+    source: VIFR,
+  },
+  {
+    id: "fx-vfr-or-ifr",
+    title: "Which Plan to File",
+    promise: "Two tests at the destination, one along the route.",
+    unit: "f5",
+    conceptIds: ["fr-vfr-destination", "fr-precluding-vfr", "fr-basic-vfr"],
+    lessonId: "fl18-vfr-weather-minimums",
+    diagram: { id: "frr-decision" },
+    frames: [
+      {
+        caption: "Start with the destination forecast, ETA plus or minus one hour.",
+        hold: 3200,
+        props: { question: "Ceiling 1,000 ft and visibility 3 SM?", yes: "Check the route", no: "File IFR", chosen: "none" },
+      },
+      {
+        caption: "Below either number, and VFR is off the table.",
+        hold: 3200,
+        props: { question: "Ceiling 1,000 ft and visibility 3 SM?", yes: "Check the route", no: "File IFR", chosen: "no" },
+      },
+      {
+        caption: "It passes. Now the route has to permit visual flight too.",
+        hold: 3200,
+        props: { question: "Does the route permit VFR?", yes: "File VFR", no: "File IFR", chosen: "none" },
+      },
+      {
+        caption: "Marginal or deteriorating anywhere along it means IFR.",
+        hold: 3200,
+        props: { question: "Does the route permit VFR?", yes: "File VFR", no: "File IFR", chosen: "no" },
+      },
+      {
+        caption: "Both pass, and VFR may be filed.",
+        hold: 3000,
+        props: { question: "Does the route permit VFR?", yes: "File VFR", no: "File IFR", chosen: "yes" },
+      },
+    ],
+    knowCold: "Destination 1,000 and 3, and a route that permits VFR. Both.",
+    source: VIFR,
+  },
+  {
+    id: "fx-alternate-required",
+    title: "What the Alternate Must Have",
+    promise: "Not just somewhere else — somewhere usable with the equipment you carry.",
+    unit: "f5",
+    conceptIds: ["fr-alternate", "fr-ifr-fuel"],
+    lessonId: "fl21-alternates-and-ifr-fuel",
+    diagram: { id: "frr-decision" },
+    frames: [
+      {
+        caption: "The IFR Filing Criteria table decides whether you need one at all.",
+        hold: 3200,
+        props: { question: "Is an alternate required?", yes: "It must meet criteria", no: "Fuel as for VFR", chosen: "none" },
+      },
+      {
+        caption: "No alternate required, and the fuel rule is the same as VFR.",
+        hold: 3200,
+        props: { question: "Is an alternate required?", yes: "It must meet criteria", no: "Fuel as for VFR", chosen: "no" },
+      },
+      {
+        caption: "One IS required. Is its forecast below 3,000 and 3 at ETA ± 1 hour?",
+        hold: 3400,
+        props: { question: "Alternate forecast below 3,000 / 3?", yes: "Needs a no-radio approach", no: "Standard criteria", chosen: "none" },
+      },
+      {
+        caption: "If so, it must have a published approach flyable without two-way radio.",
+        hold: 3400,
+        props: { question: "Alternate forecast below 3,000 / 3?", yes: "Needs a no-radio approach", no: "Standard criteria", chosen: "yes" },
+      },
+    ],
+    knowCold: "3,000 and 3 at the alternate, ETA ± 1 hour.",
+    source: VIFR,
+  },
+  {
+    id: "fx-aerobatic-test",
+    title: "Is It Aerobatic?",
+    promise: "Three thresholds, and the manoeuvre that is exempt from all of them.",
+    unit: "f6",
+    conceptIds: ["fr-aerobatic-definition", "fr-aerobatic-rules"],
+    lessonId: "fl23-aerobatic-flight",
+    diagram: { id: "frr-decision" },
+    frames: [
+      {
+        caption: "Bank greater than 60°, pitch beyond ±45°, or more than 2.0 g.",
+        hold: 3200,
+        props: { question: "Any threshold exceeded, intentionally?", yes: "Aerobatic", no: "Not aerobatic", chosen: "none" },
+      },
+      {
+        caption: "None exceeded, and it is not aerobatic flight.",
+        hold: 3000,
+        props: { question: "Any threshold exceeded, intentionally?", yes: "Aerobatic", no: "Not aerobatic", chosen: "no" },
+      },
+      {
+        caption: "One is enough. It does not take all three.",
+        hold: 3000,
+        props: { question: "Any threshold exceeded, intentionally?", yes: "Aerobatic", no: "Not aerobatic", chosen: "yes" },
+      },
+      {
+        caption: "Unless it is a break conforming to the model NATOPS manual.",
+        hold: 3400,
+        props: { question: "Is it a NATOPS-conforming break?", yes: "NOT aerobatic", no: "Aerobatic", chosen: "yes" },
+      },
+    ],
+    knowCold: "60, 45, 2.0 — and a NATOPS break is exempt.",
+    source: VIFR,
+  },
+  {
+    id: "fx-controlled-or-not",
+    title: "Who Is Watching",
+    promise: "What 'controlled airspace' actually promises you.",
+    unit: "f7",
+    conceptIds: ["fr-controlled", "fr-uncontrolled", "fr-class-g"],
+    lessonId: "fl24-controlled-and-uncontrolled",
+    diagram: { id: "frr-airspace-profile" },
+    frames: [
+      { caption: "Controlled airspace means ATC service is PROVIDED there.", hold: 3200, props: { highlight: "none" } },
+      { caption: "Not that you are being watched — that depends how you are flying.", hold: 3200, props: { highlight: "e" } },
+      { caption: "IFR flights get separation service throughout.", hold: 3000, props: { highlight: "a" } },
+      { caption: "VFR flights get whatever the airspace classification provides.", hold: 3200, props: { highlight: "c" } },
+      { caption: "Class G is uncontrolled: ATC has neither authority nor responsibility.", hold: 3400, props: { highlight: "g" } },
+    ],
+    knowCold: "A, B, C, D, E are controlled. Only G is not.",
+    source: AIR,
+  },
+  {
+    id: "fx-minimums-table",
+    title: "Three Numbers, Two Exceptions",
+    promise: "Learn the standard row, then the two places it changes.",
+    unit: "f7",
+    conceptIds: ["fr-vfr-minimums-table"],
+    lessonId: "fl27-vfr-minimums-by-class",
+    diagram: { id: "frr-cloud-clearance" },
+    frames: [
+      { caption: "The standard row: 1,000 above, 500 below, 2,000 horizontal, 3 SM.", hold: 3400, props: { regime: "standard" } },
+      { caption: "Class C, Class D and Class E below 10,000 MSL all use it.", hold: 3200, props: { regime: "standard" } },
+      { caption: "Class B relaxes to clear of clouds — ATC separates everyone anyway.", hold: 3400, props: { regime: "classb" } },
+      { caption: "Above 10,000 MSL it TIGHTENS instead: 1,000 / 1,000 / 1 SM.", hold: 3400, props: { regime: "high" } },
+      { caption: "And visibility goes to 5 SM, because closing speeds are higher.", hold: 3200, props: { regime: "high" } },
+    ],
+    knowCold: "1,000 / 500 / 2,000 / 3. Except B, and except high.",
+    source: AIR,
+  },
+  {
+    id: "fx-avoidance-numbers",
+    title: "What to Stay Away From",
+    promise: "Four avoidance rules, four different distances.",
+    unit: "f8",
+    conceptIds: ["fr-noise-sensitive", "fr-wildlife", "fr-commercial-avoidance", "fr-careless"],
+    lessonId: "fl32-disturbances-and-conduct",
+    diagram: { id: "frr-altitude" },
+    frames: [
+      { caption: "Congested area: 1,000 ft above the highest obstacle within 2,000 ft.", hold: 3400, props: { setting: "congested" } },
+      { caption: "Elsewhere: 500 ft AGL.", hold: 2800, props: { setting: "other" } },
+      { caption: "Noise-sensitive areas: stay above 3,000 ft AGL.", hold: 3200, props: { setting: "other" } },
+      { caption: "Wildlife habitations: also 3,000 ft AGL, conditions permitting.", hold: 3200, props: { setting: "other" } },
+      { caption: "Commercial carriers: 500 ft vertically and/or 1 SM laterally.", hold: 3400, props: { setting: "congested" } },
+    ],
+    knowCold: "3,000 AGL for noise and wildlife. 500 and 1 SM for carriers.",
+    source: AIR,
+  },
+  {
+    id: "fx-vfr-on-top",
+    title: "An IFR Clearance That Looks Like VFR",
+    promise: "What VFR-on-top actually frees you from, and what it does not.",
+    unit: "f5",
+    conceptIds: ["fr-vfr-on-top", "fr-ifr-general"],
+    lessonId: "fl19-ifr-and-vfr-on-top",
+    diagram: { id: "frr-decision" },
+    frames: [
+      {
+        caption: "You are cleared VFR-on-top. Are you still an IFR aircraft?",
+        hold: 3200,
+        props: { question: "Still on an IFR flight plan?", yes: "Yes — always", no: "No", chosen: "none" },
+      },
+      {
+        caption: "Yes. VFR-on-top is an IFR clearance, start to finish.",
+        hold: 3200,
+        props: { question: "Still on an IFR flight plan?", yes: "Yes — always", no: "No", chosen: "yes" },
+      },
+      {
+        caption: "You pick the altitude. But which set of cruising altitudes?",
+        hold: 3200,
+        props: { question: "Which cruising altitudes apply?", yes: "VFR altitudes", no: "IFR altitudes", chosen: "none" },
+      },
+      {
+        caption: "VFR ones — odd or even thousands PLUS 500.",
+        hold: 3200,
+        props: { question: "Which cruising altitudes apply?", yes: "VFR altitudes", no: "IFR altitudes", chosen: "yes" },
+      },
+      {
+        caption: "And VFR visibility and cloud clearance still bind you throughout.",
+        hold: 3400,
+        props: { question: "Do VFR weather minimums apply?", yes: "Yes", no: "No", chosen: "yes" },
+      },
+    ],
+    knowCold: "IFR clearance, VFR altitudes, VFR minimums.",
+    source: VIFR,
+  },
+];

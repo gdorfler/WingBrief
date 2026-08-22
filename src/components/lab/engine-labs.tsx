@@ -679,3 +679,78 @@ export function MalfunctionLab() {
     </div>
   );
 }
+
+/** The hot section: what the burner does with its air, and what the turbine takes back. */
+export function HotSectionLab() {
+  const [station, setStation] = useState<"burner" | "turbine" | "exhaust">("burner");
+
+  const view = {
+    burner: {
+      diagram: "eng-burner-split",
+      readouts: [
+        { label: "Primary air", value: "25%", tone: "nogo" as Tone, hint: "supports combustion" },
+        { label: "Secondary air", value: "75%", tone: "brand" as Tone, hint: "cools and shapes the flame" },
+        { label: "Pressure", value: "Slightly decreases", tone: "caution" as Tone },
+        { label: "Temperature", value: "Increases", tone: "nogo" as Tone },
+      ],
+      chain: [
+        { label: "Fuel and primary air burn", trend: "up" as const },
+        { label: "Secondary air cools the liner", trend: "same" as const },
+        { label: "Temperature and velocity up, pressure slightly down", trend: "down" as const },
+      ],
+      note: "Only a quarter of the air entering the burner actually supports combustion. The rest is there to keep the liner and the turbine alive.",
+    },
+    turbine: {
+      diagram: "eng-turbine-energy",
+      readouts: [
+        { label: "To the compressor", value: "75%", tone: "nogo" as Tone },
+        { label: "Left for thrust", value: "25%", tone: "go" as Tone },
+        { label: "Velocity", value: "Increases", tone: "go" as Tone },
+        { label: "Pressure", value: "Decreases", tone: "nogo" as Tone },
+      ],
+      chain: [
+        { label: "Stationary stator first, then rotor", trend: "same" as const },
+        { label: "75% of the energy goes back to drive the compressor", trend: "down" as const },
+        { label: "What remains accelerates out the exhaust", trend: "up" as const },
+      ],
+      note: "Three quarters of everything the burner produced is spent turning the compressor. The engine works hard to keep itself running.",
+    },
+    exhaust: {
+      diagram: "eng-cutaway",
+      readouts: [
+        { label: "Nozzle shape", value: "Convergent", tone: "brand" as Tone, hint: "C/D if supersonic" },
+        { label: "Velocity", value: "Increases", tone: "go" as Tone },
+        { label: "Pressure", value: "Decreases", tone: "nogo" as Tone },
+        { label: "Afterburner", value: "+50% or more", tone: "caution" as Tone },
+      ],
+      chain: [
+        { label: "Convergent nozzle accelerates the gases", trend: "up" as const },
+        { label: "Divergent section takes them supersonic, if fitted", trend: "up" as const },
+        { label: "Final velocity increase is the thrust", trend: "up" as const },
+      ],
+      note: "A convergent nozzle can only reach the speed of sound. Going beyond it takes the divergent section, which is why supersonic aircraft carry C/D nozzles.",
+    },
+  }[station];
+
+  return (
+    <LabFrame
+      diagram={view.diagram}
+      diagramProps={station === "exhaust" ? { highlight: "exhaust" } : {}}
+      controls={
+        <Segmented
+          label="Station"
+          value={station}
+          options={[
+            { value: "burner", label: "Burner" },
+            { value: "turbine", label: "Turbine" },
+            { value: "exhaust", label: "Exhaust" },
+          ]}
+          onChange={setStation}
+        />
+      }
+      readouts={view.readouts}
+      chain={view.chain}
+      note={view.note}
+    />
+  );
+}

@@ -14,7 +14,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l14-thrust-and-power",
     unit: "u4",
-    index: 14,
+    index: 16,
     title: "Thrust & Power Curves",
     subtitle: "Required vs available, and where L/Dmax sits",
     estimatedMinutes: 8,
@@ -104,7 +104,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l15-excess-and-shifts",
     unit: "u4",
-    index: 15,
+    index: 17,
     title: "Excess Thrust, Excess Power & Curve Shifts",
     subtitle: "Weight, altitude and configuration",
     estimatedMinutes: 9,
@@ -201,7 +201,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l16-takeoff-landing",
     unit: "u4",
-    index: 16,
+    index: 18,
     title: "Takeoff & Landing Performance",
     subtitle: "1.2, 1.3 and the 4-H Club",
     estimatedMinutes: 7,
@@ -215,6 +215,9 @@ export const LESSONS_B: Lesson[] = [
       "c-takeoff-distance",
       "c-4h-club",
       "c-hydroplaning",
+      "c-nwlotd",
+      "c-crosswind-technique",
+      "c-crosswind-limits",
     ],
     masteryThreshold: 0.8,
     screens: [
@@ -288,6 +291,7 @@ export const LESSONS_B: Lesson[] = [
     questionIds: [
       "q-u4-017", "q-u4-018", "q-u4-019", "q-u4-020", "q-u4-021", "q-u1-008",
       "q-cov-007",
+      "q-db-015", "q-db-016", "q-db-017", "q-db-018", "q-db-019", "q-db-048",
     ],
     memorize: [
       "Takeoff 1.2 Vs · Landing 1.3 Vs",
@@ -300,13 +304,15 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l17-climb",
     unit: "u4",
-    index: 17,
+    index: 19,
     title: "Climb Performance",
     subtitle: "Vx, Vy and ceilings",
     estimatedMinutes: 6,
     mapIcon: "climb",
     enablingObjectives: ["2.129", "2.130", "2.131", "2.132", "2.133", "2.134"],
-    conceptIds: ["c-vx-vy", "c-ceilings", "c-excess-thrust", "c-excess-power"],
+    conceptIds: ["c-vx-vy", "c-ceilings", "c-excess-thrust", "c-excess-power",
+      "c-best-climb-profile",
+    ],
     masteryThreshold: 0.8,
     screens: [
       {
@@ -370,6 +376,7 @@ export const LESSONS_B: Lesson[] = [
     ],
     questionIds: [
       "q-u4-022", "q-u4-023", "q-u4-024", "q-u4-025", "q-u4-007", "q-cov-005",
+      "q-db-011", "q-db-012",
     ],
     memorize: [
       "Vx = angle = obstacle = thrust excess",
@@ -382,7 +389,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l18-range-endurance",
     unit: "u4",
-    index: 18,
+    index: 20,
     title: "Max Range & Max Endurance",
     subtitle: "Distance vs time, on the right curve",
     estimatedMinutes: 8,
@@ -395,6 +402,7 @@ export const LESSONS_B: Lesson[] = [
       "c-max-endurance",
       "c-range-endurance-factors",
       "c-mach",
+      "c-fuel-flow-turboprop",
     ],
     masteryThreshold: 0.85,
     screens: [
@@ -473,6 +481,7 @@ export const LESSONS_B: Lesson[] = [
     questionIds: [
       "q-u4-026", "q-u4-027", "q-u4-028", "q-u4-029", "q-u4-030",
       "q-u4-031", "q-u4-032", "q-u4-033", "q-u4-034", "q-cov-006",
+      "q-db-013", "q-db-014",
     ],
     memorize: [
       "Prop: range at L/Dmax, endurance at bottom of power curve",
@@ -486,7 +495,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l19-glide-reverse-command",
     unit: "u4",
-    index: 19,
+    index: 21,
     title: "Glide & the Region of Reverse Command",
     subtitle: "Best glide, and the part of the curve that kills",
     estimatedMinutes: 8,
@@ -574,7 +583,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l20-boundary-layer",
     unit: "u5",
-    index: 20,
+    index: 22,
     title: "The Boundary Layer",
     subtitle: "Laminar, turbulent, and the adverse gradient",
     estimatedMinutes: 6,
@@ -642,7 +651,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l21-the-stall",
     unit: "u5",
-    index: 21,
+    index: 23,
     title: "The Stall",
     subtitle: "One cause, one cure",
     estimatedMinutes: 7,
@@ -731,7 +740,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l22-stall-speed",
     unit: "u5",
-    index: 22,
+    index: 24,
     title: "Stall Speed Factors",
     subtitle: "Weight, altitude, power and load",
     estimatedMinutes: 7,
@@ -821,7 +830,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l23-high-lift-devices",
     unit: "u5",
-    index: 23,
+    index: 25,
     title: "High Lift Devices",
     subtitle: "Slats raise the stall AOA; flaps lower it",
     estimatedMinutes: 6,
@@ -891,7 +900,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l24-turns-load-factor",
     unit: "u5",
-    index: 24,
+    index: 26,
     title: "Turns & Load Factor",
     subtitle: "Why bank raises stall speed",
     estimatedMinutes: 8,
@@ -905,6 +914,7 @@ export const LESSONS_B: Lesson[] = [
       "c-load-factor",
       "c-accelerated-stall",
       "c-turn-rate-radius",
+      "c-turn-weight-thrust-drag",
     ],
     masteryThreshold: 0.85,
     screens: [
@@ -974,6 +984,7 @@ export const LESSONS_B: Lesson[] = [
     questionIds: [
       "q-u5-024", "q-u5-025", "q-u5-026", "cc-u5-027", "q-u5-028",
       "sp-u5-029", "q-u5-030", "trap-u5-031", "q-cov-008",
+      "q-db-020", "q-db-021", "q-db-022",
     ],
     memorize: [
       "n = L/W = 1/cos φ",
@@ -988,7 +999,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l25-vn-diagram",
     unit: "u5",
-    index: 25,
+    index: 27,
     title: "The V-n Diagram",
     subtitle: "Structural limits and the safe envelope",
     estimatedMinutes: 8,
@@ -1096,7 +1107,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l26-slips-skids-prop",
     unit: "u6",
-    index: 26,
+    index: 28,
     title: "Slips, Skids & Propeller Effects",
     subtitle: "Why the nose always wants to go left",
     estimatedMinutes: 7,
@@ -1180,7 +1191,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l27-spins",
     unit: "u6",
-    index: 27,
+    index: 29,
     title: "Spins",
     subtitle: "Stall plus yaw, and how to undo it",
     estimatedMinutes: 8,
@@ -1194,6 +1205,7 @@ export const LESSONS_B: Lesson[] = [
       "c-spin-wings",
       "c-spin-recovery",
       "c-spin-factors",
+      "c-empennage-spin",
     ],
     masteryThreshold: 0.85,
     screens: [
@@ -1272,6 +1284,7 @@ export const LESSONS_B: Lesson[] = [
       "q-u6-009", "q-u6-010", "q-u6-011", "cc-u6-012", "q-u6-013",
       "cc-u6-014", "q-u6-015", "q-u6-016", "q-u6-017", "q-u6-018",
       "q-u6-019", "q-u6-020", "q-u6-021",
+      "q-db-037", "q-db-038", "q-db-039",
     ],
     memorize: [
       "Spin = stall + yaw",
@@ -1286,15 +1299,14 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l28-stability",
     unit: "u6",
-    index: 28,
+    index: 30,
     title: "Stability & Dynamic Modes",
     subtitle: "Static, dynamic, and what each surface contributes",
     estimatedMinutes: 8,
     mapIcon: "stability",
     enablingObjectives: [
-      "2.169", "2.170", "2.171", "2.172", "2.173", "2.174", "2.175",
-      "2.176", "2.177", "2.178", "2.179", "2.180", "2.181", "2.182",
-      "2.183", "2.184", "2.185",
+      "2.169", "2.170", "2.171", "2.172", "2.175", "2.176", "2.177", "2.178",
+      "2.179", "2.180", "2.181", "2.182", "2.183", "2.184", "2.185",
     ],
     conceptIds: [
       "c-static-stability",
@@ -1376,9 +1388,69 @@ export const LESSONS_B: Lesson[] = [
   },
 
   {
+    id: "l28b-maneuverability",
+    unit: "u6",
+    index: 31,
+    title: "Maneuverability",
+    subtitle: "The other half of the stability trade",
+    estimatedMinutes: 5,
+    mapIcon: "turn",
+    enablingObjectives: ["2.173", "2.174"],
+    conceptIds: ["c-increasing-maneuverability"],
+    masteryThreshold: 0.75,
+    screens: [
+      {
+        kind: "hook",
+        headline: "Stability and maneuverability are opposites, and the designer has to choose",
+        line: "A transport wants one. A fighter wants the other. Neither is a flaw.",
+      },
+      {
+        kind: "compare",
+        headline: "The trade",
+        columns: ["Stable airplane", "Maneuverable airplane"],
+        rows: [
+          { label: "Leaving equilibrium", a: "Resists it", b: "Departs easily" },
+          { label: "Returning to equilibrium", a: "Tends to return", b: "Less likely to return" },
+          { label: "Pilot workload", a: "Low", b: "Higher — needs more attention" },
+          { label: "Suits", a: "Long range and easy landings", b: "High performance turning" },
+        ],
+      },
+      {
+        kind: "chain",
+        headline: "Two ways to buy maneuverability",
+        nodes: [
+          { label: "Weaken the airplane's stability", trend: "down" },
+          { label: "Or enlarge the control surfaces", trend: "up" },
+          { label: "Larger surfaces generate larger moments", trend: "up", emphasis: true },
+        ],
+        footnote:
+          "Both work. The first costs pilot attention; the second costs weight and drag.",
+      },
+      {
+        kind: "anchor",
+        headline: "Know Cold",
+        statements: [
+          "Maneuverability is the ease of LEAVING equilibrium.",
+          "Two ways to increase it: weaker stability, or larger control surfaces.",
+          "The mission dictates the compromise.",
+        ],
+      },
+      { kind: "question", questionId: "q-db-023" },
+      { kind: "question", questionId: "q-db-024" },
+      { kind: "question", questionId: "q-u6-021" },
+    ],
+    questionIds: ["q-db-023", "q-db-024", "q-u6-021"],
+    memorize: [
+      "Stability and maneuverability are opposites",
+      "Weaker stability OR larger control surfaces",
+    ],
+    sourceReferences: [TG("Performance and Maneuvering", ["2.173", "2.174"])],
+  },
+
+  {
     id: "l29-wake-turbulence",
     unit: "u6",
-    index: 29,
+    index: 32,
     title: "Wake Turbulence",
     subtitle: "Heavy, slow, clean — and how to stay out of it",
     estimatedMinutes: 7,
@@ -1487,7 +1559,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l30-wind-shear",
     unit: "u6",
-    index: 30,
+    index: 33,
     title: "Wind Shear",
     subtitle: "Increasing, decreasing, and the microburst trap",
     estimatedMinutes: 7,

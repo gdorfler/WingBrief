@@ -13,15 +13,19 @@ sit inside one language app.
 |---|---|---|---|
 | Identity | Aviation blue · air and flow | Burnt amber · power and machinery | Indigo · rules and charts |
 | Units | 6 | 7 | 8 |
-| Lessons | 30 (~209 min) | 30 (~172 min) | 32 (~162 min) |
-| Concepts | 119 | 100 | 106 |
-| Questions | 242 | 145 | 154 |
-| Explainers · Labs | 20 · 8 | 12 · 8 | 13 · 5 |
+| Lessons | 33 (~226 min) | 30 (~172 min) | 32 (~162 min) |
+| Concepts | 136 | 100 | 106 |
+| Questions | 344 | 205 | 220 |
+| Explainers · Labs | 35 · 8 | 26 · 9 | 26 · 8 |
 | Know Cold cards | 78 | 61 | 58 |
 | Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed | 42, all taught **and** assessed |
 
-Lesson counts follow the material rather than a template: Flight Rules needs 32 lessons to
-cover its 42 enabling objectives honestly, and gets them.
+Lesson counts follow the material rather than a template. An earlier version of the
+curriculum test capped every course at 30 lessons, and Aerodynamics and Engines both came
+in at exactly 30 — evidence the quota was shaping the content rather than catching a
+defect. The cap is gone. What is enforced instead is depth: **every concept and every
+enabling objective is assessed by at least two questions**, and no single lesson may claim
+more than fifteen objectives.
 
 Weather and Navigation can be added without touching the learning engine.
 

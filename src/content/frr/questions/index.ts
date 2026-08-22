@@ -4,6 +4,7 @@ import { F3_QUESTIONS } from "./f3";
 import { F5_QUESTIONS } from "./f5";
 import { F7_QUESTIONS } from "./f7";
 import { F8_QUESTIONS } from "./f8";
+import { DEPTH_QUESTIONS } from "./depth";
 
 export const QUESTIONS: Question[] = [
   ...F1_QUESTIONS,
@@ -11,6 +12,7 @@ export const QUESTIONS: Question[] = [
   ...F5_QUESTIONS,
   ...F7_QUESTIONS,
   ...F8_QUESTIONS,
+  ...DEPTH_QUESTIONS,
 ];
 
 export const QUESTION_BY_ID: Record<string, Question> = Object.fromEntries(

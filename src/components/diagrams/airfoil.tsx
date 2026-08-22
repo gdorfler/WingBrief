@@ -102,6 +102,104 @@ export function AirfoilGeometry(p: DiagramProps) {
   );
 }
 
+
+/* ------------------------------------------------------------------ */
+
+/**
+ * Wing planform seen from above, with the four measurements the guide
+ * defines: root chord, tip chord, sweep to the 25% chord line, and span.
+ * Dihedral cannot be shown from above, so it gets a small front view inset.
+ */
+export function WingPlanform(p: DiagramProps) {
+  const labels = bool(p.labels, true);
+
+  // Half-span drawn right of the centerline, mirrored for the left.
+  const cx = 250;
+  const rootLE = 74;
+  const rootTE = 196;
+  const tipLE = 116;
+  const tipTE = 172;
+  const halfSpan = 168;
+
+  const half = (dir: number) => {
+    const x = (v: number) => cx + dir * v;
+    return (
+      <g key={dir}>
+        <path
+          d={`M${x(0)} ${rootLE} L${x(halfSpan)} ${tipLE} L${x(halfSpan)} ${tipTE} L${x(0)} ${rootTE} Z`}
+          fill="var(--color-surface-2)"
+          stroke={NAVY}
+          strokeWidth={2.2}
+          strokeLinejoin="round"
+        />
+        {/* 25% chord line — the reference sweep is measured to. */}
+        <line
+          x1={x(0)}
+          y1={rootLE + (rootTE - rootLE) * 0.25}
+          x2={x(halfSpan)}
+          y2={tipLE + (tipTE - tipLE) * 0.25}
+          stroke={BRAND}
+          strokeWidth={1.8}
+          strokeDasharray="6 4"
+        />
+      </g>
+    );
+  };
+
+  return (
+    <Diagram title="Wing planform">
+      {/* Lateral axis, which sweep is measured from. */}
+      <line x1={40} y1={rootLE + (rootTE - rootLE) * 0.25} x2={460} y2={rootLE + (rootTE - rootLE) * 0.25} stroke={MUTED} strokeWidth={1.2} strokeDasharray="3 4" />
+
+      {[1, -1].map(half)}
+
+      {/* Fuselage. */}
+      <rect x={cx - 13} y={rootLE - 26} width={26} height={(rootTE - rootLE) + 62} rx={13} fill="var(--color-surface-3)" stroke={NAVY} strokeWidth={2} />
+
+      {/* Root chord. */}
+      <line x1={cx + 30} y1={rootLE} x2={cx + 30} y2={rootTE} stroke={NOGO} strokeWidth={2.4} />
+      {/* Tip chord. */}
+      <line x1={cx + halfSpan - 6} y1={tipLE} x2={cx + halfSpan - 6} y2={tipTE} stroke={GO} strokeWidth={2.4} />
+
+      {labels && (
+        <>
+          <text x={cx + 38} y={rootLE + (rootTE - rootLE) / 2 + 4} fontSize={10.5} fontWeight={800} fill={NOGO}>
+            root chord c_R
+          </text>
+          <text x={cx + halfSpan - 12} y={tipLE - 8} textAnchor="end" fontSize={10.5} fontWeight={800} fill={GO}>
+            tip chord c_T
+          </text>
+          <text x={cx + halfSpan - 4} y={tipTE + 30} textAnchor="middle" fontSize={10} fontWeight={750} fill={BRAND}>
+            25% chord line
+          </text>
+          <text x={cx + halfSpan - 4} y={tipTE + 43} textAnchor="middle" fontSize={9.5} fontWeight={650} fill={MUTED}>
+            sweep is measured to THIS
+          </text>
+          <text x={44} y={rootLE + (rootTE - rootLE) * 0.25 - 8} fontSize={10} fontWeight={750} fill={MUTED}>
+            lateral axis
+          </text>
+          <text x={250} y={272} textAnchor="middle" fontSize={10} fontWeight={700} fill={MUTED}>
+            taper ratio λ = c_T ÷ c_R · wing area S = b × c
+          </text>
+        </>
+      )}
+
+      {/* Front-view inset: dihedral cannot be seen from above. */}
+      <g transform="translate(392 42)">
+        <rect x={-56} y={-20} width={112} height={44} rx={8} fill="var(--color-surface)" stroke={MUTED} strokeWidth={1.2} />
+        <line x1={-44} y1={10} x2={0} y2={-4} stroke={NAVY} strokeWidth={2.4} strokeLinecap="round" />
+        <line x1={0} y1={-4} x2={44} y2={10} stroke={NAVY} strokeWidth={2.4} strokeLinecap="round" />
+        <line x1={-44} y1={10} x2={44} y2={10} stroke={MUTED} strokeWidth={1} strokeDasharray="3 3" />
+        {labels && (
+          <text x={0} y={20} textAnchor="middle" fontSize={9} fontWeight={750} fill={MUTED}>
+            dihedral, from the front
+          </text>
+        )}
+      </g>
+    </Diagram>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 
 export function ChordwiseSpanwise() {

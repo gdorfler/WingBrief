@@ -422,6 +422,116 @@ export const CONCEPTS: Concept[] = [
     source: { document: TG, chapter: "Basic Theory", eo: ["2.65", "2.66", "2.67", "2.68", "2.69"] },
   },
 
+  {
+    id: "c-mass-volume",
+    unit: "u1",
+    name: "Mass and volume",
+    definition:
+      "Mass (m) is the quantity of molecular material that comprises an object. Volume (V) is the amount of space occupied by an object. Density is the ratio between them.",
+    formula: "\\rho = \\frac{m}{V}",
+    relationships: ["Same mass in more volume → lower density"],
+    commonTraps: [
+      "Mass is the quantity of material; weight is the force gravity exerts on it. They are not the same thing.",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.3", "2.4"] },
+  },
+  {
+    id: "c-force-weight",
+    unit: "u1",
+    name: "Force and weight",
+    definition:
+      "Force (F) is mass times acceleration. Weight (W) is the force with which a mass is attracted toward the centre of the earth by gravity.",
+    formula: "F = m \\times a",
+    relationships: ["Weight is a force, so it is measured in pounds, not slugs"],
+    commonTraps: [
+      "Weight is a FORCE, not a quantity of material. Mass stays the same off the planet; weight does not.",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.6", "2.7"] },
+  },
+  {
+    id: "c-aircraft-airplane",
+    unit: "u1",
+    name: "Aircraft vs airplane",
+    definition:
+      "An aircraft is any device used or intended to be used for flight in the air, supported either by the buoyancy of the structure or by the dynamic reaction of the air against its surfaces. An airplane is a mechanically driven fixed-wing aircraft, heavier than air, supported by the dynamic reaction of the air against its wings.",
+    relationships: ["Every airplane is an aircraft; a balloon is an aircraft but not an airplane"],
+    commonTraps: [
+      "The airplane definition carries four qualifiers: mechanically driven, fixed-wing, heavier than air, supported by dynamic reaction. Dropping one is how distractors are built.",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.48", "2.49"] },
+  },
+  {
+    id: "c-airplane-components",
+    unit: "u1",
+    name: "The five components",
+    definition:
+      "The components of a conventional airplane are the fuselage, wings, empennage, landing gear and engine(s). The fuselage is the basic structure to which all other components attach. The empennage provides the greatest stabilising influence of all the components.",
+    relationships: [
+      "Ailerons control roll · rudder controls yaw · elevators control pitch",
+      "The empennage is the aft fuselage, the vertical stabiliser and the horizontal stabiliser",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.50"] },
+  },
+  {
+    id: "c-fuselage-construction",
+    unit: "u1",
+    name: "Fuselage construction",
+    definition:
+      "Three fuselage types exist. Truss is a frame under a light skin: strong and easily repaired, but heavy. Full monocoque is a highly stressed skin shell: extremely light and strong, but almost impossible to repair. Semi-monocoque adds transverse frame members and stringers that share the stress load, so it is light AND readily repairable. The T-6B uses semi-monocoque.",
+    relationships: ["Truss: skin carries none · Monocoque: skin carries all · Semi: shared"],
+    commonTraps: [
+      "The advantage of semi-monocoque is repairability with the strength retained — not that it is the lightest. Full monocoque is lighter and cannot be repaired.",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.51"] },
+  },
+  {
+    id: "c-cantilever-wing",
+    unit: "u1",
+    name: "Full cantilever wing",
+    definition:
+      "A wing whose bracing is entirely internal, requiring no external struts or wires. The T-6B has a single low-mounted full cantilever wing with split flaps inboard of the ailerons.",
+    commonTraps: [
+      "'Full cantilever' is about where the bracing lives, not about wing position or shape.",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.52"] },
+  },
+  {
+    id: "c-root-tip-chord",
+    unit: "u1",
+    name: "Root chord and tip chord",
+    definition:
+      "The root chord (c_R) is the chord at the wing centerline. The tip chord (c_T) is the chord measured at the wingtip. Taper ratio is the ratio of the tip chord to the root chord.",
+    formula: "\\lambda = \\frac{c_T}{c_R}",
+    relationships: ["Taper reduces weight, improves structural stiffness and reduces wingtip vortices"],
+    commonTraps: [
+      "Taper ratio is tip over root, so it is less than 1 on a tapered wing. Inverting it is the usual error.",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.56", "2.57"] },
+  },
+  {
+    id: "c-dihedral",
+    unit: "u1",
+    name: "Dihedral angle",
+    definition:
+      "Dihedral angle is the angle between the spanwise inclination of the wing and the lateral axis — more simply, the upward slope of the wing seen from the front. A negative dihedral angle is called anhedral.",
+    relationships: ["The T-6B has dihedral wings to improve LATERAL stability"],
+    commonTraps: [
+      "Dihedral buys lateral stability, not longitudinal. Sweep is the one that helps longitudinally.",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.70"] },
+  },
+  {
+    id: "c-sweep-angle",
+    unit: "u1",
+    name: "Sweep angle",
+    definition:
+      "Sweep angle (Λ) is the angle between the lateral axis and a line drawn 25% aft of the leading edge. On a tapered wing it is NOT parallel to the leading edge. Wing sweep affects maximum lift and stall characteristics. The T-6B wing is swept.",
+    relationships: ["Sweep ↑ → the wing's AC moves aft toward the CG → more longitudinally stable"],
+    commonTraps: [
+      "Sweep is measured to the 25% chord line, not along the leading edge.",
+    ],
+    source: { document: TG, chapter: "Basic Theory", eo: ["2.75"] },
+  },
   /* ================================================================ */
   /* UNIT 2 — UNDERSTAND THE WING                                      */
   /* ================================================================ */
@@ -1027,6 +1137,96 @@ export const CONCEPTS: Concept[] = [
     source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.145", "2.146"] },
   },
 
+  {
+    id: "c-best-climb-profile",
+    unit: "u4",
+    name: "T-6B best climb profile",
+    definition:
+      "At maximum angle of climb an aircraft can be operating near stall speed, so the T-6B flies a recommended best climb speed of 140 KIAS instead. That speed meets or exceeds any obstacle clearance requirement while providing a greater safety margin. Max angle of climb is not flown in the T-6B.",
+    relationships: ["Best climb speed 140 KIAS · max AOC is not used in the T-6B"],
+    commonTraps: [
+      "The T-6B does not fly max angle of climb. The exam offers it as a plausible answer.",
+    ],
+    source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.132"] },
+  },
+  {
+    id: "c-fuel-flow-turboprop",
+    unit: "u4",
+    name: "Fuel flow on a turboprop",
+    definition:
+      "A turbojet produces thrust directly, so its fuel consumption is proportional to thrust available and minimum fuel flow is found on the THRUST required curve. A propeller's thrust is not produced directly by the engine — the engine turns a shaft and so produces power — therefore for a turboprop fuel flow varies directly with power output, and minimum fuel flow is found on the POWER required curve.",
+    relationships: [
+      "Turbojet: minimum fuel flow at minimum T_R",
+      "Turboprop: minimum fuel flow at minimum P_R",
+    ],
+    commonTraps: [
+      "The T-6B is a turboprop, so its endurance point sits on the POWER required curve — at a velocity below L/Dmax and an AOA above L/Dmax AOA, 8.8 units.",
+    ],
+    source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.135"] },
+  },
+  {
+    id: "c-nwlotd",
+    unit: "u4",
+    name: "Nosewheel liftoff/touchdown speed",
+    definition:
+      "NWLO/TD is the minimum safe airspeed at which the nosewheel may leave the runway during takeoff, or the minimum airspeed at which it must return to the runway after landing. It is read from the Takeoff/Landing Crosswind chart in NATOPS and the Dash-1.",
+    relationships: ["Below NWLO/TD the airplane may weathercock into the wind and run off the runway"],
+    source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.147"] },
+  },
+  {
+    id: "c-crosswind-technique",
+    unit: "u4",
+    name: "Crosswind control inputs",
+    definition:
+      "In a crosswind takeoff or landing the ailerons are NOT used to maintain directional control. They are used to overcome the lateral stability that is trying to roll the airplane away from the sideslip relative wind.",
+    commonTraps: [
+      "Directional control in a crosswind is the rudder's job. The aileron is fighting the roll that lateral stability produces, not steering the aircraft.",
+    ],
+    source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.148"] },
+  },
+  {
+    id: "c-crosswind-limits",
+    unit: "u4",
+    name: "T-6B crosswind limits",
+    definition:
+      "Maximum crosswind component for takeoff or landing in the T-6B is 25 knots. The major consideration in setting a maximum authorised crosswind component is the ability to maintain directional control at low speeds. For variable or gusting winds, always use the maximum wind angle and the maximum gust velocity to compute the component.",
+    relationships: ["25 kt flaps UP or TO on a dry runway · 10 kt with flaps LDG or a wet runway"],
+    commonTraps: [
+      "Gusting wind is computed from the MAXIMUM gust and the MAXIMUM angle, never the average.",
+    ],
+    source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.149"] },
+  },
+  {
+    id: "c-turn-weight-thrust-drag",
+    unit: "u5",
+    name: "Weight, thrust and drag in a turn",
+    definition:
+      "Turn rate and turn radius are INDEPENDENT of weight: any two airplanes able to fly the same velocity and angle of bank can fly formation regardless of weight, though the heavier one produces more lift. Thrust can limit turn performance, because induced drag is proportional to lift squared — an airplane pulling 5 G produces 25 times the induced drag of level flight, so if maximum thrust only overcomes 16 times as much, it can hold level flight at only 4 G.",
+    relationships: [
+      "Weight → no effect on turn rate or radius",
+      "Thrust limit → caps the sustainable load factor",
+      "Induced drag ∝ lift², so G² sets the drag penalty",
+    ],
+    commonTraps: [
+      "Weight feels like it should matter and does not. The three real limits are C_Lmax AOA, the limit load factor, and thrust.",
+    ],
+    source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.155", "2.156", "2.157"] },
+  },
+  {
+    id: "c-increasing-maneuverability",
+    unit: "u5",
+    name: "Increasing maneuverability",
+    definition:
+      "Maneuverability is the ease with which an airplane will move out of its equilibrium position, and it is the opposite of stability. There are two ways to increase it: give the airplane weaker stability, or give it larger control surfaces, which generate larger moments from greater aerodynamic forces.",
+    relationships: [
+      "Stability ↓ → maneuverability ↑, at the cost of pilot attention",
+      "Control surface size ↑ → maneuverability ↑",
+    ],
+    commonTraps: [
+      "A transport is deliberately stable; a fighter is deliberately maneuverable. The designer is choosing, not failing.",
+    ],
+    source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.174"] },
+  },
   /* ================================================================ */
   /* UNIT 5 — LIMITS & MANEUVERING                                     */
   /* ================================================================ */
@@ -1324,6 +1524,22 @@ export const CONCEPTS: Concept[] = [
     source: { document: TG, chapter: "Performance and Maneuvering", eo: ["2.167", "2.168"] },
   },
 
+  {
+    id: "c-empennage-spin",
+    unit: "u6",
+    name: "Empennage design and spins",
+    definition:
+      "Vertical stabiliser and rudder design and the placement of the horizontal surfaces significantly affect spin recovery. With a swept vertical fin the horizontal surfaces block almost all airflow to the rudder, so it cannot stop the autorotation. The T-6B tail leaves the rudder unblocked and places the horizontal stabiliser farther aft, exposing more rudder in a spin. The T-6B also uses a dorsal fin, strakes and a ventral fin to reduce spin severity.",
+    relationships: [
+      "Dorsal fin: increases vertical stabiliser area, decreases spin rate, aids stopping autorotation",
+      "Ventral fin: decreases spin rate, helps hold a nose-down attitude",
+      "Strakes: increase horizontal stabiliser area, keep the nose down, prevent a flat spin",
+    ],
+    commonTraps: [
+      "An inverted T-6B spin is hard to enter and disorienting but EASY to recover, because the whole vertical stabiliser is exposed to the relative wind.",
+    ],
+    source: { document: TG, chapter: "Spins", eo: ["3.25"] },
+  },
   /* ================================================================ */
   /* UNIT 6 — DEPARTURES & HAZARDS                                     */
   /* ================================================================ */

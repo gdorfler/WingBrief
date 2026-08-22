@@ -20,8 +20,8 @@ export const LESSONS_A: Lesson[] = [
     estimatedMinutes: 6,
     mapIcon: "vector",
     enablingObjectives: [
-      "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10",
-      "2.11", "2.12", "2.13", "2.14", "2.15", "2.16", "2.17", "2.18",
+      "2.1", "2.2", "2.5", "2.8", "2.9", "2.10", "2.11", "2.12", "2.13",
+      "2.14", "2.15", "2.16", "2.17", "2.18",
     ],
     conceptIds: [
       "c-scalar-vector",
@@ -113,9 +113,72 @@ export const LESSONS_A: Lesson[] = [
   },
 
   {
-    id: "l02-atmosphere",
+    id: "l01b-mass-force-weight",
     unit: "u1",
     index: 2,
+    title: "Mass, Force and Weight",
+    subtitle: "Four words the guide defines precisely",
+    estimatedMinutes: 5,
+    mapIcon: "pressure",
+    enablingObjectives: ["2.3", "2.4", "2.6", "2.7"],
+    conceptIds: ["c-mass-volume", "c-force-weight"],
+    masteryThreshold: 0.75,
+    screens: [
+      {
+        kind: "hook",
+        headline: "Mass is not weight, and the exam knows you know that loosely",
+        line: "One is a quantity of material. The other is a force. Every density and performance question downstream depends on keeping them apart.",
+      },
+      {
+        kind: "compare",
+        headline: "Four definitions, taken exactly",
+        columns: ["Term", "Definition"],
+        rows: [
+          { label: "Mass (m)", a: "The quantity of molecular material comprising an object", b: "slugs" },
+          { label: "Volume (V)", a: "The amount of space occupied by an object", b: "ft³" },
+          { label: "Force (F)", a: "Mass times acceleration", b: "pounds" },
+          { label: "Weight (W)", a: "The force attracting a mass toward the centre of the earth", b: "pounds" },
+        ],
+      },
+      {
+        kind: "chain",
+        headline: "Why this ordering matters",
+        nodes: [
+          { label: "Mass — how much material there is", trend: "none" },
+          { label: "Volume — how much space it takes up", trend: "none" },
+          { label: "Density = mass ÷ volume", trend: "none", emphasis: true },
+        ],
+        footnote:
+          "Density is the quantity every performance calculation in this course runs through, and it is built out of the first two.",
+      },
+      {
+        kind: "anchor",
+        headline: "Know Cold",
+        statements: [
+          "Mass is material. Weight is the FORCE gravity exerts on it.",
+          "Weight is measured in pounds because it is a force.",
+          "Same mass, twice the volume, half the density.",
+        ],
+        formula: "F = m\\,a \\quad\\quad \\rho = \\frac{m}{V}",
+      },
+      { kind: "question", questionId: "q-da-001" },
+      { kind: "question", questionId: "q-da-003" },
+      { kind: "question", questionId: "q-da-004" },
+      { kind: "question", questionId: "q-da-002" },
+    ],
+    questionIds: ["q-da-001", "q-da-002", "q-da-003", "q-da-004"],
+    memorize: [
+      "Mass = quantity of molecular material",
+      "Weight = the force of gravity on that mass",
+      "Density = mass / volume",
+    ],
+    sourceReferences: [TG("Basic Theory", ["2.3", "2.4", "2.6", "2.7"])],
+  },
+
+  {
+    id: "l02-atmosphere",
+    unit: "u1",
+    index: 3,
     title: "The Atmosphere",
     subtitle: "Pressure, temperature, density, humidity",
     estimatedMinutes: 6,
@@ -223,7 +286,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l03-continuity-bernoulli",
     unit: "u1",
-    index: 3,
+    index: 4,
     title: "Continuity & Bernoulli",
     subtitle: "The two equations behind every airfoil",
     estimatedMinutes: 6,
@@ -302,7 +365,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l04-airspeed-ladder",
     unit: "u1",
-    index: 4,
+    index: 5,
     title: "Altitude & the Airspeed Ladder",
     subtitle: "Pitot-static, ICE-TG, density altitude",
     estimatedMinutes: 7,
@@ -412,21 +475,18 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l05-wing-geometry",
     unit: "u1",
-    index: 5,
+    index: 6,
     title: "Airfoil & Wing Geometry",
     subtitle: "Chord, camber, span, and the two airflows",
     estimatedMinutes: 6,
     mapIcon: "airfoil",
     enablingObjectives: [
-      "2.48", "2.49", "2.50", "2.51", "2.52", "2.54", "2.55", "2.56", "2.57",
-      "2.58", "2.59", "2.60", "2.61", "2.62", "2.63", "2.64", "2.70", "2.71",
-      "2.72", "2.73", "2.74", "2.75", "2.76",
+      "2.54", "2.55", "2.58", "2.59", "2.60", "2.61", "2.62", "2.63", "2.64",
     ],
     conceptIds: [
       "c-chordline-chord",
       "c-mean-camber-line",
       "c-camber-types",
-      "c-wing-planform",
       "c-chordwise-spanwise",
     ],
     masteryThreshold: 0.75,
@@ -500,9 +560,120 @@ export const LESSONS_A: Lesson[] = [
   },
 
   {
+    id: "l05b-airplane-and-wing",
+    unit: "u1",
+    index: 7,
+    title: "The Airplane and Its Wing",
+    subtitle: "Components, construction, and how a planform is described",
+    estimatedMinutes: 7,
+    mapIcon: "axes",
+    enablingObjectives: [
+      "2.48", "2.49", "2.50", "2.51", "2.52", "2.56", "2.57", "2.70", "2.71",
+      "2.72", "2.73", "2.74", "2.75", "2.76",
+    ],
+    conceptIds: [
+      "c-aircraft-airplane",
+      "c-airplane-components",
+      "c-fuselage-construction",
+      "c-cantilever-wing",
+      "c-wing-planform",
+      "c-root-tip-chord",
+      "c-dihedral",
+      "c-sweep-angle",
+    ],
+    masteryThreshold: 0.75,
+    screens: [
+      {
+        kind: "hook",
+        headline: "Every airplane is an aircraft. Not every aircraft is an airplane.",
+        line: "The guide defines both precisely, then names five components and a vocabulary for describing the wing. All of it is straight recall, and all of it is tested.",
+      },
+      {
+        kind: "compare",
+        headline: "Aircraft versus airplane",
+        columns: ["Term", "Definition"],
+        rows: [
+          {
+            label: "Aircraft",
+            a: "Any device used or intended for flight in the air",
+            b: "Supported by buoyancy OR dynamic reaction",
+          },
+          {
+            label: "Airplane",
+            a: "A mechanically driven fixed-wing aircraft, heavier than air",
+            b: "Supported by dynamic reaction against its wings",
+          },
+        ],
+      },
+      {
+        kind: "chain",
+        headline: "The five components",
+        nodes: [
+          { label: "Fuselage — everything else attaches to it", trend: "none" },
+          { label: "Wings — produce lift, carry the ailerons", trend: "none" },
+          { label: "Empennage — the greatest stabilising influence", trend: "none", emphasis: true },
+          { label: "Landing gear — taxi, and absorb takeoff and landing shock", trend: "none" },
+          { label: "Engine(s) — thrust for powered flight", trend: "none" },
+        ],
+        footnote:
+          "Ailerons, rudder and elevators are the three major CONTROL SURFACES. They are not components.",
+      },
+      {
+        kind: "compare",
+        headline: "Fuselage construction",
+        line: "The T-6B uses semi-monocoque, and the reason is repairability.",
+        columns: ["Type", "Who carries the stress"],
+        rows: [
+          { label: "Truss", a: "The frame", b: "Strong, easily repaired, heavy" },
+          { label: "Full monocoque", a: "The skin alone", b: "Very light and strong, almost unrepairable" },
+          { label: "Semi-monocoque", a: "Skin, frames and stringers together", b: "Light AND readily repaired" },
+        ],
+      },
+      {
+        kind: "model",
+        headline: "Describing a planform",
+        diagram: { id: "wing-planform", props: { labels: true } },
+        bullets: [
+          "Root chord at the centerline, tip chord at the wingtip; taper ratio is tip ÷ root",
+          "Sweep is measured from the lateral axis to the 25% chord line — NOT the leading edge",
+          "Dihedral is the upward slope seen from the front, and it buys LATERAL stability",
+        ],
+      },
+      {
+        kind: "anchor",
+        headline: "Know Cold",
+        statements: [
+          "Fuselage, wings, empennage, landing gear, engine(s).",
+          "Semi-monocoque: skin, frames and stringers share the load, and it can be repaired.",
+          "Full cantilever = all bracing internal.",
+          "Taper ratio = tip ÷ root. Sweep is to the 25% chord line.",
+        ],
+        formula: "\\lambda = \\frac{c_T}{c_R}",
+      },
+      { kind: "question", questionId: "q-da-033" },
+      { kind: "question", questionId: "q-da-035" },
+      { kind: "question", questionId: "q-da-037" },
+      { kind: "question", questionId: "q-da-040" },
+      { kind: "question", questionId: "q-da-044" },
+      { kind: "question", questionId: "q-da-042" },
+    ],
+    questionIds: [
+      "q-da-033", "q-da-034", "q-da-035", "q-da-036", "q-da-037", "q-da-038",
+      "q-da-039", "q-da-040", "q-da-041", "q-da-042", "q-da-043", "q-da-044",
+      "q-da-045", "q-da-054",
+    ],
+    memorize: [
+      "Airplane: mechanically driven, fixed-wing, heavier than air, dynamic reaction",
+      "Semi-monocoque is the repairable one — and the T-6B's",
+      "Sweep is measured to the 25% chord line",
+    ],
+    sourceReferences: [TG("Basic Theory", ["2.48", "2.51", "2.52", "2.56", "2.70", "2.75"])],
+  },
+
+  {
     id: "l06-axes-and-aoa",
     unit: "u1",
-    index: 6,
+    index: 8,
     title: "Axes, CG & the AOA Trap",
     subtitle: "Why pitch attitude tells you nothing about AOA",
     estimatedMinutes: 7,
@@ -594,7 +765,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l07-aerodynamic-force",
     unit: "u2",
-    index: 7,
+    index: 9,
     title: "Aerodynamic Force",
     subtitle: "Lift and drag are components, not causes",
     estimatedMinutes: 5,
@@ -665,7 +836,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l08-pressure-distribution",
     unit: "u2",
-    index: 8,
+    index: 10,
     title: "How Lift Is Actually Made",
     subtitle: "Pressure distribution, not equal transit time",
     estimatedMinutes: 6,
@@ -733,7 +904,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l09-lift-equation",
     unit: "u2",
-    index: 9,
+    index: 11,
     title: "The Lift Equation",
     subtitle: "L = ½ρV²SC_L and what you can actually change",
     estimatedMinutes: 7,
@@ -814,7 +985,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l10-cl-vs-aoa",
     unit: "u2",
-    index: 10,
+    index: 12,
     title: "CL vs AOA, CLmax & Flaps",
     subtitle: "The curve the whole course hangs from",
     estimatedMinutes: 7,
@@ -911,7 +1082,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l11-parasite-drag",
     unit: "u3",
-    index: 11,
+    index: 13,
     title: "Parasite Drag",
     subtitle: "Form, friction, interference",
     estimatedMinutes: 6,
@@ -989,7 +1160,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l12-induced-drag",
     unit: "u3",
-    index: 12,
+    index: 14,
     title: "Induced Drag & Ground Effect",
     subtitle: "The price of making lift on a finite wing",
     estimatedMinutes: 8,
@@ -1096,7 +1267,7 @@ export const LESSONS_A: Lesson[] = [
   {
     id: "l13-total-drag-ldmax",
     unit: "u3",
-    index: 13,
+    index: 15,
     title: "Total Drag & L/Dmax",
     subtitle: "Where the two drags cross",
     estimatedMinutes: 7,

@@ -570,3 +570,209 @@ export function RulesLab() {
     />
   );
 }
+
+/** Which publication governs, and what the wording obliges you to do. */
+export function PublicationLab() {
+  const [scope, setScope] = useState<"natops" | "cnaf" | "flip" | "far">("natops");
+  const [word, setWord] = useState<"shall" | "should" | "may" | "will">("shall");
+
+  const pub = {
+    natops: {
+      name: "Aircraft NATOPS",
+      by: "USN · this aircraft model",
+      rank: "Highest — it outranks everything below",
+      tone: "nogo" as Tone,
+    },
+    cnaf: {
+      name: "CNAF M-3710.7",
+      by: "USN · all naval aircraft worldwide",
+      rank: "Second — beaten only by your aircraft's NATOPS",
+      tone: "caution" as Tone,
+    },
+    flip: {
+      name: "FLIP",
+      by: "DOD · all branches",
+      rank: "Third — beaten by both naval publications",
+      tone: "brand" as Tone,
+    },
+    far: {
+      name: "FAR Part 91",
+      by: "FAA · military and civil",
+      rank: "Lowest — the broadest audience, the least specific",
+      tone: "neutral" as Tone,
+    },
+  }[scope];
+
+  const obliges = {
+    shall: { text: "You MUST. Application of the procedure is mandatory.", tone: "nogo" as Tone },
+    should: { text: "Recommended. Not mandatory.", tone: "caution" as Tone },
+    may: { text: "Optional. Entirely your choice.", tone: "go" as Tone },
+    will: { text: "Nothing. 'Will' indicates futurity only.", tone: "neutral" as Tone },
+  }[word];
+
+  return (
+    <ScenarioFrame
+      diagram="frr-priority"
+      diagramProps={{ highlight: scope }}
+      verdict={{ label: pub.name, value: pub.rank, tone: pub.tone }}
+      controls={
+        <>
+          <Segmented
+            label="Publication"
+            value={scope}
+            options={[
+              { value: "natops", label: "NATOPS" },
+              { value: "cnaf", label: "CNAF" },
+              { value: "flip", label: "FLIP" },
+              { value: "far", label: "FAR 91" },
+            ]}
+            onChange={setScope}
+          />
+          <Segmented
+            label="The procedure says…"
+            value={word}
+            options={[
+              { value: "shall", label: "Shall" },
+              { value: "should", label: "Should" },
+              { value: "may", label: "May" },
+              { value: "will", label: "Will" },
+            ]}
+            onChange={setWord}
+          />
+        </>
+      }
+      readouts={[
+        { label: "Written by", value: pub.by, tone: "neutral" },
+        { label: `"${word}" obliges you to`, value: obliges.text, tone: obliges.tone },
+      ]}
+      because={[
+        { label: pub.name },
+        { label: pub.by },
+        { label: word === "shall" ? "Mandatory" : word === "will" ? "No requirement" : obliges.text },
+      ]}
+      note="The narrower a publication's audience, the higher it ranks. And of the four words, only 'shall' compels anything — 'will' merely says something is going to happen."
+    />
+  );
+}
+
+/** When the weather brief goes void, and which of the two clocks killed it. */
+export function WeatherBriefLab() {
+  const [etd, setEtd] = useState(120);
+
+  const etdClock = etd + 30;
+  const briefClock = 180;
+  const voidAt = Math.min(briefClock, etdClock);
+  const etdGoverns = etdClock <= briefClock;
+  const hhmm = (m: number) => `${Math.floor(m / 60)}h ${String(Math.round(m % 60)).padStart(2, "0")}m`;
+
+  return (
+    <ScenarioFrame
+      diagram="frr-brief-void"
+      diagramProps={{ etd }}
+      verdict={{
+        label: "The brief goes void",
+        value: `${hhmm(voidAt)} after the brief — ${etdGoverns ? "ETD + 30" : "brief + 3 hours"}`,
+        tone: "caution",
+      }}
+      controls={
+        <Slider
+          label="ETD, after the brief"
+          value={etd}
+          min={0}
+          max={260}
+          step={5}
+          onChange={setEtd}
+          display={`+${Math.round(etd)} min`}
+          tone="brand"
+        />
+      }
+      readouts={[
+        { label: "Brief + 3 hours", value: hhmm(briefClock), tone: etdGoverns ? "neutral" : "nogo" },
+        { label: "ETD + 30 min", value: hhmm(etdClock), tone: etdGoverns ? "nogo" : "neutral" },
+        { label: "Which fires first", value: etdGoverns ? "ETD clock" : "Brief clock", tone: "caution" },
+        { label: "Brief form", value: "DD-175-1", tone: "neutral" },
+      ]}
+      because={[
+        { label: `Depart +${Math.round(etd)} min` },
+        { label: `ETD clock: +${Math.round(etdClock)} min`, trend: etdGoverns ? "down" : "same" },
+        { label: "Brief clock: +180 min", trend: etdGoverns ? "same" : "down" },
+        { label: `Void at +${Math.round(voidAt)} min`, trend: "down" },
+      ]}
+      note="Both clocks start at the brief, and the EARLIER one wins. Reading it as 'whichever is later' is the single most common error on this rule."
+    />
+  );
+}
+
+/** Cabin altitude in, oxygen rule out. */
+export function OxygenLab() {
+  const [altitude, setAltitude] = useState(9000);
+  const [fit, setFit] = useState<"system" | "none" | "tacjet">("system");
+
+  const required = fit === "tacjet" || altitude > 10000;
+  const ceiling = fit === "system" ? 13000 : fit === "none" ? 12000 : Infinity;
+  const prohibited = altitude > ceiling;
+
+  const verdict = prohibited
+    ? { value: `Flight above ${ceiling.toLocaleString()} ft is PROHIBITED`, tone: "nogo" as Tone }
+    : fit === "tacjet"
+      ? { value: "Oxygen from takeoff to landing", tone: "caution" as Tone }
+      : required
+        ? {
+            value: `Oxygen required · limited to ${fit === "system" ? "3 hours" : "1 hour"}`,
+            tone: "caution" as Tone,
+          }
+        : { value: "No supplemental oxygen required", tone: "go" as Tone };
+
+  return (
+    <ScenarioFrame
+      diagram="frr-oxygen"
+      diagramProps={{ altitude, equipped: fit !== "none" }}
+      verdict={{ label: "The rule says", value: verdict.value, tone: verdict.tone }}
+      controls={
+        <>
+          <Slider
+            label="Cabin altitude"
+            value={altitude}
+            min={0}
+            max={16000}
+            step={250}
+            onChange={setAltitude}
+            display={`${altitude.toLocaleString()} ft`}
+            tone={altitude > 10000 ? "caution" : "go"}
+          />
+          <Segmented
+            label="Aircraft"
+            value={fit}
+            options={[
+              { value: "system", label: "Oxygen fitted" },
+              { value: "none", label: "No system" },
+              { value: "tacjet", label: "Tactical jet" },
+            ]}
+            onChange={setFit}
+          />
+        </>
+      }
+      readouts={[
+        { label: "Trigger", value: "10,000 ft cabin altitude", tone: "neutral" },
+        { label: "Required now?", value: required ? "Yes" : "No", tone: required ? "caution" : "go" },
+        {
+          label: "Time limit",
+          value: fit === "tacjet" ? "None — whole flight" : required ? (fit === "system" ? "3 hours" : "1 hour") : "—",
+          tone: "neutral",
+        },
+        {
+          label: "Ceiling",
+          value: fit === "tacjet" ? "—" : `${ceiling.toLocaleString()} ft`,
+          tone: prohibited ? "nogo" : "neutral",
+        },
+      ]}
+      because={[
+        { label: `Cabin altitude ${altitude.toLocaleString()} ft` },
+        { label: altitude > 10000 ? "Above the 10,000 ft trigger" : "Below the trigger", trend: altitude > 10000 ? "up" : "down" },
+        { label: fit === "system" ? "System fitted" : fit === "none" ? "No system fitted" : "Tactical jet" },
+        { label: verdict.value },
+      ]}
+      note="It is CABIN altitude that triggers the rule, not the aircraft's. What happens above the trigger depends entirely on what equipment is fitted."
+    />
+  );
+}

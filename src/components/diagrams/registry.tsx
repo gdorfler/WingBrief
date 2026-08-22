@@ -31,6 +31,7 @@ import {
   AirfoilPressure,
   BoundaryLayer,
   ChordwiseSpanwise,
+  WingPlanform,
   ClVsAoa,
   HighLiftComparison,
   StallProgression,
@@ -113,6 +114,7 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
   "aoa-vs-pitch": AoaVsPitch,
   "airfoil-geometry": AirfoilGeometry,
   "chordwise-spanwise": ChordwiseSpanwise,
+  "wing-planform": WingPlanform,
 
   /* Unit 2 */
   "airfoil-pressure": AirfoilPressure,

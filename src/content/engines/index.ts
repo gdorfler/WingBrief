@@ -5,6 +5,7 @@ import { UNITS } from "./units";
 import { CONCEPTS } from "./concepts";
 import { QUESTIONS } from "./questions";
 import { EXPLAINERS } from "./explainers";
+import { EXPLAINERS_B } from "./explainers-b";
 import { LABS } from "./labs";
 import { KNOW_COLD } from "./know-cold";
 import { LESSONS_A } from "./lessons/part-a";
@@ -19,7 +20,7 @@ export const ENGINES_CONTENT: CourseContent = {
   concepts: CONCEPTS,
   lessons: LESSONS,
   questions: QUESTIONS,
-  explainers: EXPLAINERS,
+  explainers: [...EXPLAINERS, ...EXPLAINERS_B],
   labs: LABS,
   knowCold: KNOW_COLD,
 };

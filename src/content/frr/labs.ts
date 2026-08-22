@@ -91,4 +91,52 @@ export const LABS: Lab[] = [
       "Converging, same category: the aircraft on the right",
     ],
   },
+  {
+    id: "flab-publications",
+    title: "Which Publication Governs",
+    subtitle: "Priority, and what the wording obliges",
+    teaches:
+      "That priority follows how narrow a document's audience is, and that of shall, should, may and will, only one of them makes you do anything.",
+    unit: "f1",
+    conceptIds: ["fr-priority", "fr-wording", "fr-natops", "fr-cnaf"],
+    component: "PublicationLab",
+    chain: [
+      "NATOPS covers one aircraft — highest priority",
+      "CNAF M-3710.7 covers every naval aircraft",
+      "FLIP covers every service · FAR Part 91 covers everyone",
+      "Shall is mandatory · will carries no requirement at all",
+    ],
+  },
+  {
+    id: "flab-brief",
+    title: "Weather Brief Lab",
+    subtitle: "Two clocks, and which one fires first",
+    teaches:
+      "That a DD-175-1 brief dies at brief + 3 hours OR ETD + 30 minutes, whichever comes EARLIER — and that moving the departure changes which clock governs.",
+    unit: "f2",
+    conceptIds: ["fr-weather-brief"],
+    component: "WeatherBriefLab",
+    chain: [
+      "Both clocks start at the brief",
+      "One runs three hours from the brief",
+      "The other runs thirty minutes past the ETD",
+      "The earlier of the two is the void time",
+    ],
+  },
+  {
+    id: "flab-oxygen",
+    title: "Oxygen Lab",
+    subtitle: "Cabin altitude in, rule out",
+    teaches:
+      "That 10,000 ft CABIN altitude is the trigger, and that the ceiling and time limit above it depend entirely on the equipment fitted.",
+    unit: "f3",
+    conceptIds: ["fr-oxygen", "fr-oxygen-unpressurized", "fr-oxygen-tacjet"],
+    component: "OxygenLab",
+    chain: [
+      "Cabin altitude above 10,000 ft triggers the requirement",
+      "System fitted: 3 hours, ceiling 13,000 ft",
+      "No system: 1 hour, ceiling 12,000 ft",
+      "Tactical jets: oxygen from takeoff to landing",
+    ],
+  },
 ];

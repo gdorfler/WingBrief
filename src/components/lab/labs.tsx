@@ -47,6 +47,7 @@ import {
   SystemsTraceLab,
   ThrustFactorLab,
   TurbopropLab,
+  HotSectionLab,
 } from "./engine-labs";
 import {
   AirportLab,
@@ -54,6 +55,9 @@ import {
   AltitudeLab,
   AirspaceLab,
   RulesLab,
+  PublicationLab,
+  WeatherBriefLab,
+  OxygenLab,
 } from "./frr-labs";
 
 /* ------------------------------------------------------------------ */
@@ -868,6 +872,7 @@ export const LAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   TurbopropLab,
   SystemsTraceLab,
   MalfunctionLab,
+  HotSectionLab,
 
   /* Flight Rules */
   AirportLab,
@@ -875,6 +880,9 @@ export const LAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   AltitudeLab,
   AirspaceLab,
   RulesLab,
+  PublicationLab,
+  WeatherBriefLab,
+  OxygenLab,
 };
 
 export function LabHost({ component }: { component: string }) {

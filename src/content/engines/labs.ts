@@ -144,6 +144,23 @@ export const LABS: Lab[] = [
       "See the mechanical explanation",
     ],
   },
+  {
+    id: "elab-hot-section",
+    title: "Hot Section Lab",
+    subtitle: "Burner, turbine, exhaust",
+    teaches:
+      "Where the burner's air actually goes, how much of the turbine's energy never reaches the exhaust, and why a supersonic nozzle needs a divergent section.",
+    unit: "e4",
+    conceptIds: ["e-burner-purpose", "e-turbine-construction", "e-exhaust-nozzles", "e-afterburner"],
+    component: "HotSectionLab",
+    chain: [
+      "25% of burner air supports combustion, 75% cools",
+      "Combustion: temperature and velocity up, pressure slightly down",
+      "The turbine takes 75% of the energy back for the compressor",
+      "A convergent nozzle can only reach the speed of sound",
+      "The divergent section is what takes the flow supersonic",
+    ],
+  },
 ];
 
 export const LAB_BY_ID: Record<string, Lab> = Object.fromEntries(

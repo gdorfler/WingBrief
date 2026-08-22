@@ -37,15 +37,24 @@ describe(`${NAME} · curriculum shape`, () => {
     expect(UNITS.map((u) => u.index)).toEqual(UNITS.map((_, i) => i + 1));
   });
 
-  it("has a lesson count matched to the material, not to a template", () => {
-    // The upper bound is per course because the sources are not the same size.
-    // Flight Rules publishes 42 enabling objectives across three trainee-guide
-    // topics, and covering them honestly needs more lessons than Aerodynamics
-    // or Engines did. The bound exists to catch runaway splitting, not to force
-    // the courses to match each other.
-    const ceiling = { aero: 30, engines: 30, frr: 34 }[course];
+  it("has enough lessons to be a course", () => {
+    // Deliberately a floor only. An earlier version of this test also capped
+    // the count at 30, and both Aerodynamics and Engines came in at exactly
+    // 30 — the quota was shaping the curriculum instead of catching a defect.
+    // Depth is enforced by the coverage tests below, which is the property
+    // that actually matters.
     expect(LESSONS.length).toBeGreaterThanOrEqual(24);
-    expect(LESSONS.length).toBeLessThanOrEqual(ceiling);
+  });
+
+  it("keeps any single lesson from carrying a whole chapter", () => {
+    // A lesson claiming twenty-odd objectives is not a lesson. This catches
+    // the failure the removed ceiling used to cause indirectly.
+    for (const lesson of LESSONS) {
+      expect(
+        lesson.enablingObjectives.length,
+        `${lesson.id} claims ${lesson.enablingObjectives.length} EOs — split it`,
+      ).toBeLessThanOrEqual(15);
+    }
   });
 
   it("numbers lessons contiguously from 1", () => {
@@ -247,6 +256,26 @@ describe(`${NAME} · coverage`, () => {
     const tested = new Set(QUESTIONS.flatMap((q) => q.conceptIds));
     const untested = CONCEPTS.filter((c) => !tested.has(c.id)).map((c) => c.id);
     expect(untested, `untested concepts: ${untested.join(", ")}`).toEqual([]);
+  });
+
+  it("assesses every concept at least twice", () => {
+    // One question per concept means a student can clear the concept on a
+    // coin-flip, and leaves the review queue nothing to resurface.
+    const counts = new Map(CONCEPTS.map((c) => [c.id, 0]));
+    for (const q of QUESTIONS)
+      for (const id of q.conceptIds)
+        if (counts.has(id)) counts.set(id, counts.get(id)! + 1);
+    const thin = [...counts.entries()]
+      .filter(([, n]) => n < 2)
+      .map(([id, n]) => `${id} (${n})`);
+    expect(thin, `concepts assessed fewer than twice: ${thin.join(", ")}`).toEqual([]);
+  });
+
+  it("assesses every enabling objective at least twice", () => {
+    const thin = buildEoMatrix(course)
+      .filter((row) => row.questionIds.length < 2)
+      .map((row) => `${row.eo} (${row.questionIds.length})`);
+    expect(thin, `EOs assessed fewer than twice: ${thin.join(", ")}`).toEqual([]);
   });
 
   it("every concept is taught by at least one lesson", () => {
