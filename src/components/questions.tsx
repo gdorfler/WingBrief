@@ -105,18 +105,34 @@ export function QuestionPlayer(props: QuestionPlayerProps) {
   const graded = submitted && mode === "practice";
   const correct = answer !== null && isCorrect(question, answer);
 
+  /**
+   * Only the FIRST attempt at a question is reported.
+   *
+   * "Try again" exists so a student can work out why they were wrong while the
+   * question is still in front of them — it is a teaching affordance, not a
+   * second chance at the mark. Reporting the retry too would let a miss be
+   * cancelled by immediately guessing again: mastery would see a false then a
+   * true and average them out, and the question would drop straight out of the
+   * mistakes queue. Getting it right on the second go is not the same as
+   * knowing it, and the record should say so.
+   *
+   * Encountering the same question later — in review, or in another lesson —
+   * remounts the player, resets `attempts`, and does count as a fresh attempt.
+   */
   const submit = useCallback(() => {
     if (answer === null) return;
     const elapsedMs = Date.now() - startedAt.current;
     const ok = isCorrect(question, answer);
+    const isFirst = attempts === 0;
     setSubmitted(true);
     setAttempts((a) => a + 1);
+    if (!isFirst) return;
     onAnswer({
       questionId: question.id,
       answerKey: answer,
       correct: ok,
       elapsedMs,
-      firstTry: attempts === 0,
+      firstTry: true,
     });
   }, [answer, attempts, onAnswer, question]);
 
@@ -220,7 +236,7 @@ export function QuestionPlayer(props: QuestionPlayerProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
             >
-              <Feedback question={question} correct={correct} />
+              <Feedback question={question} correct={correct} onRetry={attempts > 1} />
             </motion.div>
           )}
 
@@ -258,7 +274,16 @@ export function QuestionPlayer(props: QuestionPlayerProps) {
 /* Feedback                                                            */
 /* ------------------------------------------------------------------ */
 
-function Feedback({ question, correct }: { question: Question; correct: boolean }) {
+function Feedback({
+  question,
+  correct,
+  onRetry,
+}: {
+  question: Question;
+  correct: boolean;
+  /** True once this is a retry, so the banner can stay honest about the mark. */
+  onRetry: boolean;
+}) {
   return (
     <div
       className={cn(
@@ -276,9 +301,14 @@ function Feedback({ question, correct }: { question: Question; correct: boolean 
           {correct ? <Check size={14} strokeWidth={3} /> : <X size={14} strokeWidth={3} />}
         </span>
         <p className={cn("text-[15px] font-bold", correct ? "text-go-dark" : "text-nogo")}>
-          {correct ? "Correct" : "Not quite"}
+          {correct ? (onRetry ? "Correct on the retry" : "Correct") : "Not quite"}
         </p>
       </div>
+      {onRetry && correct && (
+        <p className="mb-2 text-[12.5px] font-medium leading-snug text-navy-soft">
+          Your first answer still counts as the miss, so this one stays in your review queue.
+        </p>
+      )}
       <p className="text-[13.5px] leading-relaxed text-navy">{question.explanation}</p>
       {question.whyWrong && (
         <p className="mt-2 text-[12.5px] leading-relaxed text-navy-soft">
