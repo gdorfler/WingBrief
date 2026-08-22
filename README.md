@@ -5,22 +5,25 @@ and Student Naval Flight Officers.
 
 Duolingo-style progression + NotebookLM-style visual explainers + NIFE exam-focused content.
 
-Two courses ship today. They share one engine, one design language and one streak, but
-keep separate mastery, review queues, exams and visual identity — the way two languages
+Three courses ship today. They share one engine, one design language and one streak, but
+keep separate mastery, review queues, exams and visual identity — the way three languages
 sit inside one language app.
 
-| | Aerodynamics | Engines |
-|---|---|---|
-| Identity | Aviation blue · air and flow | Burnt amber · power and machinery |
-| Units | 6 | 7 |
-| Lessons | 30 (~209 min) | 30 (~172 min) |
-| Concepts | 119 | 100 |
-| Questions | 242 | 145 |
-| Explainers · Labs | 20 · 8 | 12 · 8 |
-| Know Cold cards | 78 | 61 |
-| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed |
+| | Aerodynamics | Engines | Flight Rules |
+|---|---|---|---|
+| Identity | Aviation blue · air and flow | Burnt amber · power and machinery | Indigo · rules and charts |
+| Units | 6 | 7 | 8 |
+| Lessons | 30 (~209 min) | 30 (~172 min) | 32 (~162 min) |
+| Concepts | 119 | 100 | 106 |
+| Questions | 242 | 145 | 154 |
+| Explainers · Labs | 20 · 8 | 12 · 8 | 13 · 5 |
+| Know Cold cards | 78 | 61 | 58 |
+| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed | 42, all taught **and** assessed |
 
-Weather, Navigation and Flight Rules can be added without touching the learning engine.
+Lesson counts follow the material rather than a template: Flight Rules needs 32 lessons to
+cover its 42 enabling objectives honestly, and gets them.
+
+Weather and Navigation can be added without touching the learning engine.
 
 ---
 
@@ -109,7 +112,7 @@ nothing — the next successful save carries it up.
 
 | | Total |
 |---|---|
-| Courses | 2 |
+| Courses | 3 |
 | Lessons | 60 |
 | Concepts tracked for mastery | 219 |
 | Questions | 387 |
@@ -126,7 +129,9 @@ nothing — the next successful save carries it up.
 - **Lessons** — the flight path: a snaking route through the course's units, per-node state
 - **Lesson player** — hook → visual model → manipulation → cause-effect chain → Know Cold → retrieval
 - **Review** — spaced review, weak areas, mistakes, saved, plus per-concept detail pages
-- **Sim Lab** — eight interactive labs per course
+- **Sim Lab / Scenario Lab** — interactive labs per course. Aerodynamics and Engines
+  simulate a physical relationship; Flight Rules resolves a situation, so it names the
+  section differently and its labs are decision engines rather than sliders
 - **Exam** — quick / full / unit / weak-area / custom, timed or untimed, with results and review
 - **Know Cold** — the pre-exam compression layer, searchable and filterable
 - **Explainers** — animated 60–120 second visual explainers
@@ -174,6 +179,34 @@ Units e1–e5 come from the official lectures and carry enabling objectives. Uni
 condensed notes, which state no EOs — so those lessons **claim none** rather than
 inventing them. The EO matrix on the profile shows exactly that split.
 
+### Flight Rules and Regulations
+
+1. **Flight Rules and Regulations Trainee Guide** — `NAVAVSCOLSCOM-SG-200` Module 7,
+   lesson topics 7-1 (Federal Aviation Organization), 7-2 (Visual / Instrument Flight
+   Rules) and 7-3 (Airspace and General Flight Rules). Authoritative for everything.
+2. **Enabling objectives 2.345 – 2.386** — 42 in one contiguous block. Every lesson names
+   the ones it teaches; every one is assessed.
+3. **The Assignment Sheet study questions**, whose answer keys the guide publishes. Those
+   questions set wording, depth and distractor style, and items modelled on them are
+   tagged `officialStyle`.
+4. **Condensed notes**, for grouping and phrasing only.
+
+The guide cites two publications constantly — **FAR Part 91** and **CNAF M-3710.7** — and
+they do not always agree. Where they differ the course states both, because knowing which
+document a rule comes from is itself testable: CNAF is usually the more restrictive, and
+its priority over the FAR is the subject of an entire lesson.
+
+Terminology follows the NIFE material. Where the guide says "Aldis lamp", "waveoff" or
+"flat hatting", the course does too, rather than substituting more familiar FAA or general
+aviation wording.
+
+**Table 2-3, IFR Filing Criteria, is an image in the source and did not extract.** The
+course therefore teaches only what the guide states in text — that an alternate, when one
+is required, must have a published approach flyable without two-way radio whenever the
+alternate's forecast is below 3,000 ft and 3 SM during ETA ± 1 hour — and never invents
+the table's own thresholds for *whether* an alternate is required. Questions on that point
+name the table as the authority instead of quoting numbers it does not supply.
+
 ---
 
 ## Model fidelity
@@ -213,6 +246,13 @@ indexed** everywhere else — the thrust-versus-factor curves carry a relative y
 so on the diagram, and the sim labs are relationship simulators, not engine models. No
 compressor map, thrust table or airframe-specific engine value appears anywhere.
 
+Flight Rules has no physics to model, so its equivalent discipline is numerical: every
+threshold in the course — 1,000 and 3, 3,000 and 3, brief + 3 hours or ETD + 30 minutes,
+10,000 ft cabin altitude, 250 below 10,000 and 200 under the Class B shelf, 175 / 230 /
+265 / 80 holding speeds — is quoted from the guide. The Scenario Labs decide rulings from
+those stated rules and nothing else; where the source does not publish a threshold, the
+lab does not offer one.
+
 ---
 
 ## Architecture
@@ -227,6 +267,7 @@ src/
     index.ts          aggregation, global id lookups, buildEoMatrix(course)
     aero/             units, concepts, questions, lessons, explainers, labs, know-cold
     engines/          the same shape, and the template for any future course
+    frr/              Flight Rules and Regulations
 
   lib/                the engine — pure, testable, no UI
     types.ts          Course/Unit/Lesson/Concept/Question/Mastery/Attempt/Exam

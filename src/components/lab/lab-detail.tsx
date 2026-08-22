@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, BookOpen, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import type { Lab } from "@/lib/types";
-import { CONCEPT_BY_ID, UNIT_BY_ID, lessonsForConcept } from "@/content";
+import { CONCEPT_BY_ID, COURSES, COURSE_OF_UNIT, UNIT_BY_ID, lessonsForConcept } from "@/content";
 import { conceptFraction } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
@@ -15,6 +15,9 @@ export function LabDetail({ lab }: { lab: Lab }) {
   const { state, markLabExplored } = useProgress();
   const { content } = useCourse();
   const unit = UNIT_BY_ID[lab.unit];
+  // The section name follows the LAB, not the switcher: a deep link into an
+  // Aerodynamics lab is still a Sim Lab even while Flight Rules is active.
+  const labLabel = COURSES[COURSE_OF_UNIT[lab.unit]].labLabel;
 
   useEffect(() => {
     markLabExplored(lab.id);
@@ -40,7 +43,7 @@ export function LabDetail({ lab }: { lab: Lab }) {
       </Link>
 
       <PageHeader
-        eyebrow={`Sim Lab · Unit ${unit.index} ${unit.title}`}
+        eyebrow={`${labLabel} · Unit ${unit.index} ${unit.title}`}
         title={lab.title}
         subtitle={lab.teaches}
       />

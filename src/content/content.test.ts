@@ -37,9 +37,15 @@ describe(`${NAME} · curriculum shape`, () => {
     expect(UNITS.map((u) => u.index)).toEqual(UNITS.map((_, i) => i + 1));
   });
 
-  it("has 24–30 lessons as scoped", () => {
+  it("has a lesson count matched to the material, not to a template", () => {
+    // The upper bound is per course because the sources are not the same size.
+    // Flight Rules publishes 42 enabling objectives across three trainee-guide
+    // topics, and covering them honestly needs more lessons than Aerodynamics
+    // or Engines did. The bound exists to catch runaway splitting, not to force
+    // the courses to match each other.
+    const ceiling = { aero: 30, engines: 30, frr: 34 }[course];
     expect(LESSONS.length).toBeGreaterThanOrEqual(24);
-    expect(LESSONS.length).toBeLessThanOrEqual(30);
+    expect(LESSONS.length).toBeLessThanOrEqual(ceiling);
   });
 
   it("numbers lessons contiguously from 1", () => {
@@ -295,9 +301,10 @@ describe(`${NAME} · enabling objective matrix`, () => {
   it("maps the enabling objectives its sources actually publish", () => {
     // Aerodynamics draws on the trainee guide, which lists 198 unit-2 EOs plus
     // 29 unit-3 EOs. The Engines lectures publish far fewer, and units e6–e7
-    // come only from the condensed notes, which state no EOs at all — so the
-    // floor is per course rather than one shared number.
-    const floor = { aero: 180, engines: 25 }[course];
+    // come only from the condensed notes, which state no EOs at all. Flight
+    // Rules publishes a contiguous block, 2.345 through 2.386 — so the floor
+    // is per course rather than one shared number.
+    const floor = { aero: 180, engines: 25, frr: 42 }[course];
     expect(matrix.length).toBeGreaterThanOrEqual(floor);
   });
 
@@ -391,7 +398,9 @@ describe("diagram and widget registries", () => {
 
   it("every lab component is implemented", () => {
     const labSource =
-      read("src/components/lab/labs.tsx") + read("src/components/lab/engine-labs.tsx");
+      read("src/components/lab/labs.tsx") +
+      read("src/components/lab/engine-labs.tsx") +
+      read("src/components/lab/frr-labs.tsx");
     for (const lab of ALL_LABS) {
       expect(labSource.includes(`export function ${lab.component}`), lab.component).toBe(true);
     }
@@ -416,6 +425,7 @@ describe("diagram labelling for tap and drag questions", () => {
     "src/components/diagrams/performance.tsx",
     "src/components/diagrams/maneuvering.tsx",
     "src/components/diagrams/engines.tsx",
+    "src/components/diagrams/frr.tsx",
   ].map(read);
 
   /** diagram id -> React component name, from the registry. */

@@ -169,6 +169,31 @@ button,
   --color-line-strong: #d4c7b8;
 }
 
+:root[data-course="frr"] {
+  /* Rules, procedure, charts. Indigo against a cool paper-white. */
+  --color-brand: #6d5ae0;
+  --color-brand-dark: #5343c4;
+  --color-brand-light: #9b8bf0;
+  --color-brand-soft: #efecfd;
+  --color-brand-soft-2: #ddd6fa;
+  --color-course-ink: #171334;
+  --color-course-ink-soft: #262052;
+
+  /* Dark surfaces take the same indigo cast. */
+  --color-ink-900: #0e0b22;
+  --color-ink-800: #171334;
+  --color-ink-700: #211b45;
+  --color-ink-600: #2f2760;
+  --color-ink-line: #3b3175;
+
+  /* Chart paper rather than sky: a hint cooler and greyer than Aero. */
+  --color-canvas: #f7f6fb;
+  --color-surface-2: #f1eff8;
+  --color-surface-3: #e6e2f2;
+  --color-line: #e2dff0;
+  --color-line-strong: #cac4e2;
+}
+
 /*
  * Course transition. Only the accent-bearing properties animate, and
  * only for a beat — long enough to read as a deliberate change of

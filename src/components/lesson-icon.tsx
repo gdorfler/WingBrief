@@ -222,6 +222,232 @@ export function LessonIcon({ name, className }: { name: string; className?: stri
         <path d="M16 5 V27" strokeWidth={1.5} strokeDasharray="3 3" opacity={0.6} />
       </>
     ),
+    /* ---------------- Flight Rules ---------------- */
+    "frr-book": (
+      <>
+        <path d="M5 7 C10 5 13 6 16 8 C19 6 22 5 27 7 V25 C22 23 19 24 16 26 C13 24 10 23 5 25 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M16 8 V26" strokeWidth={1.6} />
+      </>
+    ),
+    "frr-stack": (
+      <>
+        <rect x="11" y="5" width="10" height="5" rx="1.6" strokeWidth={2} />
+        <rect x="8" y="12" width="16" height="5" rx="1.6" strokeWidth={1.8} opacity={0.8} />
+        <rect x="5" y="19" width="22" height="5" rx="1.6" strokeWidth={1.6} opacity={0.55} />
+      </>
+    ),
+    "frr-words": (
+      <>
+        <path d="M5 10 H27" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M5 16 H20" strokeWidth={1.8} strokeLinecap="round" opacity={0.6} />
+        <path d="M5 22 H15" strokeWidth={1.8} strokeLinecap="round" opacity={0.4} />
+        <circle cx="24" cy="21" r="4" strokeWidth={2} />
+      </>
+    ),
+    "frr-atc": (
+      <>
+        <path d="M13 27 L16 12 L19 27" strokeWidth={2} strokeLinejoin="round" />
+        <rect x="11" y="6" width="10" height="7" rx="2" strokeWidth={2} />
+        <path d="M6 9 C8 11 8 15 6 17" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
+        <path d="M26 9 C24 11 24 15 26 17" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "frr-signal": (
+      <>
+        <circle cx="16" cy="20" r="3" strokeWidth={2} />
+        <path d="M10 15 C12 12 20 12 22 15" strokeWidth={1.9} strokeLinecap="round" />
+        <path d="M6 10 C10 5 22 5 26 10" strokeWidth={1.7} strokeLinecap="round" opacity={0.55} />
+      </>
+    ),
+    "frr-pic": (
+      <>
+        <circle cx="16" cy="11" r="5" strokeWidth={2} />
+        <path d="M6 27 C6 20 26 20 26 27" strokeWidth={2} strokeLinecap="round" />
+        <path d="M13 11 L15 13 L20 8" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "frr-plan": (
+      <>
+        <rect x="7" y="4" width="18" height="24" rx="2.5" strokeWidth={2} />
+        <path d="M11 11 H21" strokeWidth={1.8} strokeLinecap="round" />
+        <path d="M11 16 H21" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
+        <path d="M11 21 H17" strokeWidth={1.6} strokeLinecap="round" opacity={0.4} />
+      </>
+    ),
+    "frr-clock": (
+      <>
+        <circle cx="16" cy="16" r="11" strokeWidth={2} />
+        <path d="M16 9 V16 L21 19" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "frr-airfield": (
+      <>
+        <path d="M8 27 L13 5 H19 L24 27" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M16 9 V13 M16 17 V21" strokeWidth={1.8} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "frr-ppe": (
+      <>
+        <path d="M6 18 C6 10 26 10 26 18 V21 H6 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M11 21 V25 H21 V21" strokeWidth={1.8} strokeLinejoin="round" />
+        <path d="M13 15 H19" strokeWidth={1.6} opacity={0.6} />
+      </>
+    ),
+    "frr-oxygen": (
+      <>
+        <path d="M6 25 H26" strokeWidth={2} strokeLinecap="round" />
+        <path d="M6 18 H26" strokeWidth={1.8} strokeLinecap="round" strokeDasharray="3 3" opacity={0.7} />
+        <path d="M6 11 H26" strokeWidth={1.6} strokeLinecap="round" strokeDasharray="3 3" opacity={0.45} />
+        <path d="M16 28 V6 M13 9 L16 6 L19 9" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "frr-human": (
+      <>
+        <circle cx="16" cy="8" r="4" strokeWidth={2} />
+        <path d="M16 12 V21 M16 21 L11 27 M16 21 L21 27 M9 16 H23" strokeWidth={1.9} strokeLinecap="round" />
+      </>
+    ),
+    "frr-runway": (
+      <>
+        <path d="M11 27 L13 6 H19 L21 27 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M16 11 V14 M16 18 V21" strokeWidth={2} strokeLinecap="round" />
+      </>
+    ),
+    "frr-lightgun": (
+      <>
+        <path d="M5 12 H16 L25 7 V25 L16 20 H5 Z" strokeWidth={2} strokeLinejoin="round" />
+        <circle cx="10" cy="16" r="2" strokeWidth={1.6} opacity={0.7} />
+      </>
+    ),
+    "frr-lights": (
+      <>
+        <circle cx="8" cy="20" r="2.6" strokeWidth={2} />
+        <circle cx="16" cy="14" r="2.6" strokeWidth={2} />
+        <circle cx="24" cy="20" r="2.6" strokeWidth={2} />
+        <path d="M6 27 H26" strokeWidth={1.6} strokeLinecap="round" opacity={0.5} />
+      </>
+    ),
+    "frr-vasi": (
+      <>
+        <circle cx="11" cy="12" r="3.2" strokeWidth={2} />
+        <circle cx="21" cy="12" r="3.2" strokeWidth={2} fill="currentColor" opacity={0.25} />
+        <path d="M5 25 H27" strokeWidth={2} strokeLinecap="round" />
+        <path d="M7 22 L25 8" strokeWidth={1.5} strokeDasharray="3 3" opacity={0.55} />
+      </>
+    ),
+    "frr-cloud": (
+      <>
+        <path d="M9 21 C5 21 5 15 9 15 C9 9 19 8 20 14 C25 13 27 21 22 21 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M9 26 H23" strokeWidth={1.7} strokeLinecap="round" strokeDasharray="3 3" opacity={0.6} />
+      </>
+    ),
+    "frr-minimums": (
+      <>
+        <path d="M5 10 H27" strokeWidth={1.8} strokeLinecap="round" strokeDasharray="3 3" opacity={0.6} />
+        <path d="M5 25 H27" strokeWidth={2} strokeLinecap="round" />
+        <path d="M16 10 V25 M13 13 L16 10 L19 13 M13 22 L16 25 L19 22" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "frr-ifr": (
+      <>
+        <circle cx="16" cy="16" r="11" strokeWidth={2} />
+        <path d="M6 16 C10 12 22 20 26 16" strokeWidth={1.9} strokeLinecap="round" />
+        <path d="M16 5 V9 M16 23 V27" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "frr-approach": (
+      <>
+        <path d="M4 8 L22 22" strokeWidth={2} strokeLinecap="round" />
+        <path d="M20 26 H28" strokeWidth={2} strokeLinecap="round" />
+        <path d="M8 14 H14 M13 19 H19" strokeWidth={1.6} strokeLinecap="round" opacity={0.55} />
+      </>
+    ),
+    "frr-alternate": (
+      <>
+        <path d="M6 26 C10 14 16 14 16 6" strokeWidth={2} strokeLinecap="round" />
+        <path d="M16 14 C20 14 24 18 26 26" strokeWidth={1.8} strokeLinecap="round" strokeDasharray="3 3" />
+        <circle cx="16" cy="6" r="2.4" strokeWidth={1.8} />
+      </>
+    ),
+    "frr-compass": (
+      <>
+        <circle cx="16" cy="16" r="11" strokeWidth={2} />
+        <path d="M20 12 L14 14 L12 20 L18 18 Z" strokeWidth={1.9} strokeLinejoin="round" />
+        <path d="M16 3 V6" strokeWidth={2} strokeLinecap="round" />
+      </>
+    ),
+    "frr-aerobatic": (
+      <>
+        <path d="M5 26 C5 12 14 5 20 11 C25 16 19 23 15 19 C12 16 15 12 19 13" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="26" cy="8" r="2" strokeWidth={1.8} />
+      </>
+    ),
+    "frr-airspace": (
+      <>
+        <path d="M4 25 H28" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 17 H28" strokeWidth={1.6} strokeDasharray="3 3" opacity={0.6} />
+        <path d="M4 9 H28" strokeWidth={1.6} strokeDasharray="3 3" opacity={0.4} />
+        <path d="M12 25 V17 H20 V9" strokeWidth={2} strokeLinejoin="round" />
+      </>
+    ),
+    "frr-classes": (
+      <>
+        <path d="M4 26 H28" strokeWidth={2} strokeLinecap="round" />
+        <rect x="12" y="18" width="8" height="8" strokeWidth={1.9} />
+        <rect x="8" y="12" width="16" height="6" strokeWidth={1.7} opacity={0.75} />
+        <rect x="4" y="6" width="24" height="6" strokeWidth={1.5} opacity={0.5} />
+      </>
+    ),
+    "frr-route": (
+      <>
+        <circle cx="6" cy="24" r="2.6" strokeWidth={2} />
+        <circle cx="26" cy="8" r="2.6" strokeWidth={2} />
+        <path d="M8.5 22 L23.5 10" strokeWidth={2} strokeLinecap="round" strokeDasharray="4 3" />
+        <path d="M14 11 L18 15 L14 19" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" opacity={0.5} />
+      </>
+    ),
+    "frr-table": (
+      <>
+        <rect x="5" y="7" width="22" height="18" rx="2.5" strokeWidth={2} />
+        <path d="M5 13 H27 M16 13 V25 M5 19 H27" strokeWidth={1.6} opacity={0.7} />
+      </>
+    ),
+    "frr-sua": (
+      <>
+        <path d="M16 4 L27 10 V19 C27 24 16 28 16 28 C16 28 5 24 5 19 V10 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M11 11 L21 21 M21 11 L11 21" strokeWidth={1.8} strokeLinecap="round" opacity={0.7} />
+      </>
+    ),
+    "frr-nightlights": (
+      <>
+        <path d="M6 16 H26" strokeWidth={2} strokeLinecap="round" />
+        <ellipse cx="16" cy="16" rx="3" ry="5" strokeWidth={2} />
+        <circle cx="6" cy="16" r="2.4" strokeWidth={2} />
+        <circle cx="26" cy="16" r="2.4" strokeWidth={2} />
+        <circle cx="16" cy="25" r="2" strokeWidth={1.8} opacity={0.7} />
+      </>
+    ),
+    "frr-rightofway": (
+      <>
+        <path d="M4 20 H15 M12 17 L15 20 L12 23" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M28 12 H17 M20 9 L17 12 L20 15" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M16 4 V28" strokeWidth={1.5} strokeDasharray="3 3" opacity={0.5} />
+      </>
+    ),
+    "frr-limits": (
+      <>
+        <path d="M5 26 H27" strokeWidth={2} strokeLinecap="round" />
+        <path d="M5 8 H27" strokeWidth={2} strokeLinecap="round" strokeDasharray="4 3" />
+        <path d="M16 12 L16 22 M12 16 L16 12 L20 16" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "frr-conduct": (
+      <>
+        <path d="M16 4 L28 26 H4 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M16 13 V18" strokeWidth={2.2} strokeLinecap="round" />
+        <circle cx="16" cy="22" r="1.3" fill="currentColor" stroke="none" />
+      </>
+    ),
   };
 
   return (
@@ -232,7 +458,7 @@ export function LessonIcon({ name, className }: { name: string; className?: stri
       stroke="currentColor"
       aria-hidden
     >
-      {glyph[name] ?? glyph.airfoil}
+      {glyph[name] ?? glyph.vector}
     </svg>
   );
 }

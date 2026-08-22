@@ -78,11 +78,9 @@ describe("a wrong answer survives a successful retry", () => {
   });
 
   it("dents mastery, and a retry cannot immediately undo it", () => {
-    let record: MasteryRecord | undefined;
-
     // What actually gets recorded: one miss.
     const missed = applyAttempt({ "c-lift-def": emptyMastery("c-lift-def") }, attempt("q1", false, T0));
-    record = missed.mastery["c-lift-def"];
+    const record: MasteryRecord = missed.mastery["c-lift-def"];
     const afterMiss = weightedAccuracy(record.recent);
 
     // What WOULD have been recorded if the retry also counted.

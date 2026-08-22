@@ -24,6 +24,7 @@ import type {
 } from "@/lib/types";
 import { AERO_CONTENT } from "./aero";
 import { ENGINES_CONTENT } from "./engines";
+import { FRR_CONTENT } from "./frr";
 import { COURSES, COURSE_ORDER } from "./courses";
 
 export { COURSES, COURSE_ORDER, DEFAULT_COURSE, PLANNED_COURSES, isCourseId } from "./courses";
@@ -32,6 +33,7 @@ export { KNOW_COLD_CATEGORIES } from "./aero/know-cold";
 export const COURSE_CONTENT: Record<CourseId, CourseContent> = {
   aero: AERO_CONTENT,
   engines: ENGINES_CONTENT,
+  frr: FRR_CONTENT,
 };
 
 export function contentFor(course: CourseId): CourseContent {

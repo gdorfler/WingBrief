@@ -18,6 +18,8 @@ export type SourceDocument =
   | "Gas Turbine/Reciprocating Engines"
   | "Compressor Stalls"
   | "Engines Condensed Notes"
+  | "Flight Rules and Regulations Trainee Guide"
+  | "FR&R Condensed Notes"
   | "Basic Theory and Lift Production"
   | "Drag and Stalls"
   | "Performance Characteristics"
@@ -42,7 +44,7 @@ export interface SourceReference {
 /* ------------------------------------------------------------------ */
 
 /** One course on the WingBrief platform. Adding a course adds an id here. */
-export type CourseId = "aero" | "engines";
+export type CourseId = "aero" | "engines" | "frr";
 
 export interface CourseMeta {
   id: CourseId;
@@ -62,6 +64,14 @@ export interface CourseMeta {
   /** Accent used where a raw colour is unavoidable (SVG fills, gradients). */
   accent: string;
   accentSoft: string;
+  /**
+   * What this course calls its interactive section. Aerodynamics and Engines
+   * simulate a physical relationship ("Sim Lab"); Flight Rules resolves a
+   * situation ("Scenario Lab").
+   */
+  labLabel: string;
+  /** Heading and blurb for that section's index page. */
+  labIntro: { title: string; blurb: string };
 }
 
 /**
@@ -174,6 +184,25 @@ export type LessonScreen =
       line?: string;
       columns: [string, string];
       rows: { label: string; a: string; b: string }[];
+    }
+  /**
+   * The signature Flight Rules screen. A regulation is not much use as a
+   * sentence: what a student needs is the rule, the conditions that switch it
+   * on, and the exception that catches people out. Splitting those three apart
+   * on the page is what turns a paragraph of regulation into something
+   * recallable under exam pressure.
+   */
+  | {
+      kind: "rule";
+      headline: string;
+      /** The regulation itself, stated as tightly as the source allows. */
+      rule: string;
+      /** The conditions under which it bites. */
+      appliesWhen: string[];
+      /** The exception, or the wording the exam exploits. */
+      watchFor?: string;
+      /** Which publication this comes from, e.g. "CNAF M-3710.7". */
+      authority?: string;
     }
   /** Retrieval — pulls a question from the lesson's question pool. */
   | { kind: "question"; questionId: string };

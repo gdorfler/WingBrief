@@ -377,6 +377,44 @@ function ScreenView({
         </div>
       );
 
+    case "rule":
+      return (
+        <div className="space-y-3">
+          <div className="overflow-hidden rounded-2xl border border-brand/25 bg-surface">
+            <div className="flex items-center justify-between gap-3 border-b border-brand/20 bg-brand-soft px-4 py-2.5">
+              <p className="eyebrow text-brand">The rule</p>
+              {screen.authority && (
+                <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-wide text-brand">
+                  {screen.authority}
+                </span>
+              )}
+            </div>
+            <p className="px-4 py-4 text-[15.5px] font-semibold leading-relaxed text-navy">
+              {screen.rule}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-line bg-surface px-4 py-4">
+            <p className="eyebrow mb-2.5 text-navy-faint">Applies when</p>
+            <ul className="space-y-2">
+              {screen.appliesWhen.map((a) => (
+                <li key={a} className="flex gap-2.5">
+                  <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
+                  <span className="text-[13.5px] leading-relaxed text-navy">{a}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {screen.watchFor && (
+            <div className="rounded-2xl border border-caution/30 bg-caution-soft/50 px-4 py-3.5">
+              <p className="eyebrow mb-1.5 text-caution">Watch for</p>
+              <p className="text-[13.5px] leading-relaxed text-navy">{screen.watchFor}</p>
+            </div>
+          )}
+        </div>
+      );
+
     case "question": {
       const question = QUESTION_BY_ID[screen.questionId];
       if (!question) {
@@ -416,7 +454,7 @@ function LessonComplete({
   masteryBefore: Record<string, number>;
 }) {
   const { state } = useProgress();
-  const { content } = useCourse();
+  const { content, meta } = useCourse();
   const next = content.lessons.find((l) => l.index === lesson.index + 1);
   const xpEarned =
     summary.firstTryCorrect * 10 +
@@ -592,7 +630,7 @@ function LessonComplete({
                       <span className="block truncate text-[13.5px] font-semibold text-navy">
                         {l.title}
                       </span>
-                      <span className="block truncate text-[11.5px] text-navy-faint">Sim Lab</span>
+                      <span className="block truncate text-[11.5px] text-navy-faint">{meta.labLabel}</span>
                     </span>
                   </Link>
                 ))}

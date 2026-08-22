@@ -1138,6 +1138,143 @@ export const WIDGETS: Record<string, WidgetSpec> = {
     ],
     note: () => "You buy force with distance. Pressure through the confined fluid never changes.",
   },
+
+  /* ---------------- Flight Rules ---------------- */
+  BriefVoidWidget: {
+    diagram: "frr-brief-void",
+    controls: [
+      { kind: "slider", key: "etd", label: "ETD after the brief", min: 0, max: 260, step: 5, initial: 120, format: (v) => `+${Math.round(v)} min` },
+    ],
+    toProps: (s) => ({ etd: s.etd }),
+    readouts: (s) => {
+      const etdClock = s.etd + 30;
+      const wins = etdClock <= 180;
+      return [
+        { label: "Brief + 3 hours", value: "+180 min", tone: wins ? "neutral" : "nogo" },
+        { label: "ETD + 30 min", value: `+${Math.round(etdClock)} min`, tone: wins ? "nogo" : "neutral" },
+        { label: "Brief goes void at", value: `+${Math.round(Math.min(180, etdClock))} min`, tone: "caution" },
+      ];
+    },
+    note: (s) =>
+      s.etd + 30 <= 180
+        ? "The ETD clock fires first — the brief dies 30 minutes after your planned departure."
+        : "A late departure pushes the ETD clock past three hours, so the brief-time clock governs.",
+  },
+
+  SemicircularWidget: {
+    diagram: "frr-semicircular",
+    controls: [
+      { kind: "slider", key: "course", label: "Magnetic course", min: 0, max: 359, step: 1, initial: 90, format: deg },
+      { kind: "segmented", key: "rules", label: "Flight rules", initial: 0, options: [
+        { value: 0, label: "VFR" },
+        { value: 1, label: "IFR" },
+      ] },
+    ],
+    toProps: (s) => ({ course: s.course, rules: s.rules === 1 ? "ifr" : "vfr" }),
+    readouts: (s) => {
+      const east = s.course < 180;
+      const ifr = s.rules === 1;
+      return [
+        { label: "Hemisphere", value: east ? "East (0–179°)" : "West (180–359°)", tone: east ? "brand" : "violet" },
+        { label: "Thousands", value: east ? "Odd" : "Even", tone: "neutral" },
+        { label: "Add 500 ft?", value: ifr ? "No — IFR" : "Yes — VFR", tone: ifr ? "neutral" : "go" },
+      ];
+    },
+    note: (s) =>
+      s.course === 0 || s.course === 360
+        ? "360° is 0°, which counts as EAST — a favourite exam trap."
+        : "It is the magnetic COURSE that decides, never the heading.",
+  },
+
+  RunwayNumberWidget: {
+    diagram: "frr-runway-numbering",
+    controls: [
+      { kind: "slider", key: "heading", label: "Magnetic heading", min: 0, max: 359, step: 1, initial: 93, format: deg },
+    ],
+    toProps: (s) => ({ heading: s.heading }),
+    readouts: (s) => {
+      const rounded = Math.round(s.heading / 10) * 10;
+      const n = rounded === 0 ? 36 : rounded / 10;
+      const r = ((rounded + 180) % 360) / 10;
+      return [
+        { label: "Rounded to", value: `${rounded === 0 ? 360 : rounded}°`, tone: "neutral" },
+        { label: "Runway", value: String(n).padStart(2, "0"), tone: "brand" },
+        { label: "Reciprocal end", value: String(r === 0 ? 36 : r).padStart(2, "0"), tone: "violet" },
+      ];
+    },
+    note: () => "Round to the nearest ten, drop the last digit. The far end is always 18 away.",
+  },
+
+  VasiWidget: {
+    diagram: "frr-vasi",
+    controls: [
+      { kind: "segmented", key: "state", label: "Where you are", initial: 1, options: [
+        { value: 0, label: "Low" },
+        { value: 1, label: "On" },
+        { value: 2, label: "High" },
+      ] },
+    ],
+    toProps: (s) => ({ state: ["low", "on", "high"][s.state] }),
+    readouts: (s) => {
+      const rows = [
+        { bars: "Red over red", tone: "nogo" as const, act: "Climb" },
+        { bars: "Red over white", tone: "go" as const, act: "Hold it" },
+        { bars: "White over white", tone: "caution" as const, act: "Descend" },
+      ][s.state];
+      return [
+        { label: "You see", value: rows.bars, tone: rows.tone },
+        { label: "Action", value: rows.act, tone: rows.tone },
+      ];
+    },
+    note: () => "Red over white, you're alright. Red over red, you're dead.",
+  },
+
+  AirspaceProfileWidget: {
+    diagram: "frr-airspace-profile",
+    controls: [
+      { kind: "segmented", key: "cls", label: "Class", initial: 0, options: [
+        { value: 0, label: "All" },
+        { value: 1, label: "A" },
+        { value: 2, label: "B" },
+        { value: 3, label: "C" },
+      ] },
+    ],
+    toProps: (s) => ({ highlight: ["none", "a", "b", "c"][s.cls] }),
+    readouts: (s) =>
+      [
+        [{ label: "Controlled", value: "A, B, C, D, E", tone: "brand" as const }, { label: "Uncontrolled", value: "G", tone: "neutral" as const }],
+        [{ label: "Floor", value: "18,000 MSL", tone: "nogo" as const }, { label: "Ceiling", value: "FL600", tone: "nogo" as const }, { label: "Rules", value: "IFR only", tone: "nogo" as const }],
+        [{ label: "Typical", value: "SFC to 10,000 MSL", tone: "brand" as const }, { label: "Entry", value: "ATC clearance", tone: "caution" as const }],
+        [{ label: "Typical", value: "SFC to 4,000 AGL", tone: "brand" as const }, { label: "Entry", value: "Two-way comms established", tone: "caution" as const }],
+      ][s.cls],
+    note: (s) =>
+      s.cls === 2
+        ? "Class B needs an actual CLEARANCE. Class C and D need only two-way communication established."
+        : "A, B, C, D and E are controlled. Only G is not.",
+  },
+
+  OxygenWidget: {
+    diagram: "frr-oxygen",
+    controls: [
+      { kind: "slider", key: "altitude", label: "Cabin altitude", min: 0, max: 16000, step: 250, initial: 9000, format: ft },
+      { kind: "toggle", key: "equipped", label: "Oxygen system fitted", initial: 1, onLabel: "Fitted", offLabel: "None" },
+    ],
+    toProps: (s) => ({ altitude: s.altitude, equipped: s.equipped === 1 }),
+    readouts: (s) => {
+      const eq = s.equipped === 1;
+      const ceiling = eq ? 13000 : 12000;
+      const hours = eq ? "3 hours" : "1 hour";
+      return [
+        { label: "Oxygen required", value: s.altitude > 10000 ? "Yes" : "No", tone: s.altitude > 10000 ? "caution" : "go" },
+        { label: "Time limit", value: s.altitude > 10000 ? hours : "—", tone: "neutral" },
+        { label: "Ceiling", value: ft(ceiling), tone: s.altitude > ceiling ? "nogo" : "neutral" },
+      ];
+    },
+    note: (s) =>
+      s.altitude > (s.equipped === 1 ? 13000 : 12000)
+        ? "Above this ceiling the flight is prohibited, not merely time-limited."
+        : "10,000 ft cabin altitude is the trigger. What happens above it depends on the equipment fitted.",
+  },
 };
 
 /* ------------------------------------------------------------------ */

@@ -78,6 +78,23 @@ import {
   TurbineEnergySplit,
   TurbopropPowerFlow,
 } from "./engines";
+import {
+  AirspaceProfile,
+  AirspeedLimits,
+  AltitudeRestrictions,
+  AtcOrg,
+  BriefVoidClock,
+  CloudClearance,
+  DecisionTree,
+  LightGun,
+  OxygenLadder,
+  PositionLights,
+  PriorityStack,
+  RightOfWay,
+  RunwayNumbering,
+  SemicircularRule,
+  Vasi,
+} from "./frr";
 
 export type DiagramRenderer = (props: DiagramProps) => ReactElement;
 
@@ -155,6 +172,23 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
   "eng-start-sequence": StartSequence,
   "eng-electrical": ElectricalBuses,
   "eng-hydraulic": HydraulicCircuit,
+
+  /* ---- Flight Rules & Regulations ---- */
+  "frr-priority": PriorityStack,
+  "frr-atc-org": AtcOrg,
+  "frr-airspace-profile": AirspaceProfile,
+  "frr-cloud-clearance": CloudClearance,
+  "frr-semicircular": SemicircularRule,
+  "frr-right-of-way": RightOfWay,
+  "frr-position-lights": PositionLights,
+  "frr-runway-numbering": RunwayNumbering,
+  "frr-light-gun": LightGun,
+  "frr-vasi": Vasi,
+  "frr-airspeed": AirspeedLimits,
+  "frr-altitude": AltitudeRestrictions,
+  "frr-oxygen": OxygenLadder,
+  "frr-decision": DecisionTree,
+  "frr-brief-void": BriefVoidClock,
 };
 
 export const DIAGRAM_IDS = Object.keys(DIAGRAMS);

@@ -33,7 +33,7 @@ import {
 
 export default function ReviewPage() {
   const { state } = useProgress();
-  const { content } = useCourse();
+  const { content, meta } = useCourse();
   const now = Date.now();
 
   const weak = weakConcepts(content.concepts, content.questions, state.mastery, now, { limit: 8 });
@@ -109,8 +109,8 @@ export default function ReviewPage() {
     {
       href: "/lab",
       icon: FlaskConical,
-      title: "Sim Lab",
-      body: "Manipulate the relationships instead of memorising them.",
+      title: meta.labLabel,
+      body: meta.labIntro.blurb,
     },
   ];
 

@@ -48,6 +48,13 @@ import {
   ThrustFactorLab,
   TurbopropLab,
 } from "./engine-labs";
+import {
+  AirportLab,
+  VfrIfrLab,
+  AltitudeLab,
+  AirspaceLab,
+  RulesLab,
+} from "./frr-labs";
 
 /* ------------------------------------------------------------------ */
 /* Frame                                                               */
@@ -861,6 +868,13 @@ export const LAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   TurbopropLab,
   SystemsTraceLab,
   MalfunctionLab,
+
+  /* Flight Rules */
+  AirportLab,
+  VfrIfrLab,
+  AltitudeLab,
+  AirspaceLab,
+  RulesLab,
 };
 
 export function LabHost({ component }: { component: string }) {

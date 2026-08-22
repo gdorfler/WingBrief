@@ -10,14 +10,14 @@ import { Card, PageHeader, ProgressBar } from "@/components/ui";
 
 export default function LabIndexPage() {
   const { state } = useProgress();
-  const { content } = useCourse();
+  const { content, meta } = useCourse();
 
   return (
     <>
       <PageHeader
-        eyebrow="Sim Lab"
-        title="Manipulate the relationships"
-        subtitle="Eight labs built to teach cause and effect, not to simulate an aircraft. Where the trainee guide does not publish a number, outputs are shown as relative values rather than invented ones."
+        eyebrow={meta.labLabel}
+        title={meta.labIntro.title}
+        subtitle={`${content.labs.length} labs. ${meta.labIntro.blurb}`}
       />
 
       <ul className="grid gap-4 md:grid-cols-2">

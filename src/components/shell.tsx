@@ -34,7 +34,9 @@ const NAV = [
   { href: "/", label: "Home", icon: Home, exact: true },
   { href: "/lessons", label: "Lessons", icon: Layers },
   { href: "/review", label: "Review", icon: RotateCcw },
-  { href: "/lab", label: "Sim Lab", icon: FlaskConical },
+  // Label filled in per course: "Sim Lab" for the physical courses,
+  // "Scenario Lab" for Flight Rules.
+  { href: "/lab", label: "", icon: FlaskConical },
   { href: "/exam", label: "Exam", icon: ClipboardCheck },
 ];
 
@@ -142,7 +144,7 @@ function SideNav() {
 
       <nav className="flex flex-col gap-1">
         {NAV.map((item) => (
-          <NavItem key={item.href} {...item} />
+          <NavItem key={item.href} {...item} label={item.label || meta.labLabel} />
         ))}
       </nav>
 
@@ -203,6 +205,7 @@ function TopBarMobile() {
 }
 
 function BottomNav() {
+  const { meta } = useCourse();
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 backdrop-blur-md lg:hidden"
@@ -210,7 +213,7 @@ function BottomNav() {
     >
       <ul className="grid grid-cols-5">
         {NAV.map((item) => (
-          <BottomNavItem key={item.href} {...item} />
+          <BottomNavItem key={item.href} {...item} label={item.label || meta.labLabel} />
         ))}
       </ul>
     </nav>

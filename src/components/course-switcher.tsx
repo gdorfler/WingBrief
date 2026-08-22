@@ -45,7 +45,23 @@ export function CourseIcon({
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden className="shrink-0">
       {tone === "solid" && <rect width="32" height="32" rx="9" fill={bg} />}
 
-      {name === "turbine" ? (
+      {name === "waypoint" ? (
+        <>
+          {/* A route between two waypoints: the course is about getting from
+              a rule to the action it requires. */}
+          <path
+            d="M7 24 C11 24 12 15 16 15 C20 15 21 8 25 8"
+            fill="none"
+            stroke={fg}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray="3.5 3"
+          />
+          <path d="M7 24 m-2.6 0 a2.6 2.6 0 1 0 5.2 0 a2.6 2.6 0 1 0 -5.2 0" fill={fg} />
+          <path d="M25 4.6 L28.2 11.4 L25 9.9 L21.8 11.4 Z" fill="#fff" />
+          <path d="M13.4 15 L16 12.4 L18.6 15 L16 17.6 Z" fill={fg} />
+        </>
+      ) : name === "turbine" ? (
         <>
           {/* Turbine face: hub plus blades, with a compressed-air arc. */}
           <circle cx="16" cy="16" r="9.4" fill="none" stroke={fg} strokeWidth="1.9" />

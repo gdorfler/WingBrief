@@ -23,6 +23,12 @@ export const COURSES: Record<CourseId, CourseMeta> = {
     theme: "aero",
     accent: "#1f6fb2",
     accentSoft: "#e8f1fa",
+    labLabel: "Sim Lab",
+    labIntro: {
+      title: "Manipulate the relationships",
+      blurb:
+        "Labs built to teach cause and effect, not to simulate an aircraft. Where the trainee guide does not publish a number, outputs are shown as relative values rather than invented ones.",
+    },
   },
   engines: {
     id: "engines",
@@ -33,11 +39,33 @@ export const COURSES: Record<CourseId, CourseMeta> = {
     theme: "engines",
     accent: "#e8752a",
     accentSoft: "#fdf0e6",
+    labLabel: "Sim Lab",
+    labIntro: {
+      title: "Drive the engine, watch what moves",
+      blurb:
+        "Relationship simulators rather than engine models. The lectures publish directions and splits, not thrust tables, so nothing here computes a value it cannot justify.",
+    },
+  },
+  frr: {
+    id: "frr",
+    name: "Flight Rules",
+    tagline: "What rule applies, when, and what you do next",
+    sourceLabel: "NAVAVSCOLSCOM-SG-200 Module 7 · CNAF M-3710.7",
+    icon: "waypoint",
+    theme: "frr",
+    accent: "#6d5ae0",
+    accentSoft: "#efecfd",
+    labLabel: "Scenario Lab",
+    labIntro: {
+      title: "Set the situation, read the ruling",
+      blurb:
+        "Regulations have no curve to plot, so these are decision engines: change the conditions and watch which clause of the rule produces the answer.",
+    },
   },
 };
 
 /** Display order in the switcher. */
-export const COURSE_ORDER: CourseId[] = ["aero", "engines"];
+export const COURSE_ORDER: CourseId[] = ["aero", "engines", "frr"];
 
 export const DEFAULT_COURSE: CourseId = "aero";
 
@@ -46,4 +74,4 @@ export function isCourseId(value: unknown): value is CourseId {
 }
 
 /** Courses named in the switcher's "coming soon" footer. Not yet built. */
-export const PLANNED_COURSES = ["Weather", "Navigation", "Flight Rules"];
+export const PLANNED_COURSES = ["Weather", "Navigation"];
