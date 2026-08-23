@@ -16,7 +16,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Check, Lock, Play, Star, TriangleAlert } from "lucide-react";
+import { Check, FastForward, Lock, Play, Star, TriangleAlert } from "lucide-react";
 import type { Lesson, Unit } from "@/lib/types";
 import type { LessonNodeState } from "@/lib/review";
 import { LessonIcon } from "./lesson-icon";
@@ -174,13 +174,21 @@ function UnitHeader({
             </p>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           <Pill tone="neutral">
             {done}/{total} lessons
           </Pill>
           <Pill tone={readiness >= 80 ? "go" : readiness >= 40 ? "brand" : "neutral"}>
             {readiness}% mastery
           </Pill>
+          <Link
+            href={`/exam?mode=unit&unit=${unit.id}`}
+            className="flex items-center gap-1 rounded-full border border-line px-2.5 py-1 text-[11.5px] font-semibold text-navy-soft transition-colors hover:border-brand/40 hover:text-brand"
+            title="Already know this unit? Take its exam to test out."
+          >
+            <FastForward size={12} />
+            Test out
+          </Link>
         </div>
       </div>
     </div>

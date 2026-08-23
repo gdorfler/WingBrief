@@ -7,6 +7,7 @@ import { useCourse } from "@/lib/course";
 import { LessonMap } from "@/components/lesson-map";
 import { NavRouteMap } from "@/components/nav/route-map";
 import { ChipRail, PageHeader, Pill } from "@/components/ui";
+import { PlacementBanner } from "@/components/placement-banner";
 
 export default function LessonsPage() {
   const { state } = useProgress();
@@ -48,6 +49,8 @@ export default function LessonsPage() {
           </ChipRail>
         </div>
       </PageHeader>
+
+      <PlacementBanner />
 
       {/*
        * Navigation progresses across a chart rather than along a path. Same

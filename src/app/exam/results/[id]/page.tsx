@@ -9,6 +9,7 @@ import { scoreExam } from "@/lib/scoring";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { NavExamDiagnostic } from "@/components/nav/diagnostics";
+import { PlacementBanner } from "@/components/placement-banner";
 import { QuestionReview } from "@/components/questions";
 import {
 
@@ -124,6 +125,8 @@ export default function ExamResultsPage() {
            * procedural course that is the whole of useful feedback, so
            * Navigation gets a diagnostic above the standard breakdowns.
            */}
+          <PlacementBanner />
+
           {meta.layout === "desk" && (
             <NavExamDiagnostic
               content={content}
