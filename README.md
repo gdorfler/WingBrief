@@ -279,9 +279,9 @@ not the app's.
 
 #### What the guide made us build
 
-Navigation is not a memorisation course. Of its 37 objectives, sixteen begin with a doing
-verb — COMPUTE, CALCULATE, SOLVE, LOCATE, PLOT, MEASURE, PERFORM, DETERMINE — and each of
-those publishes a **tolerance**. A course whose exam asks for a groundspeed to ±1% cannot
+Navigation is not a memorisation course. Of its 37 objectives, **seventeen** begin with a
+doing verb — six CALCULATE, three SOLVE, three PLOT, and one each of COMPUTE, LOCATE,
+MEASURE, DETERMINE and PERFORM — and each of those publishes a **tolerance**. A course whose exam asks for a groundspeed to ±1% cannot
 be delivered with multiple choice, so the platform grew four things:
 
 - **A numeric answer type** with per-field units, tolerances and left/right qualifiers.
