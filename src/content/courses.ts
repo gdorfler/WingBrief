@@ -66,7 +66,7 @@ export const COURSES: Record<CourseId, CourseMeta> = {
     id: "weather",
     name: "Weather",
     tagline: "What the atmosphere is doing, and what happens next",
-    sourceLabel: "Weather Condensed Notes · WX 1–4",
+    sourceLabel: "NAVAVSCOLSCOM-SG-200 · EOs 2.199–2.279",
     icon: "atmosphere",
     theme: "weather",
     accent: "#0d9aa8",

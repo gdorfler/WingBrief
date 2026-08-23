@@ -13,12 +13,12 @@ sit inside one language app.
 |---|---|---|---|---|
 | Identity | Aviation blue · air and flow | Burnt amber · power and machinery | Indigo · rules and charts | Teal · the moving atmosphere |
 | Units | 6 | 7 | 8 | 10 |
-| Lessons | 33 (~226 min) | 30 (~172 min) | 32 (~162 min) | 27 (~151 min) |
-| Concepts | 136 | 100 | 106 | 73 |
-| Questions | 344 | 205 | 220 | 163 |
-| Explainers · Labs | 37 · 8 | 30 · 9 | 32 · 8 | 28 · 10 |
+| Lessons | 33 (~226 min) | 30 (~172 min) | 32 (~162 min) | 30 (~169 min) |
+| Concepts | 136 | 100 | 106 | 94 |
+| Questions | 344 | 205 | 220 | 217 |
+| Explainers · Labs | 37 · 8 | 30 · 9 | 32 · 8 | 31 · 11 |
 | Know Cold cards | 78 | 61 | 58 | 60 |
-| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed | 42, all taught **and** assessed | none published — see below |
+| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed | 42, all taught **and** assessed | 81, all taught **and** assessed |
 
 Every lesson in every course has a visual explainer, and every unit has a lab.
 
@@ -216,26 +216,32 @@ name the table as the authority instead of quoting numbers it does not supply.
 
 ### Weather
 
-**Weather is the one course with no official material.** The other three are built on
-trainee guides or lecture PDFs that publish numbered enabling objectives. The supplied
-Weather sources are:
+1. **Weather Trainee Guide** — `NAVAVSCOLSCOM-SG-200`, publishing **enabling objectives
+   2.199 through 2.279**: 81 in one contiguous block, covering atmospheric physics,
+   circulation, moisture, frontal mechanics, turbulence, icing, hazards, thunderstorms and
+   weather products. Authoritative.
+2. **Weather Condensed Notes** — WX 1 Theory, WX 2 Mechanics, WX 3 Hazards, WX 4 Planning
+   and Resources. Used for phrasing where it agrees with the guide and states things more
+   tightly.
+3. **Exhaustive Weather Dump Sheet** — the mnemonics: IWRUM, TDWP, FOCT, WTFM, HI MELT,
+   COUT and the turbulence ladder.
 
-1. **Weather Condensed Notes** — four blocks: WX 1 Theory, WX 2 Mechanics, WX 3 Hazards,
-   WX 4 Planning and Resources. This is level 4 in the source hierarchy.
-2. **Exhaustive Weather Dump Sheet** — the mnemonics: IWRUM, TDWP, FOCT, WTFM, HI MELT,
-   COUT and the turbulence intensity ladder. Level 5.
+The course was originally built from sources 2 and 3, before the guide was available. The
+guide then turned out to cover a good deal the notes never mention, and that material was
+added rather than glossed: the stratosphere and its flight conditions, mountain and valley
+winds, saturation, the eight forms of precipitation, the clues that read stable versus
+unstable air from the cockpit, the five factors influencing frontal weather, squall lines,
+inactive fronts, clear air turbulence, mountain wave turbulence with its three stationary
+cloud types, frontal icing signatures, the PIREP icing scale, radiation versus advection
+fog, volcanic ash, radar near thunderstorms, and the WS / WST / WA and Sierra / Tango /
+Zulu advisory identifiers.
 
-There is no Weather trainee guide and there are **no enabling objectives**, so no Weather
-lesson claims one — exactly as Engines units e6–e7 do, for the same reason. The EO matrix
-on the profile is empty for Weather, which is the correct answer rather than a gap. What
-is enforced instead is the coverage rule that applies to every course: every concept is
-taught by a lesson and assessed by at least two questions.
-
-Every number in the course is quoted from the notes: 29.92 and 15 °C, the 2 °C and 1 inHg
-lapse rates, 2,000 ft AGL for the wind layer, FL300 for the jet stream, the clear/rime/mixed
-temperature bands, 2,000–6,000 fpm for a microburst, 50 ft and 20 ft and ⅝ SM for fog, and
-the 2 / 4 / 6 hour advisory validity periods. Where the notes state a relationship, the
-direction is preserved; nothing is filled in from general meteorology.
+Every number is quoted from the sources: 29.92 and 15 °C, the 2 °C and 1 inHg lapse rates,
+66,000 and 158,000 ft in the stratosphere, 2,000 ft AGL for the wind layer, FL300 for the
+jet stream, 50–300 miles for a squall line, 50 kt at a mountaintop, the clear/rime/mixed
+bands, 2,000–6,000 fpm for a microburst, 50 ft and 20 ft and ⅝ SM for fog, 35,000 ft radar
+echo tops, and the 2 / 4 / 6 hour advisory validity periods. Nothing is filled in from
+general meteorology.
 
 ---
 

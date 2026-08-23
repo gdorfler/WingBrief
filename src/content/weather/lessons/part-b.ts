@@ -171,7 +171,12 @@ export const LESSONS_B: Lesson[] = [
     estimatedMinutes: 5,
     mapIcon: "wx-turbulence",
     enablingObjectives: [],
-    conceptIds: ["wx-turbulence", "wx-turbulence-intensity", "wx-turbulence-duration"],
+    conceptIds: [
+      "wx-turbulence",
+      "wx-turbulence-intensity",
+      "wx-turbulence-duration",
+      "wx-clear-air-turbulence",
+    ],
     masteryThreshold: 0.8,
     screens: [
       {
@@ -202,21 +207,33 @@ export const LESSONS_B: Lesson[] = [
         footnote: "Low means no height and no airspeed in reserve to absorb an upset.",
       },
       {
+        kind: "rule",
+        headline: "Clear air turbulence",
+        rule:
+          "Turbulence occurring in the absence of, or outside of, clouds is referred to as clear-air turbulence. Any of the four causative types may occur without the visual warning associated with clouds.",
+        appliesWhen: ["Anywhere the cause is present but the cloud is not"],
+        watchFor:
+          "CAT is not a fifth cause. It describes where the turbulence happens, not what produced it — and it is why forecasts and PIREPs matter more than looking out of the window.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
           "Light, moderate, severe, extreme",
+          "CAT is turbulence with no cloud to warn you",
           "Extreme → declare an emergency and exit ASAP",
           "Occasional < ⅓ · Intermittent ⅓–⅔ · Continuous > ⅔",
           "Most hazardous at low altitude",
         ],
       },
       { kind: "question", questionId: "wq-w7-001" },
-      { kind: "question", questionId: "wq-w7-003" },
       { kind: "question", questionId: "wq-w7-004" },
       { kind: "question", questionId: "wq-w7-005" },
+      { kind: "question", questionId: "wq-wg-023" },
     ],
-    questionIds: ["wq-w7-001", "wq-w7-002", "wq-w7-003", "wq-w7-004", "wq-w7-005"],
+    questionIds: [
+      "wq-w7-001", "wq-w7-002", "wq-w7-003", "wq-w7-004", "wq-w7-005", "wq-wg-023",
+    ],
     memorize: ["Occasional ⅓, intermittent ⅔, continuous beyond"],
     sourceReferences: [HAZ],
   },
@@ -427,7 +444,15 @@ export const LESSONS_B: Lesson[] = [
     estimatedMinutes: 7,
     mapIcon: "wx-icetype",
     enablingObjectives: [],
-    conceptIds: ["wx-clear-ice", "wx-rime-ice", "wx-mixed-ice", "wx-frost", "wx-engine-icing"],
+    conceptIds: [
+      "wx-clear-ice",
+      "wx-rime-ice",
+      "wx-mixed-ice",
+      "wx-frost",
+      "wx-engine-icing",
+      "wx-frontal-icing",
+      "wx-pirep-icing",
+    ],
     masteryThreshold: 0.85,
     screens: [
       {
@@ -476,24 +501,50 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "compare",
+        headline: "The front tells you which ice to expect",
+        line: "Because the front decides the cloud, and the cloud decides the ice.",
+        columns: ["Front", "Icing signature"],
+        rows: [
+          { label: "Warm", a: "Stratiform cloud", b: "Rime · low rate · widespread" },
+          { label: "Cold", a: "Cumuliform cloud", b: "Clear · high rate · limited area" },
+          { label: "Occluded", a: "Stratus AND cumulus", b: "Rime, clear and mixed · rapid and heavy · very widespread" },
+        ],
+      },
+      {
+        kind: "compare",
+        headline: "Reporting it",
+        line: "A PIREP carries the type and the intensity together.",
+        columns: ["Intensity", "What it means"],
+        rows: [
+          { label: "Trace", a: "Ice becomes perceptible", b: "Accumulating slightly faster than it sublimates" },
+          { label: "Light", a: "A problem over an extended time, over an hour", b: "Occasional equipment use prevents it" },
+          { label: "Moderate", a: "Potentially hazardous even in short encounters", b: "Equipment or diversion necessary" },
+          { label: "Severe", a: "Equipment FAILS to reduce or control it", b: "Immediate diversion necessary" },
+        ],
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
           "Clear 0 to −10 · Rime −10 to −20 · Mixed −8 to −15",
+          "Warm front rime · cold front clear · occluded the worst of both",
+          "Severe icing means the equipment has lost",
           "Clear is the most severe and hardest to remove",
           "Frost is ground icing — remove it, never scrape it",
           "Induction icing up to +10 °C",
         ],
       },
       { kind: "question", questionId: "wq-w8-004" },
-      { kind: "question", questionId: "wq-w8-006" },
       { kind: "question", questionId: "wq-w8-008" },
       { kind: "question", questionId: "wsl-w8-009" },
-      { kind: "question", questionId: "wq-w8-012" },
+      { kind: "question", questionId: "wq-wg-031" },
+      { kind: "question", questionId: "wq-wg-033" },
     ],
     questionIds: [
       "wq-w8-004", "wq-w8-005", "wq-w8-006", "wq-w8-007", "wq-w8-008",
       "wsl-w8-009", "wq-w8-010", "wq-w8-011", "wq-w8-012",
+      "wq-wg-031", "wq-wg-032", "wq-wg-033", "wq-wg-034", "wq-wg-035",
     ],
     memorize: ["0/−10 clear, −10/−20 rime, −8/−15 mixed"],
     sourceReferences: [HAZ],
@@ -576,7 +627,7 @@ export const LESSONS_B: Lesson[] = [
     estimatedMinutes: 6,
     mapIcon: "wx-thunderstorm",
     enablingObjectives: [],
-    conceptIds: ["wx-thunderstorm-hazards", "wx-thunderstorm-avoidance"],
+    conceptIds: ["wx-thunderstorm-hazards", "wx-thunderstorm-avoidance", "wx-thunderstorm-radar"],
     masteryThreshold: 0.85,
     screens: [
       {
@@ -617,21 +668,38 @@ export const LESSONS_B: Lesson[] = [
           "Going over costs 1,000 ft for every 10 kt of wind at the top, which over a tall storm in a strong wind puts it out of reach quickly.",
       },
       {
+        kind: "rule",
+        headline: "What radar can and cannot do",
+        rule:
+          "A direct relationship exists between the strength of the radar echoes, the presence of aircraft icing and the intensity of turbulence. Radar echo tops above 35,000 ft often mean extreme turbulence and hail. Radar merely helps to LOCATE the most severe conditions — it does not eliminate the hazard.",
+        appliesWhen: [
+          "Scattered echoes can usually be circumnavigated",
+          "Broken or solid lines of moderate to strong intensity need a radar-equipped aircraft to avoid",
+        ],
+        watchFor:
+          "Severe clear air turbulence and hail may be experienced BETWEEN thunderstorms when the echoes are less than 30 miles apart. The gap is not automatically safe.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
           "Hail, Icing, Microbursts, Extreme turbulence, Lightning, Tornados",
+          "Echo tops above 35,000 ft: extreme turbulence and hail",
           "Circumnavigate, Over, Under, Through — in priority order",
           "Over: 1,000 ft per 10 kt at the top",
           "Through: lower third, no angle",
         ],
       },
       { kind: "question", questionId: "wq-w9-001" },
-      { kind: "question", questionId: "wq-w9-003" },
       { kind: "question", questionId: "wq-w9-004" },
       { kind: "question", questionId: "wcc-w9-006" },
+      { kind: "question", questionId: "wq-wg-045" },
+      { kind: "question", questionId: "wq-wg-047" },
     ],
-    questionIds: ["wq-w9-001", "wq-w9-002", "wq-w9-003", "wq-w9-004", "wq-w9-005", "wcc-w9-006"],
+    questionIds: [
+      "wq-w9-001", "wq-w9-002", "wq-w9-003", "wq-w9-004", "wq-w9-005", "wcc-w9-006",
+      "wq-wg-045", "wq-wg-046", "wq-wg-047",
+    ],
     memorize: ["HI MELT", "COUT, and the order is the priority"],
     sourceReferences: [HAZ],
     explainerIds: ["wx-x-thunderstorm"],
@@ -701,7 +769,7 @@ export const LESSONS_B: Lesson[] = [
     estimatedMinutes: 5,
     mapIcon: "wx-fog",
     enablingObjectives: [],
-    conceptIds: ["wx-fog", "wx-obscuring-phenomenon"],
+    conceptIds: ["wx-fog", "wx-obscuring-phenomenon", "wx-fog-types", "wx-fog-winds"],
     masteryThreshold: 0.85,
     screens: [
       {
@@ -730,6 +798,20 @@ export const LESSONS_B: Lesson[] = [
       },
       {
         kind: "compare",
+        headline: "Two ways to get there",
+        line: "Both cool the air to its dew point. They do it from opposite directions — and they respond to wind in opposite directions too.",
+        columns: ["Radiation fog", "Advection fog"],
+        rows: [
+          { label: "Mechanism", a: "Nocturnal cooling on clear nights", b: "Warm moist air moving over a cold surface" },
+          { label: "Timing", a: "Cooling starts 1530–1600 local, runs to just after sunrise", b: "Any time · can persist for weeks over water" },
+          { label: "Under 5 kt", a: "Shallow fog", b: "—" },
+          { label: "5 to 10 kt", a: "DENSE fog", b: "Thickening" },
+          { label: "Over 10 kt", a: "Disperses into low stratus", b: "Still thickening, to about 15 kt" },
+          { label: "Also called", a: "—", b: "Sea fog" },
+        ],
+      },
+      {
+        kind: "compare",
         headline: "Obscuration is a wider category",
         columns: ["Obscuring phenomenon", "Fog"],
         rows: [
@@ -746,12 +828,16 @@ export const LESSONS_B: Lesson[] = [
           "Obscuring phenomenon: below 7 SM",
         ],
       },
-      { kind: "question", questionId: "wq-w9-011" },
       { kind: "question", questionId: "wq-w9-012" },
       { kind: "question", questionId: "wq-w9-013" },
-      { kind: "question", questionId: "wq-w9-014" },
+      { kind: "question", questionId: "wq-wg-036" },
+      { kind: "question", questionId: "wq-wg-038" },
+      { kind: "question", questionId: "wq-wg-040" },
     ],
-    questionIds: ["wq-w9-011", "wq-w9-012", "wq-w9-013", "wq-w9-014"],
+    questionIds: [
+      "wq-w9-011", "wq-w9-012", "wq-w9-013", "wq-w9-014",
+      "wq-wg-036", "wq-wg-037", "wq-wg-038", "wq-wg-039", "wq-wg-040",
+    ],
     memorize: ["50 ft base, 20 ft thick, ⅝ SM", "Light winds, not calm"],
     sourceReferences: [HAZ],
     explainerIds: ["wx-x-fog"],
@@ -969,6 +1055,7 @@ export const LESSONS_B: Lesson[] = [
       "wx-nonconvective-sigmet",
       "wx-airmet",
       "wx-weather-briefing",
+      "wx-advisory-identifiers",
     ],
     masteryThreshold: 0.85,
     screens: [
@@ -1010,6 +1097,20 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "compare",
+        headline: "The letter identifiers",
+        line: "Three products, and three AIRMET types inside the last one.",
+        columns: ["Identifier", "What it is"],
+        rows: [
+          { label: "WS", a: "SIGMET", b: "Severe, non-convective" },
+          { label: "WST", a: "Convective SIGMET", b: "Thunderstorm-related" },
+          { label: "WA", a: "AIRMET", b: "Moderate" },
+          { label: "Sierra", a: "AIRMET for widespread IFR", b: "Ceiling below 1,000 ft and/or visibility below 3 miles over 50% of the area, or extensive mountain obscuration" },
+          { label: "Tango", a: "AIRMET for turbulence", b: "Moderate turbulence, or sustained surface winds of 30 kt or more" },
+          { label: "Zulu", a: "AIRMET for icing", b: "Moderate icing, or freezing level data" },
+        ],
+      },
+      {
         kind: "rule",
         headline: "The weather brief",
         rule:
@@ -1030,14 +1131,15 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       { kind: "question", questionId: "wq-w10-023" },
-      { kind: "question", questionId: "wq-w10-025" },
-      { kind: "question", questionId: "wq-w10-027" },
       { kind: "question", questionId: "wq-w10-029" },
       { kind: "question", questionId: "wq-w10-019" },
+      { kind: "question", questionId: "wq-wg-048" },
+      { kind: "question", questionId: "wq-wg-049" },
     ],
     questionIds: [
       "wq-w10-018", "wq-w10-019", "wq-w10-023", "wq-w10-024", "wq-w10-025",
       "wq-w10-026", "wq-w10-027", "wq-w10-028", "wq-w10-029", "wq-w10-030",
+      "wq-wg-048", "wq-wg-049", "wq-wg-050", "wq-wg-051",
     ],
     memorize: [
       "AIRMET moderate, SIGMET severe",

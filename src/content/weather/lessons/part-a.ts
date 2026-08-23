@@ -27,7 +27,13 @@ export const LESSONS_A: Lesson[] = [
     estimatedMinutes: 5,
     mapIcon: "wx-atmosphere",
     enablingObjectives: [],
-    conceptIds: ["wx-troposphere", "wx-tropopause", "wx-heat-exchange"],
+    conceptIds: [
+      "wx-troposphere",
+      "wx-tropopause",
+      "wx-stratosphere",
+      "wx-layer-flight-conditions",
+      "wx-heat-exchange",
+    ],
     masteryThreshold: 0.75,
     screens: [
       {
@@ -52,6 +58,17 @@ export const LESSONS_A: Lesson[] = [
         line: "The tropopause is isothermal — the temperature holds constant through it. That is the transition to the stratosphere.",
       },
       {
+        kind: "compare",
+        headline: "Three layers, three rides",
+        line: "Flight conditions follow the weather, and the weather is all in one place.",
+        columns: ["Layer", "What it is like to fly in"],
+        rows: [
+          { label: "Troposphere", a: "Nearly all weather", b: "Turbulence, icing, restricted visibility" },
+          { label: "Tropopause", a: "Isothermal transition", b: "The jet stream and its shear" },
+          { label: "Stratosphere", a: "Constant temperature to ~66,000 ft, then rising", b: "Smooth, excellent visibility — few aircraft get there" },
+        ],
+      },
+      {
         kind: "chain",
         headline: "Why any of it moves",
         nodes: [
@@ -72,11 +89,14 @@ export const LESSONS_A: Lesson[] = [
         ],
       },
       { kind: "question", questionId: "wq-w1-001" },
-      { kind: "question", questionId: "wq-w1-002" },
       { kind: "question", questionId: "wq-w1-005" },
-      { kind: "question", questionId: "wq-w1-006" },
+      { kind: "question", questionId: "wq-wg-001" },
+      { kind: "question", questionId: "wq-wg-003" },
     ],
-    questionIds: ["wq-w1-001", "wq-w1-002", "wq-w1-003", "wq-w1-004", "wq-w1-005", "wq-w1-006"],
+    questionIds: [
+      "wq-w1-001", "wq-w1-002", "wq-w1-003", "wq-w1-004", "wq-w1-005", "wq-w1-006",
+      "wq-wg-001", "wq-wg-002", "wq-wg-003", "wq-wg-004",
+    ],
     memorize: [
       "Troposphere: 0–5% water vapour, nearly all weather",
       "Tropopause is isothermal",
@@ -342,7 +362,7 @@ export const LESSONS_A: Lesson[] = [
     estimatedMinutes: 6,
     mapIcon: "wx-moisture",
     enablingObjectives: [],
-    conceptIds: ["wx-dew-point", "wx-dew-point-spread", "wx-relative-humidity"],
+    conceptIds: ["wx-dew-point", "wx-dew-point-spread", "wx-relative-humidity", "wx-saturation"],
     masteryThreshold: 0.8,
     screens: [
       {
@@ -367,6 +387,18 @@ export const LESSONS_A: Lesson[] = [
         line: "Bring the dew point up toward the temperature and watch condensation appear. At zero spread the air is saturated.",
       },
       {
+        kind: "rule",
+        headline: "Saturation",
+        rule:
+          "Saturation is the state in which the air is holding the maximum water vapour possible for its temperature and pressure — relative humidity 100%, dew point spread zero.",
+        appliesWhen: [
+          "COOLING the air, which brings the temperature down to the dew point",
+          "EVAPORATION, which adds moisture and brings the dew point up to the temperature",
+        ],
+        watchFor:
+          "Two roads, not one. And by the time the spread is 4 °F the relative humidity is already 90%, with vapour condensing into fog or cloud.",
+      },
+      {
         kind: "chain",
         headline: "What a shrinking spread means",
         nodes: [
@@ -386,11 +418,13 @@ export const LESSONS_A: Lesson[] = [
         ],
       },
       { kind: "question", questionId: "wq-w3-001" },
-      { kind: "question", questionId: "wq-w3-002" },
       { kind: "question", questionId: "wsl-w3-003" },
-      { kind: "question", questionId: "wq-w3-004" },
+      { kind: "question", questionId: "wq-wg-053" },
+      { kind: "question", questionId: "wq-wg-054" },
     ],
-    questionIds: ["wq-w3-001", "wq-w3-002", "wsl-w3-003", "wq-w3-004"],
+    questionIds: [
+      "wq-w3-001", "wq-w3-002", "wsl-w3-003", "wq-w3-004", "wq-wg-053", "wq-wg-054",
+    ],
     memorize: ["Smaller spread, more condensation", "RH is percent saturation"],
     sourceReferences: [THEORY],
     explainerIds: ["wx-x-dewpoint"],
@@ -405,7 +439,7 @@ export const LESSONS_A: Lesson[] = [
     estimatedMinutes: 6,
     mapIcon: "wx-stability",
     enablingObjectives: [],
-    conceptIds: ["wx-air-stability", "wx-air-mass", "wx-inversion"],
+    conceptIds: ["wx-air-stability", "wx-air-mass", "wx-inversion", "wx-stability-clues"],
     masteryThreshold: 0.8,
     screens: [
       {
@@ -440,6 +474,18 @@ export const LESSONS_A: Lesson[] = [
         ],
       },
       {
+        kind: "compare",
+        headline: "Reading it from the cockpit",
+        line: "You will not have a thermometer trace. You will have these.",
+        columns: ["Stable", "Unstable"],
+        rows: [
+          { label: "Temperature while climbing", a: "Rising, or falling only slightly", b: "Falling rapidly" },
+          { label: "Cloud", a: "Widespread fog or low cloud", b: "Towering cumulus" },
+          { label: "Precipitation", a: "Steady if any", b: "Heavy showers" },
+          { label: "Other signs", a: "Temperature inversions", b: "Thunderstorms, dust devils" },
+        ],
+      },
+      {
         kind: "rule",
         headline: "Temperature inversion",
         rule: "A temperature inversion exists when temperature INCREASES as altitude increases.",
@@ -460,12 +506,13 @@ export const LESSONS_A: Lesson[] = [
         ],
       },
       { kind: "question", questionId: "wq-w3-006" },
-      { kind: "question", questionId: "wq-w3-007" },
       { kind: "question", questionId: "wbf-w3-008" },
-      { kind: "question", questionId: "wq-w3-009" },
+      { kind: "question", questionId: "wq-wg-008" },
+      { kind: "question", questionId: "wq-wg-009" },
     ],
     questionIds: [
       "wq-w3-005", "wq-w3-006", "wq-w3-007", "wbf-w3-008", "wq-w3-009", "wq-w3-010",
+      "wq-wg-008", "wq-wg-009", "wq-wg-010",
     ],
     memorize: [
       "Warm mass stable, cold mass unstable",
@@ -539,7 +586,7 @@ export const LESSONS_A: Lesson[] = [
     estimatedMinutes: 5,
     mapIcon: "wx-breeze",
     enablingObjectives: [],
-    conceptIds: ["wx-buys-ballot", "wx-sea-land-breeze"],
+    conceptIds: ["wx-buys-ballot", "wx-sea-land-breeze", "wx-mountain-valley-wind"],
     masteryThreshold: 0.75,
     screens: [
       {
@@ -566,21 +613,38 @@ export const LESSONS_A: Lesson[] = [
         line: "Land cools faster than sea, so the contrast inverts and the whole cycle flips.",
       },
       {
+        kind: "compare",
+        headline: "The same cycle, on a mountain",
+        line: "Named the same way as the sea breeze — for where the air comes FROM.",
+        columns: ["Valley wind", "Mountain wind"],
+        rows: [
+          { label: "When", a: "Day", b: "Night" },
+          { label: "Cause", a: "Sun heats the slope, which heats the air by conduction", b: "Outgoing terrestrial radiation cools the slope air" },
+          { label: "That air becomes", a: "Warmer and less dense — it rises", b: "Denser than its surroundings — it sinks" },
+          { label: "Flow", a: "Up the slope, out of the valley", b: "Downhill from the peak" },
+        ],
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
           "Wind at your back: LOW LEFT, HIGH RIGHT",
           "Sea breeze by day, land breeze by night",
+          "Valley wind by day, mountain wind by night",
           "Named for where the surface air comes FROM",
           "Land cools faster than sea — that is the whole mechanism",
         ],
       },
       { kind: "question", questionId: "wq-w4-005" },
-      { kind: "question", questionId: "wq-w4-006" },
       { kind: "question", questionId: "wq-w4-007" },
       { kind: "question", questionId: "wbf-w4-009" },
+      { kind: "question", questionId: "wq-wg-005" },
+      { kind: "question", questionId: "wq-wg-006" },
     ],
-    questionIds: ["wq-w4-005", "wq-w4-006", "wq-w4-007", "wq-w4-008", "wbf-w4-009"],
+    questionIds: [
+      "wq-w4-005", "wq-w4-006", "wq-w4-007", "wq-w4-008", "wbf-w4-009",
+      "wq-wg-005", "wq-wg-006", "wq-wg-007",
+    ],
     memorize: ["Wind at your back: L left, H right", "Day sea, night land"],
     sourceReferences: [MECH],
     explainerIds: ["wx-x-breeze"],
@@ -706,7 +770,12 @@ export const LESSONS_A: Lesson[] = [
     estimatedMinutes: 6,
     mapIcon: "wx-cloud",
     enablingObjectives: [],
-    conceptIds: ["wx-cloud-groups", "wx-special-clouds", "wx-precipitation-types"],
+    conceptIds: [
+      "wx-cloud-groups",
+      "wx-special-clouds",
+      "wx-precipitation-types",
+      "wx-precipitation-forms",
+    ],
     masteryThreshold: 0.8,
     screens: [
       {
@@ -748,23 +817,38 @@ export const LESSONS_A: Lesson[] = [
         ],
       },
       {
+        kind: "compare",
+        headline: "Which forms actually ice the aircraft",
+        line: "Three of these are routinely got wrong.",
+        columns: ["Form", "Structural icing?"],
+        rows: [
+          { label: "Freezing rain and freezing drizzle", a: "Freeze on impact with objects", b: "YES" },
+          { label: "Hail or graupel", a: "Irregular lumps of ice from severe storms", b: "NO — but structural DAMAGE" },
+          { label: "Ice pellets or sleet", a: "Rain that froze falling through cold air", b: "Only if mixed with super-cooled water" },
+          { label: "Snow", a: "Ice crystals", b: "Wet snow YES · dry snow no" },
+        ],
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
           "Low, Middle, High, Special",
           "Nimbus = violent or heavy",
+          "Hail damages but does not ice · wet snow ices",
           "Nimbostratus: heavy, continuous, NO thunder",
           "Cumuliform → showers · Stratiform → continuous · Intermittent → either",
         ],
       },
-      { kind: "question", questionId: "wq-w5-001" },
       { kind: "question", questionId: "wq-w5-004" },
       { kind: "question", questionId: "wq-w5-008" },
       { kind: "question", questionId: "wq-w5-009" },
+      { kind: "question", questionId: "wq-wg-011" },
+      { kind: "question", questionId: "wq-wg-013" },
     ],
     questionIds: [
       "wq-w5-001", "wq-w5-002", "wq-w5-003", "wq-w5-004", "wq-w5-005",
       "wq-w5-008", "wq-w5-009",
+      "wq-wg-011", "wq-wg-012", "wq-wg-013", "wq-wg-014",
     ],
     memorize: [
       "Nimbostratus has no thunder",

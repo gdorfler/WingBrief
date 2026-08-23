@@ -1,7 +1,12 @@
 import type { Explainer, SourceReference } from "@/lib/types";
 
 const NOTES = (chapter: string): SourceReference => ({
-  document: "Weather Condensed Notes",
+  document: "Weather Trainee Guide",
+  chapter,
+});
+
+const TGX = (chapter: string): SourceReference => ({
+  document: "Weather Trainee Guide",
   chapter,
 });
 
@@ -528,5 +533,64 @@ export const EXPLAINERS_B: Explainer[] = [
     ],
     knowCold: "No rain on a surface analysis. Whiter is thicker.",
     source: PLAN,
+  },
+];
+
+
+/** Explainers for the trainee guide material. */
+export const EXPLAINERS_C: Explainer[] = [
+  {
+    id: "wx-x-squall-line",
+    title: "Out Ahead of the Front",
+    promise: "Why the worst weather at a cold front is often nowhere near it.",
+    unit: "w6",
+    conceptIds: ["wx-squall-line", "wx-frontal-weather-factors"],
+    lessonId: "wl14b-squall-lines-and-dry-fronts",
+    diagram: { id: "wx-front" },
+    frames: [
+      { caption: "A cold front advances, undercutting the warm air.", hold: 3000, props: { kind: "cold" } },
+      { caption: "Its downdrafts run out ahead of it along the surface.", hold: 3200, props: { kind: "cold" } },
+      { caption: "They lift more warm unstable air, 50 to 300 miles out front.", hold: 3400, props: { kind: "cold" } },
+      { caption: "That air starts its own thunderstorm cycle: the squall line.", hold: 3400, props: { kind: "cold" } },
+      { caption: "Too close together to fly through, even with radar.", hold: 3200, props: { kind: "occluded" } },
+    ],
+    knowCold: "50–300 miles ahead, parallel, and radar will not get you through.",
+    source: TGX("Frontal Mechanics"),
+  },
+  {
+    id: "wx-x-mountain-wave",
+    title: "The Wave That Stands Still",
+    promise: "Three clouds, one standing wave, and the wind speed that makes it extreme.",
+    unit: "w7",
+    conceptIds: ["wx-mountain-wave", "wx-wave-clouds", "wx-wave-technique"],
+    lessonId: "wl16b-mountain-waves",
+    diagram: { id: "wx-mountain-wave" },
+    frames: [
+      { caption: "Strong wind, perpendicular to the ridge, in stable air.", hold: 3200, props: { wind: 30, clouds: false } },
+      { caption: "The air oscillates downwind, forming a standing wave.", hold: 3200, props: { wind: 40, clouds: false } },
+      { caption: "The cap cloud sits on the peak; the rotor at ridge height.", hold: 3400, props: { wind: 60, clouds: true, highlight: "clouds" } },
+      { caption: "Lenticular clouds mark the crests, usually above 20,000 ft.", hold: 3400, props: { wind: 60, clouds: true, highlight: "clouds" } },
+      { caption: "At 50 kt or more at the peak, it turns severe — 150 miles downwind.", hold: 3400, props: { wind: 80, clouds: true } },
+    ],
+    knowCold: "50 kt at the peak. Lenticular high, rotor at the ridge, cap on the peak.",
+    source: TGX("Turbulence"),
+  },
+  {
+    id: "wx-x-ash",
+    title: "The One Radar Cannot See",
+    promise: "Why over and under are both wrong for an ash cloud.",
+    unit: "w9",
+    conceptIds: ["wx-ash-clouds", "wx-ash-avoidance"],
+    lessonId: "wl23b-volcanic-ash",
+    diagram: { id: "wx-storm-avoidance" },
+    frames: [
+      { caption: "For a thunderstorm, over and under are options two and three.", hold: 3200, props: { option: "over" } },
+      { caption: "An ash cloud is hundreds of miles long and thousands of feet thick.", hold: 3400, props: { option: "under" } },
+      { caption: "And radar cannot see it — the particles are too small.", hold: 3200, props: { option: "none" } },
+      { caption: "You may not know until torching appears at the tailpipe.", hold: 3400, props: { option: "through" } },
+      { caption: "So there is one option: a 180° turn, then ATC and a PIREP.", hold: 3400, props: { option: "circumnavigate" } },
+    ],
+    knowCold: "180° out. Never over, never under.",
+    source: TGX("Atmospheric Hazards"),
   },
 ];

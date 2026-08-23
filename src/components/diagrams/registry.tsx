@@ -132,6 +132,7 @@ import {
   FogConditions,
   StationModel,
   ProductTimeline,
+  MountainWave,
 } from "./weather";
 
 export type DiagramRenderer = (props: DiagramProps) => ReactElement;
@@ -235,6 +236,7 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
   "wx-fog": FogConditions,
   "wx-station-model": StationModel,
   "wx-product-timeline": ProductTimeline,
+  "wx-mountain-wave": MountainWave,
 
   /* Gap-fill diagrams for lessons that previously had no visual. */
   "mass-weight-density": MassWeightDensity,

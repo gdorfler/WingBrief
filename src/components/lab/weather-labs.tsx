@@ -844,3 +844,74 @@ export function ProductLab() {
     />
   );
 }
+
+/** Turn the wind up over a ridge and watch the wave sharpen. */
+export function WaveLab() {
+  const [wind, setWind] = useState(30);
+  const [clouds, setClouds] = useState<"shown" | "dry">("shown");
+
+  const severe = wind >= 50;
+  const dry = clouds === "dry";
+
+  return (
+    <AtmosphereFrame
+      diagram="wx-mountain-wave"
+      diagramProps={{ wind, clouds: !dry }}
+      response={{
+        label: "At this wind speed over the peak",
+        value: severe
+          ? "Severe turbulence — surface to the tropopause, 150 miles downwind"
+          : "A lesser degree of turbulence",
+        tone: severe ? "nogo" : "caution",
+      }}
+      controls={
+        <>
+          <Slider
+            label="Wind at the mountaintop"
+            value={wind}
+            min={10}
+            max={90}
+            step={5}
+            onChange={setWind}
+            display={`${wind} kt`}
+            tone={severe ? "nogo" : "caution"}
+          />
+          <Segmented
+            label="Moisture"
+            value={clouds}
+            options={[
+              { value: "shown", label: "Clouds mark the wave" },
+              { value: "dry", label: "Too dry for cloud" },
+            ]}
+            onChange={setClouds}
+          />
+        </>
+      }
+      readouts={[
+        { label: "Threshold", value: "50 kt at the peak", tone: "neutral" },
+        {
+          label: "Severe turbulence",
+          value: severe ? "To the tropopause, 150 mi downwind" : "Not at this speed",
+          tone: severe ? "nogo" : "go",
+        },
+        { label: "Moderate turbulence", value: severe ? "As far as 300 mi downwind" : "Localised", tone: "caution" },
+        {
+          label: "Visual warning",
+          value: dry ? "NONE — clear air turbulence" : "Lenticular, rotor and cap clouds",
+          tone: dry ? "nogo" : "brand",
+        },
+      ]}
+      chain={[
+        { label: "Strong wind perpendicular to the ridge" },
+        { label: "Stable air oscillates instead of mixing" },
+        { label: "Standing wave on the lee side", trend: "up" },
+        { label: severe ? "Severe turbulence" : "Moderate turbulence", trend: severe ? "down" : "same" },
+      ]}
+      note={
+        dry
+          ? "Wave action can occur when the air is too dry to form any cloud at all — which removes the only visual warning you get."
+          : "The lenticular, rotor and cap clouds stand still while the wind flows through them. Avoid all three, and fly 50% above the highest terrain."
+      }
+    />
+  );
+}

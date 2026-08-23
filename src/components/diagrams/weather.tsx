@@ -1582,3 +1582,102 @@ export function ProductTimeline(p: DiagramProps) {
     </Diagram>
   );
 }
+
+/** A standing wave on the lee side, with the three clouds that mark it. */
+export function MountainWave(p: DiagramProps) {
+  const wind = num(p.wind, 60);
+  const clouds = bool(p.clouds, true);
+  const highlight = str(p.highlight, "none");
+  const severe = wind >= 50;
+
+  const ground = 250;
+  const peak = 128;
+
+  // One damped oscillation downwind of the ridge.
+  const wave = (y0: number, amp: number) =>
+    `M150 ${y0} C176 ${y0} 186 ${peak - 16} 214 ${peak - 16} ` +
+    `C250 ${peak - 16} 254 ${y0 + amp} 292 ${y0 + amp} ` +
+    `C330 ${y0 + amp} 334 ${y0 - amp * 0.55} 372 ${y0 - amp * 0.55} ` +
+    `C404 ${y0 - amp * 0.55} 412 ${y0} 460 ${y0}`;
+
+  return (
+    <Diagram title="Mountain wave turbulence">
+      {/* Wind arriving from the left */}
+      {[70, 100, 130].map((y) => (
+        <g key={y}>
+          <line x1={24} y1={y} x2={92} y2={y} stroke={MUTED} strokeWidth={2} strokeLinecap="round" />
+          <path d={`M86 ${y - 5} L96 ${y} L86 ${y + 5}`} fill="none" stroke={MUTED} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      ))}
+      <text x={24} y={54} fontSize={9.5} fontWeight={800} fill={MUTED}>
+        {Math.round(wind)} kt, perpendicular to the ridge
+      </text>
+
+      {/* The ridge */}
+      <path
+        d={`M60 ${ground} L150 ${peak} L240 ${ground} Z`}
+        fill="var(--color-surface-3)"
+        stroke={NAVY}
+        strokeWidth={2.2}
+        strokeLinejoin="round"
+      />
+
+      {/* Streamlines forming the standing wave */}
+      {[
+        { y: 96, amp: 30 },
+        { y: 148, amp: 36 },
+        { y: 196, amp: 30 },
+      ].map((s, i) => (
+        <path
+          key={i}
+          d={wave(s.y, s.amp)}
+          fill="none"
+          stroke={severe ? NOGO : BRAND}
+          strokeWidth={2}
+          opacity={0.75}
+        />
+      ))}
+
+      {clouds && (
+        <g opacity={highlight === "none" || highlight === "clouds" ? 1 : 0.3}>
+          {/* Cap cloud, over the peak */}
+          <ellipse cx={150} cy={peak - 6} rx={44} ry={13} fill="color-mix(in srgb, var(--color-navy) 20%, transparent)" stroke={NAVY} strokeWidth={1.5} />
+          <text x={150} y={peak - 24} textAnchor="middle" fontSize={9} fontWeight={800} fill={NAVY}>
+            CAP
+          </text>
+
+          {/* Rotor, at about ridge height, downwind */}
+          <ellipse cx={296} cy={peak + 34} rx={34} ry={16} fill="color-mix(in srgb, var(--color-nogo) 22%, transparent)" stroke={NOGO} strokeWidth={1.7} />
+          <path d="M282 158 A14 14 0 1 1 310 158" fill="none" stroke={NOGO} strokeWidth={1.5} />
+          <text x={296} y={peak + 62} textAnchor="middle" fontSize={9} fontWeight={800} fill={NOGO}>
+            ROTOR
+          </text>
+          <text x={296} y={peak + 74} textAnchor="middle" fontSize={8} fontWeight={650} fill={MUTED}>
+            at ridge height
+          </text>
+
+          {/* Lenticular, high and downwind */}
+          <ellipse cx={366} cy={62} rx={54} ry={11} fill="color-mix(in srgb, var(--color-brand) 24%, transparent)" stroke={BRAND} strokeWidth={1.6} />
+          <ellipse cx={366} cy={46} rx={36} ry={8} fill="color-mix(in srgb, var(--color-brand) 18%, transparent)" stroke={BRAND} strokeWidth={1.4} />
+          <text x={430} y={58} fontSize={9} fontWeight={800} fill={BRAND}>
+            LENTICULAR
+          </text>
+          <text x={430} y={70} fontSize={8} fontWeight={650} fill={MUTED}>
+            above 20,000 ft
+          </text>
+        </g>
+      )}
+
+      <line x1={20} y1={ground} x2={480} y2={ground} stroke={NAVY} strokeWidth={2.6} />
+
+      <text x={250} y={276} textAnchor="middle" fontSize={9.6} fontWeight={800} fill={severe ? NOGO : MUTED}>
+        {severe
+          ? "50 kt or more at the peak — severe turbulence to the tropopause, 150 miles downwind"
+          : "Below 50 kt at the peak, a lesser degree of turbulence"}
+      </text>
+      <text x={250} y={290} textAnchor="middle" fontSize={8.8} fontWeight={650} fill={MUTED}>
+        The clouds stand still while the wind flows through them
+      </text>
+    </Diagram>
+  );
+}

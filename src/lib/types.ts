@@ -20,6 +20,7 @@ export type SourceDocument =
   | "Engines Condensed Notes"
   | "Flight Rules and Regulations Trainee Guide"
   | "FR&R Condensed Notes"
+  | "Weather Trainee Guide"
   | "Weather Condensed Notes"
   | "Weather Dump Sheet"
   | "Basic Theory and Lift Production"

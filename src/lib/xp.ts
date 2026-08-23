@@ -228,7 +228,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   {
     id: "checkride-ready",
     name: "Checkride Ready",
-    description: "Reach 85% overall Aero Readiness.",
+    description: "Reach 85% overall readiness in any course.",
     icon: "shield",
     test: (s) => overallReadinessFromState(s) >= 85,
   },

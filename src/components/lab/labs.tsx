@@ -70,6 +70,7 @@ import {
   IcingLab,
   WindLab,
   ProductLab,
+  WaveLab,
 } from "./weather-labs";
 
 /* ------------------------------------------------------------------ */
@@ -907,6 +908,7 @@ export const LAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   IcingLab,
   WindLab,
   ProductLab,
+  WaveLab,
 };
 
 export function LabHost({ component }: { component: string }) {

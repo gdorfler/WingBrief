@@ -333,10 +333,7 @@ describe(`${NAME} · enabling objective matrix`, () => {
     // come only from the condensed notes, which state no EOs at all. Flight
     // Rules publishes a contiguous block, 2.345 through 2.386 — so the floor
     // is per course rather than one shared number.
-    // Weather has NO official trainee guide and no enabling objectives — the
-    // supplied sources are the condensed notes and a dump sheet. So its floor
-    // is zero, and every Weather lesson correctly claims no EOs.
-    const floor = { aero: 180, engines: 25, frr: 42, weather: 0 }[course];
+    const floor = { aero: 180, engines: 25, frr: 42, weather: 81 }[course];
     expect(matrix.length).toBeGreaterThanOrEqual(floor);
   });
 

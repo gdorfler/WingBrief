@@ -1,7 +1,12 @@
 import type { Question, SourceReference } from "@/lib/types";
 
+/**
+ * The Weather Trainee Guide is the authority. The chapter label keeps the
+ * condensed-notes block the wording came from; enabling objectives resolve
+ * through each question's concepts.
+ */
 const NOTES = (chapter: string): SourceReference => ({
-  document: "Weather Condensed Notes",
+  document: "Weather Trainee Guide",
   chapter,
 });
 const DUMP: SourceReference = {

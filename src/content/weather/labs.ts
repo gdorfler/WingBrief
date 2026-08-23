@@ -180,4 +180,21 @@ export const LABS: Lab[] = [
       "AIRMET every 6 hours, and it is the MODERATE one",
     ],
   },
+  {
+    id: "wxlab-wave",
+    title: "Mountain Wave Lab",
+    subtitle: "Turn up the wind, sharpen the wave",
+    teaches:
+      "That 50 kt at the mountaintop is the threshold between a lesser degree of turbulence and severe turbulence reaching the tropopause — and that dry air removes the cloud warning entirely.",
+    unit: "w7",
+    conceptIds: ["wx-mountain-wave", "wx-wave-clouds", "wx-wave-technique", "wx-clear-air-turbulence"],
+    component: "WaveLab",
+    chain: [
+      "Strong wind perpendicular to the ridge, in stable air",
+      "A standing wave forms on the lee side",
+      "50 kt at the peak: severe turbulence to the tropopause",
+      "Moderate turbulence as far as 300 miles downwind",
+      "Too dry for cloud means no visual warning at all",
+    ],
+  },
 ];

@@ -4,6 +4,7 @@ import { W4_QUESTIONS } from "./w4";
 import { W7_QUESTIONS } from "./w7";
 import { W10_QUESTIONS } from "./w10";
 import { DEPTH_QUESTIONS } from "./depth";
+import { GUIDE_QUESTIONS } from "./guide";
 
 export const QUESTIONS: Question[] = [
   ...W1_QUESTIONS,
@@ -11,6 +12,7 @@ export const QUESTIONS: Question[] = [
   ...W7_QUESTIONS,
   ...W10_QUESTIONS,
   ...DEPTH_QUESTIONS,
+  ...GUIDE_QUESTIONS,
 ];
 
 export const QUESTION_BY_ID: Record<string, Question> = Object.fromEntries(
