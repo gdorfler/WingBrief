@@ -22,6 +22,7 @@ import {
 import { isDue } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
+import { NavReviewPanel } from "@/components/nav/diagnostics";
 import {
   Card,
   PageHeader,
@@ -145,7 +146,17 @@ export default function ReviewPage() {
         </div>
       </Card>
 
-      <SectionHeading eyebrow="Targeted drills" title="What needs work" />
+      {/*
+       * Reviewing a calculation course means working problems, not re-reading
+       * facts. The spaced engine underneath is unchanged and still schedules
+       * concepts; this just puts the doing first, where it belongs.
+       */}
+      {meta.layout === "desk" && <NavReviewPanel content={content} attempts={state.attempts} />}
+
+      <SectionHeading
+        eyebrow={meta.layout === "desk" ? "And the recall underneath" : "Targeted drills"}
+        title="What needs work"
+      />
       <ul className="mb-8 grid gap-3 sm:grid-cols-2">
         {tiles.map((t) => (
           <li key={t.href}>

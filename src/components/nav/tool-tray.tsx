@@ -173,8 +173,14 @@ export function NavToolTray({
             onClick={() => setOpen(null)}
             className="absolute inset-0 bg-ink-900/45 backdrop-blur-[2px]"
           />
-          <div className="relative max-h-[86dvh] w-full overflow-hidden rounded-t-2xl bg-surface">
-            <div className="flex h-full max-h-[86dvh] flex-col">{panel}</div>
+          {/*
+           * A definite height, not a max. The panel inside is a flex column
+           * with a scrolling body, and a max-height alone leaves the container
+           * auto-sized — which resolves the body to zero and shows an empty
+           * sheet on a phone.
+           */}
+          <div className="relative h-[86dvh] w-full overflow-hidden rounded-t-2xl bg-surface">
+            {panel}
           </div>
         </div>
       )}

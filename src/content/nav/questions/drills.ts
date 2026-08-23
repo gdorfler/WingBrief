@@ -312,7 +312,9 @@ const FUEL_CONVERSION_DRILLS: NumericQuestion[] = FUEL_CONVERSION_PROBLEMS.map((
     type: "numeric",
     unit: "n6",
     conceptIds: ["nav-fuel-conversion", "nav-unit-index"],
-    skillIds: ["sk-fuel-convert", "sk-estimate"],
+    // A conversion is a plain ratio with no time in it, so it exercises the
+    // ratio setup as directly as anything on the calculation side does.
+    skillIds: ["sk-fuel-convert", "sk-ratio", "sk-estimate"],
     prompt: toPounds
       ? `What do ${row.gallons} gallons weigh at ${row.lbsPerGal} lb per gallon?`
       : `How many gallons is ${row.pounds} lb at ${row.lbsPerGal} lb per gallon?`,

@@ -7,6 +7,8 @@ import { ArrowRight, Clock, RotateCcw, Target, TrendingUp } from "lucide-react";
 import { CONCEPT_BY_ID, QUESTION_BY_ID, UNIT_BY_ID } from "@/content";
 import { scoreExam } from "@/lib/scoring";
 import { useProgress } from "@/lib/progress-store";
+import { useCourse } from "@/lib/course";
+import { NavExamDiagnostic } from "@/components/nav/diagnostics";
 import { QuestionReview } from "@/components/questions";
 import {
 
@@ -26,6 +28,7 @@ type Filter = "missed" | "flagged" | "all";
 export default function ExamResultsPage() {
   const params = useParams<{ id: string }>();
   const { state, ready } = useProgress();
+  const { content, meta } = useCourse();
   const [filter, setFilter] = useState<Filter>("missed");
 
   const result = state.exams.find((e) => e.id === decodeURIComponent(params.id));
@@ -115,6 +118,20 @@ export default function ExamResultsPage() {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="min-w-0">
+          {/*
+           * A percentage says you were wrong; it does not say whether the
+           * chart work or the wind solutions were the problem. On a
+           * procedural course that is the whole of useful feedback, so
+           * Navigation gets a diagnostic above the standard breakdowns.
+           */}
+          {meta.layout === "desk" && (
+            <NavExamDiagnostic
+              content={content}
+              exam={result}
+              passPct={meta.examPolicy?.passPct}
+            />
+          )}
+
           {/* Unit performance */}
           <section className="mb-6">
             <SectionHeading eyebrow="Where the marks went" title="Unit performance" />

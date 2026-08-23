@@ -310,6 +310,55 @@ describe(`${NAME} · coverage`, () => {
     }
   });
 
+  /*
+   * Problem-solving courses carry a skill axis as well as a concept graph, and
+   * a skill with no practice attached is a claim the course does not honour.
+   * Courses without skills skip this, which is every course but Navigation.
+   */
+  it("gives every skill at least two questions, and every drill real ones", () => {
+    const skills = contentFor(course).skills ?? [];
+    if (skills.length === 0) return;
+
+    const counts = new Map(skills.map((s) => [s.id, 0]));
+    for (const q of QUESTIONS)
+      for (const id of q.skillIds ?? [])
+        if (counts.has(id)) counts.set(id, counts.get(id)! + 1);
+
+    const thin = [...counts.entries()]
+      .filter(([, n]) => n < 2)
+      .map(([id, n]) => `${id} (${n})`);
+    expect(thin, `skills practised fewer than twice: ${thin.join(", ")}`).toEqual([]);
+
+    const unknown = [...new Set(QUESTIONS.flatMap((q) => q.skillIds ?? []))].filter(
+      (id) => !counts.has(id),
+    );
+    expect(unknown, `questions naming skills that do not exist`).toEqual([]);
+
+    const questionIds = new Set(QUESTIONS.map((q) => q.id));
+    for (const drill of contentFor(course).drills ?? []) {
+      expect(drill.questionIds.length, `${drill.id} has no reps`).toBeGreaterThan(0);
+      for (const id of drill.questionIds) {
+        expect(questionIds.has(id), `${drill.id} → ${id}`).toBe(true);
+      }
+      for (const id of drill.skillIds) {
+        expect(counts.has(id), `${drill.id} → ${id}`).toBe(true);
+      }
+    }
+
+    for (const mission of contentFor(course).missions ?? []) {
+      expect(mission.stages.length, `${mission.id} has no stages`).toBeGreaterThan(0);
+      for (const stage of mission.stages) {
+        expect(stage.questionIds.length, `${stage.id} is empty`).toBeGreaterThan(0);
+        for (const id of stage.questionIds) {
+          expect(questionIds.has(id), `${stage.id} → ${id}`).toBe(true);
+        }
+      }
+      for (const id of mission.skillIds) {
+        expect(counts.has(id), `${mission.id} → ${id}`).toBe(true);
+      }
+    }
+  });
+
   it("every unit has a Know Cold card and an explainer", () => {
     for (const unit of UNITS) {
       expect(

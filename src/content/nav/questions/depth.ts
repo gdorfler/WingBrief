@@ -429,6 +429,74 @@ export const DEPTH_QUESTIONS: Question[] = [
     source: TG(C5, ["4.15"]),
   },
   {
+    id: "nq-d-026",
+    type: "numeric",
+    unit: "n6",
+    conceptIds: ["nav-ratio", "nav-cr3-wheels", "nav-floating-decimal"],
+    skillIds: ["sk-ratio", "sk-estimate"],
+    prompt:
+      "The guide's own ratio example. Solve for X: one is to two as eight is to X.",
+    given: [
+      { label: "The ratio", value: "1 ÷ 2 = 8 ÷ X" },
+    ],
+    fields: [{ key: "x", label: "X", unit: "kt", answer: 16, tolerance: "logScale" }],
+    estimate: {
+      prompt: "Before the wheel: roughly how big is X?",
+      options: ["About 4", "About 16", "About 40", "About 160"],
+      answer: 1,
+      why: "Eight is about eight times one, so X is about eight times two. That estimate is the only thing that tells you whether the 16 on the scale means 1.6, 16, 160 or 1600.",
+    },
+    allowedTools: ["cr3calc", "scratch"],
+    worked: [
+      {
+        action: "Estimate first. Eight is eight times one, so X is eight times two.",
+        result: "≈ 16",
+      },
+      {
+        action: "Set 10 on the outer scale over 20 on the inner — the ratio as written.",
+        detail: "Numerators outside, denominators inside.",
+        tool: "cr3calc",
+      },
+      {
+        action: "Find 80 on the outer scale and read the value directly below it.",
+        tool: "cr3calc",
+        result: "16",
+      },
+      {
+        action: "Place the decimal from the estimate.",
+        detail: "The scale offers 1.6, 16, 160 and 1600 with equal enthusiasm.",
+      },
+    ],
+    explanation:
+      "X is 16. Transferring the fraction straight onto the two scales sets every equal fraction at the same time, which is why one rotation answers the whole family.",
+    knowCold: "Numerator outer, denominator inner. Then read anywhere.",
+    difficulty: 1,
+    officialStyle: true,
+    source: TG(C3, ["4.9"]),
+  },
+  {
+    id: "nq-d-027",
+    type: "mcq",
+    unit: "n6",
+    conceptIds: ["nav-ratio", "nav-cr3-wheels"],
+    skillIds: ["sk-ratio"],
+    prompt:
+      "You set 30 NM on the outer scale over 11 minutes on the inner. Which of these pairs is NOT also aligned as a result?",
+    options: [
+      "60 NM over 22 minutes",
+      "15 NM over 5.5 minutes",
+      "164 NM over the rate index",
+      "45 NM over 15 minutes",
+    ],
+    answer: 3,
+    explanation:
+      "One rotation fixes one ratio, and every equal fraction lines up with it. 30/11 also gives 60/22 and 15/5.5, and above the rate index it reads 164 kt. 45 over 15 is 3.0, not 2.73 — a different ratio entirely.",
+    whyWrong:
+      "This is the property that makes a slide rule worth carrying: you set the problem once and read whichever unknown you happen to need.",
+    difficulty: 3,
+    source: TG(C3, ["4.9"]),
+  },
+  {
     id: "nq-d-025",
     type: "mcq",
     unit: "n10",
