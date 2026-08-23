@@ -1,0 +1,688 @@
+import type { Lesson, SourceReference } from "@/lib/types";
+
+/**
+ * Units 8 to 10: the wind triangle in both directions, and the jet log.
+ *
+ * Everything in the course converges here. A flight-planning problem is a
+ * chart measurement, a wind solution, a rate problem and a fuel problem
+ * stacked on top of one another, and each one inherits the error of the one
+ * before it — which is why Appendix A describes the mission tolerance as a
+ * pyramid rather than a single number.
+ */
+
+const TG = (chapter: string): SourceReference => ({
+  document: "Navigation Trainee Guide",
+  chapter,
+});
+
+const C5 = TG("Preflight Winds");
+const C6 = TG("In Flight Winds");
+const C7 = TG("Flight Planning and Conduct");
+
+export const LESSONS_C: Lesson[] = [
+  /* ================= n8 — preflight winds ================= */
+  {
+    id: "nl25-the-wind-triangle",
+    unit: "n8",
+    index: 25,
+    title: "The Wind Triangle",
+    subtitle: "Three vectors, and why two of them give the third",
+    estimatedMinutes: 7,
+    enablingObjectives: [],
+    conceptIds: ["nav-wind-reporting", "nav-balloon", "nav-wind-triangle", "nav-crab-drift"],
+    mapIcon: "triangle",
+    screens: [
+      {
+        kind: "hook",
+        headline: "The air you are flying through is itself moving",
+        line: "So where you point and where you go are two different questions.",
+        diagram: { id: "nav-wind-triangle", props: { show: "all" } },
+      },
+      {
+        kind: "model",
+        headline: "The balloon",
+        line: "Think of the air mass as a balloon fifty miles across.",
+        diagram: { id: "nav-wind-triangle", props: { show: "air" } },
+        bullets: [
+          "Inside it, you fly at your own speed in your own direction.",
+          "If the balloon does not move, your motion over the ground is your motion inside it.",
+          "Once it moves, your ground track is the combination of the two.",
+          "Fly east at 50 kt inside a balloon moving west at 50 kt and you do not move at all — but you still cross the balloon.",
+        ],
+      },
+      {
+        kind: "model",
+        headline: "Three vectors, and each one has a direction and a magnitude",
+        diagram: { id: "nav-wind-triangle", props: { show: "all" } },
+        bullets: [
+          "AIR VECTOR: true heading and true airspeed.",
+          "WIND VECTOR: direction and velocity.",
+          "GROUND VECTOR: true course or track, and groundspeed.",
+          "Air + wind = ground. Any two sides give the third, which is why one triangle solves both wind problems.",
+        ],
+      },
+      {
+        kind: "rule",
+        headline: "Wind direction is where it comes FROM",
+        rule: "Wind is stated as the direction it blows from, in degrees, with velocity always in knots.",
+        appliesWhen: [
+          "En route winds from the forecaster are TRUE",
+          "Surface winds from the tower are MAGNETIC, to match the runways",
+        ],
+        watchFor:
+          "A 045 wind originates in the north-east and blows toward the south-west. And a true wind spun against a magnetic course is a silent error.",
+        authority: "NAVAVSCOLSCOM-SG-200, Information Sheet 6-5-2",
+      },
+      {
+        kind: "compare",
+        headline: "Crab and drift",
+        line: "The same angle, named from opposite ends.",
+        columns: ["Drift angle", "Crab angle"],
+        rows: [
+          { label: "Is", a: "What the wind did to you", b: "What you do about it" },
+          { label: "Measured between", a: "Heading and track", b: "Heading and course" },
+          { label: "Direction", a: "Downwind", b: "Into the wind" },
+          { label: "Size", a: "Equal", b: "Equal" },
+        ],
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "Air vector + wind vector = ground vector.",
+          "Air = TH/TAS. Ground = course or track, and GS. Wind = direction/velocity.",
+          "Wind direction is where it comes FROM.",
+          "Winds aloft are TRUE. Tower winds are magnetic.",
+        ],
+      },
+      { kind: "question", questionId: "nq-c-080" },
+      { kind: "question", questionId: "nq-c-081" },
+      { kind: "question", questionId: "nq-c-082" },
+      { kind: "question", questionId: "nq-c-086" },
+    ],
+    questionIds: ["nq-c-080", "nq-c-081", "nq-c-082", "nq-c-086", "nq-c-033"],
+    memorize: ["Air + wind = ground. Any two give the third."],
+    sourceReferences: [C5],
+    masteryThreshold: 0.75,
+  },
+  {
+    id: "nl26-estimating-the-wind",
+    unit: "n8",
+    index: 26,
+    title: "Estimating the Wind",
+    subtitle: "Quartering analysis and the ten percent rule",
+    estimatedMinutes: 7,
+    enablingObjectives: [],
+    conceptIds: ["nav-quartering", "nav-ten-percent", "nav-wind-scales"],
+    mapIcon: "quarter",
+    screens: [
+      {
+        kind: "hook",
+        headline: "Know roughly the answer before you touch the wheel",
+        line: "Not to save time. To notice when the wheel gives you something impossible.",
+        diagram: { id: "nav-quartering", props: { highlight: "none" } },
+      },
+      {
+        kind: "model",
+        headline: "Four quarters, four consequences",
+        line: "Sketch the wind against the course and the quarter names itself.",
+        diagram: { id: "nav-quartering", props: { highlight: "leftTail" } },
+        bullets: [
+          "Left head: heading less than course, groundspeed less than TAS.",
+          "Right head: heading more than course, groundspeed less than TAS.",
+          "Left tail: heading less than course, groundspeed more than TAS.",
+          "Right tail: heading more than course, groundspeed more than TAS.",
+        ],
+      },
+      {
+        kind: "rule",
+        headline: "The ten percent rule",
+        rule: "A crosswind equal to 10% of true airspeed produces about 6° of crab, at any airspeed in tactical aviation.",
+        appliesWhen: [
+          "5% of TAS → about 3°",
+          "10% of TAS → about 6°",
+          "15% of TAS → about 9°",
+        ],
+        watchFor:
+          "It is not a rule of thumb bolted on afterwards — it is a reading of the CR-3's own geometry. At 325 kt TAS, 32.5 kt of crosswind is 6°, so 35 kt should come out a little over. If the wheel says 12, something is wrong.",
+        authority: "NAVAVSCOLSCOM-SG-200, Information Sheet 6-5-2",
+      },
+      {
+        kind: "model",
+        headline: "Two grids, and never both",
+        line: "The wind side has a large scale and a small one.",
+        diagram: { id: "nav-quartering", props: { highlight: "rightHead" } },
+        bullets: [
+          "Large scale, 0 to 80: use it when the wind is under 60 knots.",
+          "Small scale, 0 to 160: use it at 60 knots or more.",
+          "Once you choose, stay on it for the whole problem.",
+          "Mixing them gives an answer that is wrong by a factor of two and looks entirely plausible.",
+        ],
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "Left head, right head, left tail, right tail — and what each does to TH and GS.",
+          "Crosswind = 10% of TAS → 6° of crab.",
+          "Under 60 kt, large scale. 60 and over, small scale. Never both.",
+        ],
+        mnemonic: "All of the big, half of the small",
+      },
+      { kind: "question", questionId: "nq-c-083" },
+      { kind: "question", questionId: "nq-c-084" },
+      { kind: "question", questionId: "nq-c-085" },
+    ],
+    questionIds: ["nq-c-083", "nq-c-084", "nq-c-085", "nq-c-089"],
+    memorize: ["Crosswind = 10% of TAS → 6° of crab."],
+    sourceReferences: [C5],
+    masteryThreshold: 0.8,
+  },
+  {
+    id: "nl27-solving-preflight-winds",
+    unit: "n8",
+    index: 27,
+    title: "Solving Preflight Winds",
+    subtitle: "Nine steps, and the first and last are the same",
+    estimatedMinutes: 9,
+    enablingObjectives: [],
+    conceptIds: ["nav-preflight-procedure"],
+    mapIcon: "wind",
+    screens: [
+      {
+        kind: "hook",
+        headline: "Estimate. Solve. Verify the estimate.",
+        line: "The procedure is bookended by the same instruction, and that is deliberate.",
+        diagram: { id: "nav-quartering", props: { highlight: "none" } },
+      },
+      {
+        kind: "method",
+        headline: "Preflight winds",
+        given: ["True airspeed", "True course", "Forecast wind direction and velocity"],
+        find: ["True heading to fly", "Groundspeed to expect"],
+        steps: [
+          "Estimate — plot the wind against the course and name the quarter",
+          "Set the wind direction over the course index and mark the velocity with a dot",
+          "Set the TAS over the TAS index",
+          "Rotate the rose to the true course, and confirm the estimate",
+          "Read the crosswind component off the grid",
+          "Read the head or tail component off the grid",
+          "Apply the head/tail to TAS for groundspeed",
+          "Put the crosswind on the outer scale and read the crab underneath",
+          "Apply the crab to the course for heading — then verify the estimate again",
+        ],
+        estimateFirst:
+          "Use the ten percent rule to predict the crab before reading it. Ten percent of TAS is 6°; scale from there.",
+        watchFor:
+          "Erase the wheel completely between problems. Two solutions on one face contaminate each other, and the second one looks fine.",
+        tolerance: "±3° and ±3 kt · ±5 and ±5 when the wind is 60 kt or more",
+      },
+      {
+        kind: "tool",
+        headline: "The wind side",
+        line: "Set the TAS, turn the rose to the course, and plot the wind. Then read the two components off the grid the way you would with a pencil.",
+        tool: "cr3wind",
+      },
+      {
+        kind: "worked",
+        headline: "Watch it done",
+        line: "The guide's own example: a true course of 218 at 325 knots, with the wind from 100 at 40.",
+        problemId: "nq-pfw-001",
+      },
+      {
+        kind: "chain",
+        headline: "Where the groundspeed comes from",
+        nodes: [
+          { label: "Read the head or tail component" },
+          { label: "Add it to TAS, or take it off", trend: "same" },
+          { label: "That is the groundspeed", emphasis: true },
+        ],
+        footnote:
+          "The crosswind does not change the groundspeed in this method. A strict vector solution would shave a knot or two more off for the crab, but the guide stops here and so does the answer key.",
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "Estimate, plot, set TAS, set course, read, apply, read, apply, verify.",
+          "GS = TAS ± the head/tail component.",
+          "Crab is read from the crosswind, and applied INTO the wind.",
+          "Erase between problems.",
+        ],
+      },
+      { kind: "question", questionId: "nq-c-087" },
+      { kind: "question", questionId: "nq-pfw-002" },
+      { kind: "question", questionId: "nq-pfw-004" },
+      { kind: "question", questionId: "nq-pfw-011" },
+    ],
+    questionIds: ["nq-c-087", "nq-pfw-001", "nq-pfw-002", "nq-pfw-004", "nq-pfw-011"],
+    memorize: ["Estimate first, verify last."],
+    sourceReferences: [C5],
+    masteryThreshold: 0.8,
+  },
+
+  /* ================= n9 — in-flight winds ================= */
+  {
+    id: "nl28-in-flight-winds",
+    unit: "n9",
+    index: 28,
+    title: "The Wind You Actually Have",
+    subtitle: "Two known sides, and the wind falls out",
+    estimatedMinutes: 6,
+    enablingObjectives: [],
+    conceptIds: ["nav-inflight-theory", "nav-inflight-estimate"],
+    mapIcon: "wind-back",
+    screens: [
+      {
+        kind: "hook",
+        headline: "The forecast was someone's best guess",
+        line: "Once you have taken a fix you can find out what the air is really doing.",
+        diagram: { id: "nav-wind-triangle", props: { show: "all", crab: 9 } },
+      },
+      {
+        kind: "chain",
+        headline: "Why a fix is enough",
+        nodes: [
+          { label: "You know the heading you flew and the TAS you held" },
+          { label: "That is the air vector" },
+          { label: "The fix gives track and, with the clock, groundspeed" },
+          { label: "That is the ground vector" },
+          { label: "Two sides — so the wind vector is determined", emphasis: true },
+        ],
+        footnote:
+          "The same triangle as the preflight problem, entered from a different corner. Nothing new has to be learned about the geometry.",
+      },
+      {
+        kind: "model",
+        headline: "Estimating the wind before the wheel",
+        line: "Two comparisons and you have the quarter.",
+        diagram: { id: "nav-quartering", props: { highlight: "rightTail" } },
+        bullets: [
+          "Groundspeed above TAS is a tailwind; below it, a headwind.",
+          "Track right of heading means you drifted right, so the wind is from the LEFT.",
+          "For strength: all of the big component, half of the small.",
+          "Roughly 45° off if the two components are equal; about 30° off the strong side otherwise.",
+        ],
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "GS > TAS → tailwind. GS < TAS → headwind.",
+          "Drift right → wind from the left.",
+          "All of the big, half of the small.",
+        ],
+        mnemonic: "All of the big, half of the small",
+      },
+      { kind: "question", questionId: "nq-c-089" },
+      { kind: "question", questionId: "nq-c-090" },
+      { kind: "question", questionId: "nq-c-091" },
+    ],
+    questionIds: ["nq-c-089", "nq-c-090", "nq-c-091", "nq-ifw-001"],
+    memorize: ["Drift tells you the side. GS versus TAS tells you head or tail."],
+    sourceReferences: [C6],
+    masteryThreshold: 0.75,
+  },
+  {
+    id: "nl29-solving-in-flight-winds",
+    unit: "n9",
+    index: 29,
+    title: "Solving In-Flight Winds",
+    subtitle: "Ten steps, and step two is the one people fail",
+    estimatedMinutes: 9,
+    enablingObjectives: [],
+    conceptIds: ["nav-inflight-procedure"],
+    mapIcon: "wind-solve",
+    screens: [
+      {
+        kind: "hook",
+        headline: "Track goes at the index. Not course.",
+        line: "Everything else about this procedure is straightforward, and that one step is where the marks go.",
+        diagram: { id: "nav-course-heading-track", props: { show: "track" } },
+      },
+      {
+        kind: "method",
+        headline: "In-flight winds",
+        given: ["True heading and TAS", "Track and groundspeed from a fix"],
+        find: ["Wind direction and velocity"],
+        steps: [
+          "Estimate — head or tail from GS versus TAS, side from the drift",
+          "Set the TAS over the TAS index",
+          "Set the TRACK over the course index — not the course",
+          "Work out the drift angle and input it on the middle wheel",
+          "Read the crosswind above the drift angle",
+          "Draw the crosswind, on the correct side",
+          "Work out the head/tail from TAS minus GS, and draw it",
+          "Rotate the intersection of the two lines to twelve o'clock",
+          "Read the wind direction above the index, and the velocity off the same scale",
+          "Verify the estimate",
+        ],
+        estimateFirst:
+          "Ten percent rule in reverse: at 150 kt TAS, 5° of drift needs about 13 kt of crosswind.",
+        watchFor:
+          "In flight, the ground vector's direction is TRACK. Setting the course here gives a confident, wrong answer — and it is the single most common mistake in the chapter.",
+        tolerance: "±3° and ±3 kt · ±5 and ±5 at 60 kt or more",
+      },
+      {
+        kind: "tool",
+        headline: "Work it",
+        line: "Switch to in-flight mode and notice the index relabels itself TRACK. That is the whole difference between the two problems.",
+        tool: "cr3wind",
+        props: { mode: "inflight" },
+      },
+      {
+        kind: "worked",
+        headline: "Watch it done",
+        line: "The guide's example: heading 350 at 150 knots, tracking 355 at 160.",
+        problemId: "nq-ifw-001",
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "Preflight: COURSE at the index. In flight: TRACK.",
+          "Drift = track − heading.",
+          "Crosswind from the drift; head/tail from TAS − GS.",
+          "Rotate the intersection to twelve o'clock and read.",
+        ],
+      },
+      { kind: "question", questionId: "nq-c-088" },
+      { kind: "question", questionId: "nq-ifw-002" },
+      { kind: "question", questionId: "nq-ifw-006" },
+      { kind: "question", questionId: "nq-ifw-013" },
+    ],
+    questionIds: ["nq-c-088", "nq-ifw-001", "nq-ifw-002", "nq-ifw-006", "nq-ifw-013"],
+    memorize: ["In flight, TRACK goes at the index."],
+    sourceReferences: [C6],
+    masteryThreshold: 0.8,
+  },
+  {
+    id: "nl30-point-to-point",
+    unit: "n9",
+    index: 30,
+    title: "Point to Point",
+    subtitle: "The wind grid as a map",
+    estimatedMinutes: 8,
+    enablingObjectives: [],
+    conceptIds: ["nav-point-to-point"],
+    mapIcon: "direct",
+    screens: [
+      {
+        kind: "hook",
+        headline: "Cleared direct to the 180 at 15",
+        line: "You are on the 307 at 11, and flying over the station first would be absurd.",
+        diagram: { id: "nav-tacan-fix", props: { stage: "true", radial: 307, variation: 0 } },
+      },
+      {
+        kind: "model",
+        headline: "The grid is not a wind grid today",
+        line: "Visualise the wind side as a map with the station at the centre.",
+        diagram: { id: "nav-tacan-fix", props: { stage: "true", radial: 180, variation: 0 } },
+        bullets: [
+          "The green numbers around the edge are the station's radials.",
+          "Each concentric ring is a range ring; the value is printed on the head/tail lines.",
+          "Both fixes are expressed against the same station, so the geometry closes.",
+        ],
+      },
+      {
+        kind: "method",
+        headline: "Point to point",
+        given: ["A present position as a radial and DME", "A destination as a radial and DME"],
+        find: ["Magnetic course and distance"],
+        steps: [
+          "Plot the present position on the grid",
+          "Plot the destination, and CIRCLE it",
+          "Connect the two dots with a straight line",
+          "Rotate the grid until the line is vertical, with the destination above",
+          "Read the magnetic course above the index",
+          "Read the distance off the head/tail scale, in the same units you plotted the DME",
+        ],
+        estimateFirst:
+          "Which side of the station is each fix on? That tells you roughly which way the course runs, and catches a reciprocal.",
+        watchFor:
+          "Circle the destination. Without it the line has two ends and the scale will happily give you the wrong one. And the answer is MAGNETIC — no variation is applied.",
+        tolerance: "±3° and ±1 NM",
+      },
+      {
+        kind: "worked",
+        headline: "Watch it done",
+        line: "Two fixes, one line, rotated vertical.",
+        problemId: "nq-p2p-1",
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "The grid becomes a map, station at the centre.",
+          "Circle the destination; the arrow points up.",
+          "The course you read is MAGNETIC.",
+          "±3° and ±1 NM.",
+        ],
+      },
+      { kind: "question", questionId: "nq-c-092" },
+      { kind: "question", questionId: "nq-c-093" },
+      { kind: "question", questionId: "nq-c-094" },
+      { kind: "question", questionId: "nq-p2p-2" },
+    ],
+    questionIds: ["nq-c-092", "nq-c-093", "nq-c-094", "nq-p2p-1", "nq-p2p-2", "nq-p2p-3"],
+    memorize: ["Circle the destination. The answer is magnetic."],
+    sourceReferences: [C6],
+    masteryThreshold: 0.8,
+  },
+
+  /* ================= n10 — flight planning ================= */
+  {
+    id: "nl31-the-jet-log",
+    unit: "n10",
+    index: 31,
+    title: "The Jet Log",
+    subtitle: "A five-by-seven card whose job is fuel",
+    estimatedMinutes: 6,
+    enablingObjectives: [],
+    conceptIds: ["nav-jet-log", "nav-jet-log-enroute"],
+    mapIcon: "log",
+    screens: [
+      {
+        kind: "hook",
+        headline: "One card, on a knee board, in flight",
+        line: "Single-source, so nothing has to be looked up during a takeoff or an approach.",
+        diagram: { id: "nav-jet-log", props: { highlight: "none" } },
+      },
+      {
+        kind: "rule",
+        headline: "The primary purpose is fuel management",
+        rule: "The jet log's primary purpose is fuel management. It also assists with en route voice communications, navigation, and nav-aid identification.",
+        appliesWhen: ["Every instrument flight the student plans in the T-6"],
+        watchFor:
+          "The exam asks for the PRIMARY purpose. Navigation data, route timing and crew coordination are all real, and all wrong as answers to that question.",
+        authority: "NAVAVSCOLSCOM-SG-200, Information Sheet 6-7-2",
+      },
+      {
+        kind: "model",
+        headline: "The en route section — the only part this course uses",
+        diagram: { id: "nav-jet-log", props: { highlight: "efr" } },
+        bullets: [
+          "Nav-aid information defining each point along the route.",
+          "CUS and DIST: the magnetic course and distance for the leg.",
+          "ETE, and ETA with the actual alongside it.",
+          "LEG FUEL, and EFR with the actual alongside it.",
+          "The actual columns are filled in airborne, which is what makes the card a record rather than a plan.",
+        ],
+      },
+      {
+        kind: "tool",
+        headline: "Open it",
+        line: "Tap any column heading to see what belongs in it. Note that nothing adds itself up — each cell is a computation you made.",
+        tool: "jetlog",
+        props: { mode: "learn" },
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "Primary purpose: fuel management.",
+          "Only the en route section is used here.",
+          "EFR at a point = the previous EFR − this leg's fuel.",
+        ],
+      },
+      { kind: "question", questionId: "nq-c-095" },
+      { kind: "question", questionId: "nq-c-100" },
+      { kind: "question", questionId: "nq-c-102" },
+    ],
+    questionIds: ["nq-c-095", "nq-c-100", "nq-c-102", "nq-c-101"],
+    memorize: ["The jet log is a fuel-management document first."],
+    sourceReferences: [C7],
+    masteryThreshold: 0.75,
+  },
+  {
+    id: "nl32-planning-a-route",
+    unit: "n10",
+    index: 32,
+    title: "Planning a Route",
+    subtitle: "Four steps, and each one feeds the next",
+    estimatedMinutes: 9,
+    enablingObjectives: [],
+    conceptIds: ["nav-planning-steps", "nav-plan-is-an-estimate"],
+    mapIcon: "plan",
+    screens: [
+      {
+        kind: "hook",
+        headline: "Everything in the course, stacked",
+        line: "A leg is a chart measurement, then a wind solution, then a rate problem, then a fuel problem.",
+        diagram: { id: "nav-plan-conduct", props: { side: "plan" } },
+      },
+      {
+        kind: "method",
+        headline: "The four planning steps",
+        given: ["A route", "A chart", "TAS, forecast winds, fuel flow and fuel on board"],
+        find: ["A completed en route section"],
+        steps: [
+          "Measure true courses and distances",
+          "Use the preflight winds for headings and groundspeeds",
+          "Compute an ETE for each leg from its groundspeed",
+          "Compute leg fuel from the ETE and the fuel flow",
+        ],
+        estimateFirst:
+          "Before any of it, sanity-check the whole trip: rough distance divided by rough groundspeed, times the fuel flow. If the final EFR lands nowhere near that, something upstream is wrong.",
+        watchFor:
+          "Each step inherits the one before it. Appendix A calls the mission tolerance a pyramid for that reason — get the distance wrong and every number after it is wrong too, inside its own tolerance.",
+        tolerance: "each step to its own tolerance",
+      },
+      {
+        kind: "chain",
+        headline: "The dependency, in order",
+        nodes: [
+          { label: "Course and distance" },
+          { label: "Heading and groundspeed", trend: "same" },
+          { label: "ETE", trend: "same" },
+          { label: "Leg fuel", trend: "same" },
+          { label: "ETA and EFR", emphasis: true },
+        ],
+        footnote:
+          "There is no shortcut round the middle. A groundspeed cannot be computed without a course, and an ETE cannot be computed without a groundspeed.",
+      },
+      {
+        kind: "worked",
+        headline: "Watch it done",
+        line: "One leg, all four steps, from the chart to the log.",
+        problemId: "nq-plan-1",
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "Measure, wind, time, fuel.",
+          "EFR carries down the log.",
+          "Strapped in, the log is the crew's best estimate — nothing more.",
+        ],
+      },
+      { kind: "question", questionId: "nq-c-096" },
+      { kind: "question", questionId: "nq-c-098" },
+      { kind: "question", questionId: "nq-plan-2" },
+    ],
+    questionIds: ["nq-c-096", "nq-c-098", "nq-plan-1", "nq-plan-2"],
+    memorize: ["Measure, wind, time, fuel."],
+    sourceReferences: [C7],
+    masteryThreshold: 0.8,
+  },
+  {
+    id: "nl33-flight-conduct",
+    unit: "n10",
+    index: 33,
+    title: "Flight Conduct",
+    subtitle: "Updating when the forecast turns out to be wrong",
+    estimatedMinutes: 9,
+    enablingObjectives: [],
+    conceptIds: ["nav-flight-conduct", "nav-eta-update", "nav-efr-update"],
+    mapIcon: "update",
+    screens: [
+      {
+        kind: "hook",
+        headline: "The plan does not survive contact with the air",
+        line: "So the second half of the chapter is about rewriting it.",
+        diagram: { id: "nav-plan-conduct", props: { side: "conduct" } },
+      },
+      {
+        kind: "method",
+        headline: "The four updating steps",
+        given: ["A fix", "The time it was taken", "Fuel on board now"],
+        find: ["An updated ETA and EFR"],
+        steps: [
+          "Plot the fix and measure the track and distance actually flown",
+          "Measure the updated true course and distance to the next turn point",
+          "Determine the actual in-flight winds from the track and groundspeed",
+          "Apply the new winds to the remaining legs and update ETA and EFR",
+        ],
+        estimateFirst:
+          "If the fix is well off the plotted line, the actual wind must differ from the forecast by more than a few knots. Expect the numbers to move.",
+        watchFor:
+          "This course does not turn back to the original line. It computes a new course direct to the turn point and replans from where you actually are.",
+        tolerance: "each step to its own tolerance",
+      },
+      {
+        kind: "compare",
+        headline: "Planning and conduct, side by side",
+        line: "Same four operations. Different starting point.",
+        columns: ["Planning", "Conduct"],
+        rows: [
+          { label: "Start from", a: "The route on the chart", b: "The fix you just took" },
+          { label: "Winds", a: "Forecast", b: "Actual, computed from the fix" },
+          { label: "Time base", a: "The take-off time", b: "The clock, right now" },
+          { label: "Fuel base", a: "The load at start", b: "What is in the tanks now" },
+        ],
+      },
+      {
+        kind: "rule",
+        headline: "The fuel already spent is spent",
+        rule: "An updated EFR starts from fuel on board at the fix, not from the original load.",
+        appliesWhen: ["Every in-flight update"],
+        watchFor:
+          "In the guide's own example, going off course cost 20.5 lb before the new leg even started. Working from the planned figure quietly hands you fuel you do not have.",
+        authority: "NAVAVSCOLSCOM-SG-200, Information Sheet 6-7-2",
+      },
+      {
+        kind: "worked",
+        headline: "Watch it done",
+        line: "New groundspeed, distance still to run, and the two numbers that come out of it.",
+        problemId: "nq-update-1",
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "Plot the fix, re-measure, actual winds, update.",
+          "Compute direct to the turn point. Do not fly back to the line.",
+          "ETA from the clock now. EFR from the fuel now.",
+        ],
+      },
+      { kind: "question", questionId: "nq-c-097" },
+      { kind: "question", questionId: "nq-c-099" },
+      { kind: "question", questionId: "nq-update-1" },
+      { kind: "question", questionId: "nq-update-2" },
+    ],
+    questionIds: ["nq-c-097", "nq-c-099", "nq-update-1", "nq-update-2", "nq-c-101"],
+    memorize: ["Update from the fix forward — new course, actual wind, current clock, current fuel."],
+    sourceReferences: [C7],
+    masteryThreshold: 0.8,
+  },
+];

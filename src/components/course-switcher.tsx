@@ -45,7 +45,21 @@ export function CourseIcon({
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden className="shrink-0">
       {tone === "solid" && <rect width="32" height="32" rx="9" fill={bg} />}
 
-      {name === "atmosphere" ? (
+      {name === "plotter" ? (
+        <>
+          {/* A course line drawn across a graticule, with the plotter's
+              grommet on it: the course is about measuring, not about the
+              place you are measuring. */}
+          <path d="M4 11 H28" stroke={fg} strokeWidth="1" strokeLinecap="round" opacity="0.35" />
+          <path d="M4 21 H28" stroke={fg} strokeWidth="1" strokeLinecap="round" opacity="0.35" />
+          <path d="M11 4 V28" stroke={fg} strokeWidth="1" strokeLinecap="round" opacity="0.35" />
+          <path d="M21 4 V28" stroke={fg} strokeWidth="1" strokeLinecap="round" opacity="0.35" />
+          <path d="M6.5 25 L25.5 8" fill="none" stroke={fg} strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M22.2 6.6 L26.4 7.2 L25.2 11.2 Z" fill="#fff" />
+          <circle cx="16" cy="16.5" r="3.4" fill="none" stroke="#fff" strokeWidth="1.5" />
+          <circle cx="16" cy="16.5" r="1" fill="#fff" />
+        </>
+      ) : name === "atmosphere" ? (
         <>
           {/* Layered air with a cloud and wind streaming through it: the
               course is about a moving system, not a single object. */}

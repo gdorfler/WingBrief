@@ -75,7 +75,14 @@ function ExamConfigurator() {
   const router = useRouter();
   const params = useSearchParams();
   const { state } = useProgress();
-  const { content } = useCourse();
+  const { content, meta } = useCourse();
+  /*
+   * Where a source states the real examination's conditions, use them. The
+   * NETSAFA Navigation booklet prints 50 questions in 2 hours 30 minutes, which
+   * is three minutes a question rather than the one minute the other courses
+   * allow — because half of those questions are worked on a slide rule.
+   */
+  const policy = meta.examPolicy;
 
   const [mode, setMode] = useState<Mode>((params.get("mode") as Mode) ?? "quick");
   const [unit, setUnit] = useState<UnitId>((params.get("unit") as UnitId) ?? "u1");
@@ -88,7 +95,12 @@ function ExamConfigurator() {
   );
 
   const selected = MODES.find((m) => m.id === mode);
-  const count = mode === "custom" ? customCount : (selected?.count ?? 20);
+  const count =
+    mode === "custom"
+      ? customCount
+      : mode === "full" && policy
+        ? policy.questionCount
+        : (selected?.count ?? 20);
 
   const available = useMemo(() => {
     if (mode === "unit") return content.questions.filter((q) => q.unit === unit).length;
@@ -100,7 +112,8 @@ function ExamConfigurator() {
   }, [content.questions, mode, unit, weak]);
 
   const effectiveCount = Math.min(count, available);
-  const minutes = Math.max(5, Math.round(effectiveCount * 1.0));
+  const perQuestion = policy ? policy.minutes / policy.questionCount : 1;
+  const minutes = Math.max(5, Math.round(effectiveCount * perQuestion));
 
   const start = () => {
     const seed = `exam-${Date.now().toString(36)}`;
@@ -257,6 +270,17 @@ function ExamConfigurator() {
                 {available} questions available for this selection
               </p>
             </div>
+
+            {policy && (
+              <div className="rounded-xl border border-brand/25 bg-brand-soft/50 px-3.5 py-3">
+                <p className="eyebrow mb-1 text-brand-dark">Real exam conditions</p>
+                <p className="text-[12.5px] leading-relaxed text-navy">{policy.note}</p>
+                <p className="mt-1.5 text-[11px] leading-relaxed text-navy-faint">
+                  Taken from the NETSAFA Navigation examination booklet and Appendix A of the
+                  trainee guide. Where a source does not state a condition, none is invented.
+                </p>
+              </div>
+            )}
 
             <div className="flex items-center justify-between gap-3">
               <div>

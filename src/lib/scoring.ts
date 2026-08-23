@@ -12,6 +12,7 @@ import type {
   Question,
   UnitId,
 } from "./types";
+import { gradeNumeric, numericCorrectKey } from "./nav/grade";
 
 /* ------------------------------------------------------------------ */
 /* Answer serialization                                                */
@@ -22,7 +23,9 @@ export type AnswerValue =
   | { kind: "target"; value: string }
   | { kind: "order"; value: string[] }
   | { kind: "map"; value: Record<string, string> }
-  | { kind: "rows"; value: number[] };
+  | { kind: "rows"; value: number[] }
+  /** Numeric navigation answers: one entry per output field. */
+  | { kind: "fields"; value: Record<string, string> };
 
 export function serializeAnswer(a: AnswerValue): string {
   switch (a.kind) {
@@ -39,6 +42,11 @@ export function serializeAnswer(a: AnswerValue): string {
         .join("|")}`;
     case "rows":
       return `r:${a.value.join("|")}`;
+    case "fields":
+      return `f:${Object.keys(a.value)
+        .sort()
+        .map((k) => `${k}=${a.value[k]}`)
+        .join("|")}`;
   }
 }
 
@@ -66,11 +74,23 @@ export function correctKey(q: Question): string {
         kind: "rows",
         value: q.rows.map((r) => r.answer),
       });
+    case "numeric":
+      return numericCorrectKey(q);
   }
 }
 
+/**
+ * Numeric answers are the one type that cannot be graded by comparing
+ * strings. The trainee guide publishes a tolerance for every quantity — ±2 kt
+ * on true airspeed, ±1% on anything read off the log scale, ±3° on a wind
+ * direction — so an answer is right when it lands inside the band, not when
+ * it matches the key character for character. Every other type still grades
+ * by equality, which is why the fast path stays first.
+ */
 export function isCorrect(q: Question, given: string): boolean {
-  return given === correctKey(q);
+  if (given === correctKey(q)) return true;
+  if (q.type === "numeric") return gradeNumeric(q, given).correct;
+  return false;
 }
 
 /**
@@ -93,6 +113,7 @@ export function partialScore(q: Question, given: string): number {
     if (g.length !== k.length) return 0;
     return g.filter((v, i) => v === k[i]).length / k.length;
   }
+  if (q.type === "numeric") return gradeNumeric(q, given).score;
   if (q.type === "dragLabel" && given.startsWith("m:")) {
     const g = new Set(given.slice(2).split("|"));
     const k = key.slice(2).split("|");

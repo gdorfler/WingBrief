@@ -29,6 +29,7 @@ import {
 import { AchievementIcon } from "@/components/achievement-icon";
 import { LessonIcon } from "@/components/lesson-icon";
 import { achievementById } from "@/lib/xp";
+import { NavDeskDashboard } from "@/components/nav/desk-dashboard";
 
 const UNIT_TONE = {
   brand: "brand",
@@ -40,6 +41,17 @@ const UNIT_TONE = {
 } as const;
 
 export default function HomePage() {
+  const { meta: activeMeta } = useCourse();
+  /*
+   * Navigation gets a different home screen, not a differently-worded one.
+   * A course examined on production should lead with accuracy and solve time
+   * rather than with how much of the material has been seen.
+   */
+  if (activeMeta.layout === "desk") return <NavDeskDashboard />;
+  return <StandardHome />;
+}
+
+function StandardHome() {
   const { state, ready } = useProgress();
   const { content, stats, meta } = useCourse();
   const now = Date.now();

@@ -655,7 +655,236 @@ export function LessonIcon({ name, className }: { name: string; className?: stri
         <circle cx="16" cy="22.5" r="1.3" fill="currentColor" stroke="none" />
       </>
     ),
-  };
+  
+  /* ---------------- Navigation ---------------- */
+
+  compass: (
+    <>
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="M15.4 8.6 L13.2 13.2 L8.6 15.4 L10.8 10.8 Z" />
+    </>
+  ),
+  grid: (
+    <>
+      <path d="M4 9 H20 M4 15 H20 M9 4 V20 M15 4 V20" />
+      <circle cx="15" cy="9" r="1.6" />
+    </>
+  ),
+  gauge: (
+    <>
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="M12 12 L16.4 8.6" />
+      <path d="M12 3.6 V5.4 M20.4 12 H18.6 M12 20.4 V18.6 M3.6 12 H5.4" />
+    </>
+  ),
+  globe: (
+    <>
+      <circle cx="12" cy="12" r="8.4" />
+      <ellipse cx="12" cy="12" rx="3.6" ry="8.4" />
+      <path d="M3.6 12 H20.4" />
+    </>
+  ),
+  map: (
+    <>
+      <path d="M4 6.6 L9.4 4.4 L14.6 6.6 L20 4.4 V17.4 L14.6 19.6 L9.4 17.4 L4 19.6 Z" />
+      <path d="M9.4 4.4 V17.4 M14.6 6.6 V19.6" />
+    </>
+  ),
+  route: (
+    <>
+      <circle cx="6" cy="18" r="2.2" />
+      <circle cx="18" cy="6" r="2.2" />
+      <path d="M7.6 16.4 C11 13 12 12 16.4 7.6" strokeDasharray="2.6 2.4" />
+    </>
+  ),
+  "compass-rose": (
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 4 L13.6 10.4 L12 12 L10.4 10.4 Z" />
+      <path d="M12 20 L10.4 13.6 L12 12 L13.6 13.6 Z" />
+      <path d="M4 12 H6 M18 12 H20" />
+    </>
+  ),
+  swap: (
+    <>
+      <path d="M5 9 H17 L14 6" />
+      <path d="M19 15 H7 L10 18" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="M12 6.8 V12 L15.8 14" />
+    </>
+  ),
+  "clock-arrow": (
+    <>
+      <circle cx="11" cy="12" r="7.4" />
+      <path d="M11 7.4 V12 L14.2 13.8" />
+      <path d="M18.4 6 L20.6 8.6 L18 10.4" />
+    </>
+  ),
+  ruler: (
+    <>
+      <path d="M3.6 14.6 L14.6 3.6 L20.4 9.4 L9.4 20.4 Z" />
+      <path d="M7.6 10.6 L9.4 12.4 M10.6 7.6 L12.4 9.4 M13.6 4.6 L15.4 6.4" />
+    </>
+  ),
+  crosshair: (
+    <>
+      <circle cx="12" cy="12" r="6.8" />
+      <path d="M12 2.6 V6.4 M12 17.6 V21.4 M2.6 12 H6.4 M17.6 12 H21.4" />
+      <circle cx="12" cy="12" r="1.4" />
+    </>
+  ),
+  protractor: (
+    <>
+      <path d="M3.6 16 A8.4 8.4 0 0 1 20.4 16 Z" />
+      <circle cx="12" cy="16" r="2" />
+      <path d="M6.4 11.6 L7.4 12.8 M12 8.2 V9.8 M17.6 11.6 L16.6 12.8" />
+    </>
+  ),
+  dividers: (
+    <>
+      <circle cx="12" cy="5" r="1.8" />
+      <path d="M11.2 6.6 L6.4 19.4" />
+      <path d="M12.8 6.6 L17.6 19.4" />
+      <path d="M5.4 19 L6.4 20.6 L7.6 19" />
+      <path d="M16.4 19 L17.6 20.6 L18.6 19" />
+    </>
+  ),
+  pencil: (
+    <>
+      <path d="M4.4 19.6 L5.4 15.6 L16.6 4.4 L19.6 7.4 L8.4 18.6 Z" />
+      <path d="M14.6 6.4 L17.6 9.4" />
+    </>
+  ),
+  radial: (
+    <>
+      <path d="M12 12 L20.4 7.6 M12 12 L20.4 16.4 M12 12 L5 6" strokeDasharray="2.4 2" />
+      <path d="M8.4 12 L12 8.4 L15.6 12 L12 15.6 Z" />
+    </>
+  ),
+  cr3: (
+    <>
+      <circle cx="12" cy="12" r="8.4" />
+      <circle cx="12" cy="12" r="4.6" />
+      <path d="M12 3.6 V5.6 M12 18.4 V20.4 M3.6 12 H5.6 M18.4 12 H20.4" />
+      <path d="M12 12 L17 8" />
+    </>
+  ),
+  index: (
+    <>
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="M12 3.6 L9.6 8 H14.4 Z" />
+      <path d="M6 18 L8.4 14.6 M18 18 L15.6 14.6" />
+    </>
+  ),
+  tsd: (
+    <>
+      <path d="M5 9.6 H19" />
+      <path d="M9 5.4 H15" />
+      <path d="M7.6 18.6 H16.4" />
+      <path d="M12 12 V16" />
+    </>
+  ),
+  stopwatch: (
+    <>
+      <circle cx="12" cy="13.4" r="7.4" />
+      <path d="M9.6 3.4 H14.4 M12 3.4 V6" />
+      <path d="M12 9.4 V13.4 L15 15.4" />
+    </>
+  ),
+  fuel: (
+    <>
+      <path d="M5.4 20.4 V5.4 A1.6 1.6 0 0 1 7 3.8 H12.6 A1.6 1.6 0 0 1 14.2 5.4 V20.4 Z" />
+      <path d="M5.4 10.4 H14.2" />
+      <path d="M14.2 8 H17 A1.6 1.6 0 0 1 18.6 9.6 V16 A1.6 1.6 0 0 0 20.2 17.6" />
+    </>
+  ),
+  altimeter: (
+    <>
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="M12 12 L12 6.6 M12 12 L16 14.4" />
+      <path d="M12 3.8 V5.2 M20.2 12 H18.8 M12 20.2 V18.8 M3.8 12 H5.2" />
+    </>
+  ),
+  airspeed: (
+    <>
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="M12 12 L17.4 9" />
+      <path d="M6 16.8 A8.4 8.4 0 0 1 6 7.2" />
+    </>
+  ),
+  mach: (
+    <>
+      <path d="M4 18 L9 6 L12 14 L15 6 L20 18" />
+      <path d="M17 10 A6 6 0 0 1 21 15" strokeDasharray="2 1.8" />
+    </>
+  ),
+  triangle: (
+    <>
+      <path d="M4.6 19 L15.4 5.6 L19.4 19 Z" />
+      <path d="M15.4 5.6 L19.4 19" />
+    </>
+  ),
+  quarter: (
+    <>
+      <path d="M12 3.6 V20.4 M3.6 12 H20.4" />
+      <path d="M17.4 6.6 L14.4 9.6" />
+      <path d="M14.4 9.6 L14.4 7.4 M14.4 9.6 L16.6 9.6" />
+    </>
+  ),
+  wind: (
+    <>
+      <path d="M3.6 8.6 H14 A2.6 2.6 0 1 0 11.4 6" />
+      <path d="M3.6 13.4 H18 A2.6 2.6 0 1 1 15.4 16" />
+      <path d="M3.6 18 H11" />
+    </>
+  ),
+  "wind-back": (
+    <>
+      <path d="M20.4 8.6 H10 A2.6 2.6 0 1 1 12.6 6" />
+      <path d="M20.4 13.4 H6 A2.6 2.6 0 1 0 8.6 16" />
+      <path d="M20.4 18 H13" />
+    </>
+  ),
+  "wind-solve": (
+    <>
+      <path d="M4.6 19 L14.6 6.6 L19.4 13" />
+      <path d="M4.6 19 L19.4 13" strokeDasharray="2.4 2" />
+      <circle cx="4.6" cy="19" r="1.4" />
+    </>
+  ),
+  direct: (
+    <>
+      <circle cx="12" cy="12" r="2" />
+      <circle cx="5.6" cy="17.4" r="1.6" />
+      <circle cx="19" cy="6.4" r="2.2" />
+      <path d="M6.8 16.2 L17.6 7.6" />
+    </>
+  ),
+  log: (
+    <>
+      <path d="M4.6 4.6 H19.4 V19.4 H4.6 Z" />
+      <path d="M4.6 9 H19.4 M4.6 14 H19.4 M11 9 V19.4 M15.4 9 V19.4" />
+    </>
+  ),
+  plan: (
+    <>
+      <path d="M5 19.4 V5.6 H15.4 L19 9.2 V19.4 Z" />
+      <path d="M8.4 12 H15.6 M8.4 15.4 H13.4" />
+      <path d="M15.4 5.6 V9.2 H19" />
+    </>
+  ),
+  update: (
+    <>
+      <path d="M19.4 12 A7.4 7.4 0 1 1 16.6 6.2" />
+      <path d="M17 3.2 V6.6 H13.6" />
+      <path d="M12 8.4 V12 L14.8 13.6" />
+    </>
+  ),
+};
 
   return (
     <svg

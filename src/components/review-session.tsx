@@ -60,6 +60,7 @@ export function ReviewSession({
         firstTry: r.firstTry,
         elapsedMs: r.elapsedMs,
         context: "review",
+        answerKey: r.answerKey,
       });
       setResults((prev) => [
         ...prev,

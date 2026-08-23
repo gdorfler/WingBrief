@@ -88,6 +88,7 @@ export default function LabIndexPage() {
         })}
       </ul>
 
+      {meta.id === "aero" && (
       <Card className="mt-6 border-caution/25 bg-caution-soft/40">
         <p className="text-[12.5px] leading-relaxed text-navy">
           <span className="font-bold">A note on the numbers. </span>
@@ -97,6 +98,7 @@ export default function LabIndexPage() {
           publishes the relationships rather than the coefficients for any one airframe.
         </p>
       </Card>
+      )}
     </>
   );
 }

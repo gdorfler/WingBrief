@@ -21,6 +21,7 @@ import { MASTERY_LABELS } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { DiagramHost } from "./diagrams/registry";
+import { NavToolPanel, WorkedExample } from "./nav/lesson-screens";
 import { Widget } from "./lab/widgets";
 import { QuestionPlayer, type QuestionResult } from "./questions";
 import {
@@ -83,6 +84,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         firstTry: r.firstTry,
         elapsedMs: r.elapsedMs,
         context: "lesson",
+        answerKey: r.answerKey,
       });
       setResults((prev) => [
         ...prev,
@@ -412,6 +414,123 @@ function ScreenView({
               <p className="text-[13.5px] leading-relaxed text-navy">{screen.watchFor}</p>
             </div>
           )}
+        </div>
+      );
+
+    /*
+     * Navigation's signature screen. A method is not a fact, and flattening it
+     * into a paragraph loses the part that makes it usable: what you are
+     * handed, what you have to produce, and the order in between. The estimate
+     * sits above step one because that is where the guide puts it.
+     */
+    case "method":
+      return (
+        <div className="space-y-3">
+          <h2 className="text-xl leading-snug text-navy sm:text-2xl">{screen.headline}</h2>
+
+          {screen.estimateFirst && (
+            <div className="rounded-2xl border border-brand/30 bg-brand-soft px-4 py-3">
+              <p className="eyebrow mb-1 text-brand-dark">Estimate first</p>
+              <p className="text-[13.5px] leading-relaxed text-navy">{screen.estimateFirst}</p>
+            </div>
+          )}
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="given-block rounded-2xl px-4 py-3.5">
+              <p className="eyebrow mb-2 text-brand-dark">Given</p>
+              <ul className="space-y-1.5">
+                {screen.given.map((g) => (
+                  <li key={g} className="flex gap-2">
+                    <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
+                    <span className="text-[13.5px] leading-relaxed text-navy">{g}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-2xl border border-line bg-surface px-4 py-3.5">
+              <p className="eyebrow mb-2 text-navy-faint">Find</p>
+              <ul className="space-y-1.5">
+                {screen.find.map((f) => (
+                  <li key={f} className="flex gap-2">
+                    <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-go" />
+                    <span className="text-[13.5px] font-semibold leading-relaxed text-navy">{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-line bg-surface px-4 py-4">
+            <div className="mb-2.5 flex items-center justify-between gap-3">
+              <p className="eyebrow text-navy-faint">The method</p>
+              {screen.tolerance && (
+                <span className="figure shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[10.5px] font-bold text-navy-soft">
+                  {screen.tolerance}
+                </span>
+              )}
+            </div>
+            <ol className="space-y-2">
+              {screen.steps.map((step, i) => (
+                <li key={step} className="flex gap-2.5">
+                  <span className="figure mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-[11px] font-extrabold text-white">
+                    {i + 1}
+                  </span>
+                  <span className="text-[13.5px] leading-relaxed text-navy">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {screen.watchFor && (
+            <div className="rounded-2xl border border-caution/30 bg-caution-soft/50 px-4 py-3.5">
+              <p className="eyebrow mb-1.5 text-caution">Watch for</p>
+              <p className="text-[13.5px] leading-relaxed text-navy">{screen.watchFor}</p>
+            </div>
+          )}
+        </div>
+      );
+
+    /*
+     * A worked example. The question is rendered already graded, so its
+     * solution replay is available without the student having to answer it
+     * first — the point of this screen is to watch, not to be tested.
+     */
+    case "worked": {
+      const problem = QUESTION_BY_ID[screen.problemId];
+      if (!problem) {
+        return (
+          <Card>
+            <p className="text-sm font-semibold text-nogo">Missing problem: {screen.problemId}</p>
+          </Card>
+        );
+      }
+      return (
+        <div className="space-y-3">
+          <div>
+            <p className="eyebrow mb-1 text-brand">Worked example</p>
+            <h2 className="text-xl leading-snug text-navy sm:text-2xl">{screen.headline}</h2>
+            {screen.line && (
+              <p className="mt-2 text-[14.5px] leading-relaxed text-navy-soft">{screen.line}</p>
+            )}
+          </div>
+          <WorkedExample question={problem} />
+        </div>
+      );
+    }
+
+    /* A live instrument, embedded in the lesson. */
+    case "tool":
+      return (
+        <div className="space-y-3">
+          <div>
+            <h2 className="text-xl leading-snug text-navy sm:text-2xl">{screen.headline}</h2>
+            {screen.line && (
+              <p className="mt-2 text-[14.5px] leading-relaxed text-navy-soft">{screen.line}</p>
+            )}
+          </div>
+          <Card>
+            <NavToolPanel tool={screen.tool} props={screen.props} />
+          </Card>
         </div>
       );
 

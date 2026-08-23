@@ -78,10 +78,48 @@ export const COURSES: Record<CourseId, CourseMeta> = {
         "The atmosphere is one system with a few inputs. These labs let you move temperature, moisture, pressure and altitude and watch what the air does about it.",
     },
   },
+  nav: {
+    id: "nav",
+    name: "Navigation",
+    tagline: "Given this information, how do I find the answer?",
+    sourceLabel: "NAVAVSCOLSCOM-SG-200 Unit 6 · CIN Q-9B-0020L",
+    icon: "plotter",
+    theme: "nav",
+    accent: "#0b6b4f",
+    accentSoft: "#e6f0ea",
+    labLabel: "Nav Bench",
+    labIntro: {
+      title: "Pick the instrument up",
+      blurb:
+        "Not relationship simulators — the instruments themselves, out on the bench with nothing riding on the answer. Turn the wheel until the scales make sense before a problem asks you to get one right.",
+    },
+    layout: "desk",
+    /*
+     * Exam conditions come from the source, not from a guess. The NETSAFA
+     * Navigation final examination booklet states 50 questions in 2 hours 30
+     * minutes and supplies blank paper for calculations; Appendix A of the
+     * trainee guide sets the pass at 80%; Job Sheet 6-7-4 lists the CR-3, the
+     * CP-1LX plotter and dividers as the course's hand tools.
+     *
+     * References are switched off because no source permits them in the
+     * examination, and hints are a WingBrief affordance that plainly has no
+     * equivalent in a test booklet.
+     */
+    examPolicy: {
+      questionCount: 50,
+      minutes: 150,
+      passPct: 80,
+      allowedTools: ["cr3calc", "cr3wind", "chart", "scratch"],
+      referencesAllowed: false,
+      hintsAllowed: false,
+      note:
+        "50 questions in 2 hours 30 minutes, passing at 80%. The CR-3, plotter, dividers and blank paper are permitted; the reference card is not.",
+    },
+  },
 };
 
 /** Display order in the switcher. */
-export const COURSE_ORDER: CourseId[] = ["aero", "engines", "frr", "weather"];
+export const COURSE_ORDER: CourseId[] = ["aero", "engines", "frr", "weather", "nav"];
 
 export const DEFAULT_COURSE: CourseId = "aero";
 
@@ -90,4 +128,4 @@ export function isCourseId(value: unknown): value is CourseId {
 }
 
 /** Courses named in the switcher's "coming soon" footer. Not yet built. */
-export const PLANNED_COURSES = ["Navigation"];
+export const PLANNED_COURSES: string[] = [];

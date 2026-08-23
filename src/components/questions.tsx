@@ -18,6 +18,7 @@ import type {
   DragLabelQuestion,
   GraphReadQuestion,
   McqQuestion,
+  NumericQuestion,
   Question,
   ShiftDirection,
   SliderPredictQuestion,
@@ -26,6 +27,7 @@ import type {
 import { correctKey, isCorrect, seededShuffle, serializeAnswer } from "@/lib/scoring";
 import { CONCEPT_BY_ID } from "@/content";
 import { DiagramHost } from "./diagrams/registry";
+import { NumericAnswerSummary, NumericBody } from "./nav/numeric-question";
 import { Widget } from "./lab/widgets";
 import { Button, Card, Pill, cn } from "./ui";
 
@@ -72,6 +74,7 @@ const TYPE_LABEL: Record<Question["type"], string> = {
   sliderPredict: "Predict",
   beforeAfter: "Before / after",
   graphRead: "Read the graph",
+  numeric: "Solve it",
 };
 
 export function QuestionPlayer(props: QuestionPlayerProps) {
@@ -166,6 +169,7 @@ export function QuestionPlayer(props: QuestionPlayerProps) {
       answer={answer}
       graded={graded}
       onChange={handleChange}
+      mode={mode}
     />
   );
 
@@ -337,9 +341,11 @@ interface BodyProps {
   answer: string | null;
   graded: boolean;
   onChange: (value: string) => void;
+  /** Exam mode restricts which tools a numeric question may offer. */
+  mode?: "practice" | "exam";
 }
 
-function QuestionBody({ question, answer, graded, onChange }: BodyProps) {
+function QuestionBody({ question, answer, graded, onChange, mode = "practice" }: BodyProps) {
   switch (question.type) {
     case "mcq":
     case "spotTheTrap":
@@ -355,6 +361,16 @@ function QuestionBody({ question, answer, graded, onChange }: BodyProps) {
       return <DragLabelBody q={question} answer={answer} graded={graded} onChange={onChange} />;
     case "connectChain":
       return <ConnectChainBody q={question} answer={answer} graded={graded} onChange={onChange} />;
+    case "numeric":
+      return (
+        <NumericBody
+          question={question as NumericQuestion}
+          answer={answer}
+          graded={graded}
+          onChange={onChange}
+          examMode={mode === "exam"}
+        />
+      );
     case "beforeAfter":
       return <BeforeAfterBody q={question} answer={answer} graded={graded} onChange={onChange} />;
   }
@@ -1114,8 +1130,7 @@ export function QuestionReview({
   question: Question;
   givenAnswer?: string;
 }) {
-  const key = correctKey(question);
-  const wasCorrect = givenAnswer === key;
+  const wasCorrect = givenAnswer !== undefined && isCorrect(question, givenAnswer);
   return (
     <Card className="space-y-3">
       <div className="flex items-start gap-3">
@@ -1161,6 +1176,27 @@ function AnswerSummary({
   question: Question;
   givenAnswer?: string;
 }) {
+  /*
+   * Numeric answers carry a tolerance and several fields, so a one-line "your
+   * answer versus the key" cannot say anything useful about them. They get
+   * their own per-field summary instead.
+   */
+  if (question.type === "numeric") {
+    return (
+      <div
+        className={cn(
+          "rounded-xl px-3 py-2.5",
+          givenAnswer !== undefined && isCorrect(question, givenAnswer)
+            ? "bg-go-soft"
+            : "bg-nogo-soft",
+        )}
+      >
+        <p className="eyebrow mb-1 text-navy-faint">Answer</p>
+        <NumericAnswerSummary question={question} given={givenAnswer} />
+      </div>
+    );
+  }
+
   const describe = (key: string | undefined): string => {
     if (!key) return "Not answered";
     if (key.startsWith("i:")) {

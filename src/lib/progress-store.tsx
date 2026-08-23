@@ -52,6 +52,8 @@ export interface AnswerInput {
   firstTry: boolean;
   elapsedMs: number;
   context: Attempt["context"];
+  /** What they answered, for courses that diagnose the kind of error. */
+  answerKey?: string;
 }
 
 export interface ProgressApi {
@@ -278,6 +280,7 @@ export function ProgressProvider({
           elapsedMs: input.elapsedMs,
           at: now,
           context: input.context,
+          answerKey: input.answerKey,
         };
         const { mastery } = applyAttempt(prev.mastery, attempt);
         const gained =

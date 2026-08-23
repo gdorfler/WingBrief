@@ -5,6 +5,7 @@ import { lessonStates, unitReadiness } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { LessonMap } from "@/components/lesson-map";
+import { NavRouteMap } from "@/components/nav/route-map";
 import { ChipRail, PageHeader, Pill } from "@/components/ui";
 
 export default function LessonsPage() {
@@ -19,8 +20,8 @@ export default function LessonsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Your flight path"
-        title={`${meta.name} course map`}
+        eyebrow={meta.layout === "desk" ? "Your route" : "Your flight path"}
+        title={meta.layout === "desk" ? "Navigation route" : `${meta.name} course map`}
         subtitle={`${stats.lessons} lessons across ${stats.units} units, about ${stats.totalMinutes} minutes of instruction. ${
           hasObjectives
             ? "Every enabling objective in the trainee guide is mapped to a lesson and assessed by a question."
@@ -48,12 +49,26 @@ export default function LessonsPage() {
         </div>
       </PageHeader>
 
-      <LessonMap
-        units={content.units}
-        lessons={content.lessons}
-        states={states}
-        readinessByUnit={readinessByUnit}
-      />
+      {/*
+       * Navigation progresses across a chart rather than along a path. Same
+       * data, same states, a different drawing — because a course whose
+       * subject is plotting should look like something plotted.
+       */}
+      {meta.layout === "desk" ? (
+        <NavRouteMap
+          units={content.units}
+          lessons={content.lessons}
+          states={states}
+          readinessByUnit={readinessByUnit}
+        />
+      ) : (
+        <LessonMap
+          units={content.units}
+          lessons={content.lessons}
+          states={states}
+          readinessByUnit={readinessByUnit}
+        />
+      )}
     </>
   );
 }

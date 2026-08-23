@@ -5,22 +5,27 @@ and Student Naval Flight Officers.
 
 Duolingo-style progression + NotebookLM-style visual explainers + NIFE exam-focused content.
 
-Four courses ship today. They share one engine, one design language and one streak, but
-keep separate mastery, review queues, exams and visual identity — the way four languages
+Five courses ship today. They share one engine, one design language and one streak, but
+keep separate mastery, review queues, exams and visual identity — the way five languages
 sit inside one language app.
 
-| | Aerodynamics | Engines | Flight Rules | Weather |
-|---|---|---|---|---|
-| Identity | Aviation blue · air and flow | Burnt amber · power and machinery | Indigo · rules and charts | Teal · the moving atmosphere |
-| Units | 6 | 7 | 8 | 10 |
-| Lessons | 33 (~226 min) | 30 (~172 min) | 32 (~162 min) | 30 (~169 min) |
-| Concepts | 136 | 100 | 106 | 94 |
-| Questions | 344 | 205 | 220 | 217 |
-| Explainers · Labs | 37 · 8 | 30 · 9 | 32 · 8 | 31 · 11 |
-| Know Cold cards | 78 | 61 | 58 | 60 |
-| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed | 42, all taught **and** assessed | 81, all taught **and** assessed |
+| | Aerodynamics | Engines | Flight Rules | Weather | Navigation |
+|---|---|---|---|---|---|
+| Identity | Aviation blue · air and flow | Burnt amber · power and machinery | Indigo · rules and charts | Teal · the moving atmosphere | Emerald on chart paper · the navigator's desk |
+| Asks | Why does the aircraft behave this way? | What is happening inside the machine? | What rule applies, and what next? | What is the atmosphere doing? | Given this, how do I find the answer? |
+| Units | 6 | 7 | 8 | 10 | 10 |
+| Lessons | 33 (~226 min) | 30 (~172 min) | 32 (~162 min) | 30 (~169 min) | 33 (~233 min) |
+| Concepts | 136 | 100 | 106 | 94 | 91 |
+| Questions | 344 | 205 | 220 | 217 | 415 |
+| Explainers · Labs | 37 · 8 | 30 · 9 | 32 · 8 | 31 · 11 | 16 · 9 |
+| Know Cold cards | 78 | 61 | 58 | 78 | 69 |
+| Enabling Objectives | 219, all taught **and** assessed | 29, all taught **and** assessed | 42, all taught **and** assessed | 81, all taught **and** assessed | 37, all taught **and** assessed |
 
 Every lesson in every course has a visual explainer, and every unit has a lab.
+
+Navigation additionally carries **25 skills, 14 drills and 2 integrated missions**, because
+it is examined on what a student can produce rather than on what they can recognise. See
+[Navigation](#navigation) below for what that changed.
 
 Lesson counts follow the material rather than a template. An earlier version of the
 curriculum test capped every course at 30 lessons, and Aerodynamics and Engines both came
@@ -29,7 +34,10 @@ defect. The cap is gone. What is enforced instead is depth: **every concept and 
 enabling objective is assessed by at least two questions**, and no single lesson may claim
 more than fifteen objectives.
 
-Navigation can be added without touching the learning engine.
+Adding Navigation did touch the engine — a course examined on production needed a numeric
+answer type, tolerance-aware grading and a skill axis alongside the concept graph. The
+other four courses were not modified to accommodate it: every new field is optional, and
+their content, progress and behaviour are byte-for-byte what they were.
 
 ---
 
@@ -118,15 +126,17 @@ nothing — the next successful save carries it up.
 
 | | Total |
 |---|---|
-| Courses | 4 |
-| Lessons | 60 |
-| Concepts tracked for mastery | 219 |
-| Questions | 387 |
-| Visual explainers | 32 |
-| Sim Labs | 16 |
-| Parametric SVG diagrams | 60 |
-| Know Cold cards | 139 |
-| Enabling Objectives mapped | 248 — all taught **and** assessed |
+| Courses | 5 |
+| Lessons | 158 |
+| Concepts tracked for mastery | 527 |
+| Skills tracked for proficiency | 25 |
+| Questions | 1,401 |
+| Visual explainers | 146 |
+| Labs and benches | 45 |
+| Drills · Missions | 14 · 2 |
+| Parametric SVG diagrams | 127 |
+| Know Cold cards | 344 |
+| Enabling Objectives mapped | 408 — all taught **and** assessed |
 
 ### Screens
 
@@ -135,10 +145,16 @@ nothing — the next successful save carries it up.
 - **Lessons** — the flight path: a snaking route through the course's units, per-node state
 - **Lesson player** — hook → visual model → manipulation → cause-effect chain → Know Cold → retrieval
 - **Review** — spaced review, weak areas, mistakes, saved, plus per-concept detail pages
-- **Sim Lab / Scenario Lab / Weather Lab** — interactive labs per course, each named for
-  what it actually does. Aerodynamics and Engines simulate a physical relationship;
-  Flight Rules resolves a situation; Weather changes an atmospheric condition and shows
-  what the air does about it
+- **Sim Lab / Scenario Lab / Weather Lab / Nav Bench** — interactive sections per course,
+  each named for what it actually does. Aerodynamics and Engines simulate a physical
+  relationship; Flight Rules resolves a situation; Weather changes an atmospheric condition
+  and shows what the air does about it; Navigation puts the instrument itself on the bench
+- **Nav Desk** — Navigation only. A working surface with the chart, both faces of the CR-3
+  and the jet log, and every tool within reach. Nothing on it is graded
+- **Drills** — Navigation only. Ten reps of one operation with a pace clock, built from the
+  trainee guide's own published problem sets
+- **Missions** — Navigation only. One continuous flight-planning problem worked in stages,
+  with the jet log persisting throughout, ending in an in-flight fix and a replan
 - **Exam** — quick / full / unit / weak-area / custom, timed or untimed, with results and review
 - **Know Cold** — the pre-exam compression layer, searchable and filterable
 - **Explainers** — animated 60–120 second visual explainers
@@ -245,6 +261,86 @@ general meteorology.
 
 ---
 
+### Navigation
+
+1. **Navigation Trainee Guide** — `NAVAVSCOLSCOM-SG-200` Module/Unit 6, "Introduction to
+   Air Navigation", CIN Q-9B-0020L. Seven lesson topics, and the authority for everything
+   in the course. It publishes its enabling objectives in two numbering series: 2.42–2.47
+   and 2.330–2.344 in the syllabus-wide block, and 4.1–4.17 in a block of its own —
+   **37 distinct objectives**, all of them carried.
+2. **NETSAFA Navigation final examination**, Test Booklet No. 4 — an official 50-question
+   paper. Used for question wording, and for the exam conditions: 50 questions in
+   2 hours 30 minutes, with blank paper supplied for calculations.
+
+Objectives 2.42, 2.43, 2.45, 2.46 and 2.47 — the airspeed definitions — appear in both the
+Aerodynamics and the Navigation chapters, because both chapters publish them. Both courses
+teach and assess them, and both EO matrices show them. That is the source's duplication,
+not the app's.
+
+#### What the guide made us build
+
+Navigation is not a memorisation course. Of its 37 objectives, sixteen begin with a doing
+verb — COMPUTE, CALCULATE, SOLVE, LOCATE, PLOT, MEASURE, PERFORM, DETERMINE — and each of
+those publishes a **tolerance**. A course whose exam asks for a groundspeed to ±1% cannot
+be delivered with multiple choice, so the platform grew four things:
+
+- **A numeric answer type** with per-field units, tolerances and left/right qualifiers.
+  A crosswind of 35 knots is only half an answer if you cannot say which side it is on.
+- **Tolerance-aware grading.** Every band comes from Appendix A of the guide: ±1° on a
+  direction, ±½ NM on a distance, ±1 minute on a coordinate, ±1 unit on the logarithmic
+  scale for anything read off the CR-3, ±2 kt on true airspeed, ±0.01 on Mach, ±3° and
+  ±3 kt on winds under 70 knots and ±5 and ±5 above.
+- **A skill axis** alongside the concept graph. Concepts are what you know; skills are what
+  you can do, at a stated speed, to a stated tolerance. Navigation's readiness figure is
+  computed from skills, and the dashboard leads with accuracy and median solve time rather
+  than with concepts seen.
+- **An error taxonomy.** "Incorrect" is close to useless in a calculation course: a
+  reciprocal, a decimal-place slip and a sign error all look identical in the answer box
+  and need completely different remediation. Each has a signature readable off the number
+  itself, and the feedback names it.
+
+#### The instruments
+
+The CR-3, the plotter and the dividers are simulated rather than illustrated, and none of
+them computes an answer.
+
+- **CR-3 calculation side** is a real circular slide rule. Both logarithmic scales are
+  drawn with the graduation the guide describes — nine ticks between whole numbers from 10
+  to 15, four from 15 to 30, one from 30 to 60 — with the rate index at 60, the seconds bug
+  at 36, the unit index at 10 and the hour circle beneath. Rotating the inner wheel fixes a
+  ratio, and every equivalent pair aligns at once. **It never prints the value under the
+  hairline.** Reading the scale is the skill, and a numeric readout would quietly delete it
+  while looking like a feature — which is also why the course grades to ±1%.
+- **CR-3 wind side** carries a compass rose, both grid scales (0–80 under 60 knots, 0–160
+  above) and a crab scale geared to crab ≈ 57.3 × crosswind ÷ TAS. That gearing is where
+  the ten percent rule comes from: a crosswind a tenth of TAS reads 57.3 × 0.1 ≈ 6°, at any
+  airspeed. The same face solves preflight winds, in-flight winds and TACAN point-to-point.
+- **Plotter and dividers** behave like the physical ones: a grommet, a straightedge, and the
+  outer scale that counts up to the LEFT — the detail the guide warns about twice. The
+  dividers hold a span and carry it to a meridian; the counting stays with the student.
+- **The jet log** does not total itself. Information Sheet 6-7-2 makes it the record of four
+  computations the aircrew performs, and a form that filled itself in would be a record of
+  nothing.
+- **The zone wheel** is a wheel rather than a text box with an equals sign, for the same
+  reason: a converter that took a local time and a zone description and printed Zulu would
+  end objective 4.2 as a skill.
+
+#### The chart
+
+WingBrief cannot ship a Tactical Pilotage Chart, so it draws one. `src/lib/nav/chart.ts`
+generates a real **Lambert conformal conic projection** with converging meridians, standard
+parallels at 29° and 33°, one nautical mile per minute of latitude ticked up every meridian
+with the five- and ten-minute speed marks the guide tells you to count by, and dashed blue
+isogonic lines carrying whole-degree variation.
+
+The place names on it are invented, it says so on its face, and no problem depends on it
+resembling any published chart. What it does have to be is *correct*: `chart.test.ts`
+measures a course between all 190 pairs of features on the sheet, the way a student would
+with a plotter against the meridian nearest the midpoint, and asserts the drawing agrees
+with the answer-key geometry to better than 1° and half a mile.
+
+---
+
 ## Model fidelity
 
 The brief forbids fabricating aircraft performance values, so the physics is split in two.
@@ -295,6 +391,53 @@ threshold in the course — 1,000 and 3, 3,000 and 3, brief + 3 hours or ETD + 3
 265 / 80 holding speeds — is quoted from the guide. The Scenario Labs decide rulings from
 those stated rules and nothing else; where the source does not publish a threshold, the
 lab does not offer one.
+
+---
+
+### Navigation
+
+Navigation's numbers are not indexed at all — the guide publishes answer keys, so every
+formula is checked against them rather than asserted.
+
+`src/lib/nav/official-data.ts` transcribes every answer key the trainee guide prints: 25
+time problems, 25 speed, 25 distance, 25 fuel consumption, 10 fuel conversions, 10
+time-zone conversions, 50 true airspeeds, 50 preflight wind solutions, 47 in-flight wind
+solutions, the point-to-point items and the chart legs. `math.test.ts` runs all of it
+through the same functions the app grades with and asserts each result lands inside the
+tolerance Appendix A allows for that quantity. It is the single most important test in the
+repository: a navigation course cannot tolerate a wrong answer key, and the only way to be
+sure is to check against the source rather than against my own arithmetic.
+
+Those same published problems then become the drill bank. Generating lookalikes when the
+real ones are keyed would have been strictly worse — worse provenance, worse coverage of
+the awkward cases the course deliberately includes, and nothing to check the answers
+against.
+
+**One empirical constant.** The CR-3's true-airspeed window treats the temperature you dial
+in as an *indicated* reading and removes the ram rise as part of the solution, which is why
+a purely static-temperature calculation runs two to three knots fast against the answer key
+at every airspeed. `CR3_RECOVERY_FACTOR = 0.76` is not a physical constant; it is the value
+that reproduces the official 50-row table most closely, and at it **49 of the 50 published
+answers fall inside the ±2 kt** the guide allows. The test asserts exactly that, so the
+claim cannot rot.
+
+**Three published answers do not reproduce**, and they are listed in
+`SOURCE_DISCREPANCIES` rather than papered over with a loosened tolerance:
+
+| Where | Printed | Computed | Why |
+|---|---|---|---|
+| 6-4-3 A, item 49 | 865 kt | 847 kt | Mach 1.53. A Mach spiral printed on a plastic wheel is not trustworthy that far supersonic. Every subsonic row in the same table reproduces inside ±2 kt. |
+| 6-4-3 B, items 51 and 53 | CAS 166 and 249 | CAS 169 and 245 | These disagree with the 50-row table on the same sheet: the ratios they imply are higher at −15 °C than the table's own rows at +15 °C, which is backwards. The table is larger and self-consistent, so the model follows it. |
+| 6-6-3 C, item 6 | 87 NM | 85.4 NM | A CR-3 point-to-point distance is read off a grid ruled at 10 NM per square, so the published answer is a visual estimate good to about half a square. |
+
+None of the three is used as question material anywhere in the course.
+
+**One deliberate departure from textbook physics.** Step 6 of Information Sheet 6-5-2
+computes groundspeed as TAS ± the head/tail component and stops there; a strict vector
+solution would also shave off the cos(crab) term. At the crab angles this course produces
+that is a knot or two, inside the ±1% the CR-3 is read to, and the exam key is built on the
+guide's arithmetic. A student who followed a "better" method would be marked wrong on the
+real exam, so `math.ts` teaches the course and says so in a comment.
 
 ---
 
@@ -355,12 +498,22 @@ quota is hit.
 
 ## Testing
 
-153 tests across four files:
+429 tests across nine files:
 
 - `lib/mastery.test.ts` — levels, recency weighting, scheduling, readiness, priority
-- `lib/scoring.test.ts` — answer serialization, grading of all ten types, exam scoring,
-  deterministic selection
+- `lib/scoring.test.ts` — answer serialization, grading of every question type, exam
+  scoring, deterministic selection
+- `lib/retry-scoring.test.ts` — that a retry cannot cancel a miss
+- `lib/merge-progress.test.ts` — cross-device merge, per course
 - `lib/aero.test.ts` — the direction and magnitude of every taught relationship
+- `lib/nav/math.test.ts` — **every answer key the Navigation trainee guide prints**, run
+  through the app's own functions and checked against the tolerance Appendix A allows.
+  Several hundred published values; three documented disagreements and no others
+- `lib/nav/slide-rule.test.ts` — the simulated CR-3 against the guide's worked examples,
+  and against the validated formulas across all 100 published rate problems
+- `lib/nav/chart.test.ts` — that the generated Lambert projection inverts, that a minute of
+  latitude is a nautical mile everywhere on the sheet, and that a course measured off the
+  drawing agrees with the answer-key geometry on all 190 pairs of chart features
 - `content/content.test.ts` — curriculum shape, unique ids, referential integrity, question
   wellformedness, concept/EO coverage, and that every diagram, widget and lab referenced by
   content actually exists

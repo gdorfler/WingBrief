@@ -241,6 +241,71 @@ button,
   background-attachment: fixed;
 }
 
+
+:root[data-course="nav"] {
+  /*
+   * The navigator's desk. Deep emerald against chart paper, with graphite
+   * where the other courses use navy.
+   *
+   * The emerald is deliberately darker and bluer than the platform's success
+   * green (#10a154). They have to stay tellable apart, because on this course
+   * a green readout can mean "your answer is inside tolerance" or it can mean
+   * "this is a course line", and confusing the two would be a real cost.
+   */
+  --color-brand: #0b6b4f;
+  --color-brand-dark: #07503a;
+  --color-brand-light: #2f9c76;
+  --color-brand-soft: #e6f0ea;
+  --color-brand-soft-2: #c9e2d5;
+  --color-course-ink: #12181f;
+  --color-course-ink-soft: #1b232c;
+
+  /* Graphite, not navy — pencil and instrument casing. */
+  --color-ink-900: #0b1015;
+  --color-ink-800: #12181f;
+  --color-ink-700: #1b232c;
+  --color-ink-600: #2a3540;
+  --color-ink-line: #3a4753;
+
+  /* Chart paper: a warm off-white, the only cream canvas on the platform. */
+  --color-canvas: #f7f5ef;
+  --color-surface-2: #efece2;
+  --color-surface-3: #e5e1d4;
+  --color-line: #e2ded1;
+  --color-line-strong: #cac4b2;
+
+  /* The muted map blue used for water, isogonic lines and grid detail. */
+  --color-series-alt: #3d6f9e;
+
+  /* Working marks. Plotted lines, pencil, and the bright plotting accent. */
+  --color-plot: #12a86e;
+  --color-pencil: #4a5560;
+  --color-chart-grid: #cfc9b6;
+  --color-chart-water: #dde6ec;
+}
+
+/*
+ * Chart graticule.
+ *
+ * Weather gets atmospheric banding behind the page; Navigation gets a
+ * graticule. Two sets of hairlines at the same very low alpha, which reads as
+ * ruled paper rather than as a grid you are meant to look at.
+ */
+:root[data-course="nav"] body {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-chart-grid) 42%, transparent) 0 1px,
+      transparent 1px 84px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-chart-grid) 42%, transparent) 0 1px,
+      transparent 1px 84px
+    );
+  background-attachment: fixed;
+}
+
 /*
  * Course transition. Only the accent-bearing properties animate, and
  * only for a beat — long enough to read as a deliberate change of
@@ -453,4 +518,119 @@ button,
 .lab-range:focus-visible::-webkit-slider-thumb {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
+}
+
+/* ============================================================
+   NAVIGATION — the desk
+
+   Navigation's identity is not its colour. It is the surfaces:
+   ruled chart paper, pencil work, instrument casing, and numbers
+   that line up in columns. These are the pieces that make a
+   Navigation screen recognisable with the title covered.
+   ============================================================ */
+
+/*
+ * A working surface. Warm paper with a one-nautical-mile grid, the same
+ * texture under a plotted course, a scratch pad and a jet log — because on a
+ * real desk it is the same sheet.
+ */
+@utility chart-paper {
+  background-color: #faf8f2;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      rgba(122, 112, 84, 0.13) 0 1px,
+      transparent 1px 22px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(122, 112, 84, 0.13) 0 1px,
+      transparent 1px 22px
+    );
+  border: 1px solid var(--color-line-strong);
+}
+
+/* The instrument itself: moulded plastic, not paper. */
+@utility instrument-face {
+  background:
+    radial-gradient(
+      circle at 30% 22%,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(246, 245, 240, 0.6) 38%,
+      transparent 62%
+    ),
+    #f1efe8;
+  border: 1px solid var(--color-line-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(11, 16, 21, 0.09),
+    0 8px 24px -14px rgba(11, 16, 21, 0.4);
+}
+
+/*
+ * A GIVEN block. Every navigation problem starts by handing you data, and it
+ * should look handed to you — ruled, monospaced, boxed off from the prose.
+ */
+@utility given-block {
+  background-color: color-mix(in srgb, var(--color-brand-soft) 55%, #fffdf7);
+  border: 1px solid var(--color-line-strong);
+  border-left: 3px solid var(--color-brand);
+}
+
+/* Numbers a student compares down a column have to line up. */
+@utility figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
+}
+
+/* Pencil work laid over the chart. */
+.plot-line {
+  stroke: var(--color-plot, #12a86e);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.pencil-line {
+  stroke: var(--color-pencil, #4a5560);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.75;
+}
+
+.chart-grid-line {
+  stroke: var(--color-chart-grid, #cfc9b6);
+  stroke-width: 0.5;
+  fill: none;
+}
+
+.chart-grid-line-major {
+  stroke: var(--color-chart-grid, #cfc9b6);
+  stroke-width: 1;
+  fill: none;
+}
+
+/* The isogonic line: dashed blue, exactly as a TPC draws it. */
+.isogonic-line {
+  stroke: var(--color-series-alt, #3d6f9e);
+  stroke-width: 0.9;
+  stroke-dasharray: 7 5;
+  fill: none;
+  opacity: 0.75;
+}
+
+/*
+ * A tool that has been picked up and put on the desk. Lifted off the surface
+ * far enough to read as an object rather than a panel.
+ */
+@utility tool-window {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 1px 2px rgba(11, 16, 21, 0.08),
+    0 18px 44px -20px rgba(11, 16, 21, 0.45);
 }

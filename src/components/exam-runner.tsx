@@ -123,6 +123,7 @@ function ExamPaper({ config }: { config: ExamConfig }) {
         firstTry: true,
         elapsedMs: Math.round((now - startedAt.current) / Math.max(1, answeredCount)),
         context: "exam",
+        answerKey: given,
       });
     }
 

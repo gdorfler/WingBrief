@@ -59,6 +59,7 @@ import {
   WeatherBriefLab,
   OxygenLab,
 } from "./frr-labs";
+import { NAV_LAB_COMPONENTS } from "./nav-labs";
 import {
   AtmosphereLab,
   AltimeterLab,
@@ -909,6 +910,9 @@ export const LAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   WindLab,
   ProductLab,
   WaveLab,
+
+  /* Navigation — instrument benches rather than relationship simulators */
+  ...NAV_LAB_COMPONENTS,
 };
 
 export function LabHost({ component }: { component: string }) {

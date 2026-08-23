@@ -23,6 +23,8 @@ export type SourceDocument =
   | "Weather Trainee Guide"
   | "Weather Condensed Notes"
   | "Weather Dump Sheet"
+  | "Navigation Trainee Guide"
+  | "Navigation Final Examination"
   | "Basic Theory and Lift Production"
   | "Drag and Stalls"
   | "Performance Characteristics"
@@ -47,7 +49,7 @@ export interface SourceReference {
 /* ------------------------------------------------------------------ */
 
 /** One course on the WingBrief platform. Adding a course adds an id here. */
-export type CourseId = "aero" | "engines" | "frr" | "weather";
+export type CourseId = "aero" | "engines" | "frr" | "weather" | "nav";
 
 export interface CourseMeta {
   id: CourseId;
@@ -75,6 +77,33 @@ export interface CourseMeta {
   labLabel: string;
   /** Heading and blurb for that section's index page. */
   labIntro: { title: string; blurb: string };
+  /**
+   * Which home screen and course map this course uses.
+   *
+   * "standard" is the readiness dashboard and flight-path map every course
+   * shipped with. "desk" is the problem-solving variant Navigation needs: the
+   * headline numbers are accuracy and solve time rather than concepts seen,
+   * and the map is a route plotted across a chart rather than a path of nodes.
+   */
+  layout?: "standard" | "desk";
+  /** Exam conditions, where the source publishes them. */
+  examPolicy?: ExamPolicy;
+}
+
+/**
+ * What the real examination allows. Only filled in where a source states it —
+ * inventing a restriction would be as wrong as inventing a tolerance.
+ */
+export interface ExamPolicy {
+  questionCount: number;
+  minutes: number;
+  /** Passing score as a percentage. */
+  passPct: number;
+  allowedTools: NavToolId[];
+  referencesAllowed: boolean;
+  hintsAllowed: boolean;
+  /** Where these conditions come from, shown to the student before they start. */
+  note: string;
 }
 
 /**
@@ -89,6 +118,17 @@ export interface CourseContent {
   explainers: Explainer[];
   labs: Lab[];
   knowCold: KnowColdCard[];
+  /**
+   * The three structures below exist for problem-solving courses and are
+   * absent from the four knowledge courses, which is why they are optional.
+   *
+   * A concept is something you know. A skill is something you can do, at a
+   * stated speed, to a stated tolerance — and Navigation is graded on the
+   * second kind. Drills are the reps; missions are the integration.
+   */
+  skills?: Skill[];
+  drills?: Drill[];
+  missions?: Mission[];
 }
 
 /**
@@ -207,6 +247,39 @@ export type LessonScreen =
       /** Which publication this comes from, e.g. "CNAF M-3710.7". */
       authority?: string;
     }
+  /**
+   * The signature Navigation screen. A method is not a fact, and writing one
+   * as a paragraph loses the thing that makes it usable: what you are handed,
+   * what you have to produce, and the order of operations in between. The
+   * estimate line comes first on the card because it comes first in the
+   * procedure — the guide puts "ESTIMATE!" above step 1 of every wind
+   * solution it prints.
+   */
+  | {
+      kind: "method";
+      headline: string;
+      /** What the problem gives you. */
+      given: string[];
+      /** What you have to produce. */
+      find: string[];
+      /** The order of operations. */
+      steps: string[];
+      /** The estimate that precedes the tool. */
+      estimateFirst?: string;
+      /** The error this method invites. */
+      watchFor?: string;
+      tolerance?: string;
+    }
+  /** A worked example, replayed one operation at a time. */
+  | { kind: "worked"; headline: string; line?: string; problemId: string }
+  /** A live navigation instrument, embedded in the lesson. */
+  | {
+      kind: "tool";
+      headline: string;
+      line?: string;
+      tool: NavToolId;
+      props?: Record<string, unknown>;
+    }
   /** Retrieval — pulls a question from the lesson's question pool. */
   | { kind: "question"; questionId: string };
 
@@ -223,7 +296,8 @@ export type QuestionType =
   | "sliderPredict"
   | "beforeAfter"
   | "spotTheTrap"
-  | "graphRead";
+  | "graphRead"
+  | "numeric";
 
 export type Difficulty = 1 | 2 | 3;
 
@@ -244,6 +318,118 @@ interface QuestionBase {
   tags?: string[];
   /** True when modelled directly on an official review/practice question. */
   officialStyle?: boolean;
+  /** Skills exercised, for courses that track them. */
+  skillIds?: string[];
+}
+
+/* ------------------------------------------------------------------ */
+/* Numeric answers                                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Units a navigation answer can carry.
+ *
+ * The unit is part of the answer, not decoration. 250 knots and 250 nautical
+ * miles are different answers to different questions, and a grader that
+ * accepts one for the other is teaching the student that units do not matter.
+ */
+export type NavUnit =
+  | "deg"
+  | "kt"
+  | "nm"
+  | "lb"
+  | "gal"
+  | "pph"
+  | "ft"
+  | "inHg"
+  | "mach"
+  | "minutes"
+  | "elapsed"
+  | "clock"
+  | "latMinutes"
+  | "lonMinutes"
+  | "latDegrees"
+  | "lonDegrees";
+
+/**
+ * Tolerance kinds, mirroring Appendix A of the trainee guide. The string
+ * values are the keys of TOLERANCES in src/lib/nav/math.ts; keeping the type
+ * here rather than importing it stops the domain model depending on one
+ * course's maths.
+ */
+export type NavToleranceKind =
+  | "logScale"
+  | "trueAirspeed"
+  | "mach"
+  | "direction"
+  | "distance"
+  | "latLong"
+  | "windComponent"
+  | "windComponentStrong"
+  | "inflightWindDirection"
+  | "inflightWindDirectionStrong"
+  | "pointToPointCourse"
+  | "pointToPointDistance"
+  | "exact";
+
+export interface NumericField {
+  key: string;
+  label: string;
+  unit: NavUnit;
+  /**
+   * The answer of record, in the unit's canonical measure: seconds for
+   * "elapsed", minutes past midnight for "clock", minutes for the coordinate
+   * units, and the obvious thing everywhere else.
+   */
+  answer: number;
+  tolerance: NavToleranceKind;
+  /** Directions compare with a wrap, so 359 and 001 are two degrees apart. */
+  wraps?: boolean;
+  /**
+   * A left/right or head/tail qualifier the student must also get right. A
+   * crosswind of 35 knots is only half an answer if you cannot say which side
+   * it is on.
+   */
+  qualifier?: { options: [string, string]; answer: string; label: string };
+  /** Shown when the student asks for a nudge, where hints are permitted. */
+  hint?: string;
+}
+
+/**
+ * The scaffolding ladder. The same skill appears at several rungs: watch it
+ * done, do it with the next operation named, do it when asked what comes
+ * next, do it alone, then do it alone against a clock.
+ */
+export type GuidanceLevel = "watch" | "guided" | "prompted" | "independent" | "timed";
+
+/** One move in a worked solution, replayed a step at a time. */
+export interface WorkedStep {
+  /** What you do. */
+  action: string;
+  /** Why, or what goes wrong here. */
+  detail?: string;
+  /** The value this step produces. */
+  result?: string;
+  /** Which tool the step happens on, so the replay can open it. */
+  tool?: NavToolId;
+}
+
+export interface NumericQuestion extends QuestionBase {
+  type: "numeric";
+  /** The data the problem hands you. */
+  given: { label: string; value: string }[];
+  fields: NumericField[];
+  /**
+   * Estimate first. The guide says it in almost every procedure — before the
+   * wheel, before the plotter, before interpreting anything — because a
+   * decimal place or a reciprocal is invisible in the answer and obvious in
+   * the estimate.
+   */
+  estimate?: { prompt: string; options: string[]; answer: number; why: string };
+  allowedTools?: NavToolId[];
+  worked: WorkedStep[];
+  guidance?: GuidanceLevel;
+  diagram?: DiagramSpec;
 }
 
 export interface McqQuestion extends QuestionBase {
@@ -343,7 +529,8 @@ export type Question =
   | CurveShiftQuestion
   | SliderPredictQuestion
   | BeforeAfterQuestion
-  | GraphReadQuestion;
+  | GraphReadQuestion
+  | NumericQuestion;
 
 /* ------------------------------------------------------------------ */
 /* Lessons, explainers, labs                                           */
@@ -409,6 +596,94 @@ export interface Lab {
 }
 
 /* ------------------------------------------------------------------ */
+/* Skills — the doing half of a problem-solving course                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * One operation the student must be able to perform.
+ *
+ * Concepts and skills are tracked separately on purpose. Knowing that
+ * groundspeed is true airspeed corrected for wind is a concept; producing the
+ * right groundspeed on a CR-3 inside ±1% is a skill, and a student can have
+ * the first without the second. Navigation is examined on the second.
+ */
+export interface Skill {
+  id: string;
+  name: string;
+  /** The operation as a verb phrase: "Pull coordinates off a chart". */
+  operation: string;
+  unit: UnitId;
+  /** Which tool the operation is performed on, when it needs one. */
+  tool?: NavToolId;
+  /** The tolerance the course holds this skill to, in words. */
+  tolerance?: string;
+  source: SourceReference;
+}
+
+/* ------------------------------------------------------------------ */
+/* Navigation tools                                                    */
+/* ------------------------------------------------------------------ */
+
+/** The instruments on the desk. Job Sheet 6-7-4 lists the physical set. */
+export type NavToolId =
+  | "cr3calc"
+  | "cr3wind"
+  | "chart"
+  | "jetlog"
+  | "scratch"
+  | "timezone"
+  | "reference";
+
+/* ------------------------------------------------------------------ */
+/* Drills and missions                                                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A drill is ten reps of one operation, not another lesson. It exists so a
+ * skill can be made fast and automatic, which is the difference between
+ * having seen a method and being able to use it under time pressure.
+ */
+export interface Drill {
+  id: string;
+  title: string;
+  /** The single operation being repeated. */
+  operation: string;
+  unit: UnitId;
+  skillIds: string[];
+  questionIds: string[];
+  /** Pace target in seconds per rep, used by the pace readout. */
+  targetSeconds: number;
+  source: SourceReference;
+}
+
+export interface MissionStage {
+  id: string;
+  title: string;
+  /** What the aircrew is doing at this point in the flight. */
+  brief: string;
+  questionIds: string[];
+}
+
+/**
+ * A mission is one continuous navigation problem: plot the route, measure it,
+ * work the winds, compute the times and the fuel, then take a fix in flight
+ * and do it all again with the numbers that actually happened.
+ */
+export interface Mission {
+  id: string;
+  title: string;
+  subtitle: string;
+  unit: UnitId;
+  skillIds: string[];
+  /** The data card the whole mission works from. */
+  situation: { label: string; value: string }[];
+  stages: MissionStage[];
+  /** Waypoint names, in order, when the mission fills in a jet log. */
+  jetLogLegs?: string[];
+  source: SourceReference;
+}
+
+/* ------------------------------------------------------------------ */
 /* Know Cold reference                                                 */
 /* ------------------------------------------------------------------ */
 
@@ -464,6 +739,15 @@ export interface Attempt {
   elapsedMs: number;
   at: number;
   context: "lesson" | "review" | "exam" | "rapidFire";
+  /**
+   * The serialized answer the student gave.
+   *
+   * Optional, and absent from every attempt recorded before this field
+   * existed. It is here for the Navigation error taxonomy: "incorrect" is
+   * close to useless in a calculation course, and telling a reciprocal apart
+   * from a decimal-place slip needs the number that was actually typed.
+   */
+  answerKey?: string;
 }
 
 export interface LessonProgress {

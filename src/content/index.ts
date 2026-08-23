@@ -26,6 +26,7 @@ import { AERO_CONTENT } from "./aero";
 import { ENGINES_CONTENT } from "./engines";
 import { FRR_CONTENT } from "./frr";
 import { WEATHER_CONTENT } from "./weather";
+import { NAV_CONTENT } from "./nav";
 import { COURSES, COURSE_ORDER } from "./courses";
 
 export { COURSES, COURSE_ORDER, DEFAULT_COURSE, PLANNED_COURSES, isCourseId } from "./courses";
@@ -36,6 +37,7 @@ export const COURSE_CONTENT: Record<CourseId, CourseContent> = {
   engines: ENGINES_CONTENT,
   frr: FRR_CONTENT,
   weather: WEATHER_CONTENT,
+  nav: NAV_CONTENT,
 };
 
 export function contentFor(course: CourseId): CourseContent {

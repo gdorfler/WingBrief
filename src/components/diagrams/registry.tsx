@@ -137,6 +137,26 @@ import {
 
 export type DiagramRenderer = (props: DiagramProps) => ReactElement;
 
+import {
+  AirspeedChain,
+  AltitudeLadder,
+  ConicProjection,
+  CourseHeadingTrack,
+  Cr3Indexes,
+  DrComponents,
+  GreatCircles,
+  JetLogShape,
+  LogScaleTicks,
+  PlanVersusConduct,
+  PlotterAnatomy,
+  QuarteringAnalysis,
+  SpeedMarks,
+  TacanFix,
+  TimeZones,
+  VariationChart,
+  WindTriangle,
+} from "./nav";
+
 export const DIAGRAMS: Record<string, DiagramRenderer> = {
   /* Unit 1 */
   "moment-arm": MomentArm,
@@ -267,6 +287,25 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
   "frr-oxygen": OxygenLadder,
   "frr-decision": DecisionTree,
   "frr-brief-void": BriefVoidClock,
+
+  /* Navigation */
+  "nav-dr-components": DrComponents,
+  "nav-conic-projection": ConicProjection,
+  "nav-great-circles": GreatCircles,
+  "nav-course-heading-track": CourseHeadingTrack,
+  "nav-variation": VariationChart,
+  "nav-time-zones": TimeZones,
+  "nav-plotter": PlotterAnatomy,
+  "nav-speed-marks": SpeedMarks,
+  "nav-tacan-fix": TacanFix,
+  "nav-cr3-indexes": Cr3Indexes,
+  "nav-log-scale": LogScaleTicks,
+  "nav-altitude-ladder": AltitudeLadder,
+  "nav-airspeed-chain": AirspeedChain,
+  "nav-wind-triangle": WindTriangle,
+  "nav-quartering": QuarteringAnalysis,
+  "nav-jet-log": JetLogShape,
+  "nav-plan-conduct": PlanVersusConduct,
 };
 
 export const DIAGRAM_IDS = Object.keys(DIAGRAMS);

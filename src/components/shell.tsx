@@ -13,12 +13,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ClipboardCheck,
+  Compass,
   FlaskConical,
   Home,
   Layers,
+  Repeat,
   RotateCcw,
   Snowflake,
   Sparkles,
+  Target,
   User,
 } from "lucide-react";
 
@@ -30,7 +33,14 @@ import { ProgressRing, cn } from "./ui";
 import { CourseSwitcher } from "./course-switcher";
 import { AwardToasts } from "./awards";
 
-const NAV = [
+interface NavItem {
+  href: string;
+  label: string;
+  icon: typeof Home;
+  exact?: boolean;
+}
+
+const NAV: NavItem[] = [
   { href: "/", label: "Home", icon: Home, exact: true },
   { href: "/lessons", label: "Lessons", icon: Layers },
   { href: "/review", label: "Review", icon: RotateCcw },
@@ -40,11 +50,43 @@ const NAV = [
   { href: "/exam", label: "Exam", icon: ClipboardCheck },
 ];
 
-const SECONDARY = [
+/**
+ * A problem-solving course needs different things in reach.
+ *
+ * Drills and the desk are where a Navigation student actually spends their
+ * time, and putting them two taps away behind a secondary menu would be a
+ * quiet statement that they are optional. Review moves to the secondary list
+ * instead — it matters, but not five times a session.
+ */
+const DESK_NAV: NavItem[] = [
+  { href: "/", label: "Home", icon: Home, exact: true },
+  { href: "/lessons", label: "Route", icon: Layers },
+  { href: "/drills", label: "Drills", icon: Repeat },
+  { href: "/nav-desk", label: "Desk", icon: Compass },
+  { href: "/exam", label: "Exam", icon: ClipboardCheck },
+];
+
+const SECONDARY: NavItem[] = [
   { href: "/explainers", label: "Explainers", icon: Sparkles },
   { href: "/know-cold", label: "Know Cold", icon: Snowflake },
   { href: "/profile", label: "Profile", icon: User },
 ];
+
+const DESK_SECONDARY: NavItem[] = [
+  { href: "/missions", label: "Missions", icon: Target },
+  { href: "/review", label: "Review", icon: RotateCcw },
+  { href: "/lab", label: "", icon: FlaskConical },
+  { href: "/explainers", label: "Explainers", icon: Sparkles },
+  { href: "/know-cold", label: "Know Cold", icon: Snowflake },
+  { href: "/profile", label: "Profile", icon: User },
+];
+
+/** Which nav a course gets, keyed off the same flag that picks its home screen. */
+function navFor(layout: "standard" | "desk" | undefined) {
+  return layout === "desk"
+    ? { primary: DESK_NAV, secondary: DESK_SECONDARY }
+    : { primary: NAV, secondary: SECONDARY };
+}
 
 /** Routes that hide the shell so the student sees one thing at a time. */
 function isImmersive(pathname: string): boolean {
@@ -52,7 +94,9 @@ function isImmersive(pathname: string): boolean {
     /^\/lessons\/[^/]+$/.test(pathname) ||
     /^\/explainers\/[^/]+$/.test(pathname) ||
     pathname.startsWith("/exam/run") ||
-    /^\/review\/(weak|spaced|mistakes|saved)$/.test(pathname)
+    /^\/review\/(weak|spaced|mistakes|saved)$/.test(pathname) ||
+    /^\/drills\/[^/]+$/.test(pathname) ||
+    /^\/missions\/[^/]+$/.test(pathname)
   );
 }
 
@@ -99,6 +143,7 @@ function SideNav() {
   const { content, meta } = useCourse();
   const readiness = overallReadiness(content.concepts, state.mastery);
   const streak = liveStreak(state.streak, Date.now());
+  const { primary, secondary } = navFor(meta.layout);
 
   return (
     <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-line bg-surface px-3 py-5 lg:flex xl:w-64">
@@ -143,7 +188,7 @@ function SideNav() {
       </div>
 
       <nav className="flex flex-col gap-1">
-        {NAV.map((item) => (
+        {primary.map((item) => (
           <NavItem key={item.href} {...item} label={item.label || meta.labLabel} />
         ))}
       </nav>
@@ -151,8 +196,8 @@ function SideNav() {
       <div className="my-4 h-px bg-line" />
 
       <nav className="flex flex-col gap-0.5">
-        {SECONDARY.map((item) => (
-          <NavItem key={item.href} {...item} compact />
+        {secondary.map((item) => (
+          <NavItem key={item.href} {...item} label={item.label || meta.labLabel} compact />
         ))}
       </nav>
 
@@ -206,13 +251,14 @@ function TopBarMobile() {
 
 function BottomNav() {
   const { meta } = useCourse();
+  const { primary } = navFor(meta.layout);
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 backdrop-blur-md lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="grid grid-cols-5">
-        {NAV.map((item) => (
+        {primary.map((item) => (
           <BottomNavItem key={item.href} {...item} label={item.label || meta.labLabel} />
         ))}
       </ul>

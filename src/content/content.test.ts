@@ -333,7 +333,7 @@ describe(`${NAME} · enabling objective matrix`, () => {
     // come only from the condensed notes, which state no EOs at all. Flight
     // Rules publishes a contiguous block, 2.345 through 2.386 — so the floor
     // is per course rather than one shared number.
-    const floor = { aero: 180, engines: 25, frr: 42, weather: 81 }[course];
+    const floor = { aero: 180, engines: 25, frr: 42, weather: 81, nav: 37 }[course];
     expect(matrix.length).toBeGreaterThanOrEqual(floor);
   });
 
@@ -430,7 +430,8 @@ describe("diagram and widget registries", () => {
       read("src/components/lab/labs.tsx") +
       read("src/components/lab/engine-labs.tsx") +
       read("src/components/lab/frr-labs.tsx") +
-      read("src/components/lab/weather-labs.tsx");
+      read("src/components/lab/weather-labs.tsx") +
+      read("src/components/lab/nav-labs.tsx");
     for (const lab of ALL_LABS) {
       expect(labSource.includes(`export function ${lab.component}`), lab.component).toBe(true);
     }
