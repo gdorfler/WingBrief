@@ -131,6 +131,12 @@ export const LESSONS_B: Lesson[] = [
         footnote: "You have not moved the throttle, and the engine is changing anyway. That is the tell.",
       },
       {
+        kind: "manipulate",
+        headline: "Flip the stall and watch the needles part",
+        widget: "StallGaugeToggle",
+        line: "Normal, then stalled. The two gauges that matter move in opposite directions.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -419,6 +425,12 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Follow the power from burn to propeller",
+        widget: "TurbopropFlowStepper",
+        line: "Each stage changes the form of the energy. The gear box is where RPM becomes torque.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -550,6 +562,12 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Follow the fuel, tank to nozzle",
+        widget: "FuelPathTracer",
+        line: "Step along the path. Each component has one job, and one way it can fail.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -678,6 +696,12 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Three subsystems, three directions",
+        widget: "OilSubsystemPicker",
+        line: "Pick one and see where the oil is going, and why scavenge needs the greater capacity.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -739,6 +763,12 @@ export const LESSONS_B: Lesson[] = [
           { label: "False start", a: "Stabilizes below normal", b: "Remains WITHIN limits" },
           { label: "Wet start", a: "—", b: "No light-off — most dangerous, can light at any time" },
         ],
+      },
+      {
+        kind: "manipulate",
+        headline: "Air first, then fuel, then light",
+        widget: "StartSequenceStepper",
+        line: "Step the start. The 30% gate is what separates a start from a hot start.",
       },
       {
         kind: "anchor",
@@ -805,6 +835,12 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Buy force, pay in distance",
+        widget: "HydraulicAdvantage",
+        line: "Grow the output area. Watch force, travel and pressure — only two of them move.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -868,6 +904,12 @@ export const LESSONS_B: Lesson[] = [
         headline: "Four buses, ranked by how much depends on them",
         diagram: { id: "eng-electrical", props: { highlight: "essential" } },
         line: "Essential for flight safety, primary for the mission, monitor for convenience, starter for engine starts.",
+      },
+      {
+        kind: "manipulate",
+        headline: "Shed the buses in order",
+        widget: "BusPicker",
+        line: "Pick a bus and see what it feeds. What it feeds is what decides when you can lose it.",
       },
       {
         kind: "anchor",

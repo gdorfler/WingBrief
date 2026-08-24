@@ -115,6 +115,12 @@ export const LESSONS_A: Lesson[] = [
           "CNAF is usually MORE stringent than the FAR rather than less, so following the tighter rule is normally the right instinct.",
       },
       {
+        kind: "manipulate",
+        headline: "Which document wins",
+        widget: "PriorityPicker",
+        line: "Pick one and see what it beats. Specific always outranks general.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -225,6 +231,12 @@ export const LESSONS_A: Lesson[] = [
           { label: "Approach (TRACON)", a: "All instrument flight in the terminal area", b: "One or more airfields" },
           { label: "ARTCC", a: "Positive control of IFR aircraft en route", b: "Advisories to VFR when workload permits" },
         ],
+      },
+      {
+        kind: "manipulate",
+        headline: "Who owns this traffic",
+        widget: "AtcOrgPicker",
+        line: "Walk it inbound, from the en route structure down to the runway.",
       },
       {
         kind: "anchor",
@@ -647,6 +659,12 @@ export const LESSONS_A: Lesson[] = [
           { label: "No oxygen system at all (e.g. helicopters)", a: "Above 10,000 ft", b: "Mission essential · 1 hour max · 12,000 ft ceiling" },
           { label: "Tactical jet and tac jet training", a: "All altitudes", b: "Oxygen from takeoff to landing" },
         ],
+      },
+      {
+        kind: "manipulate",
+        headline: "Raise the cabin and find the limits",
+        widget: "OxygenWidget",
+        line: "10,000 ft is the trigger. What happens above it depends on the equipment fitted.",
       },
       {
         kind: "anchor",

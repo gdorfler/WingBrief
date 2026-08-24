@@ -65,6 +65,12 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Change the front and the weather changes with it",
+        widget: "FrontTypePicker",
+        line: "Slope decides everything: steep gives a narrow rough band, shallow a wide steady one.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
@@ -680,6 +686,12 @@ export const LESSONS_B: Lesson[] = [
           "Severe clear air turbulence and hail may be experienced BETWEEN thunderstorms when the echoes are less than 30 miles apart. The gap is not automatically safe.",
       },
       {
+        kind: "manipulate",
+        headline: "COUT, in priority order",
+        widget: "StormAvoidancePicker",
+        line: "Each option down the list trades distance for exposure. See what each one costs.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
@@ -739,6 +751,12 @@ export const LESSONS_B: Lesson[] = [
         headline: "Exiting",
         diagram: { id: "wx-microburst", props: { stage: "tailwind" } },
         line: "The headwind becomes a tailwind. Sudden loss of airspeed, on takeoff or landing, with no height to trade.",
+      },
+      {
+        kind: "manipulate",
+        headline: "Fly through it one phase at a time",
+        widget: "MicroburstStepper",
+        line: "The first phase feels like performance. Step to the end before deciding what to do.",
       },
       {
         kind: "anchor",

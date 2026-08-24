@@ -244,6 +244,12 @@ export const LESSONS_A: Lesson[] = [
         line: "Both cycles are intake, compression, combustion, exhaust. The turbine does all four at once; the piston does them in turn.",
       },
       {
+        kind: "manipulate",
+        headline: "Follow one parcel of air through the engine",
+        widget: "EngineStationStepper",
+        line: "Step the stations. Watch which of pressure, temperature and velocity moves at each one.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [

@@ -509,6 +509,12 @@ export const LESSONS_B: Lesson[] = [
         line: "Class A on top, Class B and C around the busiest airports, D at towered fields, E filling the rest of the controlled airspace, and G underneath.",
       },
       {
+        kind: "manipulate",
+        headline: "Where the classes actually sit",
+        widget: "AirspaceProfileWidget",
+        line: "Pick a class and see its floor, its ceiling, and what it takes to get in.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -898,6 +904,12 @@ export const LESSONS_B: Lesson[] = [
           "The lower aircraft on approach may not use that priority to cut in front of another on final.",
       },
       {
+        kind: "manipulate",
+        headline: "Who is obliged to move",
+        widget: "RightOfWayPicker",
+        line: "Four situations. In one of them nobody has right of way at all.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -973,6 +985,12 @@ export const LESSONS_B: Lesson[] = [
           { label: "IFR outside controlled airspace", a: "1,000 ft above the highest obstacle within 22 miles", b: "" },
           { label: "IFR over designated mountainous terrain", a: "2,000 ft", b: "Within 22 miles of the intended line of flight" },
         ],
+      },
+      {
+        kind: "manipulate",
+        headline: "The floor depends on what is underneath you",
+        widget: "AltitudeRulePicker",
+        line: "Switch the terrain. The number changes, and so does what it is measured from.",
       },
       {
         kind: "anchor",

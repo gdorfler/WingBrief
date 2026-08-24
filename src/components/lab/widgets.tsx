@@ -1389,6 +1389,682 @@ export const WIDGETS: Record<string, WidgetSpec> = {
     ],
     note: () => "Stability is always relative to the surrounding air, never to an absolute temperature.",
   },
+
+  /* ================================================================ */
+  /* ENGINES — tracing the machine                                     */
+  /*                                                                   */
+  /* Engines is a course about a sequence of events in a fixed order,  */
+  /* and it had five manipulate screens across thirty lessons. These   */
+  /* put the student's hand on the part of the machine being taught:   */
+  /* pick a station, a subsystem or a failure and watch what changes.  */
+  /* ================================================================ */
+
+  FuelPathTracer: {
+    diagram: "eng-fuel-system",
+    controls: [
+      {
+        kind: "segmented",
+        key: "stage",
+        label: "Follow the fuel",
+        initial: 0,
+        options: [
+          { value: 0, label: "Tank" },
+          { value: 1, label: "Boost" },
+          { value: 2, label: "Pump" },
+          { value: 3, label: "FCU" },
+          { value: 4, label: "Nozzle" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ highlight: ["tank", "boost", "pump", "fcu", "nozzle"][s.stage] }),
+    readouts: (s) =>
+      [
+        [{ label: "Job", value: "Stores the fuel", tone: "neutral" as const }],
+        [
+          { label: "Job", value: "Raises pressure to feed the engine pump", tone: "brand" as const },
+          { label: "If it fails", value: "The engine pump cavitates", tone: "nogo" as const },
+        ],
+        [
+          { label: "Job", value: "Engine-driven, delivers high pressure", tone: "brand" as const },
+          { label: "Driven by", value: "The engine itself", tone: "neutral" as const },
+        ],
+        [
+          { label: "Job", value: "Meters fuel — the brain of the system", tone: "go" as const },
+          { label: "Senses", value: "CIT, RPM, ITT and PCL", tone: "neutral" as const },
+          { label: "If it fails", value: "Over-fuelling, then compressor stall", tone: "nogo" as const },
+        ],
+        [{ label: "Job", value: "Atomises fuel into the burner", tone: "brand" as const }],
+      ][s.stage],
+    note: (s) =>
+      s.stage === 3
+        ? "The FCU is the one component that DECIDES. Everything upstream just moves fuel; the FCU chooses how much."
+        : "Follow the path once and the failure questions stop being memory: each component can only break in the way its job allows.",
+  },
+
+  OilSubsystemPicker: {
+    diagram: "eng-oil-system",
+    controls: [
+      {
+        kind: "segmented",
+        key: "sub",
+        label: "Subsystem",
+        initial: 0,
+        options: [
+          { value: 0, label: "Pressure" },
+          { value: 1, label: "Scavenge" },
+          { value: 2, label: "Breather" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ subsystem: ["pressure", "scavenge", "breather"][s.sub] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Direction", value: "Oil out to the engine", tone: "brand" as const },
+          { label: "Carries", value: "Tank, pump, filter, relief valve", tone: "neutral" as const },
+        ],
+        [
+          { label: "Direction", value: "Oil back from the sumps", tone: "caution" as const },
+          { label: "Capacity", value: "GREATER than the pressure side", tone: "go" as const, hint: "returning oil is aerated" },
+          { label: "Watches for", value: "Chip detector — metal particles", tone: "nogo" as const },
+        ],
+        [
+          { label: "Direction", value: "Bleed air into the sumps", tone: "go" as const },
+          { label: "Why", value: "Pressurises sumps to hold the spray pattern", tone: "neutral" as const },
+        ],
+      ][s.sub],
+    note: (s) =>
+      s.sub === 1
+        ? "Scavenge has greater capacity than pressure on purpose: returning oil is frothy, so the same mass of oil takes up more volume."
+        : "Three subsystems, three directions. Out, back, and the air that makes the other two work.",
+  },
+
+  StartSequenceStepper: {
+    diagram: "eng-start-sequence",
+    controls: [
+      {
+        kind: "segmented",
+        key: "stage",
+        label: "Start stage",
+        initial: 0,
+        options: [
+          { value: 0, label: "Starter" },
+          { value: 1, label: "Fuel" },
+          { value: 2, label: "Ignition" },
+          { value: 3, label: "Idle" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ stage: ["starter", "fuel", "ignition", "idle"][s.stage] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Happening", value: "Starter accelerates the compressor", tone: "brand" as const },
+          { label: "Fuel", value: "None yet", tone: "neutral" as const },
+        ],
+        [
+          { label: "The gate", value: "30% RPM", tone: "caution" as const, hint: "a limit, not a preference" },
+          { label: "Why wait", value: "Enough airflow to burn it cleanly", tone: "neutral" as const },
+        ],
+        [
+          { label: "Happening", value: "Igniters fire, combustion begins", tone: "nogo" as const },
+          { label: "Watch", value: "ITT — a hot start starts here", tone: "nogo" as const },
+        ],
+        [
+          { label: "Happening", value: "Self-accelerating speed reached", tone: "go" as const },
+          { label: "Starter", value: "Drops out", tone: "neutral" as const },
+        ],
+      ][s.stage],
+    chain: () => [
+      { label: "Air", trend: "up" },
+      { label: "Fuel", trend: "up" },
+      { label: "Light", trend: "up" },
+    ],
+    note: (s) =>
+      s.stage === 1
+        ? "Fuel before 30% RPM is the classic hot start: fuel arrives faster than the air needed to burn it, and ITT runs away."
+        : "Air first, then fuel, then light. The order is a limit, not a habit.",
+  },
+
+  BusPicker: {
+    diagram: "eng-electrical",
+    controls: [
+      {
+        kind: "segmented",
+        key: "bus",
+        label: "Which bus",
+        initial: 0,
+        options: [
+          { value: 0, label: "Essential" },
+          { value: 1, label: "Primary" },
+          { value: 2, label: "Monitor" },
+          { value: 3, label: "Starter" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ highlight: ["essential", "primary", "monitor", "starter"][s.bus] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Feeds", value: "Equipment required for FLIGHT SAFETY", tone: "nogo" as const },
+          { label: "Shed it", value: "Never — this is the last one standing", tone: "nogo" as const },
+        ],
+        [
+          { label: "Feeds", value: "Equipment for the aircraft MISSION", tone: "brand" as const },
+          { label: "Shed it", value: "Lose the mission, keep the aircraft", tone: "caution" as const },
+        ],
+        [
+          { label: "Feeds", value: "Convenience circuits, such as cabin lighting", tone: "neutral" as const },
+          { label: "Shed it", value: "First to go", tone: "go" as const },
+        ],
+        [
+          { label: "Feeds", value: "The engine start circuit", tone: "caution" as const },
+          { label: "Shed it", value: "Irrelevant once airborne", tone: "go" as const },
+        ],
+      ][s.bus],
+    note: () =>
+      "Buses group equipment by how much flight safety depends on it — which is also the order you shed them in.",
+  },
+
+  StallGaugeToggle: {
+    diagram: "eng-stall-indications",
+    controls: [
+      {
+        kind: "toggle",
+        key: "stalled",
+        label: "Compressor stalled",
+        initial: 0,
+        onLabel: "Stalled",
+        offLabel: "Normal",
+        tone: "nogo",
+      },
+    ],
+    toProps: (s) => ({ stalled: s.stalled === 1 }),
+    readouts: (s) =>
+      s.stalled === 1
+        ? [
+            { label: "RPM", value: "DECREASING", tone: "nogo" as const, hint: "the compressor has stopped pumping" },
+            { label: "ITT", value: "INCREASING", tone: "nogo" as const, hint: "unburnt energy has nowhere to go" },
+            { label: "Sound", value: "Loud bangs, changed note", tone: "caution" as const },
+          ]
+        : [
+            { label: "RPM", value: "Steady", tone: "go" as const },
+            { label: "ITT", value: "Steady", tone: "go" as const },
+            { label: "Sound", value: "Normal", tone: "go" as const },
+          ],
+    chain: (s) =>
+      s.stalled === 1
+        ? [
+            { label: "Airflow breaks down", trend: "down" },
+            { label: "RPM", trend: "down" },
+            { label: "ITT", trend: "up" },
+          ]
+        : [{ label: "Airflow steady", trend: "same" }],
+    note: () =>
+      "The two needles move in OPPOSITE directions. That divergence is the whole diagnosis — RPM down, ITT up.",
+  },
+
+  /* ================================================================ */
+  /* FLIGHT RULES — which rule applies, and when it flips              */
+  /*                                                                   */
+  /* A regulation read as prose is a paragraph. The same regulation    */
+  /* with its conditions on a control becomes a decision the student   */
+  /* makes and gets feedback on, which is the demand the exam makes.   */
+  /* ================================================================ */
+
+  PriorityPicker: {
+    diagram: "frr-priority",
+    controls: [
+      {
+        kind: "segmented",
+        key: "doc",
+        label: "Which document",
+        initial: 0,
+        options: [
+          { value: 0, label: "NATOPS" },
+          { value: 1, label: "CNAF" },
+          { value: 2, label: "FLIP" },
+          { value: 3, label: "FAR" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ highlight: ["natops", "cnaf", "flip", "far"][s.doc] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Scope", value: "This aircraft model", tone: "nogo" as const },
+          { label: "Beats", value: "Everything else", tone: "go" as const },
+        ],
+        [
+          { label: "Scope", value: "All naval aircraft, worldwide", tone: "caution" as const },
+          { label: "Beats", value: "FLIP and the FAR", tone: "go" as const },
+          { label: "Loses to", value: "Aircraft NATOPS", tone: "nogo" as const },
+        ],
+        [
+          { label: "Scope", value: "DOD, all branches", tone: "brand" as const },
+          { label: "Carries", value: "Charts and plates, not rules", tone: "neutral" as const },
+        ],
+        [
+          { label: "Scope", value: "Military and civil", tone: "neutral" as const },
+          { label: "Loses to", value: "Everything above it", tone: "nogo" as const },
+        ],
+      ][s.doc],
+    note: (s) =>
+      s.doc === 0
+        ? "The most specific document wins. The manual written for THIS aircraft knows something the fleet-wide one cannot."
+        : "Specific beats general, all the way down. And where two of them speak, the tighter rule governs.",
+  },
+
+  AtcOrgPicker: {
+    diagram: "frr-atc-org",
+    controls: [
+      {
+        kind: "segmented",
+        key: "agency",
+        label: "Who owns this traffic",
+        initial: 0,
+        options: [
+          { value: 0, label: "FSS" },
+          { value: 1, label: "Tower" },
+          { value: 2, label: "Approach" },
+          { value: 3, label: "ARTCC" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ highlight: ["fss", "tower", "approach", "artcc"][s.agency] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Owns", value: "Briefings, flight plans, SAR", tone: "go" as const },
+          { label: "Clears you", value: "No — it files, it does not clear", tone: "nogo" as const },
+        ],
+        [
+          { label: "Owns", value: "Traffic AT and AROUND the field", tone: "brand" as const },
+          { label: "Includes", value: "Ground movement as well as air", tone: "neutral" as const },
+        ],
+        [
+          { label: "Owns", value: "Terminal INSTRUMENT traffic", tone: "caution" as const },
+          { label: "Also called", value: "TRACON, Departure Control", tone: "neutral" as const },
+        ],
+        [
+          { label: "Owns", value: "En route IFR traffic", tone: "nogo" as const },
+          { label: "Hands off to", value: "Approach, then Tower", tone: "neutral" as const },
+        ],
+      ][s.agency],
+    note: () =>
+      "Walk it inbound: ARTCC en route, Approach in the terminal area, Tower at the field. The FSS sits outside that chain entirely.",
+  },
+
+  RightOfWayPicker: {
+    diagram: "frr-right-of-way",
+    controls: [
+      {
+        kind: "segmented",
+        key: "scenario",
+        label: "The situation",
+        initial: 0,
+        options: [
+          { value: 0, label: "Head-on" },
+          { value: 1, label: "Converging" },
+          { value: 2, label: "Overtaking" },
+          { value: 3, label: "Landing" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      scenario: ["headon", "converging", "overtaking", "landing"][s.scenario],
+    }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Action", value: "BOTH alter course to the RIGHT", tone: "nogo" as const },
+          { label: "The trap", value: "Neither aircraft has right of way", tone: "caution" as const },
+        ],
+        [
+          { label: "Right of way", value: "The aircraft on the RIGHT", tone: "go" as const },
+          { label: "Applies", value: "At approximately the same altitude", tone: "neutral" as const },
+        ],
+        [
+          { label: "Right of way", value: "The aircraft being OVERTAKEN", tone: "go" as const },
+          { label: "Action", value: "The overtaker alters to the right", tone: "brand" as const },
+        ],
+        [
+          { label: "Right of way", value: "The lower aircraft on final", tone: "go" as const },
+          { label: "The trap", value: "It is not a licence to cut in front", tone: "caution" as const },
+        ],
+      ][s.scenario],
+    note: (s) =>
+      s.scenario === 0
+        ? "Head-on is the one where nobody wins. Both turn right — an answer that names a winner is wrong by construction."
+        : "Work out who is obliged to move before working out what you would do. The rule names one aircraft.",
+  },
+
+  AltitudeRulePicker: {
+    diagram: "frr-altitude",
+    controls: [
+      {
+        kind: "segmented",
+        key: "setting",
+        label: "What is below you",
+        initial: 0,
+        options: [
+          { value: 0, label: "Congested area" },
+          { value: 1, label: "Open country" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ setting: ["congested", "other"][s.setting] }),
+    readouts: (s) =>
+      s.setting === 0
+        ? [
+            { label: "Minimum", value: "1,000 ft above the highest obstacle", tone: "nogo" as const },
+            { label: "Within", value: "A 2,000 ft horizontal radius", tone: "caution" as const },
+            { label: "Measured from", value: "The OBSTACLE top, not the ground", tone: "brand" as const },
+          ]
+        : [
+            { label: "Minimum", value: "500 ft above the surface", tone: "caution" as const },
+            { label: "Near people or structures", value: "500 ft clearance from them", tone: "brand" as const },
+          ],
+    note: (s) =>
+      s.setting === 0
+        ? "Both halves bite: the 1,000 ft is measured from the top of the tallest obstacle inside the 2,000 ft circle, not from the terrain."
+        : "Away from a congested area the number drops, but the obligation to stay clear of people and structures does not.",
+  },
+
+  /* ================================================================ */
+  /* WEATHER — watching the system change                              */
+  /*                                                                   */
+  /* Weather is the one subject where the thing being taught MOVES.    */
+  /* A cross-section of a cold front is a picture; the same section    */
+  /* with a control that switches it to a warm front is the lesson.    */
+  /* ================================================================ */
+
+  FrontTypePicker: {
+    diagram: "wx-front",
+    controls: [
+      {
+        kind: "segmented",
+        key: "kind",
+        label: "Front type",
+        initial: 0,
+        options: [
+          { value: 0, label: "Cold" },
+          { value: 1, label: "Warm" },
+          { value: 2, label: "Stationary" },
+          { value: 3, label: "Occluded" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ kind: ["cold", "warm", "stationary", "occluded"][s.kind] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Slope", value: "Steep", tone: "nogo" as const },
+          { label: "Speed", value: "Fast", tone: "nogo" as const },
+          { label: "Weather", value: "Narrow band, violent, cumuliform", tone: "nogo" as const },
+          { label: "Turbulence", value: "Significant", tone: "nogo" as const },
+        ],
+        [
+          { label: "Slope", value: "Shallow", tone: "brand" as const },
+          { label: "Speed", value: "Slow", tone: "brand" as const },
+          { label: "Weather", value: "Wide band, steady, stratiform", tone: "caution" as const },
+          { label: "Turbulence", value: "Little or none", tone: "go" as const },
+        ],
+        [
+          { label: "Movement", value: "Neither mass displaces the other", tone: "neutral" as const },
+          { label: "Weather", value: "Like a warm front — and it lingers", tone: "caution" as const },
+          { label: "Duration", value: "Days over one area", tone: "caution" as const },
+        ],
+        [
+          { label: "Formed by", value: "A cold front overtaking a warm one", tone: "brand" as const },
+          { label: "Weather", value: "Both types at once", tone: "nogo" as const },
+        ],
+      ][s.kind],
+    note: (s) =>
+      s.kind === 0
+        ? "Steep and fast is the whole story: the air is forced up violently over a short distance, so the weather is narrow and rough."
+        : "Slope sets the weather. Steep lifting gives cumuliform cloud and turbulence; shallow lifting gives stratiform cloud and steady rain.",
+  },
+
+  MicroburstStepper: {
+    diagram: "wx-microburst",
+    controls: [
+      {
+        kind: "segmented",
+        key: "stage",
+        label: "Where you are in it",
+        initial: 0,
+        options: [
+          { value: 0, label: "Approaching" },
+          { value: 1, label: "Headwind" },
+          { value: 2, label: "Downdraft" },
+          { value: 3, label: "Tailwind" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      stage: ["approach", "headwind", "downdraft", "tailwind"][s.stage],
+    }),
+    readouts: (s) =>
+      [
+        [{ label: "Indications", value: "Nothing yet", tone: "neutral" as const }],
+        [
+          { label: "Airspeed", value: "INCREASES", tone: "go" as const, hint: "the reassuring part" },
+          { label: "Tendency", value: "Balloons above the glidepath", tone: "caution" as const },
+          { label: "Instinct", value: "Reduce power — and that is the trap", tone: "nogo" as const },
+        ],
+        [
+          { label: "Vertical", value: "Strong downdraft", tone: "nogo" as const },
+          { label: "Altitude", value: "Falling fast", tone: "nogo" as const },
+        ],
+        [
+          { label: "Airspeed", value: "DROPS sharply", tone: "nogo" as const },
+          { label: "Altitude", value: "Already low, still sinking", tone: "nogo" as const },
+          { label: "Power available", value: "Whatever you did not give away", tone: "nogo" as const },
+        ],
+      ][s.stage],
+    chain: () => [
+      { label: "Headwind", trend: "up" },
+      { label: "Downdraft", trend: "down" },
+      { label: "Tailwind", trend: "down" },
+    ],
+    note: (s) =>
+      s.stage === 1
+        ? "Step through to the end before deciding what to do here. The performance increase at entry is borrowed, and the tailwind takes it back with interest."
+        : "Three phases in sequence, and the first one feels good. That is exactly why it kills.",
+  },
+
+  AltitudeTypePicker: {
+    diagram: "wx-altitude-types",
+    controls: [
+      {
+        kind: "segmented",
+        key: "kind",
+        label: "Which altitude",
+        initial: 0,
+        options: [
+          { value: 0, label: "True" },
+          { value: 1, label: "Absolute" },
+          { value: 2, label: "Pressure" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ highlight: ["true", "absolute", "pressure"][s.kind] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Measured from", value: "Mean sea level", tone: "brand" as const },
+          { label: "Used for", value: "Terrain and obstacles — charted in MSL", tone: "go" as const },
+        ],
+        [
+          { label: "Measured from", value: "The terrain directly below", tone: "caution" as const },
+          { label: "Changes", value: "As the ground rises beneath you", tone: "caution" as const },
+        ],
+        [
+          { label: "Measured from", value: "The standard datum plane", tone: "nogo" as const },
+          { label: "Set", value: "29.92 in the Kollsman window", tone: "neutral" as const },
+          { label: "Used for", value: "Separation in Class A", tone: "go" as const },
+        ],
+      ][s.kind],
+    note: () =>
+      "Three references, three different numbers for the same aeroplane. Which one is right depends entirely on what you are trying not to hit.",
+  },
+
+  AltimeterConditionPicker: {
+    diagram: "wx-altimeter-error",
+    controls: [
+      {
+        kind: "segmented",
+        key: "condition",
+        label: "The air you flew into",
+        initial: 0,
+        options: [
+          { value: 0, label: "Standard" },
+          { value: 1, label: "Colder" },
+          { value: 2, label: "Warmer" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ condition: ["standard", "cold", "hot"][s.condition] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Indicated vs true", value: "They agree", tone: "go" as const },
+          { label: "Terrain margin", value: "As planned", tone: "go" as const },
+        ],
+        [
+          { label: "Indicated vs true", value: "Altimeter reads HIGH", tone: "nogo" as const },
+          { label: "You are", value: "LOWER than indicated", tone: "nogo" as const },
+          { label: "The saying", value: "High to low, look out below", tone: "caution" as const },
+        ],
+        [
+          { label: "Indicated vs true", value: "Altimeter reads LOW", tone: "caution" as const },
+          { label: "You are", value: "HIGHER than indicated", tone: "go" as const },
+          { label: "The saying", value: "Low to high, plenty of sky", tone: "go" as const },
+        ],
+      ][s.condition],
+    note: (s) =>
+      s.condition === 1
+        ? "Cold air is dense, so the pressure levels sit lower than standard — and the aircraft sits down with them, below what the needle claims."
+        : "Only one of these two directions is dangerous. Learn which, and the saying takes care of the rest.",
+  },
+
+  LiftingMethodPicker: {
+    diagram: "wx-lifting",
+    controls: [
+      {
+        kind: "segmented",
+        key: "method",
+        label: "What lifts the air",
+        initial: 0,
+        options: [
+          { value: 0, label: "Orographic" },
+          { value: 1, label: "Frontal" },
+          { value: 2, label: "Convergence" },
+          { value: 3, label: "Thermal" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      method: ["orographic", "frontal", "convergence", "thermal"][s.method],
+    }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Lifted by", value: "Terrain", tone: "brand" as const },
+          { label: "Windward side", value: "Cloud and precipitation", tone: "caution" as const },
+          { label: "Lee side", value: "Descending air, mountain wave", tone: "nogo" as const },
+        ],
+        [
+          { label: "Lifted by", value: "One air mass riding over another", tone: "brand" as const },
+          { label: "Steepness", value: "Decides whether it is rough or steady", tone: "caution" as const },
+        ],
+        [
+          { label: "Lifted by", value: "Air flowing into the same place", tone: "brand" as const },
+          { label: "Nowhere to go", value: "But up", tone: "neutral" as const },
+        ],
+        [
+          { label: "Lifted by", value: "Heating from the surface below", tone: "brand" as const },
+          { label: "Strongest over", value: "Dry ground", tone: "nogo" as const },
+        ],
+      ][s.method],
+    note: () =>
+      "Four ways to get air to rise, one consequence: rising air cools, and cooling air condenses. The method decides where, and how rough.",
+  },
+
+  StormAvoidancePicker: {
+    diagram: "wx-storm-avoidance",
+    controls: [
+      {
+        kind: "segmented",
+        key: "option",
+        label: "Your choice",
+        initial: 0,
+        options: [
+          { value: 0, label: "Circumnavigate" },
+          { value: 1, label: "Over" },
+          { value: 2, label: "Under" },
+          { value: 3, label: "Through" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      option: ["circumnavigate", "over", "under", "through"][s.option],
+    }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Priority", value: "FIRST choice, always", tone: "go" as const },
+          { label: "Cost", value: "Track miles and fuel", tone: "neutral" as const },
+        ],
+        [
+          { label: "Priority", value: "Second", tone: "caution" as const },
+          { label: "Cost", value: "1,000 ft per 10 kt of wind at the top", tone: "nogo" as const },
+          { label: "In practice", value: "Rarely achievable", tone: "nogo" as const },
+        ],
+        [
+          { label: "Priority", value: "Third", tone: "nogo" as const },
+          { label: "Underneath", value: "Microburst, hail, extreme turbulence", tone: "nogo" as const },
+        ],
+        [
+          { label: "Priority", value: "LAST", tone: "nogo" as const },
+          { label: "Why last", value: "The only option inside the hazards", tone: "nogo" as const },
+        ],
+      ][s.option],
+    note: () =>
+      "COUT is a priority order, not a menu. Each step down trades distance for exposure, and the last one has no distance left to trade.",
+  },
+
+  SeaLandBreezePhase: {
+    diagram: "wx-sea-land-breeze",
+    controls: [
+      {
+        kind: "segmented",
+        key: "phase",
+        label: "Time of day",
+        initial: 0,
+        options: [
+          { value: 0, label: "Day" },
+          { value: 1, label: "Night" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ phase: ["day", "night"][s.phase] }),
+    readouts: (s) =>
+      s.phase === 0
+        ? [
+            { label: "Land", value: "Heats faster than the water", tone: "nogo" as const },
+            { label: "Air over the land", value: "Rises", tone: "caution" as const },
+            { label: "Surface wind", value: "SEA breeze — sea to land", tone: "brand" as const },
+          ]
+        : [
+            { label: "Land", value: "Cools faster than the water", tone: "brand" as const },
+            { label: "Air over the water", value: "Rises", tone: "caution" as const },
+            { label: "Surface wind", value: "LAND breeze — land to sea", tone: "brand" as const },
+          ],
+    note: () =>
+      "Both breezes are named for where the air comes FROM. Work out which surface is warmer, put the rising air over it, and the direction falls out.",
+  },
 };
 
 /* ------------------------------------------------------------------ */

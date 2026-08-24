@@ -274,6 +274,12 @@ export const LESSONS_A: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Same aeroplane, three different numbers",
+        widget: "AltitudeTypePicker",
+        line: "Pick a reference and see what it is measured from, and what it is for.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
@@ -330,6 +336,12 @@ export const LESSONS_A: Lesson[] = [
         headline: "Hotter than standard",
         diagram: { id: "wx-altimeter-error", props: { condition: "hot" } },
         line: "The error reverses: it indicates lower than true, so you are higher than it says. Less dangerous, same mechanism.",
+      },
+      {
+        kind: "manipulate",
+        headline: "Fly into colder air and watch the error appear",
+        widget: "AltimeterConditionPicker",
+        line: "One of these two directions puts you lower than the needle claims.",
       },
       {
         kind: "anchor",
@@ -625,6 +637,12 @@ export const LESSONS_A: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Flip day to night and the breeze reverses",
+        widget: "SeaLandBreezePhase",
+        line: "Find the warmer surface, put the rising air over it, and read off the direction.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
@@ -743,6 +761,12 @@ export const LESSONS_A: Lesson[] = [
           { label: "Cloud forms", trend: "up", emphasis: true },
         ],
         footnote: "Only the first step differs between the four. Everything after it is identical.",
+      },
+      {
+        kind: "manipulate",
+        headline: "Four ways to make air rise",
+        widget: "LiftingMethodPicker",
+        line: "Pick a mechanism and see where the cloud forms, and where the turbulence goes.",
       },
       {
         kind: "anchor",
