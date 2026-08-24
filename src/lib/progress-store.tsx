@@ -259,7 +259,24 @@ export function ProgressProvider({
         const now = Date.now();
         const newly = evaluateAchievements(next, now);
         if (newly.length > 0) {
-          setPendingAwards((q) => [...q, ...newly.map((a) => a.id)]);
+          /*
+           * Enqueue by set union, not by append.
+           *
+           * This runs inside a state updater, and React deliberately invokes
+           * updaters twice in development to surface impure ones — so a plain
+           * append queued every achievement twice and the toast list rendered
+           * two children with the same key. Users saw "First Flight" unlock
+           * twice, back to back.
+           *
+           * An achievement unlocks exactly once, so ignoring an id already in
+           * the queue is not merely a guard against the double call: it is
+           * what the queue means.
+           */
+          setPendingAwards((q) => {
+            const merged = q.slice();
+            for (const a of newly) if (!merged.includes(a.id)) merged.push(a.id);
+            return merged.length === q.length ? q : merged;
+          });
         }
         return fromView(prevStored, {
           ...next,
