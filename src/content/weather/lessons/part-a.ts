@@ -79,6 +79,12 @@ export const LESSONS_A: Lesson[] = [
         footnote: "All weather is the result of heat exchange. Every chain in this course starts there.",
       },
       {
+        kind: "manipulate",
+        headline: "Three layers, three different rides",
+        widget: "AtmosphereLayerPicker",
+        line: "Pick a layer and see what flying in it actually involves.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
@@ -851,6 +857,12 @@ export const LESSONS_A: Lesson[] = [
           { label: "Ice pellets or sleet", a: "Rain that froze falling through cold air", b: "Only if mixed with super-cooled water" },
           { label: "Snow", a: "Ice crystals", b: "Wet snow YES · dry snow no" },
         ],
+      },
+      {
+        kind: "manipulate",
+        headline: "The group is set by altitude",
+        widget: "CloudGroupPicker",
+        line: "Pick a group and read off its prefix and what it is made of.",
       },
       {
         kind: "anchor",

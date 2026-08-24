@@ -2065,6 +2065,481 @@ export const WIDGETS: Record<string, WidgetSpec> = {
     note: () =>
       "Both breezes are named for where the air comes FROM. Work out which surface is warmer, put the rising air over it, and the direction falls out.",
   },
+
+  StationChangePicker: {
+    diagram: "eng-station-changes",
+    controls: [
+      {
+        kind: "segmented",
+        key: "station",
+        label: "Station",
+        initial: 0,
+        options: [
+          { value: 0, label: "Inlet" },
+          { value: 1, label: "Compressor" },
+          { value: 2, label: "Burner" },
+          { value: 3, label: "Turbine" },
+          { value: 4, label: "Exhaust" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      highlight: ["inlet", "compressor", "burner", "turbine", "exhaust"][s.station],
+    }),
+    readouts: (s) => {
+      const row = [
+        { p: "Increases", t: "Unchanged", v: "Decreases" },
+        { p: "Increases", t: "Increases", v: "Increases" },
+        { p: "Slightly decreases", t: "Increases", v: "Increases" },
+        { p: "Decreases", t: "Decreases", v: "Increases" },
+        { p: "Decreases", t: "Decreases", v: "Increases" },
+      ][s.station];
+      const tone = (v: string): Tone =>
+        v.startsWith("Increase") ? "go" : v.startsWith("Decrease") || v.startsWith("Slightly") ? "nogo" : "neutral";
+      return [
+        { label: "Pressure", value: row.p, tone: tone(row.p) },
+        { label: "Temperature", value: row.t, tone: tone(row.t) },
+        { label: "Velocity", value: row.v, tone: tone(row.v) },
+      ];
+    },
+    note: (s) =>
+      s.station === 2
+        ? "The burner is the odd one out: pressure drops SLIGHTLY here even though this is where the energy is added."
+        : "Three quantities, five stations. Learn the pattern by stepping it, not by memorising a grid.",
+  },
+
+  EngineTypePicker: {
+    diagram: "eng-type-split",
+    controls: [
+      {
+        kind: "segmented",
+        key: "type",
+        label: "Engine type",
+        initial: 0,
+        options: [
+          { value: 0, label: "Turbojet" },
+          { value: 1, label: "Turbofan" },
+          { value: 2, label: "Turboprop" },
+          { value: 3, label: "Turboshaft" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      type: ["turbojet", "turbofan", "turboprop", "turboshaft"][s.type],
+    }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Thrust from", value: "The exhaust jet, all of it", tone: "nogo" as const },
+          { label: "Best at", value: "High speed, high altitude", tone: "brand" as const },
+          { label: "TSFC", value: "Highest of the four", tone: "nogo" as const },
+        ],
+        [
+          { label: "Thrust from", value: "40–70% gas generator, 30–60% fan", tone: "brand" as const },
+          { label: "Bypass ratio", value: "High for transports, low for fighters", tone: "caution" as const },
+          { label: "TSFC", value: "Lower than a turbojet", tone: "go" as const },
+        ],
+        [
+          { label: "Thrust from", value: "The propeller — about 90%", tone: "go" as const },
+          { label: "Needs", value: "A reduction gear box", tone: "caution" as const },
+          { label: "Best at", value: "Lower speed and altitude", tone: "brand" as const },
+        ],
+        [
+          { label: "Output", value: "Shaft power, not thrust", tone: "brand" as const },
+          { label: "Drives", value: "A rotor rather than a propeller", tone: "neutral" as const },
+        ],
+      ][s.type],
+    note: () =>
+      "One gas generator, four ways to spend its energy. Where the thrust comes from is what separates them.",
+  },
+
+  CyclePicker: {
+    diagram: "eng-cycles",
+    controls: [
+      {
+        kind: "segmented",
+        key: "cycle",
+        label: "Show",
+        initial: 2,
+        options: [
+          { value: 0, label: "Brayton" },
+          { value: 1, label: "Otto" },
+          { value: 2, label: "Both" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ cycle: ["brayton", "otto", "both"][s.cycle] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Events", value: "Intake, compression, combustion, exhaust", tone: "brand" as const },
+          { label: "Timing", value: "SIMULTANEOUS and continuous", tone: "go" as const },
+        ],
+        [
+          { label: "Events", value: "Intake, compression, combustion, exhaust", tone: "brand" as const },
+          { label: "Timing", value: "SEQUENTIAL, one cylinder at a time", tone: "caution" as const },
+        ],
+        [
+          { label: "Same", value: "All four events, in the same order", tone: "brand" as const },
+          { label: "Different", value: "Only WHEN they happen", tone: "nogo" as const },
+        ],
+      ][s.cycle],
+    note: () =>
+      "Put them side by side and the exam question answers itself: the events are identical, the timing is not.",
+  },
+
+  CloudClearancePicker: {
+    diagram: "frr-cloud-clearance",
+    controls: [
+      {
+        kind: "segmented",
+        key: "preset",
+        label: "Where you are",
+        initial: 0,
+        options: [
+          { value: 0, label: "Standard" },
+          { value: 1, label: "Above 10,000" },
+          { value: 2, label: "Class B" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ preset: ["standard", "high", "classb"][s.preset] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Above cloud", value: "1,000 ft", tone: "brand" as const },
+          { label: "Below cloud", value: "500 ft", tone: "brand" as const },
+          { label: "Horizontally", value: "2,000 ft", tone: "brand" as const },
+          { label: "Visibility", value: "3 SM", tone: "caution" as const },
+        ],
+        [
+          { label: "Above cloud", value: "1,000 ft", tone: "brand" as const },
+          { label: "Below cloud", value: "1,000 ft", tone: "nogo" as const, hint: "doubled" },
+          { label: "Horizontally", value: "1 SM", tone: "nogo" as const },
+          { label: "Visibility", value: "5 SM", tone: "nogo" as const },
+        ],
+        [
+          { label: "Clearance", value: "Clear of clouds", tone: "go" as const },
+          { label: "Visibility", value: "3 SM", tone: "caution" as const },
+          { label: "Why so loose", value: "Everyone here is talking to ATC", tone: "neutral" as const },
+        ],
+      ][s.preset],
+    note: (s) =>
+      s.preset === 2
+        ? "Class B is the exception that looks like a mistake: clear of clouds is LESS demanding, because separation is being provided for you."
+        : "The numbers tighten with altitude because closing speeds rise. Above 10,000 ft everything grows except the horizontal, which switches units.",
+  },
+
+  PositionLightView: {
+    diagram: "frr-position-lights",
+    controls: [
+      {
+        kind: "segmented",
+        key: "view",
+        label: "You are looking at it from",
+        initial: 0,
+        options: [
+          { value: 0, label: "Head-on" },
+          { value: 1, label: "Behind" },
+          { value: 2, label: "Its left" },
+          { value: 3, label: "Its right" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ view: ["headon", "tail", "left", "right"][s.view] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "You see", value: "Red AND green", tone: "nogo" as const },
+          { label: "Means", value: "It is pointing at you", tone: "nogo" as const },
+        ],
+        [
+          { label: "You see", value: "White only", tone: "go" as const },
+          { label: "Means", value: "You are overtaking it", tone: "caution" as const },
+        ],
+        [
+          { label: "You see", value: "Red", tone: "caution" as const },
+          { label: "Means", value: "It is crossing right to left", tone: "neutral" as const },
+        ],
+        [
+          { label: "You see", value: "Green", tone: "go" as const },
+          { label: "Means", value: "It is crossing left to right", tone: "neutral" as const },
+        ],
+      ][s.view],
+    note: (s) =>
+      s.view === 0
+        ? "Both colours at once is the one that matters: red and green together means you are looking down its nose."
+        : "The lights are not decoration — they are a geometry readout. What you can see tells you where it is going.",
+  },
+
+  AtmosphereLayerPicker: {
+    diagram: "wx-atmosphere",
+    controls: [
+      {
+        kind: "segmented",
+        key: "layer",
+        label: "Layer",
+        initial: 0,
+        options: [
+          { value: 0, label: "Troposphere" },
+          { value: 1, label: "Tropopause" },
+          { value: 2, label: "Stratosphere" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      highlight: ["troposphere", "tropopause", "stratosphere"][s.layer],
+    }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Contains", value: "Nearly all the weather", tone: "nogo" as const },
+          { label: "Going up", value: "Colder, and windier", tone: "caution" as const },
+          { label: "Expect", value: "Turbulence, icing, poor visibility", tone: "nogo" as const },
+        ],
+        [
+          { label: "Contains", value: "The jet stream", tone: "caution" as const },
+          { label: "Temperature", value: "Stops falling — isothermal", tone: "brand" as const },
+          { label: "Expect", value: "Wind shear and clear air turbulence", tone: "nogo" as const },
+        ],
+        [
+          { label: "Conditions", value: "Smooth", tone: "go" as const },
+          { label: "Visibility", value: "Excellent", tone: "go" as const },
+        ],
+      ][s.layer],
+    note: () =>
+      "Three layers, three completely different rides. Where you plan to cruise decides what you are planning around.",
+  },
+
+  CloudGroupPicker: {
+    diagram: "wx-cloud-groups",
+    controls: [
+      {
+        kind: "segmented",
+        key: "group",
+        label: "Altitude group",
+        initial: 0,
+        options: [
+          { value: 0, label: "Low" },
+          { value: 1, label: "Middle" },
+          { value: 2, label: "High" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ group: ["low", "middle", "high"][s.group] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Prefix", value: "Strato- or none", tone: "brand" as const },
+          { label: "Made of", value: "Water droplets", tone: "caution" as const },
+          { label: "Matters for", value: "Ceilings and icing", tone: "nogo" as const },
+        ],
+        [
+          { label: "Prefix", value: "Alto-", tone: "brand" as const },
+          { label: "Made of", value: "Water, ice, or both", tone: "caution" as const },
+        ],
+        [
+          { label: "Prefix", value: "Cirro-", tone: "brand" as const },
+          { label: "Made of", value: "Ice crystals", tone: "go" as const },
+          { label: "Matters for", value: "Little — no icing, no turbulence", tone: "go" as const },
+        ],
+      ][s.group],
+    note: () =>
+      "The group is set by ALTITUDE, and the prefix tells you the group. Shape describes what the air is doing inside it — a separate question.",
+  },
+
+  TurbulenceCausePicker: {
+    diagram: "wx-turbulence-causes",
+    controls: [
+      {
+        kind: "segmented",
+        key: "cause",
+        label: "Cause",
+        initial: 0,
+        options: [
+          { value: 0, label: "Wind shear" },
+          { value: 1, label: "Thermal" },
+          { value: 2, label: "Frontal" },
+          { value: 3, label: "Mechanical" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ cause: ["shear", "thermal", "frontal", "mechanical"][s.cause] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Where", value: "Jet streams, inversions, fronts", tone: "nogo" as const },
+          { label: "Also called", value: "Clear air turbulence, up high", tone: "caution" as const },
+        ],
+        [
+          { label: "Where", value: "Over surfaces heated from below", tone: "caution" as const },
+          { label: "Strongest over", value: "DRY ground", tone: "nogo" as const },
+        ],
+        [
+          { label: "Where", value: "At the frontal boundary", tone: "caution" as const },
+          { label: "Worst with", value: "A fast cold front — steep lifting", tone: "nogo" as const },
+        ],
+        [
+          { label: "Where", value: "Downwind of terrain and buildings", tone: "caution" as const },
+          { label: "Usually", value: "Below 1,000 ft AGL", tone: "nogo" as const },
+        ],
+      ][s.cause],
+    note: () =>
+      "Four causes, and each one tells you WHERE to expect it. That is the useful half — turbulence you predicted is turbulence you slowed down for.",
+  },
+
+  IcingConditionRemover: {
+    diagram: "wx-icing-requirements",
+    controls: [
+      {
+        kind: "segmented",
+        key: "missing",
+        label: "Take one away",
+        initial: 0,
+        options: [
+          { value: 0, label: "Nothing" },
+          { value: 1, label: "Moisture" },
+          { value: 2, label: "Free air temp" },
+          { value: 3, label: "Surface temp" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ missing: ["none", "moisture", "fat", "surface"][s.missing] }),
+    readouts: (s) =>
+      s.missing === 0
+        ? [
+            { label: "Visible moisture", value: "Present", tone: "nogo" as const },
+            { label: "Free air temp", value: "Below freezing", tone: "nogo" as const },
+            { label: "Surface temp", value: "Below freezing", tone: "nogo" as const },
+            { label: "Result", value: "ICE FORMS", tone: "nogo" as const },
+          ]
+        : [
+            {
+              label: "Missing",
+              value: ["", "Visible moisture", "Free air below freezing", "Surface below freezing"][s.missing],
+              tone: "go" as const,
+            },
+            { label: "Result", value: "No ice", tone: "go" as const },
+          ],
+    note: (s) =>
+      s.missing === 3
+        ? "This is how anti-ice works: it cannot change the weather, so it removes the only condition the aircraft controls — its own surface temperature."
+        : "All three, together. Remove any ONE and ice cannot form — which is why the question is always about which one is absent.",
+  },
+
+  MountainWaveSlider: {
+    diagram: "wx-mountain-wave",
+    controls: [
+      {
+        kind: "slider",
+        key: "wind",
+        label: "Wind across the ridge",
+        min: 10,
+        max: 100,
+        step: 5,
+        initial: 25,
+        format: kt,
+        tone: "caution",
+      },
+      { kind: "toggle", key: "clouds", label: "Show wave clouds", initial: 1 },
+    ],
+    toProps: (s) => ({ wind: s.wind, clouds: s.clouds === 1 }),
+    readouts: (s) => [
+      {
+        label: "Wave activity",
+        value: s.wind >= 40 ? "Significant" : s.wind >= 25 ? "Developing" : "Slight",
+        tone: s.wind >= 40 ? "nogo" : s.wind >= 25 ? "caution" : "go",
+      },
+      {
+        label: "Turbulence",
+        value: s.wind >= 40 ? "Severe, and it reaches well above the ridge" : "Moderate near the terrain",
+        tone: s.wind >= 40 ? "nogo" : "caution",
+      },
+      { label: "Downdraft", value: "On the LEE side", tone: "nogo" },
+    ],
+    note: (s) =>
+      s.wind >= 40
+        ? "Strong flow perpendicular to a ridge is the setup. The wave propagates upward, so cruising above the peaks is not clear of it."
+        : "Wind speed across the ridge is the dial. Below about 25 knots there is little wave; wind it up and watch the disturbance grow.",
+  },
+
+  FogConditionPicker: {
+    diagram: "wx-fog",
+    controls: [
+      {
+        kind: "segmented",
+        key: "need",
+        label: "What fog needs",
+        initial: 0,
+        options: [
+          { value: 0, label: "Nuclei" },
+          { value: 1, label: "Small spread" },
+          { value: 2, label: "Light wind" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ highlight: ["nuclei", "spread", "wind"][s.need] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Needs", value: "Condensation nuclei to form on", tone: "brand" as const },
+          { label: "Supplied by", value: "Dust, salt, combustion products", tone: "neutral" as const },
+        ],
+        [
+          { label: "Needs", value: "Temperature and dew point close together", tone: "brand" as const },
+          { label: "Watch", value: "A closing spread through the evening", tone: "caution" as const },
+        ],
+        [
+          { label: "Needs", value: "LIGHT wind — not calm, not strong", tone: "nogo" as const },
+          { label: "Calm air", value: "Will not mix moisture through the layer", tone: "caution" as const },
+          { label: "Strong wind", value: "Disperses it", tone: "caution" as const },
+        ],
+      ][s.need],
+    note: (s) =>
+      s.need === 2
+        ? "The wind condition is the counter-intuitive one. Fog wants a light breeze: calm air gives dew instead, and strong wind blows it away."
+        : "Three ingredients. Miss any one and you get something other than fog.",
+  },
+
+  ProductPicker: {
+    diagram: "wx-product-timeline",
+    controls: [
+      {
+        kind: "segmented",
+        key: "product",
+        label: "Product",
+        initial: 0,
+        options: [
+          { value: 0, label: "METAR" },
+          { value: 1, label: "TAF" },
+          { value: 2, label: "AIRMET" },
+          { value: 3, label: "SIGMET" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ product: ["metar", "taf", "airmet", "sigmet"][s.product] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Tells you", value: "Observed conditions, now", tone: "brand" as const },
+          { label: "Identifier", value: "—", tone: "neutral" as const },
+        ],
+        [
+          { label: "Tells you", value: "Forecast for one aerodrome", tone: "brand" as const },
+          { label: "Identifier", value: "—", tone: "neutral" as const },
+        ],
+        [
+          { label: "Tells you", value: "Hazard, moderate — affects light aircraft", tone: "caution" as const },
+          { label: "Identifier", value: "WA", tone: "neutral" as const },
+        ],
+        [
+          { label: "Tells you", value: "Hazard, severe — affects ALL aircraft", tone: "nogo" as const },
+          { label: "Identifier", value: "WS · Convective is WST", tone: "neutral" as const },
+        ],
+      ][s.product],
+    note: () =>
+      "Observation, forecast, then two levels of warning. AIRMET is the moderate one and SIGMET the severe one — WA, WS, and WST for convective.",
+  },
 };
 
 /* ------------------------------------------------------------------ */

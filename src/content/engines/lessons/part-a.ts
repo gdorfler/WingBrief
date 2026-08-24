@@ -819,6 +819,12 @@ export const LESSONS_A: Lesson[] = [
         line: "Divergent in design, it drops velocity and gives the final pressure increase — the point of highest compression in the engine.",
       },
       {
+        kind: "manipulate",
+        headline: "What changes, station by station",
+        widget: "StationChangePicker",
+        line: "Step the engine. Only one station drops pressure while adding energy — find it.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [

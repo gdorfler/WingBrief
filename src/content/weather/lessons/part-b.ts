@@ -145,6 +145,12 @@ export const LESSONS_B: Lesson[] = [
         watchFor: "Dew point, not humidity, and pressure — not precipitation.",
       },
       {
+        kind: "manipulate",
+        headline: "Compare all four in one cross-section",
+        widget: "FrontTypePicker",
+        line: "Stationary and occluded make more sense next to the two they are built from.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
@@ -299,6 +305,12 @@ export const LESSONS_B: Lesson[] = [
           "Not 'less turbulence at a warm front' — none. Warm fronts are the smooth ones for exactly this reason.",
       },
       {
+        kind: "manipulate",
+        headline: "Four causes, four places to expect it",
+        widget: "TurbulenceCausePicker",
+        line: "Pick a cause and see where it lives. Turbulence you predicted is turbulence you slowed for.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
@@ -421,6 +433,12 @@ export const LESSONS_B: Lesson[] = [
         appliesWhen: ["Any accumulation on a lifting surface"],
         watchFor:
           "Not the weight. Structural concerns — flight controls, vibration, pitot blockage, panels freezing over — are real, but secondary to what the ice does to the shape of the wing.",
+      },
+      {
+        kind: "manipulate",
+        headline: "Take one condition away",
+        widget: "IcingConditionRemover",
+        line: "All three are required. Remove any one and see what happens — including the one anti-ice removes.",
       },
       {
         kind: "anchor",
@@ -838,6 +856,12 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Three ingredients, one of them counter-intuitive",
+        widget: "FogConditionPicker",
+        line: "Fog wants a light breeze — not calm, not strong. Step through and see why.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [
@@ -1137,6 +1161,12 @@ export const LESSONS_B: Lesson[] = [
         watchFor:
           "Two publications, two different words. FAR says should; CNAF says shall. That difference is the question.",
         authority: "CNAF M-3710.7",
+      },
+      {
+        kind: "manipulate",
+        headline: "Observation, forecast, then two levels of warning",
+        widget: "ProductPicker",
+        line: "Pick a product and see what it tells you, and which letters identify it.",
       },
       {
         kind: "anchor",

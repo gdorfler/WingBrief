@@ -123,6 +123,12 @@ export const LESSONS_B: Lesson[] = [
         footnote: "The 20 minutes is a floor under the 10%, not an alternative to it.",
       },
       {
+        kind: "manipulate",
+        headline: "The numbers change with where you are",
+        widget: "CloudClearancePicker",
+        line: "Switch the airspace and watch every clearance move — one of them in a surprising direction.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -702,6 +708,12 @@ export const LESSONS_B: Lesson[] = [
         ],
       },
       {
+        kind: "manipulate",
+        headline: "Read the clearances off the picture",
+        widget: "CloudClearancePicker",
+        line: "Standard, above 10,000, and Class B. Compare them rather than memorising three rows.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -846,6 +858,12 @@ export const LESSONS_B: Lesson[] = [
         ],
         watchFor:
           "CNAF permits anti-collision lights off in cloud, to prevent distracting the pilot, and where they adversely affect ground operations.",
+      },
+      {
+        kind: "manipulate",
+        headline: "What you can see tells you where it is going",
+        widget: "PositionLightView",
+        line: "Move around the aircraft. The combination of lights is a geometry readout.",
       },
       {
         kind: "anchor",

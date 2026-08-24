@@ -167,6 +167,12 @@ export const LESSONS_C: Lesson[] = [
         footnote: "And penetrate turbulent areas at the airspeed recommended for the aircraft.",
       },
       {
+        kind: "manipulate",
+        headline: "Wind the flow up over the ridge",
+        widget: "MountainWaveSlider",
+        line: "Below about 25 knots there is little wave. Increase it and watch the disturbance climb.",
+      },
+      {
         kind: "anchor",
         headline: "Know Cold",
         statements: [

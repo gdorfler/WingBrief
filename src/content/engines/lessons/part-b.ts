@@ -340,6 +340,12 @@ export const LESSONS_B: Lesson[] = [
         footnote: "Fighters go the other way: low bypass, turbojet-like performance, turbofan efficiency.",
       },
       {
+        kind: "manipulate",
+        headline: "One gas generator, four ways to spend it",
+        widget: "EngineTypePicker",
+        line: "Switch the type and watch where the thrust actually comes from.",
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
@@ -494,6 +500,12 @@ export const LESSONS_B: Lesson[] = [
           { label: "Propeller produces all the thrust", trend: "up", emphasis: true },
         ],
         footnote: "A governor controls blade angle and propeller speed.",
+      },
+      {
+        kind: "manipulate",
+        headline: "Same four events, different timing",
+        widget: "CyclePicker",
+        line: "Show one, then the other, then both. The difference is when, not what.",
       },
       {
         kind: "anchor",
