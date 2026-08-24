@@ -16,9 +16,9 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Circle, Target } from "lucide-react";
 import type { Mission, Question } from "@/lib/types";
-import { QUESTION_BY_ID, UNIT_BY_ID } from "@/content";
+import { COURSE_OF_UNIT, QUESTION_BY_ID, UNIT_BY_ID } from "@/content";
 import { useProgress } from "@/lib/progress-store";
-import { useCourse } from "@/lib/course";
+import { useCourse, useEnsureCourse } from "@/lib/course";
 import { QuestionPlayer, type QuestionResult } from "@/components/questions";
 import { ButtonLink, Card, PageHeader, Pill, ProgressBar, cn } from "@/components/ui";
 import { JetLog, emptyJetLogRow, type JetLogRow } from "./tools";
@@ -36,6 +36,8 @@ const MISSION_TOOLS: NavToolId[] = [
 ];
 
 export function MissionRunner({ mission }: { mission: Mission }) {
+  // Reached by direct link from any course; file the reps against this one.
+  useEnsureCourse(COURSE_OF_UNIT[mission.unit]);
   const { recordAnswer } = useProgress();
   const unit = UNIT_BY_ID[mission.unit];
 

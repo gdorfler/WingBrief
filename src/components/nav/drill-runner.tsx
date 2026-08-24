@@ -18,9 +18,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, RotateCcw, Timer, XCircle } from "lucide-react";
 import type { Drill, Question } from "@/lib/types";
-import { QUESTION_BY_ID, UNIT_BY_ID } from "@/content";
+import { COURSE_OF_UNIT, QUESTION_BY_ID, UNIT_BY_ID } from "@/content";
 import { useProgress } from "@/lib/progress-store";
-import { useCourse } from "@/lib/course";
+import { useCourse, useEnsureCourse } from "@/lib/course";
 import { QuestionPlayer, type QuestionResult } from "@/components/questions";
 import { Button, ButtonLink, Card, PageHeader, Pill, ProgressBar, cn } from "@/components/ui";
 
@@ -31,6 +31,8 @@ interface Rep {
 }
 
 export function DrillRunner({ drill }: { drill: Drill }) {
+  // Reached by direct link from any course; file the reps against this one.
+  useEnsureCourse(COURSE_OF_UNIT[drill.unit]);
   const { recordAnswer } = useProgress();
   const questions = drill.questionIds
     .map((id) => QUESTION_BY_ID[id])

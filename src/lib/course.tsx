@@ -66,3 +66,27 @@ export function useCourse(): CourseApi {
   if (!ctx) throw new Error("useCourse must be used inside CourseProvider");
   return ctx;
 }
+
+/**
+ * Points the active course at whatever the student actually opened.
+ *
+ * Progress is stored per course and every mutation writes to the ACTIVE
+ * bucket, but nothing was keeping the active course in step with the page.
+ * Open an Engines lesson from a bookmark, a search result, or the back button
+ * while Aerodynamics is active, and the answers — and the mastery built from
+ * them — were filed under Aerodynamics: invisible to Engines, and quietly
+ * corrupting the readiness and review queue of a course the student was not
+ * even studying.
+ *
+ * Any screen that renders a course-scoped entity resolved by global id should
+ * call this before recording anything.
+ */
+export function useEnsureCourse(courseId: CourseId | undefined) {
+  const { ready, setActiveCourse } = useProgress();
+  useEffect(() => {
+    // Must wait for hydration. The store loads asynchronously and replaces the
+    // whole document when it lands, so a switch made before that arrives is
+    // silently overwritten by the stored activeCourse.
+    if (ready && courseId) setActiveCourse(courseId);
+  }, [ready, courseId, setActiveCourse]);
+}

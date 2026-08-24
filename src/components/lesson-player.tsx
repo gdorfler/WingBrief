@@ -20,13 +20,14 @@ import {
   EXPLAINER_BY_ID,
   LAB_BY_ID,
   QUESTION_BY_ID,
+  COURSE_OF_UNIT,
   explainersForLesson,
   labsForUnit,
 } from "@/content";
 import { summarizeLesson } from "@/lib/scoring";
 import { MASTERY_LABELS } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
-import { useCourse } from "@/lib/course";
+import { useCourse, useEnsureCourse } from "@/lib/course";
 import { DiagramHost } from "./diagrams/registry";
 import { NavToolPanel, WorkedExample } from "./nav/lesson-screens";
 import { Widget } from "./lab/widgets";
@@ -45,6 +46,9 @@ import {
 
 export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const router = useRouter();
+  // A lesson can be opened by direct link from any course; progress must be
+  // filed against the course that owns it, not whichever was last active.
+  useEnsureCourse(COURSE_OF_UNIT[lesson.unit]);
   const { state, recordAnswer, introduceConcepts, completeLesson, toggleSavedQuestion } =
     useProgress();
 
