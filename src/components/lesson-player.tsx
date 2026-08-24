@@ -15,7 +15,14 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, BookOpen, Check, FlaskConical, Sparkles, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Lesson, LessonScreen } from "@/lib/types";
-import { CONCEPT_BY_ID, EXPLAINER_BY_ID, LAB_BY_ID, QUESTION_BY_ID } from "@/content";
+import {
+  CONCEPT_BY_ID,
+  EXPLAINER_BY_ID,
+  LAB_BY_ID,
+  QUESTION_BY_ID,
+  explainersForLesson,
+  labsForUnit,
+} from "@/content";
 import { summarizeLesson } from "@/lib/scoring";
 import { MASTERY_LABELS } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
@@ -563,6 +570,12 @@ function ScreenView({
 /* End screen                                                          */
 /* ------------------------------------------------------------------ */
 
+/** First occurrence of each id wins, so explicit links outrank derived ones. */
+function dedupeById<T extends { id: string }>(items: T[]): T[] {
+  const seen = new Set<string>();
+  return items.filter((item) => !seen.has(item.id) && seen.add(item.id));
+}
+
 function LessonComplete({
   lesson,
   summary,
@@ -593,8 +606,27 @@ function LessonComplete({
   const weak = moved
     .filter((m) => (state.mastery[m.id]?.seen ?? 0) > 0 && m.after < 3)
     .slice(0, 4);
-  const explainers = (lesson.explainerIds ?? []).map((id) => EXPLAINER_BY_ID[id]).filter(Boolean);
-  const labs = (lesson.labIds ?? []).map((id) => LAB_BY_ID[id]).filter(Boolean);
+  /*
+   * "Go deeper" used to read only the hand-written explainerIds and labIds on
+   * the lesson — a second pointer to a relationship the explainer and lab
+   * already declare themselves, and one that had silently drifted. 80 of 146
+   * explainers named a lesson that did not name them back, and 13 labs were
+   * linked from no lesson at all: every one of Navigation's nine, so a student
+   * finishing a CR-3 lesson was never offered the CR-3 workbench.
+   *
+   * Deriving from the registry makes the explainer's own `lessonId` and the
+   * lab's own `unit` the single source of truth. The explicit lists are still
+   * honoured and merged in, so a lesson can still reach for something outside
+   * its own unit.
+   */
+  const explainers = dedupeById([
+    ...explainersForLesson(lesson.id),
+    ...(lesson.explainerIds ?? []).map((id) => EXPLAINER_BY_ID[id]).filter(Boolean),
+  ]);
+  const labs = dedupeById([
+    ...(lesson.labIds ?? []).map((id) => LAB_BY_ID[id]).filter(Boolean),
+    ...labsForUnit(lesson.unit),
+  ]);
 
   return (
     <div className="min-h-dvh bg-canvas">

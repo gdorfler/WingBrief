@@ -371,6 +371,30 @@ describe(`${NAME} · coverage`, () => {
       ).toBe(true);
     }
   });
+
+  /**
+   * Built material has to be reachable from the lesson that needs it.
+   *
+   * The lesson player's "Go deeper" section used to read only the lesson's
+   * hand-written explainerIds and labIds, which had drifted badly: 80
+   * explainers named a lesson that did not name them back, and every one of
+   * Navigation's nine labs was linked from nothing. The player now derives
+   * both from the registry, and these two guard the property directly rather
+   * than the field that used to express it.
+   */
+  it("every explainer is reachable from the lesson it names", () => {
+    const lessonIds = new Set(LESSONS.map((l) => l.id));
+    const unreachable = EXPLAINERS.filter((e) => !lessonIds.has(e.lessonId)).map((e) => e.id);
+    expect(unreachable, `explainers pointing at no lesson: ${unreachable.join(", ")}`).toEqual([]);
+  });
+
+  it("every lab is reachable from at least one lesson", () => {
+    const unreachable = LABS.filter(
+      (lab) =>
+        !LESSONS.some((l) => (l.labIds ?? []).includes(lab.id) || l.unit === lab.unit),
+    ).map((lab) => lab.id);
+    expect(unreachable, `labs no lesson can surface: ${unreachable.join(", ")}`).toEqual([]);
+  });
 });
 
 describe(`${NAME} · enabling objective matrix`, () => {
