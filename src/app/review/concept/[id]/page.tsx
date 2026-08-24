@@ -3,10 +3,16 @@
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { AlertTriangle, ArrowRight, BookOpen, FlaskConical, Sparkles } from "lucide-react";
-import { CONCEPT_BY_ID, UNIT_BY_ID, lessonsForConcept, questionsForConcept } from "@/content";
+import {
+  CONCEPT_BY_ID,
+  UNIT_BY_ID,
+  courseOfConcept,
+  lessonsForConcept,
+  questionsForConcept,
+} from "@/content";
 import { MASTERY_LABELS } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
-import { useCourse } from "@/lib/course";
+import { useCourse, useEnsureCourse } from "@/lib/course";
 import { QuestionReview } from "@/components/questions";
 import {
   ButtonLink,
@@ -23,6 +29,15 @@ export default function ConceptPage() {
   const params = useParams<{ id: string }>();
   const { state } = useProgress();
   const { content } = useCourse();
+  /*
+   * Concepts resolve by global id, but everything this page shows around one
+   * — the mastery record, the explainers, the labs, the Know Cold cards, and
+   * where "Drill this" leads — comes from the ACTIVE course. Opening an
+   * Aerodynamics concept while Engines is active therefore showed an empty
+   * mastery bar and drilled the wrong subject. Called before the notFound so
+   * the hook order is unconditional.
+   */
+  useEnsureCourse(courseOfConcept(params.id));
   const concept = CONCEPT_BY_ID[params.id];
   if (!concept) notFound();
 
