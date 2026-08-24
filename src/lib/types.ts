@@ -301,6 +301,16 @@ export type QuestionType =
 
 export type Difficulty = 1 | 2 | 3;
 
+/**
+ * What a correct answer proves. Derived from the question shape by
+ * `evidenceFor` in src/lib/evidence.ts; see that file for the reasoning.
+ *
+ * "recall" is retrieval of a stored fact. "apply" is doing something with it.
+ * Full mastery of a concept requires at least one of the second kind, which is
+ * what stops six recognition questions from reading as understanding.
+ */
+export type EvidenceKind = "recall" | "apply";
+
 interface QuestionBase {
   id: string;
   type: QuestionType;
@@ -320,6 +330,12 @@ interface QuestionBase {
   officialStyle?: boolean;
   /** Skills exercised, for courses that track them. */
   skillIds?: string[];
+  /**
+   * Forces the evidence tier when the derivation would be wrong for this one
+   * question — a difficulty-2 item that genuinely requires applying a
+   * relationship, or a difficulty-3 item that is really just a hard fact.
+   */
+  evidenceOverride?: EvidenceKind;
 }
 
 /* ------------------------------------------------------------------ */
@@ -729,6 +745,13 @@ export interface MasteryRecord {
   dueAt: number | null;
   /** Current spacing interval in days. */
   intervalDays: number;
+  /**
+   * How many correct answers were application-tier rather than recognition.
+   *
+   * Gates the top of the ladder: a concept cannot read as mastered on
+   * recognition alone, however many definition questions went right.
+   */
+  applied: number;
 }
 
 export interface Attempt {
@@ -748,6 +771,12 @@ export interface Attempt {
    * from a decimal-place slip needs the number that was actually typed.
    */
   answerKey?: string;
+  /**
+   * What this answer proved. Absent on attempts recorded before the evidence
+   * model existed; `migrate` backfills those from the question bank so a
+   * student who really did work the problems is not demoted for it.
+   */
+  evidence?: EvidenceKind;
 }
 
 export interface LessonProgress {

@@ -7,6 +7,7 @@ import { E5_QUESTIONS } from "./e5";
 import { E6_QUESTIONS } from "./e6";
 import { E7_QUESTIONS, E_COVERAGE_QUESTIONS } from "./e7";
 import { DEPTH_QUESTIONS } from "./depth";
+import { APPLICATION_QUESTIONS } from "./application";
 
 export const QUESTIONS: Question[] = [
   ...E1_QUESTIONS,
@@ -18,6 +19,7 @@ export const QUESTIONS: Question[] = [
   ...E7_QUESTIONS,
   ...E_COVERAGE_QUESTIONS,
   ...DEPTH_QUESTIONS,
+  ...APPLICATION_QUESTIONS,
 ];
 
 export const QUESTION_BY_ID: Record<string, Question> = Object.fromEntries(

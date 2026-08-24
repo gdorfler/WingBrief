@@ -7,6 +7,7 @@ import {
   emptyMastery,
   isDue,
   levelFor,
+  RECOGNITION_CEILING,
   markIntroduced,
   nextIntervalDays,
   readiness,
@@ -46,8 +47,30 @@ describe("levelFor", () => {
     expect(levelFor({ seen: 1, recent: [true] })).toBeLessThan(5);
   });
 
-  it("awards level 5 only with sustained accuracy", () => {
-    expect(levelFor({ seen: 6, recent: [true, true, true, true, true, true] })).toBe(5);
+  it("awards level 5 for sustained accuracy backed by application", () => {
+    expect(
+      levelFor({ seen: 6, recent: [true, true, true, true, true, true], applied: 1 }),
+    ).toBe(5);
+  });
+
+  it("caps recognition-only work below mastery, however perfect it is", () => {
+    // The false-mastery guard. Six flawless definition questions is a strong
+    // record and still not proof the student can use the concept.
+    expect(
+      levelFor({ seen: 12, recent: [true, true, true, true, true, true, true, true], applied: 0 }),
+    ).toBe(RECOGNITION_CEILING);
+  });
+
+  it("promotes to mastery as soon as one applied answer lands", () => {
+    const recent = [true, true, true, true, true, true];
+    expect(levelFor({ seen: 6, recent, applied: 0 })).toBe(RECOGNITION_CEILING);
+    expect(levelFor({ seen: 6, recent, applied: 1 })).toBe(5);
+  });
+
+  it("treats missing evidence as recognition rather than assuming the best", () => {
+    expect(levelFor({ seen: 6, recent: [true, true, true, true, true, true] })).toBe(
+      RECOGNITION_CEILING,
+    );
   });
 
   it("drops to review territory after two consecutive misses", () => {
@@ -102,12 +125,30 @@ describe("applyAnswer", () => {
     let record = emptyMastery("c-ldmax");
     let lastDelta = 0;
     for (let i = 0; i < 6; i++) {
-      const update = applyAnswer(record, "c-ldmax", true, 4_000, NOW + i * 1000);
+      const update = applyAnswer(record, "c-ldmax", true, 4_000, NOW + i * 1000, "apply");
       record = update.record;
       lastDelta = update.levelDelta;
     }
     expect(record.level).toBe(5);
     expect(lastDelta).toBeGreaterThanOrEqual(0);
+  });
+
+  it("counts only correct applied answers as application evidence", () => {
+    // Getting the hard question wrong is not proof you can do the hard thing.
+    const missed = applyAnswer(undefined, "c-vn", false, 9_000, NOW, "apply").record;
+    expect(missed.applied).toBe(0);
+
+    const landed = applyAnswer(missed, "c-vn", true, 9_000, NOW + 1, "apply").record;
+    expect(landed.applied).toBe(1);
+  });
+
+  it("does not count recognition answers toward application evidence", () => {
+    let record = emptyMastery("c-drag");
+    for (let i = 0; i < 8; i++) {
+      record = applyAnswer(record, "c-drag", true, 3_000, NOW + i, "recall").record;
+    }
+    expect(record.applied).toBe(0);
+    expect(record.level).toBe(RECOGNITION_CEILING);
   });
 });
 

@@ -8,6 +8,7 @@ import { U6_QUESTIONS } from "./u6";
 import { COVERAGE_QUESTIONS } from "./coverage";
 import { DEPTH_A_QUESTIONS } from "./depth-a";
 import { DEPTH_B_QUESTIONS } from "./depth-b";
+import { APPLICATION_QUESTIONS } from "./application";
 
 export const QUESTIONS: Question[] = [
   ...U1_QUESTIONS,
@@ -19,6 +20,7 @@ export const QUESTIONS: Question[] = [
   ...COVERAGE_QUESTIONS,
   ...DEPTH_A_QUESTIONS,
   ...DEPTH_B_QUESTIONS,
+  ...APPLICATION_QUESTIONS,
 ];
 
 export const QUESTION_BY_ID: Record<string, Question> = Object.fromEntries(

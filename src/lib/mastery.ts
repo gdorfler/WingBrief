@@ -7,7 +7,7 @@
  * CLmax AOA twice in a row, so it comes back tomorrow").
  */
 
-import type { Attempt, ConceptId, MasteryLevel, MasteryRecord } from "./types";
+import type { Attempt, ConceptId, EvidenceKind, MasteryLevel, MasteryRecord } from "./types";
 
 export const DAY_MS = 86_400_000;
 
@@ -42,6 +42,7 @@ export function emptyMastery(conceptId: ConceptId): MasteryRecord {
     lastSeenAt: null,
     dueAt: null,
     intervalDays: 0,
+    applied: 0,
   };
 }
 
@@ -64,14 +65,31 @@ export function weightedAccuracy(recent: boolean[]): number {
 }
 
 /**
- * Level is driven by recency-weighted accuracy, but gated by exposure so a
- * single lucky answer can never read as "mastered".
+ * The ceiling a concept can reach on recognition alone.
+ *
+ * Level 5 is the claim the rest of the app acts on: it is what marks a
+ * concept done on the readiness dial, what lets a lesson be skipped, and what
+ * rests a concept for two weeks. Handing that out for six correct definition
+ * questions is the "false mastery" failure — the student is told they know
+ * something the exam has not actually asked them yet.
+ *
+ * "Strong" is the honest description of a concept you can reliably recognise
+ * and have never had to use. It is a good score, it just is not the top one.
+ */
+export const RECOGNITION_CEILING: MasteryLevel = 4;
+
+/**
+ * Level is driven by recency-weighted accuracy, gated by exposure so a single
+ * lucky answer can never read as "mastered", and gated again by the KIND of
+ * evidence so recognition alone cannot either.
  */
 export function levelFor(record: {
   seen: number;
   recent: boolean[];
+  /** Correct application-tier answers. Defaults to none. */
+  applied?: number;
 }): MasteryLevel {
-  const { seen, recent } = record;
+  const { seen, recent, applied = 0 } = record;
   if (seen === 0) return 0;
 
   const acc = weightedAccuracy(recent);
@@ -81,7 +99,9 @@ export function levelFor(record: {
   // Two consecutive misses always drops the concept into review territory.
   if (lastTwoWrong) return seen >= 4 ? 2 : 1;
 
-  if (seen >= 6 && acc >= 0.95) return 5;
+  if (seen >= 6 && acc >= 0.95) {
+    return applied >= 1 ? 5 : RECOGNITION_CEILING;
+  }
   if (seen >= 4 && acc >= 0.85) return 4;
   if (seen >= 3 && acc >= 0.7) return 3;
   if (acc >= 0.5) return 2;
@@ -123,13 +143,22 @@ export function applyAnswer(
   correct: boolean,
   elapsedMs: number,
   at: number,
+  /**
+   * What this answer proved. Defaults to recognition, which is the safe
+   * assumption: an unclassified answer should never be the one that unlocks
+   * mastery.
+   */
+  evidence: EvidenceKind = "recall",
 ): MasteryUpdate {
   const prev = existing ?? emptyMastery(conceptId);
   const recent = [...prev.recent, correct].slice(-RECENT_WINDOW);
 
   const seen = prev.seen + 1;
   const correctCount = prev.correct + (correct ? 1 : 0);
-  const level = levelFor({ seen, recent });
+  // Only a correct application answer counts. Getting a hard question wrong
+  // is not evidence that you can do the hard thing.
+  const applied = prev.applied + (correct && evidence === "apply" ? 1 : 0);
+  const level = levelFor({ seen, recent, applied });
   const intervalDays = nextIntervalDays(
     level,
     correct,
@@ -149,6 +178,7 @@ export function applyAnswer(
       lastSeenAt: at,
       dueAt: at + intervalDays * DAY_MS,
       intervalDays,
+      applied,
     },
   };
 }
@@ -167,6 +197,7 @@ export function applyAttempt(
       attempt.correct,
       attempt.elapsedMs,
       attempt.at,
+      attempt.evidence,
     );
     next[conceptId] = update.record;
     updates.push(update);

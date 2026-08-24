@@ -3,6 +3,7 @@ import { CONCEPT_QUESTIONS } from "./concepts";
 import { DEPTH_QUESTIONS } from "./depth";
 import { DRILL_QUESTIONS, DRILL_SETS } from "./drills";
 import { PROBLEM_QUESTIONS, PROBLEM_SETS } from "./problems";
+import { APPLICATION_QUESTIONS } from "./application";
 
 /**
  * The Navigation question bank, in three parts that do different jobs.
@@ -17,6 +18,7 @@ export const QUESTIONS: Question[] = [
   ...DEPTH_QUESTIONS,
   ...PROBLEM_QUESTIONS,
   ...DRILL_QUESTIONS,
+  ...APPLICATION_QUESTIONS,
 ];
 
 export { DRILL_SETS, PROBLEM_SETS };

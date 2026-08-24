@@ -43,7 +43,8 @@ import type {
   ExamResult,
   ProgressState,
 } from "./types";
-import { conceptIdsFor, unitConceptIds, unitLessonIds } from "@/content";
+import { QUESTION_BY_ID, conceptIdsFor, unitConceptIds, unitLessonIds } from "@/content";
+import { evidenceFor } from "./evidence";
 
 export interface AnswerInput {
   questionId: string;
@@ -273,6 +274,10 @@ export function ProgressProvider({
     (input: AnswerInput) => {
       const now = Date.now();
       mutate((prev) => {
+        // Classified here rather than at the five call sites, so every path
+        // that can answer a question — lesson, review, exam, drill, mission —
+        // records what the answer proved without having to remember to.
+        const question = QUESTION_BY_ID[input.questionId];
         const attempt: Attempt = {
           questionId: input.questionId,
           conceptIds: input.conceptIds,
@@ -281,6 +286,7 @@ export function ProgressProvider({
           at: now,
           context: input.context,
           answerKey: input.answerKey,
+          evidence: question ? evidenceFor(question) : "recall",
         };
         const { mastery } = applyAttempt(prev.mastery, attempt);
         const gained =

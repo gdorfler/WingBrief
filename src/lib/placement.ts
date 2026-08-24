@@ -16,6 +16,13 @@
  * concepts has actually been proven, not just brushed against once. There
  * is no separate quiz format to build or keep in sync; any question that
  * feeds `recordAnswer` — a lesson, review, or an exam — can produce credit.
+ *
+ * Skipping teaching is the highest-stakes thing the mastery record is
+ * allowed to authorise, so this is the one place that demands application
+ * evidence outright rather than letting a high average stand in for it.
+ * Recognising every term in a lesson is not a reason to skip the lesson:
+ * the student who can pick "stall speed" out of four options has not
+ * thereby shown they know what altitude does to it.
  */
 
 import { conceptFraction } from "./mastery";
@@ -36,10 +43,11 @@ export interface PlacementCandidate {
  * the lesson's own bar.
  *
  * A lesson qualifies only when EVERY one of its concepts has been seen at
- * least once, none of them sits below level 3 (the same "weak" cutoff
- * `lessonStates` uses elsewhere), and the average fraction across them
- * clears `lesson.masteryThreshold` — the exact bar the lesson would want a
- * student to hit if they had taken it. A lesson with no concepts (a pure
+ * least once, has at least one correct application-tier answer behind it,
+ * none of them sits below level 3 (the same "weak" cutoff `lessonStates`
+ * uses elsewhere), and the average fraction across them clears
+ * `lesson.masteryThreshold` — the exact bar the lesson would want a student
+ * to hit if they had taken it. A lesson with no concepts (a pure
  * orientation screen, say) is never a placement candidate: there is nothing
  * for the mastery record to have proven.
  */
@@ -59,6 +67,9 @@ export function placementCandidates(
       const records = lesson.conceptIds.map((id) => state.mastery[id]);
       if (records.some((r) => !r || r.seen === 0)) return false;
       if (records.some((r) => r!.level < 3)) return false;
+      // Every concept must have been USED correctly at least once, not just
+      // recognised. Averages hide a concept that was only ever named.
+      if (records.some((r) => (r!.applied ?? 0) < 1)) return false;
 
       const avg =
         records.reduce((sum, r) => sum + conceptFraction(r), 0) / records.length;

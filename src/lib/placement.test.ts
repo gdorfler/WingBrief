@@ -29,12 +29,13 @@ function lesson(id: string, index: number, unit: string, conceptIds: string[]): 
 }
 
 /** A mastery record at a given level, built the way the real engine would. */
-function record(level: 0 | 1 | 2 | 3 | 4 | 5, seen = 6): MasteryRecord {
+function record(level: 0 | 1 | 2 | 3 | 4 | 5, seen = 6, applied = 1): MasteryRecord {
   return {
     conceptId: "c",
     level,
     seen,
     correct: seen,
+    applied,
     recent: Array(Math.min(seen, 8)).fill(true),
     lastSeenAt: Date.now(),
     dueAt: null,
@@ -151,5 +152,44 @@ describe("groupPlacementCandidates", () => {
     expect(grouped.map((g) => g.unit)).toEqual(["u1", "u2"]);
     expect(grouped[0].unitTitle).toBe("Basics");
     expect(grouped[0].lessons.map((l) => l.lessonId)).toEqual(["l1"]);
+  });
+});
+
+describe("placement requires application, not recognition", () => {
+  it("refuses credit when a concept was only ever recognised", () => {
+    // Level 4 across the board clears the lesson's 0.8 bar on average
+    // (4/5 = 0.8), so the ONLY thing standing between this student and a
+    // skipped lesson is the applied-evidence check.
+    const lessons = [lesson("l1", 1, "u1", ["c-a", "c-b"])];
+    const recognitionOnly = view({}, {
+      "c-a": { ...record(4), applied: 0 },
+      "c-b": { ...record(4), applied: 0 },
+    });
+    expect(placementCandidates(lessons, UNITS, recognitionOnly)).toEqual([]);
+  });
+
+  it("grants credit once every concept has been applied", () => {
+    const lessons = [lesson("l1", 1, "u1", ["c-a", "c-b"])];
+    const applied = view({}, {
+      "c-a": { ...record(4), applied: 1 },
+      "c-b": { ...record(4), applied: 2 },
+    });
+    expect(placementCandidates(lessons, UNITS, applied).map((c) => c.lessonId)).toEqual(["l1"]);
+  });
+
+  it("refuses when only some of the lesson's concepts were applied", () => {
+    const lessons = [lesson("l1", 1, "u1", ["c-a", "c-b"])];
+    const partial = view({}, {
+      "c-a": { ...record(5), applied: 3 },
+      "c-b": { ...record(4), applied: 0 },
+    });
+    expect(placementCandidates(lessons, UNITS, partial)).toEqual([]);
+  });
+
+  it("treats a record predating the evidence model as unproven", () => {
+    const lessons = [lesson("l1", 1, "u1", ["c-a"])];
+    const legacy = record(5);
+    delete (legacy as Partial<MasteryRecord>).applied;
+    expect(placementCandidates(lessons, UNITS, view({}, { "c-a": legacy }))).toEqual([]);
   });
 });

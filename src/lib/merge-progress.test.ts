@@ -49,6 +49,7 @@ function populated(overrides: Over = {}): ProgressState {
         correct: 5,
         recent: [true, true, false, true],
         lastSeenAt: T0,
+        applied: 1,
         dueAt: T0 + 3 * DAY,
         intervalDays: 3,
       },

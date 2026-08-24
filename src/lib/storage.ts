@@ -9,12 +9,16 @@
 
 import {
   PROGRESS_SCHEMA_VERSION,
+  type Attempt,
   type CourseId,
   type CourseProgress,
+  type MasteryRecord,
   type ProgressState,
 } from "./types";
 import { emptyStreak } from "./xp";
+import { evidenceFor } from "./evidence";
 import { COURSE_ORDER, DEFAULT_COURSE, isCourseId } from "@/content/courses";
+import { QUESTION_BY_ID } from "@/content";
 
 export const STORAGE_KEY = "wingbrief:progress";
 
@@ -77,11 +81,12 @@ function migrateCourse(raw: unknown): CourseProgress {
   const base = emptyCourseProgress();
   if (!raw || typeof raw !== "object") return base;
   const input = raw as Partial<CourseProgress>;
+  const attempts = Array.isArray(input.attempts) ? input.attempts : [];
   return {
     xp: typeof input.xp === "number" && Number.isFinite(input.xp) ? input.xp : 0,
-    mastery: isRecord(input.mastery) ? input.mastery : {},
+    mastery: backfillApplied(isRecord(input.mastery) ? input.mastery : {}, attempts),
     lessons: isRecord(input.lessons) ? input.lessons : {},
-    attempts: Array.isArray(input.attempts) ? input.attempts : [],
+    attempts,
     exams: Array.isArray(input.exams) ? input.exams : [],
     savedQuestionIds: Array.isArray(input.savedQuestionIds) ? input.savedQuestionIds : [],
     savedKnowColdIds: Array.isArray(input.savedKnowColdIds) ? input.savedKnowColdIds : [],
@@ -89,6 +94,50 @@ function migrateCourse(raw: unknown): CourseProgress {
       ? input.watchedExplainerIds
       : [],
   };
+}
+
+/**
+ * Reconstructs the application-evidence count for records written before the
+ * evidence model existed.
+ *
+ * Without this, every returning student would be told their mastery had
+ * dropped — most unfairly the Navigation students, whose course is almost
+ * entirely worked problems and who therefore have the strongest claim to the
+ * top of the ladder. The attempt log already says which questions they
+ * answered, so the count is recoverable rather than guessed.
+ *
+ * Records that already carry a count are left alone; only the ones predating
+ * the field are rebuilt.
+ */
+function backfillApplied(
+  mastery: Record<string, MasteryRecord>,
+  attempts: Attempt[],
+): Record<string, MasteryRecord> {
+  const missing = Object.values(mastery).some(
+    (r) => r && typeof r.applied !== "number",
+  );
+  if (!missing) return mastery;
+
+  const counts = new Map<string, number>();
+  for (const attempt of attempts) {
+    if (!attempt?.correct) continue;
+    const question = QUESTION_BY_ID[attempt.questionId];
+    const kind = attempt.evidence ?? (question ? evidenceFor(question) : "recall");
+    if (kind !== "apply") continue;
+    for (const conceptId of attempt.conceptIds ?? []) {
+      counts.set(conceptId, (counts.get(conceptId) ?? 0) + 1);
+    }
+  }
+
+  const next: Record<string, MasteryRecord> = {};
+  for (const [id, record] of Object.entries(mastery)) {
+    if (!record) continue;
+    next[id] =
+      typeof record.applied === "number"
+        ? record
+        : { ...record, applied: counts.get(id) ?? 0 };
+  }
+  return next;
 }
 
 /**
