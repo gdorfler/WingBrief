@@ -342,7 +342,7 @@ export const F8_QUESTIONS: Question[] = [
       "Within 4 nm of the primary airport of Class C or D airspace, from the surface to 2,500' AGL, the limit is",
     options: ["150 knots", "200 knots", "250 knots", "no limit applies"],
     answer: 1,
-    explanation: "200 knots inside that cylinder.",
+    explanation: "200 knots within 4 nm of the primary Class C or D airport, surface to 2,500 ft AGL. The limit exists because that cylinder is where arriving and departing traffic concentrates and closing speeds matter most.",
     knowCold: "C and D primary airport: 200 knots within 4 nm, up to 2,500 AGL.",
     difficulty: 2,
     source: AIR(["2.382"]),

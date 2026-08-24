@@ -286,7 +286,7 @@ export const F3_QUESTIONS: Question[] = [
     prompt: "What airport signs have white letters on a red background?",
     options: ["Location signs", "Direction signs", "Information signs", "Mandatory instruction signs"],
     answer: 3,
-    explanation: "Mandatory instruction signs are white on red.",
+    explanation: "White on red marks a MANDATORY instruction — the boundary of somewhere you may not go without a clearance, typically a runway holding position. Red on an airfield always means stop and check.",
     knowCold: "White on red = mandatory instruction.",
     difficulty: 1,
     officialStyle: true,
@@ -322,7 +322,8 @@ export const F3_QUESTIONS: Question[] = [
       { id: "white", label: "Flashing white", x: 90, y: 219, r: 30 },
     ],
     answer: "green",
-    explanation: "Steady green is the clearance to land.",
+    explanation:
+      "Steady green clears you to land. Of the other two on the gun, steady red means give way and keep circling, and flashing white means return for landing — an instruction to come back, not a clearance to put the wheels down.",
     knowCold: "Steady green = cleared to land.",
     difficulty: 1,
     source: VIFR(["2.361"]),

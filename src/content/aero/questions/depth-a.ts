@@ -784,7 +784,7 @@ export const DEPTH_A_QUESTIONS: Question[] = [
     prompt: "A wing with a negative dihedral angle is said to have",
     options: ["sweep", "taper", "anhedral", "washout"],
     answer: 2,
-    explanation: "Anhedral, sometimes called cathedral.",
+    explanation: "Anhedral, sometimes called cathedral — dihedral's opposite. Dihedral buys lateral stability; anhedral gives it away deliberately, in exchange for the roll responsiveness a manoeuvrable aircraft wants.",
     knowCold: "Negative dihedral is anhedral.",
     difficulty: 1,
     source: BASIC(["2.70"]),

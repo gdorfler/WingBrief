@@ -431,7 +431,7 @@ export const W10_QUESTIONS: Question[] = [
     prompt: "A non-convective SIGMET is issued for 4 hours, except for hurricanes, which get",
     options: ["2 hours", "6 hours", "8 hours", "12 hours"],
     answer: 1,
-    explanation: "6 hours for hurricanes.",
+    explanation: "6 hours rather than the standard 4. Hurricanes earn the longer validity because the system is large and slow-moving enough that a 4-hour forecast would need reissuing almost immediately.",
     knowCold: "4 hours, 6 for hurricanes.",
     difficulty: 3,
     source: PLAN,
