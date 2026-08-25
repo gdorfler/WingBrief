@@ -151,23 +151,6 @@ export const DEPTH_B_QUESTIONS: Question[] = [
     source: PERF(["2.124"]),
   },
   {
-    id: "q-db-009",
-    type: "mcq",
-    unit: "u4",
-    conceptIds: ["c-hydroplaning"],
-    prompt: "Hydroplaning speed depends primarily on",
-    options: ["aircraft weight", "tyre pressure", "runway length", "flap setting"],
-    answer: 1,
-    explanation:
-      "It is a function of tyre pressure, not weight. A heavier aircraft simply makes a larger contact patch at the same pressure.",
-    whyWrong:
-      "Weight feels like it should matter, and it does not. That is exactly why it is the first distractor.",
-    knowCold: "Tyre pressure sets hydroplaning speed.",
-    difficulty: 3,
-    officialStyle: true,
-    source: PERF(["2.150", "2.151"]),
-  },
-  {
     id: "q-db-010",
     type: "mcq",
     unit: "u4",

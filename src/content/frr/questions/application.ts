@@ -202,17 +202,19 @@ export const APPLICATION_QUESTIONS: Question[] = [
     type: "mcq",
     unit: "f2",
     prompt:
-      "Under CNAF M-3710.7, the pilot in command is responsible for",
+      "Airborne and clear of the weather, the crew disagree about whether to continue to the destination or divert. The person who decides is",
     options: [
-      "the safe operation of the aircraft only",
-      "the aircraft and the conduct of the flight, but not crew welfare",
-      "the safe orderly flight of the aircraft and the well-being of the crew",
-      "only those duties formally delegated by the commanding officer",
+      "the senior officer aboard, regardless of crew position",
+      "the pilot in command, who is the final authority as to the operation of that aircraft",
+      "the controlling ATC facility",
+      "the squadron duty officer, once contacted",
     ],
-    answer: 2,
+    answer: 1,
     explanation:
-      "The FAR makes the PIC directly responsible for, and final authority as to, the operation of the aircraft. CNAF adds the crew explicitly: the safe, orderly flight of the aircraft AND the well-being of the crew. The scope is broader than candidates expect, which is why the widest defensible option is usually right.",
-    knowCold: "PIC owns the aircraft, the flight, and the crew.",
+      "The FAR makes the PIC directly responsible for, and FINAL AUTHORITY as to, the operation of that aircraft — and rank aboard does not transfer that. CNAF adds the well-being of the crew to the same person's account, so the responsibility and the authority sit together by design.",
+    whyWrong:
+      "Seniority is the tempting answer and it is wrong: the authority attaches to the position, not the rank.",
+    knowCold: "PIC is final authority. Not the senior officer, not ATC.",
     difficulty: 3,
   }),
 

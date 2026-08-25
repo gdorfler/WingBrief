@@ -396,8 +396,11 @@ export const U4_QUESTIONS: Question[] = [
     answer: 1,
     explanation:
       "V_hydroplane (mph) = 9 × √(tyre pressure). Weight only changes the size of the tyre footprint, not the speed.",
+    whyWrong:
+      "Weight feels like it should matter, and it does not. That is exactly why it is the first distractor.",
     knowCold: "Hydroplaning: 9√(tyre pressure), independent of weight.",
     difficulty: 3,
+    officialStyle: true,
     source: PERF(["2.150", "2.151"]),
   },
 
