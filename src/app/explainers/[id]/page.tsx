@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { EXPLAINER_BY_ID, COURSE_ORDER, contentFor } from "@/content";
-import { ExplainerPlayer } from "@/components/explainer-player";
+import { ExplainerHost } from "@/components/explain/host";
 
 export function generateStaticParams() {
   // Build time: prerender every course's pages, not just the active one.
@@ -26,5 +26,5 @@ export default async function ExplainerPage({
   const { id } = await params;
   const explainer = EXPLAINER_BY_ID[id];
   if (!explainer) notFound();
-  return <ExplainerPlayer explainer={explainer} />;
+  return <ExplainerHost explainer={explainer} />;
 }
