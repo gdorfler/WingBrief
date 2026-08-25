@@ -39,7 +39,7 @@
  */
 
 import { useState } from "react";
-import { AngleArc, Datum, GrammarDefs, Layer, PulseRing, ROLE_STROKE, Tag, Vector } from "./grammar";
+import { AngleArc, Datum, Layer, PulseRing, ROLE_STROKE, Tag, Vector } from "./grammar";
 import { PredictionGate, SceneIdea, Stage, StageChip } from "./stage";
 
 /* ------------------------------------------------------------------ */
@@ -480,7 +480,6 @@ function Drawing({
       role="img"
       aria-label={`Pitch ${pitch} degrees, flight path ${path} degrees, angle of attack ${Math.round(aoa)} degrees`}
     >
-      <GrammarDefs />
       <Geometry F={F} pitch={pitch} path={path} show={scene.show} lead={scene.lead} look={scene.look} />
       {blocks && <ValueBlocks F={F} pitch={pitch} aoa={aoa} show={scene.show} lead={scene.lead} />}
       {note && <CompareCaption F={F} label={note.label} aoa={note.aoa} tone={note.tone} />}

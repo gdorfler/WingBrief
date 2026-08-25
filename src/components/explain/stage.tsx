@@ -18,6 +18,7 @@
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import { cn } from "../ui";
+import { GrammarSprite } from "./grammar";
 
 /* ------------------------------------------------------------------ */
 /* Stage                                                               */
@@ -34,6 +35,7 @@ export function Stage({
 }) {
   return (
     <div className={cn("relative isolate flex min-h-0 flex-1 flex-col overflow-hidden bg-surface", className)}>
+      <GrammarSprite />
       {/* From sm up the caption floats over the stage, so the drawing area
           reserves a band for it. Without this a scene that genuinely fills its
           frame — the two-up comparison — gets its own numbers covered up. */}

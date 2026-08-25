@@ -29,7 +29,7 @@
  */
 
 import { useState } from "react";
-import { GrammarDefs, PulseRing } from "./grammar";
+import { PulseRing } from "./grammar";
 import { PredictionGate, SceneIdea, Stage, StageChip } from "./stage";
 
 /* ------------------------------------------------------------------ */
@@ -474,7 +474,6 @@ export function EngineFlowExplainer({
           role="img"
           aria-label={`Air parcel at the ${at} station`}
         >
-          <GrammarDefs />
 
           <g className="wb-cam" style={{ transition: "transform 720ms cubic-bezier(0.22, 1, 0.36, 1)" }}>
             <EngineBody focus={s.focus} shaft={s.shaft} />

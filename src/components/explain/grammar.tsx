@@ -95,7 +95,28 @@ export function Layer({
 /* Marks                                                               */
 /* ------------------------------------------------------------------ */
 
-/** Arrowheads, one per role, registered once per SVG. */
+/**
+ * Arrowheads and filters, registered ONCE for the whole page.
+ *
+ * These used to live inside each explainer's <svg>. Responsive explainers draw
+ * two SVGs and hide one with display:none, and a marker referenced by id
+ * resolves to the FIRST match in the document — which was the hidden one. The
+ * markers silently stopped painting, so every arrow in the visible drawing lost
+ * its head. A single always-rendered sprite cannot have that problem.
+ */
+export function GrammarSprite() {
+  return (
+    <svg
+      aria-hidden
+      focusable="false"
+      style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
+    >
+      <GrammarDefs />
+    </svg>
+  );
+}
+
+/** The defs themselves. Rendered by GrammarSprite; do not add to a scene SVG. */
 export function GrammarDefs() {
   return (
     <defs>
