@@ -401,12 +401,19 @@ describe(`${NAME} · enabling objective matrix`, () => {
   const matrix = buildEoMatrix(course);
 
   it("maps the enabling objectives its sources actually publish", () => {
-    // Aerodynamics draws on the trainee guide, which lists 198 unit-2 EOs plus
-    // 29 unit-3 EOs. The Engines lectures publish far fewer, and units e6–e7
-    // come only from the condensed notes, which state no EOs at all. Flight
-    // Rules publishes a contiguous block, 2.345 through 2.386 — so the floor
-    // is per course rather than one shared number.
-    const floor = { aero: 180, engines: 25, frr: 42, weather: 81, nav: 37 }[course];
+    // Each floor is the count its own sources publish, so the number is a
+    // real assertion rather than a placeholder:
+    //
+    //   aero    — the trainee guide, 227
+    //   engines — nine SRC lectures, 65 between them
+    //   frr     — a contiguous block, 2.345 through 2.386
+    //   weather — the trainee guide, 98
+    //   nav     — the trainee guide, 37
+    //
+    // The Engines figure was 25 for as long as only three of the nine lecture
+    // PDFs were available; the other six covered units e6 and e7 and were
+    // mapped from the condensed notes with no EO claimed at all.
+    const floor = { aero: 227, engines: 65, frr: 42, weather: 98, nav: 37 }[course];
     expect(matrix.length).toBeGreaterThanOrEqual(floor);
   });
 

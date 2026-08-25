@@ -4,6 +4,12 @@ const L203: SourceReference = {
   document: "Compressor Stalls",
   chapter: "Compressor Stalls",
 };
+/** is the authority for the accessory, starter and ignition block. */
+const L209: SourceReference = {
+  document: "Accessory, Starter and Ignition Systems",
+  chapter: "Accessory, Starter and Ignition Systems",
+};
+
 const NOTES = (chapter: string): SourceReference => ({
   document: "Engines Condensed Notes",
   chapter,
@@ -300,7 +306,7 @@ export const LESSONS_B: Lesson[] = [
     subtitle: "Bypass ratio and TSFC",
     estimatedMinutes: 6,
     mapIcon: "eng-turbofan",
-    enablingObjectives: [],
+    enablingObjectives: ["4.1", "4.2", "4.3", "4.4", "4.12", "4.13"],
     conceptIds: ["e-turbojet", "e-turbofan", "e-tsfc"],
     masteryThreshold: 0.75,
     screens: [
@@ -380,7 +386,7 @@ export const LESSONS_B: Lesson[] = [
     subtitle: "Gear boxes, torque and 90/10",
     estimatedMinutes: 7,
     mapIcon: "eng-prop",
-    enablingObjectives: [],
+    enablingObjectives: ["4.5", "4.6", "4.7", "4.8", "4.9", "4.10"],
     conceptIds: [
       "e-turboprop",
       "e-rgb",
@@ -476,7 +482,7 @@ export const LESSONS_B: Lesson[] = [
     subtitle: "Pistons, crankshafts and governors",
     estimatedMinutes: 4,
     mapIcon: "eng-piston",
-    enablingObjectives: [],
+    enablingObjectives: ["1.6", "4.11"],
     conceptIds: ["e-recip-propulsion", "e-otto"],
     masteryThreshold: 0.7,
     screens: [
@@ -534,7 +540,7 @@ export const LESSONS_B: Lesson[] = [
     subtitle: "Tank to nozzle",
     estimatedMinutes: 7,
     mapIcon: "eng-fuel",
-    enablingObjectives: [],
+    enablingObjectives: ["7.4", "7.6", "7.7"],
     conceptIds: ["e-fuel-path", "e-boost-pump", "e-fcu", "e-fuel-manifolds"],
     masteryThreshold: 0.75,
     screens: [
@@ -606,7 +612,7 @@ export const LESSONS_B: Lesson[] = [
     subtitle: "Flash points and time limits",
     estimatedMinutes: 5,
     mapIcon: "eng-fuel-type",
-    enablingObjectives: [],
+    enablingObjectives: ["7.1", "7.2", "7.3", "7.5"],
     conceptIds: ["e-fuel-types", "e-thrust-ratings"],
     masteryThreshold: 0.75,
     screens: [
@@ -663,8 +669,10 @@ export const LESSONS_B: Lesson[] = [
     subtitle: "Pressure, scavenge, breather",
     estimatedMinutes: 6,
     mapIcon: "eng-oil",
-    enablingObjectives: [],
+    enablingObjectives: ["8.1", "8.2", "8.3", "8.4"],
     conceptIds: [
+      "e-lubricant-function",
+      "e-synthetic-oil",
       "e-oil-sumps",
       "e-oil-subsystems",
       "e-oil-pump",
@@ -735,8 +743,7 @@ export const LESSONS_B: Lesson[] = [
       "eq-e7-010",
       "eq-e7-011",
       "eq-e7-012",
-      "eq-e7-013",
-    ],
+      "eq-e7-013", "eq-lub-001", "eq-lub-002", "eq-lub-003", "eq-lub-004", "eq-lec-012", "eq-lec-013"],
     memorize: ["Pressure, scavenge, breather. Scavenge is bigger."],
     sourceReferences: [NOTES("Lubrication")],
     labIds: ["elab-systems"],
@@ -745,12 +752,12 @@ export const LESSONS_B: Lesson[] = [
     id: "el28-starting-ignition",
     unit: "e7",
     index: 28,
-    title: "Starting and Ignition",
-    subtitle: "30% RPM and four bad starts",
+    title: "Starting the Engine",
+    subtitle: "30% RPM, four bad starts, and two ways to spin it up",
     estimatedMinutes: 6,
     mapIcon: "eng-start",
-    enablingObjectives: [],
-    conceptIds: ["e-start-sequence", "e-abnormal-starts", "e-starters", "e-igniters", "e-bleed-air"],
+    enablingObjectives: ["9.3", "9.4", "9.5", "9.6"],
+    conceptIds: ["e-start-sequence", "e-abnormal-starts", "e-starters"],
     masteryThreshold: 0.8,
     screens: [
       {
@@ -783,12 +790,23 @@ export const LESSONS_B: Lesson[] = [
         line: "Step the start. The 30% gate is what separates a start from a hot start.",
       },
       {
+        kind: "compare",
+        headline: "Two starters, chosen by engine size",
+        line: "Both spin the compressor up to self-accelerating speed. They differ in what does the spinning.",
+        columns: ["DC electric motor starter", "Air turbine starter"],
+        rows: [
+          { label: "Used on", a: "Smaller engines", b: "Larger gas turbine engines" },
+          { label: "Mechanism", a: "Motor mechanically connected to the compressor", b: "Small geared air turbine attached to the engine" },
+          { label: "Supplied by", a: "Battery, APU or external power", b: "Delivered air" },
+        ],
+      },
+      {
         kind: "anchor",
         headline: "Know cold",
         statements: [
           "Fuel flows after 30% RPM",
           "Hung = RPM low + temp rising · False = RPM low + temp OK",
-          "Wet start is the most dangerous",
+          "Wet start is the most dangerous — it did not light, and it still might",
           "DC motor starter on small engines, air turbine starter on large ones",
         ],
       },
@@ -796,21 +814,107 @@ export const LESSONS_B: Lesson[] = [
       { kind: "question", questionId: "eq-e7-015" },
       { kind: "question", questionId: "eq-e7-016" },
       { kind: "question", questionId: "eq-e7-017" },
+      { kind: "question", questionId: "eq-lec-008" },
+      { kind: "question", questionId: "eq-lec-009" },
     ],
-    questionIds: ["eq-e7-014", "eq-e7-015", "eq-e7-016", "eq-e7-017", "eq-cov-002", "eq-cov-003"],
+    questionIds: [
+      "eq-e7-014", "eq-e7-015", "eq-e7-016", "eq-e7-017",
+      "eq-cov-002", "eq-cov-003", "eq-lec-008", "eq-lec-009",
+    ],
     memorize: ["Fuel at 30% RPM. Wet start is the dangerous one."],
     sourceReferences: [NOTES("Starting and Ignition")],
     labIds: ["elab-malfunction"],
   },
   {
-    id: "el29-hydraulics",
+    id: "el28b-accessories-and-ignition",
     unit: "e7",
     index: 29,
+    title: "Accessories and Ignition",
+    subtitle: "What else the engine drives, and what lights the fire",
+    estimatedMinutes: 6,
+    mapIcon: "eng-start",
+    enablingObjectives: ["9.1", "9.2", "9.7"],
+    conceptIds: ["e-bleed-air", "e-igniters"],
+    masteryThreshold: 0.8,
+    screens: [
+      {
+        kind: "hook",
+        headline: "The engine does more than make thrust",
+        line: "It also runs the environmental system, pressurises the cabin, de-ices the inlet and turns the generator — by two routes, and only two.",
+      },
+      {
+        kind: "compare",
+        headline: "Two ways to drive an accessory",
+        line: "Every accessory on the aircraft is on one of these two lines.",
+        columns: ["Compressor bleed air", "Mechanically driven"],
+        rows: [
+          { label: "Taken from", a: "Air bled off the compressor", b: "The accessory gear box around the compressor" },
+          { label: "Driven by", a: "The air itself", b: "Gearing off the main shaft" },
+          { label: "Runs", a: "Environmental systems, cabin pressurisation, engine anti-ice", b: "Tachometer, hydraulic pumps, alternator or generator" },
+        ],
+      },
+      {
+        kind: "model",
+        headline: "Where the accessory gear box sits",
+        diagram: { id: "eng-cutaway", props: { highlight: "compressor" } },
+        line: "Mounted around the compressor, so it can be gear driven off the main shaft.",
+      },
+      {
+        kind: "rule",
+        headline: "Why the ignition system is more powerful than it looks",
+        rule:
+          "Today's military aircraft use a high heat-intensity capacitor ignition system. The high heat discharge ensures ignition of the low-volatility fuel at all temperatures and high altitudes, and it also prevents the igniters from fouling.",
+        appliesWhen: [
+          "Cold conditions, where a weaker spark would not light the fuel",
+          "High altitude, where there is less air to support combustion",
+        ],
+        watchFor:
+          "The same low volatility that makes JP-5 safe to carry aboard ship is what makes a powerful igniter necessary.",
+        authority: "Systems lecture",
+      },
+      {
+        kind: "compare",
+        headline: "Two spark igniters",
+        columns: ["Annular-gap", "Constrained-gap"],
+        rows: [
+          { label: "Position", a: "Protrudes INTO the chamber", b: "Extends the spark BEYOND the liner face" },
+          { label: "Temperature", a: "Hotter", b: "Runs cooler" },
+          { label: "Prevalence", a: "Most common", b: "Less common" },
+        ],
+      },
+      {
+        kind: "anchor",
+        headline: "Know cold",
+        statements: [
+          "Accessories run on bleed air OR off the accessory gear box",
+          "Bleed air: environmental, cabin pressurisation, engine anti-ice",
+          "Gear box: tachometer, hydraulic pumps, alternator and generator",
+          "High heat-intensity capacitor ignition — lights low-volatility fuel, resists fouling",
+          "Annular-gap protrudes in and is common · constrained-gap reaches out and runs cooler",
+        ],
+      },
+      { kind: "question", questionId: "eq-lec-007" },
+      { kind: "question", questionId: "eq-lec-010" },
+      { kind: "question", questionId: "eq-lec-011" },
+      { kind: "question", questionId: "eq-e7-018" },
+    ],
+    questionIds: ["eq-lec-007", "eq-lec-010", "eq-lec-011", "eq-e7-018"],
+    memorize: [
+      "Bleed air or accessory gear box — those are the only two.",
+      "Annular-gap in and common. Constrained-gap out and cooler.",
+    ],
+    sourceReferences: [L209],
+    labIds: ["elab-systems"],
+  },
+  {
+    id: "el29-hydraulics",
+    unit: "e7",
+    index: 30,
     title: "Hydraulic Systems",
     subtitle: "Pascal's law and the components",
     estimatedMinutes: 6,
     mapIcon: "eng-hydraulic",
-    enablingObjectives: [],
+    enablingObjectives: ["5.1", "5.2", "5.3"],
     conceptIds: ["e-pascal", "e-hydraulic-pumps", "e-accumulator", "e-hydraulic-components"],
     masteryThreshold: 0.75,
     screens: [
@@ -874,12 +978,12 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "el30-electrical",
     unit: "e7",
-    index: 30,
+    index: 31,
     title: "Electrical Systems",
     subtitle: "Sources, conversion and buses",
     estimatedMinutes: 6,
     mapIcon: "eng-electrical",
-    enablingObjectives: [],
+    enablingObjectives: ["6.1", "6.2"],
     conceptIds: ["e-ac-dc", "e-power-sources", "e-csd", "e-buses"],
     masteryThreshold: 0.75,
     screens: [

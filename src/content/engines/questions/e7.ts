@@ -5,6 +5,12 @@ const NOTES = (chapter: string): SourceReference => ({
   chapter,
 });
 
+/** is now the authority for the lubrication block. */
+const L208: SourceReference = {
+  document: "Lubricants and Lubrication Systems",
+  chapter: "Lubricants and Lubrication Systems",
+};
+
 /**
  * Unit e7 — Aircraft Systems.
  *
@@ -454,6 +460,82 @@ export const E7_QUESTIONS: Question[] = [
     knowCold: "Tank → boost → filter → engine pump → FCU → manifolds → nozzles.",
     difficulty: 2,
     source: NOTES("Fuel Systems"),
+  },
+  /* ---------------- lubricant fundamentals ---------------- */
+  {
+    id: "eq-lub-001",
+    type: "mcq",
+    unit: "e7",
+    conceptIds: ["e-lubricant-function"],
+    prompt: "The PRIMARY function of an aircraft lubricant is to",
+    options: [
+      "carry heat away from the bearings",
+      "reduce friction caused by metal-to-metal contact",
+      "seal the bearing sump against leakage",
+      "trap metal particles before they reach the filter",
+    ],
+    answer: 1,
+    explanation:
+      "Reducing friction from metal-to-metal contact is the primary function. The oil provides a film that lets surfaces glide over one another, and without it the engine deteriorates mechanically. Carrying heat away is real, but it is not the headline answer.",
+    knowCold: "Primary function: reduce friction from metal-to-metal contact.",
+    difficulty: 2,
+    source: L208,
+  },
+  {
+    id: "eq-lub-002",
+    type: "mcq",
+    unit: "e7",
+    conceptIds: ["e-lubricant-function"],
+    prompt:
+      "Oil pressure is lost in flight and the film between two bearing surfaces breaks down. The immediate consequence is",
+    options: [
+      "a rise in oil quantity as the sump refills",
+      "metal-to-metal contact and mechanical deterioration",
+      "an increase in viscosity from the added heat",
+      "no effect until the oil temperature limit is exceeded",
+    ],
+    answer: 1,
+    explanation:
+      "The film is the whole mechanism. Lose it and the surfaces touch, which is precisely the friction the lubricant exists to prevent — and it is why a chip detector light matters long before an oil temperature limit is reached.",
+    knowCold: "No film → metal on metal → deterioration.",
+    difficulty: 3,
+    source: L208,
+  },
+  {
+    id: "eq-lub-003",
+    type: "spotTheTrap",
+    unit: "e7",
+    conceptIds: ["e-synthetic-oil"],
+    prompt:
+      '"Synthetic oils from two different manufacturers may be mixed provided both meet the same specification."',
+    options: ["True", "False"],
+    answer: 1,
+    explanation:
+      "False. Synthetic oils from different manufacturers should never be mixed or used indiscriminately in the same engine, and they are not compatible with mineral or petroleum base oils at all.",
+    knowCold: "Never mix synthetics from different makers. Never mix synthetic with mineral.",
+    difficulty: 3,
+    source: L208,
+  },
+  {
+    id: "eq-lub-004",
+    type: "mcq",
+    unit: "e7",
+    conceptIds: ["e-synthetic-oil"],
+    prompt: "Which is an ADVANTAGE of synthetic oil over a petroleum base oil?",
+    options: [
+      "Longer shelf life",
+      "Improved chemical stability at high temperatures",
+      "Non-corrosive when spilled",
+      "Compatible with mineral oils",
+    ],
+    answer: 1,
+    explanation:
+      "The advantages describe how the oil behaves HOT: lower volatility, less tendency to form coking deposits, and improved chemical stability at high temperature. The disadvantages describe how it behaves on the ground — very corrosive, blisters paint when spilled, limited shelf life.",
+    whyWrong:
+      "Shelf life and corrosion are both on the disadvantage list, which is what makes them tempting distractors.",
+    knowCold: "Synthetic advantages are all about heat. Disadvantages are all about handling.",
+    difficulty: 3,
+    source: L208,
   },
 ];
 

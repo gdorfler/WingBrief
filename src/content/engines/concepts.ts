@@ -3,11 +3,11 @@ import type { Concept, SourceReference } from "@/lib/types";
 /**
  * Engines concepts — the atoms mastery is tracked against.
  *
- * Provenance matters here. the engines lectures are the official lectures and are
- * authoritative for units e1–e5. The condensed notes are the only supplied
- * source covering engine types and the surrounding aircraft systems (e6–e7),
- * so those carry the notes as their document and no EO is claimed for them.
- * Nothing below states a number the sources do not.
+ * Provenance matters here. All nine SRC lectures are now available, so every
+ * concept below cites the lecture that actually publishes it and carries that
+ * lecture's enabling objectives — including units e6 and e7, which were built
+ * from the condensed notes for as long as the systems lectures were
+ * missing. Nothing below states a number the sources do not.
  */
 
 const L201 = (eo: string[]): SourceReference => ({
@@ -25,9 +25,35 @@ const L203 = (eo: string[]): SourceReference => ({
   chapter: "Compressor Stalls",
   eo,
 });
-const NOTES = (chapter: string): SourceReference => ({
-  document: "Engines Condensed Notes",
-  chapter,
+const L204 = (eo: string[]): SourceReference => ({
+  document: "Gas Turbine/Reciprocating Engine Types",
+  chapter: "Gas Turbine/Reciprocating Engine Types",
+  eo,
+});
+const L205 = (eo: string[]): SourceReference => ({
+  document: "Hydraulic Systems",
+  chapter: "Hydraulic Systems",
+  eo,
+});
+const L206 = (eo: string[]): SourceReference => ({
+  document: "Electrical Systems",
+  chapter: "Electrical Systems",
+  eo,
+});
+const L207 = (eo: string[]): SourceReference => ({
+  document: "Fuel Systems",
+  chapter: "Fuel Systems",
+  eo,
+});
+const L208 = (eo: string[]): SourceReference => ({
+  document: "Lubricants and Lubrication Systems",
+  chapter: "Lubricants and Lubrication Systems",
+  eo,
+});
+const L209 = (eo: string[]): SourceReference => ({
+  document: "Accessory, Starter and Ignition Systems",
+  chapter: "Accessory, Starter and Ignition Systems",
+  eo,
 });
 
 export const CONCEPTS: Concept[] = [
@@ -742,7 +768,7 @@ export const CONCEPTS: Concept[] = [
     name: "Turbojet",
     definition:
       "A gas turbine engine with an inlet and exhaust section that derives thrust from accelerating air through the engine. Advantages: flies higher and faster than other types, best high-end performance, lightest specific weight. Disadvantages: low propulsive efficiency at low airspeeds, high TSFC, longer takeoff requirements.",
-    source: NOTES("Engine Types"),
+    source: L204(["4.2"]),
   },
   {
     id: "e-turbofan",
@@ -754,7 +780,7 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "Airliners and cargo aircraft run HIGH bypass ratios; fighters run LOW bypass to behave more like a turbojet.",
     ],
-    source: NOTES("Engine Types"),
+    source: L204(["4.3", "4.4"]),
   },
   {
     id: "e-turboprop",
@@ -763,7 +789,7 @@ export const CONCEPTS: Concept[] = [
     definition:
       "A gas generator with a propeller driven by the turbine section: 90% of thrust comes from the propeller and 10% from the exhaust gases. Advantages: very high thrust at low airspeed, excellent takeoff and low altitude performance, superior for heavy loads off short runways, lowest TSFC of any gas turbine engine. Disadvantages: heavier and more complicated, speed limited to roughly 400–450 knots.",
     relationships: ["90% thrust from propeller · 10% from exhaust"],
-    source: NOTES("Engine Types"),
+    source: L204(["4.5", "4.6"]),
   },
   {
     id: "e-rgb",
@@ -772,7 +798,7 @@ export const CONCEPTS: Concept[] = [
     definition:
       "Converts high RPM, low torque turbine rotation to low RPM, high torque for the propeller. It prevents the propeller reaching supersonic tip speeds, which would lower efficiency.",
     relationships: ["Turbine RPM high, torque low → RGB → prop RPM low, torque high"],
-    source: NOTES("Engine Types"),
+    source: L204(["4.7"]),
   },
   {
     id: "e-turboprop-torquemeter",
@@ -780,7 +806,7 @@ export const CONCEPTS: Concept[] = [
     name: "Turboprop torquemeter",
     definition:
       "Connects the reduction gear box to the turbine and measures power output from the gas turbine engine. It comprises an inner torque shaft carrying the load from engine to propeller, and a reference outer shaft providing a stationary reference.",
-    source: NOTES("Engine Types"),
+    source: L204(["4.8"]),
   },
   {
     id: "e-propeller-ranges",
@@ -791,7 +817,7 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "Alpha is flight, beta is ground only. In beta the PCL is mechanically linked to blade pitch.",
     ],
-    source: NOTES("Engine Types"),
+    source: L204(["4.6"]),
   },
   {
     id: "e-turboshaft",
@@ -802,7 +828,7 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "Turboshaft gets NO propulsive thrust from exhaust; a turboprop still gets 10%.",
     ],
-    source: NOTES("Engine Types"),
+    source: L204(["4.9", "4.10"]),
   },
   {
     id: "e-tsfc",
@@ -811,7 +837,7 @@ export const CONCEPTS: Concept[] = [
     definition:
       "Thrust Specific Fuel Consumption is the amount of fuel required to produce one pound of thrust. Propulsive efficiency is the efficiency of converting kinetic energy to propulsive force. Bypass ratio is the ratio of bypassed air to air through the gas generator.",
     relationships: ["TSFC ↓ → more fuel efficient"],
-    source: NOTES("Engine Types"),
+    source: L204(["4.1", "4.12", "4.13"]),
   },
   {
     id: "e-recip-propulsion",
@@ -819,7 +845,7 @@ export const CONCEPTS: Concept[] = [
     name: "Reciprocating engine propulsion",
     definition:
       "All thrust comes from a propeller driven by crankshaft rotation, either directly connected or through a reduction gear box. A governor controls blade angle and propeller speed.",
-    source: NOTES("Engine Types"),
+    source: L204(["4.11"]),
   },
 
   /* ================= e7 · Aircraft Systems ================= */
@@ -830,7 +856,7 @@ export const CONCEPTS: Concept[] = [
     definition:
       "Fuel tank, boost pump, low pressure filter, engine-driven fuel pump, fuel control unit, pressurizing and dump valve, then the primary and secondary manifolds to the fuel nozzles.",
     relationships: ["Tank → boost pump → filter → engine-driven pump → FCU → P&D valve → manifolds → nozzles"],
-    source: NOTES("Fuel Systems"),
+    source: L207(["7.4"]),
   },
   {
     id: "e-boost-pump",
@@ -841,18 +867,18 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "The boost pump's critical job is preventing AERATION, not just moving fuel.",
     ],
-    source: NOTES("Fuel Systems"),
+    source: L207(["7.4"]),
   },
   {
     id: "e-fcu",
     unit: "e7",
     name: "Fuel Control Unit",
     definition:
-      "The brain of the fuel system, providing the fuel manifold with metered fuel. It senses compressor inlet temperature, RPM, turbine temperature (ITT) and PCL input to meet fuel-flow requirements for starting, acceleration, deceleration and stabilized operation.",
+      "The brain of the fuel system, providing the fuel manifold with metered fuel. It senses compressor inlet temperature, RPM, turbine temperature (ITT) and PCL input to meet fuel-flow requirements for starting, acceleration, deceleration and stabilized operation. Where an afterburner is fitted, the basic fuel system includes a separate afterburner FCU, which meters fuel to the afterburner nozzles — the spraybars.",
     commonTraps: [
       "In manual FCU operation the pilot must monitor ITT visually, and loses acceleration-limiting, RPM-limiting and governing protection.",
     ],
-    source: NOTES("Fuel Systems"),
+    source: L207(["7.4", "7.6", "7.7"]),
   },
   {
     id: "e-fuel-manifolds",
@@ -860,7 +886,7 @@ export const CONCEPTS: Concept[] = [
     name: "Primary and secondary manifolds",
     definition:
       "The primary manifold is smaller, letting fuel reach high pressure for a high degree of atomization during starting and altitude idling. The secondary manifold supplies fuel once engine RPM raises fuel pressure to a predetermined level.",
-    source: NOTES("Fuel Systems"),
+    source: L207(["7.4"]),
   },
   {
     id: "e-fuel-types",
@@ -872,7 +898,7 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "JP-5 is the shipboard fuel precisely because its flash point is HIGH (140 °F).",
     ],
-    source: NOTES("Fuel Systems"),
+    source: L207(["7.1", "7.2", "7.3"]),
   },
   {
     id: "e-thrust-ratings",
@@ -880,7 +906,7 @@ export const CONCEPTS: Concept[] = [
     name: "Thrust ratings",
     definition:
       "Based on allowable turbine inlet temperature. Normal thrust is produced at the maximum continuous turbine temperature with no time limit. Military thrust is at maximum turbine temperature for a limited time, roughly 30 minutes. Combat thrust uses the afterburner and is not based on turbine temperature limitations.",
-    source: NOTES("Fuel Systems"),
+    source: L207(["7.5"]),
   },
   {
     id: "e-oil-sumps",
@@ -888,7 +914,7 @@ export const CONCEPTS: Concept[] = [
     name: "Wet and dry sump",
     definition:
       "A wet sump stores oil in a tank internal to the engine, which makes cooling difficult and cannot adapt to unusual flight attitudes. A dry sump stores oil externally, allowing better cooling, a more streamlined engine and larger oil quantities.",
-    source: NOTES("Lubrication"),
+    source: L208(["8.4"]),
   },
   {
     id: "e-oil-subsystems",
@@ -897,7 +923,7 @@ export const CONCEPTS: Concept[] = [
     definition:
       "Pressure supplies oil to the engine and accessory gear box. Scavenge removes oil from bearings and accessory drives, circulates it through coolers and returns it to the tank. Breather uses compressor bleed air to pressurize the tank and engine, minimising leakage and ensuring proper spray patterns.",
     relationships: ["Pressure → scavenge → breather"],
-    source: NOTES("Lubrication"),
+    source: L208(["8.4"]),
   },
   {
     id: "e-oil-pump",
@@ -908,7 +934,7 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "Scavenge capacity is deliberately GREATER than pressure capacity.",
     ],
-    source: NOTES("Lubrication"),
+    source: L208(["8.4"]),
   },
   {
     id: "e-oil-contamination",
@@ -919,7 +945,7 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "Metal particles are the MOST COMMON contamination.",
     ],
-    source: NOTES("Lubrication"),
+    source: L208(["8.4"]),
   },
   {
     id: "e-chip-detector",
@@ -927,7 +953,7 @@ export const CONCEPTS: Concept[] = [
     name: "Magnetic chip detector",
     definition:
       "A magnetized metal plug in the scavenge oil path that illuminates a cockpit warning light once it collects enough metal particles.",
-    source: NOTES("Lubrication"),
+    source: L208(["8.4"]),
   },
   {
     id: "e-viscosity",
@@ -936,7 +962,7 @@ export const CONCEPTS: Concept[] = [
     definition:
       "Viscosity is the property of a fluid that resists force tending to make it flow, and it is inversely related to temperature. Squeeze film is a thin film of lubricant preventing metal-to-metal contact and dissipating heat; proper viscosity is required to form it.",
     relationships: ["Temperature ↑ → viscosity ↓"],
-    source: NOTES("Lubrication"),
+    source: L208(["8.3"]),
   },
   {
     id: "e-start-sequence",
@@ -945,7 +971,7 @@ export const CONCEPTS: Concept[] = [
     definition:
       "The starter engages until the engine attains self-accelerating speed, fuel flows after engine RPM reaches 30%, and ignition occurs when sufficient airflow supports combustion of the fuel/air mixture.",
     relationships: ["Starter → 30% RPM → fuel → ignition"],
-    source: NOTES("Starting and Ignition"),
+    source: L209(["9.3"]),
   },
   {
     id: "e-abnormal-starts",
@@ -957,7 +983,7 @@ export const CONCEPTS: Concept[] = [
       "Hung and false starts both stabilize RPM below normal. The difference is TEMPERATURE: hung is rising, false is within limits.",
       "Wet start is the MOST DANGEROUS abnormal start.",
     ],
-    source: NOTES("Starting and Ignition"),
+    source: L209(["9.4"]),
   },
   {
     id: "e-starters",
@@ -965,7 +991,7 @@ export const CONCEPTS: Concept[] = [
     name: "Engine starters",
     definition:
       "A DC electric motor starter is used on smaller engines, mechanically connected to the compressor with the battery supplying voltage. An air turbine starter is used on larger gas turbine engines, a small geared air turbine through which air is delivered to accelerate the compressor.",
-    source: NOTES("Starting and Ignition"),
+    source: L209(["9.5", "9.6"]),
   },
   {
     id: "e-igniters",
@@ -973,7 +999,7 @@ export const CONCEPTS: Concept[] = [
     name: "Spark igniters",
     definition:
       "The annular-gap igniter is most common, protruding into the chamber to provide an effective spark. The constrained-gap igniter extends the spark beyond the face of the chamber liner and operates at cooler temperatures.",
-    source: NOTES("Starting and Ignition"),
+    source: L209(["9.7"]),
   },
   {
     id: "e-bleed-air",
@@ -981,7 +1007,7 @@ export const CONCEPTS: Concept[] = [
     name: "Bleed air and accessories",
     definition:
       "Bleed air systems operate off compressor bleed air and power environmental systems, cabin pressurization and engine anti-icing. Mechanically driven accessories attach to the accessory gear box, gear driven off the main shaft, and include the tachometer, hydraulic pumps and alternator.",
-    source: NOTES("Starting and Ignition"),
+    source: L209(["9.1", "9.2"]),
   },
   {
     id: "e-pascal",
@@ -991,7 +1017,7 @@ export const CONCEPTS: Concept[] = [
       "Pressure applied to a liquid in a confined system is constant, P = F/A. Linear displacement is inversely proportional to the multiplied force: if output force is twice the input, output displacement is half the input.",
     formula: "P = \\frac{F}{A}",
     relationships: ["Force multiplied ×2 → displacement ÷2"],
-    source: NOTES("Hydraulic Systems"),
+    source: L205(["5.1", "5.2"]),
   },
   {
     id: "e-hydraulic-pumps",
@@ -1002,7 +1028,7 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "The constant displacement pump is the one that REQUIRES a pressure regulator/unloader valve.",
     ],
-    source: NOTES("Hydraulic Systems"),
+    source: L205(["5.3"]),
   },
   {
     id: "e-accumulator",
@@ -1010,7 +1036,7 @@ export const CONCEPTS: Concept[] = [
     name: "Accumulator",
     definition:
       "Compressed air or nitrogen separated from fluid by a diaphragm. It acts as a shock absorber, provides pressure for one-time emergency use, supports system pressure during peak operation, and maintains system pressure during shutdown together with the check valve.",
-    source: NOTES("Hydraulic Systems"),
+    source: L205(["5.3"]),
   },
   {
     id: "e-hydraulic-components",
@@ -1018,7 +1044,7 @@ export const CONCEPTS: Concept[] = [
     name: "Hydraulic components",
     definition:
       "The check valve allows one-way flow, preventing backflow. The pressure relief valve prevents pressure building up and bursting seals by returning fluid to the reservoir. The hydraulic fuse ensures a leak does not deplete the system. The selector control valve directs flow where needed. The actuator converts fluid power into mechanical force and motion.",
-    source: NOTES("Hydraulic Systems"),
+    source: L205(["5.3"]),
   },
   {
     id: "e-ac-dc",
@@ -1026,7 +1052,7 @@ export const CONCEPTS: Concept[] = [
     name: "AC and DC power",
     definition:
       "Alternating current alternates equally either side of base voltage and requires lower current loads, permitting lighter aircraft wiring and saving weight. Direct current is straight line voltage with heavier components and increased maintenance.",
-    source: NOTES("Electrical Systems"),
+    source: L206(["6.1"]),
   },
   {
     id: "e-power-sources",
@@ -1037,7 +1063,7 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "Inverter goes DC → AC. Transformer rectifier goes AC → DC. The exam swaps them.",
     ],
-    source: NOTES("Electrical Systems"),
+    source: L206(["6.2"]),
   },
   {
     id: "e-csd",
@@ -1045,7 +1071,7 @@ export const CONCEPTS: Concept[] = [
     name: "Constant Speed Drive",
     definition:
       "A hydro-mechanical linkage connecting engine and generator that converts the variable RPM from the engine to the constant speed output the generator needs.",
-    source: NOTES("Electrical Systems"),
+    source: L206(["6.2"]),
   },
   {
     id: "e-buses",
@@ -1056,7 +1082,38 @@ export const CONCEPTS: Concept[] = [
     commonTraps: [
       "Essential = flight safety. Primary = mission. Monitor/secondary = convenience.",
     ],
-    source: NOTES("Electrical Systems"),
+    source: L206(["6.2"]),
+  },
+  {
+    id: "e-lubricant-function",
+    unit: "e7",
+    name: "What a lubricant is for",
+    definition:
+      "The primary function of aircraft lubricants is to reduce friction caused by metal-to-metal contact. The lubricant provides a film that lets surfaces glide over one another with less friction, and lubrication is essential to avoid mechanical deterioration.",
+    relationships: [
+      "Film between the surfaces → less friction → less wear",
+      "No film → metal-to-metal contact → mechanical deterioration",
+    ],
+    commonTraps: [
+      "Reducing friction is the PRIMARY function. Carrying heat away matters too, but it is not the headline answer.",
+    ],
+    source: L208(["8.1"]),
+  },
+  {
+    id: "e-synthetic-oil",
+    unit: "e7",
+    name: "Synthetic lubricants",
+    definition:
+      "Today's military aircraft use synthetic oil. Synthetic oils from different manufacturers should never be mixed or used indiscriminately in the same engine, and they are not compatible with mineral or petroleum base oils. Advantages are lower volatility, less tendency to form coking deposits, and improved chemical stability at high temperatures. Disadvantages are that it is very corrosive, blisters or removes paint when spilled, and has a limited shelf life.",
+    relationships: [
+      "Lower volatility and better high-temperature stability → suits gas turbine temperatures",
+      "Very corrosive and blisters paint → a handling problem on the ground",
+    ],
+    commonTraps: [
+      "Never mix synthetic oils from different manufacturers, and never mix synthetic with mineral or petroleum base oil.",
+      "The advantages are about how the oil behaves HOT; the disadvantages are about how it behaves when it is spilled or stored.",
+    ],
+    source: L208(["8.2"]),
   },
 ];
 
