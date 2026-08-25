@@ -1112,8 +1112,15 @@ export const LESSONS_B: Lesson[] = [
     subtitle: "Why the nose always wants to go left",
     estimatedMinutes: 7,
     mapIcon: "rudder",
-    enablingObjectives: ["2.152", "2.153", "2.161"],
-    conceptIds: ["c-slip", "c-skid", "c-p-factor", "c-slipstream-swirl", "c-torque-gyro"],
+    enablingObjectives: ["2.152", "2.153", "2.161", "2.186"],
+    conceptIds: [
+      "c-slip",
+      "c-skid",
+      "c-p-factor",
+      "c-slipstream-swirl",
+      "c-torque-gyro",
+      "c-asymmetric-thrust",
+    ],
     masteryThreshold: 0.8,
     screens: [
       {
@@ -1179,6 +1186,8 @@ export const LESSONS_B: Lesson[] = [
     questionIds: [
       "q-u6-001", "q-u6-002", "q-u6-003", "q-u6-004", "q-u6-005",
       "q-u6-006", "q-u6-007", "q-u6-008",
+    
+      "q-ctl-023", "q-ctl-024",
     ],
     memorize: [
       "Slip: ball same side, nose outside. Skid: ball opposite, nose inside.",
@@ -1448,9 +1457,195 @@ export const LESSONS_B: Lesson[] = [
   },
 
   {
-    id: "l29-wake-turbulence",
+    id: "l28c-flight-controls",
     unit: "u6",
     index: 32,
+    title: "Flight Controls and Trim",
+    subtitle: "Three surfaces, three axes, and the tab that holds them",
+    estimatedMinutes: 7,
+    mapIcon: "vector",
+    enablingObjectives: ["2.117", "2.118"],
+    conceptIds: ["c-primary-controls", "c-trim-tabs", "c-t6b-trim"],
+    masteryThreshold: 0.8,
+    screens: [
+      {
+        kind: "hook",
+        headline: "Every control surface does the same thing: it changes the lift of the airfoil it is bolted to",
+        line: "Which axis that turns you about depends only on where the airfoil is.",
+      },
+      {
+        kind: "model",
+        headline: "The three primary controls",
+        diagram: { id: "control-surfaces", props: { highlight: "none" } },
+        bullets: [
+          "Elevator on the horizontal stabiliser → pitch, about the lateral axis",
+          "Ailerons on the outboard wing trailing edges → roll, about the longitudinal axis",
+          "Rudder on the vertical stabiliser → yaw, about the vertical axis",
+        ],
+      },
+      {
+        kind: "manipulate",
+        headline: "Pick a surface, get its axis",
+        widget: "ControlSurfacePicker",
+        line: "The confusion is never what an aileron is. It is which axis it turns you about.",
+      },
+      {
+        kind: "chain",
+        headline: "Stick forward, traced all the way through",
+        nodes: [
+          { label: "Stick forward", trend: "none" },
+          { label: "Elevator moves DOWN", trend: "down" },
+          { label: "Camber increases", trend: "up" },
+          { label: "Lift on the tail increases", trend: "up" },
+          { label: "Tail rises — nose pitches DOWN", trend: "down", emphasis: true },
+        ],
+        footnote:
+          "Ailerons work the same way in mirror image: stick left raises the left aileron for negative camber and downward lift, and lowers the right for more lift. The difference rolls you.",
+      },
+      {
+        kind: "manipulate",
+        headline: "Why a small tab can hold a big surface",
+        widget: "TrimTabSlider",
+        line: "Untrimmed, the pilot holds the moment. Trimmed, the tab does — with a much smaller force on a much longer arm.",
+      },
+      {
+        kind: "rule",
+        headline: "Trimming the T-6B",
+        rule:
+          "Aileron and elevator trim are set from switches on the control stick; rudder trim is on the PCL and is adjusted automatically by the trim aid device. Rudder trim compensates for prop wash and torque, which vary with power.",
+        appliesWhen: [
+          "Power increase or slower airspeed → RIGHT rudder trim",
+          "Power reduction or faster airspeed → LEFT rudder trim",
+          "Elevator trim UP at slower speeds, DOWN at higher speeds",
+        ],
+        watchFor:
+          "There are no aileron trim TABS adjustable in flight. Move the aileron trim switch and the ailerons themselves deflect. Power changes take precedence at low speeds.",
+        authority: "Aerodynamics Trainee Guide",
+      },
+      {
+        kind: "anchor",
+        headline: "Know Cold",
+        statements: [
+          "Elevator → pitch · Ailerons → roll · Rudder → yaw",
+          "Ailerons move in unison, in OPPOSITE directions",
+          "Deflected = still rolling. Centred = the bank holds",
+          "For TRIMMING, the tab moves OPPOSITE the control surface",
+          "Power up or slow down → RIGHT rudder trim",
+        ],
+      },
+      { kind: "question", questionId: "q-ctl-001" },
+      { kind: "question", questionId: "q-ctl-002" },
+      { kind: "question", questionId: "q-ctl-005" },
+      { kind: "question", questionId: "q-ctl-007" },
+      { kind: "question", questionId: "q-ctl-008" },
+    ],
+    questionIds: [
+      "q-ctl-001", "q-ctl-002", "q-ctl-003", "q-ctl-004",
+      "q-ctl-005", "q-ctl-006", "q-ctl-007", "q-ctl-008", "q-ctl-009",
+    ],
+    memorize: [
+      "Stick forward → elevator down → nose down",
+      "Trimming: tab opposite the surface, always",
+    ],
+    sourceReferences: [TG("Lift Production and Drag", ["2.117", "2.118"])],
+  },
+
+  {
+    id: "l28d-control-feel",
+    unit: "u6",
+    index: 33,
+    title: "Balance and Control Feel",
+    subtitle: "What the hinge line decides, and how feel gets manufactured",
+    estimatedMinutes: 7,
+    mapIcon: "stability",
+    enablingObjectives: ["2.119", "2.120", "2.121", "2.122", "2.123"],
+    conceptIds: [
+      "c-control-balancing",
+      "c-t6b-balancing",
+      "c-control-systems",
+      "c-artificial-feel",
+      "c-bobweight-downspring",
+    ],
+    masteryThreshold: 0.8,
+    screens: [
+      {
+        kind: "hook",
+        headline: "A control surface is balanced about its hinge line for three reasons",
+        line: "Regulate control pressure, prevent flutter, and give the aircraft stability when nobody is holding the stick.",
+      },
+      {
+        kind: "compare",
+        headline: "Two balances, two different points",
+        line: "Both are measured about the hinge line, which is exactly why they get confused.",
+        columns: ["Aerodynamic balance", "Mass balance"],
+        rows: [
+          { label: "Balances forces at", a: "The AERODYNAMIC CENTRE", b: "The CENTRE OF GRAVITY" },
+          { label: "Buys you", a: "Reasonable control pressure at high speed", b: "Control-free stability, no flutter" },
+          { label: "How", a: "Leading edge deflects into the airstream ahead of the hinge", b: "Weights placed forward of the hinge line" },
+          { label: "On the T-6B", a: "Shielded horns on elevator and rudder", b: "Weights in the aileron overhang" },
+        ],
+      },
+      {
+        kind: "manipulate",
+        headline: "Move the CG across the hinge line",
+        widget: "HingeLineSlider",
+        line: "Forward is the transport's choice, aft is the fighter's. The T-6B sits deliberately on the line.",
+      },
+      {
+        kind: "compare",
+        headline: "Three control systems",
+        line: "The question each one answers is whether the surface can move the stick.",
+        columns: ["Conventional", "Full power / fly-by-wire"],
+        rows: [
+          { label: "Connection", a: "Tubes, pulleys, cables, levers", b: "Hydraulic valves or electrical switches" },
+          { label: "Reversible", a: "Yes", b: "No" },
+          { label: "Feedback", a: "Natural", b: "Must be manufactured" },
+          { label: "Fitted to", a: "The T-6B", b: "Modern fighters and airliners" },
+        ],
+      },
+      {
+        kind: "manipulate",
+        headline: "The three tab types",
+        widget: "TabTypePicker",
+        line: "Servo helps you, anti-servo resists you, neutral does neither. Only one of them is on the T-6B rudder.",
+      },
+      {
+        kind: "anchor",
+        headline: "Know Cold",
+        statements: [
+          "Aerodynamic balance → aerodynamic centre. Mass balance → centre of gravity",
+          "Balance for: control pressure, flutter, control-free stability",
+          "T-6B: shielded horns, CG ON the hinge line",
+          "Conventional and boosted are reversible. Full power is not",
+          "Servo opposite and helps · anti-servo same and resists · neutral constant angle",
+          "Downsprings → low airspeed. Bobweight → manoeuvring flight",
+        ],
+      },
+      { kind: "question", questionId: "q-ctl-010" },
+      { kind: "question", questionId: "q-ctl-012" },
+      { kind: "question", questionId: "q-ctl-014" },
+      { kind: "question", questionId: "q-ctl-016" },
+      { kind: "question", questionId: "q-ctl-018" },
+      { kind: "question", questionId: "q-ctl-021" },
+    ],
+    questionIds: [
+      "q-ctl-010", "q-ctl-011", "q-ctl-012", "q-ctl-013", "q-ctl-014",
+      "q-ctl-015", "q-ctl-016", "q-ctl-017", "q-ctl-018", "q-ctl-019",
+      "q-ctl-020", "q-ctl-021", "q-ctl-022",
+    ],
+    memorize: [
+      "Aerodynamic balance = AC. Mass balance = CG.",
+      "Downsprings for speed, bobweight for g.",
+    ],
+    sourceReferences: [
+      TG("Lift Production and Drag", ["2.119", "2.120", "2.121", "2.122", "2.123"]),
+    ],
+  },
+
+  {
+    id: "l29-wake-turbulence",
+    unit: "u6",
+    index: 34,
     title: "Wake Turbulence",
     subtitle: "Heavy, slow, clean — and how to stay out of it",
     estimatedMinutes: 7,
@@ -1559,7 +1754,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "l30-wind-shear",
     unit: "u6",
-    index: 33,
+    index: 35,
     title: "Wind Shear",
     subtitle: "Increasing, decreasing, and the microburst trap",
     estimatedMinutes: 7,

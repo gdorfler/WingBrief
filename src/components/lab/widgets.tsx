@@ -2610,6 +2610,161 @@ export const WIDGETS: Record<string, WidgetSpec> = {
         ? "TEMPO is the only group that does not supersede anything. When its window closes, whatever was underneath comes back."
         : "Three groups, two questions each: how quickly does it arrive, and does it replace what came before?",
   },
+
+  ControlSurfacePicker: {
+    diagram: "control-surfaces",
+    controls: [
+      {
+        kind: "segmented",
+        key: "s",
+        label: "Surface",
+        initial: 0,
+        options: [
+          { value: 0, label: "All" },
+          { value: 1, label: "Elevator" },
+          { value: 2, label: "Ailerons" },
+          { value: 3, label: "Rudder" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ highlight: ["none", "elevator", "aileron", "rudder"][s.s] }),
+    readouts: (s) =>
+      [
+        [{ label: "Three surfaces", value: "Elevator, ailerons, rudder", tone: "neutral" as const }],
+        [
+          { label: "Axis", value: "Lateral", tone: "go" as const },
+          { label: "Motion", value: "Pitch", tone: "go" as const },
+          { label: "Stick forward", value: "Elevator down → nose down", tone: "brand" as const },
+        ],
+        [
+          { label: "Axis", value: "Longitudinal", tone: "brand" as const },
+          { label: "Motion", value: "Roll", tone: "brand" as const },
+          { label: "Watch", value: "They move in OPPOSITE directions", tone: "caution" as const },
+        ],
+        [
+          { label: "Axis", value: "Vertical", tone: "nogo" as const },
+          { label: "Motion", value: "Yaw", tone: "nogo" as const },
+          { label: "Right pedal", value: "Tail flies left → nose right", tone: "brand" as const },
+        ],
+      ][s.s],
+    note: (s) =>
+      s.s === 2
+        ? "Deflection commands a ROLL RATE, not a bank angle. Hold the stick over and it keeps rolling; centre it and the bank holds."
+        : "Each surface changes the lift of the airfoil it is attached to. Where that airfoil sits decides the axis.",
+  },
+
+  TrimTabSlider: {
+    diagram: "trim-tab-moment",
+    controls: [
+      {
+        kind: "toggle",
+        key: "trimmed",
+        label: "Trim tab deflected",
+        initial: 0,
+        onLabel: "Trimmed",
+        offLabel: "Untrimmed",
+        tone: "go",
+      },
+    ],
+    toProps: (s) => ({ trimmed: s.trimmed }),
+    readouts: (s) =>
+      s.trimmed === 1
+        ? [
+            { label: "Tab force", value: "Small", tone: "go" as const },
+            { label: "Tab moment arm", value: "LONG — it sits at the trailing edge", tone: "go" as const },
+            { label: "Sum of moments", value: "Zero — the surface holds", tone: "go" as const },
+            { label: "Pilot", value: "Hands off", tone: "go" as const },
+          ]
+        : [
+            { label: "Airflow force", value: "Large, close to the hinge", tone: "nogo" as const },
+            { label: "Moment", value: "Unopposed — pushes the surface to neutral", tone: "nogo" as const },
+            { label: "Pilot", value: "Must hold the stick", tone: "caution" as const },
+          ],
+    note: (s) =>
+      s.trimmed === 1
+        ? "Moment is force x arm. A small force far behind the hinge produces the same moment as a large force close to it — which is the whole trick."
+        : "Deflect the surface and the airflow immediately tries to put it back. Something has to oppose that, and until you trim, it is your arm.",
+  },
+
+  TabTypePicker: {
+    diagram: "tab-types",
+    controls: [
+      {
+        kind: "segmented",
+        key: "k",
+        label: "Tab type",
+        initial: 0,
+        options: [
+          { value: 0, label: "Servo" },
+          { value: 1, label: "Anti-servo" },
+          { value: 2, label: "Neutral" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ kind: ["servo", "antiservo", "neutral"][s.k] }),
+    readouts: (s) =>
+      [
+        [
+          { label: "Moves", value: "OPPOSITE the surface", tone: "go" as const },
+          { label: "Effect on the pilot", value: "Helps — easier to manoeuvre", tone: "go" as const },
+          { label: "Usually on", value: "Ailerons", tone: "neutral" as const },
+        ],
+        [
+          { label: "Moves", value: "SAME direction, faster", tone: "nogo" as const },
+          { label: "Effect on the pilot", value: "Resists — more force at full deflection", tone: "nogo" as const },
+          { label: "On the T-6B", value: "The rudder", tone: "brand" as const },
+        ],
+        [
+          { label: "Moves", value: "Holds a CONSTANT angle", tone: "brand" as const },
+          { label: "Effect on the pilot", value: "Neither helps nor resists", tone: "neutral" as const },
+          { label: "On the T-6B", value: "Elevator and ailerons", tone: "brand" as const },
+        ],
+      ][s.k],
+    note: (s) =>
+      s.k === 2
+        ? "Because a tab alone does not give the elevator the feel it needs, the T-6B adds two downsprings for low airspeed and a bobweight for manoeuvring flight."
+        : "A trimming tab and a servo tab both move opposite the surface. One holds the surface; the other lightens it. Same geometry, different job.",
+  },
+
+  HingeLineSlider: {
+    diagram: "hinge-line-balance",
+    controls: [
+      {
+        kind: "slider",
+        key: "cg",
+        label: "Control surface CG",
+        min: -1,
+        max: 1,
+        step: 1,
+        initial: 0,
+        format: (v) => (v < 0 ? "Forward of hinge" : v > 0 ? "Aft of hinge" : "On the hinge line"),
+        tone: "brand",
+      },
+    ],
+    toProps: (s) => ({ cg: s.cg }),
+    readouts: (s) =>
+      s.cg < 0
+        ? [
+            { label: "Control-free stability", value: "Greater", tone: "go" as const },
+            { label: "Response", value: "Slower", tone: "caution" as const },
+            { label: "Chosen by", value: "Transports and bombers", tone: "brand" as const },
+          ]
+        : s.cg > 0
+          ? [
+              { label: "Control-free stability", value: "Lower", tone: "nogo" as const },
+              { label: "Response", value: "Faster — the surface floats into the wind", tone: "go" as const },
+              { label: "Chosen by", value: "High-performance aircraft", tone: "brand" as const },
+            ]
+          : [
+              { label: "Control-free stability", value: "Balanced", tone: "brand" as const },
+              { label: "Response", value: "Balanced", tone: "brand" as const },
+              { label: "Chosen by", value: "The T-6B", tone: "go" as const },
+            ],
+    note: (s) =>
+      s.cg === 0
+        ? "Weights placed forward of the hinge line — in the shielded horn and leading edges — put the CG exactly on it. That technique is mass balancing."
+        : "This is a design trade, not a design error. Stability and response pull in opposite directions and the mission decides which one wins.",
+  },
 };
 
 /* ------------------------------------------------------------------ */

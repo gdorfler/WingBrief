@@ -135,6 +135,7 @@ import {
   MountainWave,
 } from "./weather";
 import { MetarDecode, TafDecode } from "./weather-products";
+import { ControlSurfaces, HingeLineBalance, TabTypes, TrimTabMoment } from "./controls";
 
 export type DiagramRenderer = (props: DiagramProps) => ReactElement;
 
@@ -211,6 +212,10 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
   "wake-vortex": WakeVortex,
   "wind-shear": WindShear,
   "stability-ball": StabilityBall,
+  "control-surfaces": ControlSurfaces,
+  "trim-tab-moment": TrimTabMoment,
+  "tab-types": TabTypes,
+  "hinge-line-balance": HingeLineBalance,
 
   /* ---- Engines ---- */
   "eng-cutaway": EngineCutaway,

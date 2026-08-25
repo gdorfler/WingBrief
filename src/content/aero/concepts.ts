@@ -1839,6 +1839,201 @@ export const CONCEPTS: Concept[] = [
       eo: ["2.197", "2.198"],
     },
   },
+  /* ================================================================ */
+  /* Flight controls, trim, balancing and control feel                 */
+  /* EOs 2.117–2.123, taught in the guide as Lesson 2.2 sections 15–19 */
+  /* ================================================================ */
+  {
+    id: "c-primary-controls",
+    unit: "u6",
+    name: "The three primary flight controls",
+    definition:
+      "Control surfaces let the pilot change the lift of the airfoil they are attached to. The elevator is on the trailing edge of the horizontal stabiliser and controls pitch about the lateral axis. The ailerons are on the outboard trailing edges of the wings and produce a rolling moment. The rudder is on the trailing edge of the vertical stabiliser and produces a yawing moment.",
+    relationships: [
+      "Stick forward → elevator DOWN → more camber → more lift → tail up → nose DOWN",
+      "Stick left → left aileron UP, right aileron DOWN → rolls left",
+      "Right rudder pedal → rudder right → tail flies left → nose yaws RIGHT",
+      "Ailerons deflected → the aircraft keeps rolling. Stick centred → rolling stops and the bank holds",
+    ],
+    commonTraps: [
+      "Ailerons move in unison in OPPOSITE directions. One goes up as the other goes down.",
+      "A stabilator is the whole horizontal stabiliser moving as one surface — F-15 and F/A-18, not the T-6B.",
+      "Spoilers do the opposite of an aileron: they DISRUPT airflow to REDUCE lift and drop that wing.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Lift Production and Drag",
+      eo: ["2.117"],
+    },
+  },
+  {
+    id: "c-trim-tabs",
+    unit: "u6",
+    name: "How a trim tab holds trimmed flight",
+    definition:
+      "A trim tab is attached to the trailing edge of a control surface. Deflect the elevator and airflow creates a force on it acting at a moment arm from the hinge line, producing a moment that tries to return it to neutral — which the pilot must hold. Moving the tab in the OPPOSITE direction creates a small force with a GREATER moment arm, producing a moment that exactly opposes it. Once the sum of the moments is zero the surface stays put.",
+    relationships: [
+      "Small force × long moment arm = the same moment as a large force × short arm",
+      "Sum of moments about the hinge line is zero → the surface holds, hands off",
+      "Move a control off its trimmed position and release it → the tab returns it",
+    ],
+    commonTraps: [
+      "For TRIMMING, the tab always moves OPPOSITE the control surface. Trim reduces the force required; it does not hold the aircraft's attitude by itself.",
+      "Trim is the PRIMARY purpose of a trim tab. Artificial feel is the second one.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Lift Production and Drag",
+      eo: ["2.118"],
+    },
+  },
+  {
+    id: "c-t6b-trim",
+    unit: "u6",
+    name: "Trimming the T-6B",
+    definition:
+      "Aileron and elevator trim are set from switches on the control stick; rudder trim is on the PCL. There are no aileron trim tabs adjustable in flight — the ailerons themselves move. Rudder trim is adjusted automatically by the trim aid device (TAD) and compensates for prop wash and torque, which vary with power.",
+    relationships: [
+      "Power INCREASE or slower airspeed → RIGHT rudder trim",
+      "Power reduction or faster airspeed → LEFT rudder trim",
+      "Elevator trim UP at slower speeds, DOWN at higher speeds",
+    ],
+    commonTraps: [
+      "Power changes take precedence at low speeds.",
+      "The T-6B has no in-flight aileron trim TAB; the aileron surface itself deflects when the switch is used.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Lift Production and Drag",
+      eo: ["2.118"],
+    },
+  },
+  {
+    id: "c-control-balancing",
+    unit: "u6",
+    name: "Aerodynamic and mass balancing",
+    definition:
+      "The forces acting at a control surface's aerodynamic centre and at its centre of gravity must be balanced about the hinge line, in order to regulate control pressure, prevent control flutter and provide control-free stability. Aerodynamic balance concerns the forces at the AERODYNAMIC CENTRE; mass balance concerns the forces at the CENTRE OF GRAVITY. Control-free means the pilot is not touching the controls.",
+    relationships: [
+      "Aerodynamic balance → keeps control pressures at high velocity within reasonable limits",
+      "Trailing edge deflects one way → leading edge deflects into the airstream forward of the hinge → that force reduces the effort required",
+      "CG forward of the hinge line → more control-free stability (transports, bombers)",
+      "CG on or aft of the hinge line → faster response, more manoeuvrable (high performance)",
+    ],
+    commonTraps: [
+      "Aerodynamic balance is about the AERODYNAMIC CENTRE. Mass balance is about the CENTRE OF GRAVITY. The two are different points and different problems.",
+      "Three purposes, not one: regulate control pressure, prevent flutter, and provide control-free stability.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Lift Production and Drag",
+      eo: ["2.119"],
+    },
+  },
+  {
+    id: "c-t6b-balancing",
+    unit: "u6",
+    name: "Balancing on the T-6B",
+    definition:
+      "For aerodynamic balance the T-6B uses shielded horns on the elevator and rudder. For mass balancing, weights are placed inside the control surface forward of the hinge line — in the shielded horn and leading edges — which puts the control surface CG exactly ON the hinge line. T-6B aileron mass balancing is achieved with weights in the overhang.",
+    relationships: [
+      "Shielded horns → aerodynamic balance, on the elevator and rudder",
+      "Weights forward of the hinge line → mass balance",
+      "CG on the hinge line → a deliberate balance between control response and stability",
+    ],
+    commonTraps: [
+      "The T-6B puts the CG ON the hinge line, not forward or aft of it. Forward is the transport choice; aft is the high-performance one.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Lift Production and Drag",
+      eo: ["2.120"],
+    },
+  },
+  {
+    id: "c-control-systems",
+    unit: "u6",
+    name: "The three control systems",
+    definition:
+      "Conventional controls transfer stick and pedal forces directly to the surfaces through push-pull tubes, pulleys, cables and levers; they are REVERSIBLE, so an external force on a surface moves the cockpit control and gives the pilot feedback. Power-boosted controls add hydraulic, pneumatic or electrical assistance and retain SOME reversibility. Full-power and fly-by-wire systems have no direct connection at all and are NOT reversible, so they require artificial feel.",
+    relationships: [
+      "Reversibility → feedback → the pilot does not over-control and overstress the aircraft",
+      "Boost failure → still controllable, but control forces greatly increased",
+      "Not reversible → artificial feel must be manufactured",
+    ],
+    commonTraps: [
+      "The T-6B uses CONVENTIONAL controls.",
+      "In a full-power system, moving the stick moves the surface — but moving the surface does NOT move the stick. That is what irreversible means.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Lift Production and Drag",
+      eo: ["2.121"],
+    },
+  },
+  {
+    id: "c-artificial-feel",
+    unit: "u6",
+    name: "Artificial feel and the three tab types",
+    definition:
+      "Artificial feel is any device used to create or enhance control feedback as airspeed and acceleration change. Three types of trim tab provide it. A SERVO tab moves opposite the control surface and helps the pilot deflect it. An ANTI-SERVO tab moves in the same direction and requires more force to hold at full deflection. A NEUTRAL tab maintains a constant angle to the surface when it is deflected.",
+    relationships: [
+      "Servo → moves OPPOSITE → easier to manoeuvre → generally on ailerons",
+      "Anti-servo → moves the SAME direction, faster → more pedal, more resistance → T-6B rudder",
+      "Neutral → constant angle to the surface → T-6B elevator and ailerons",
+    ],
+    commonTraps: [
+      "A servo tab and a trimming tab both move opposite the surface, but they are doing different jobs: one lightens the control, the other holds it.",
+      "The T-6B rudder's anti-servo tab moves in the same direction at a FASTER rate than the rudder.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Lift Production and Drag",
+      eo: ["2.122"],
+    },
+  },
+  {
+    id: "c-bobweight-downspring",
+    unit: "u6",
+    name: "Bobweights and downsprings",
+    definition:
+      "The T-6B elevator uses a neutral trim tab, two downsprings and a bobweight to give the pilot artificial feel. The downsprings increase the force required to pull the stick aft at LOW AIRSPEEDS. The bobweight increases the force required to pull the stick aft during MANOEUVRING FLIGHT.",
+    relationships: [
+      "Downsprings → low airspeed",
+      "Bobweight → manoeuvring flight, where g is being pulled",
+    ],
+    commonTraps: [
+      "Both make the stick heavier to pull aft, but under different conditions. Downsprings answer to SPEED; the bobweight answers to ACCELERATION.",
+      "The T-6B elevator needs all three — neutral tab, two downsprings and a bobweight — because trim tabs alone do not give the desired feel.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Lift Production and Drag",
+      eo: ["2.123"],
+    },
+  },
+  {
+    id: "c-asymmetric-thrust",
+    unit: "u6",
+    name: "Asymmetric thrust",
+    definition:
+      "Any aircraft with more than one engine can have directional control problems if one engine fails. The thrust from the operating engine creates a yawing moment TOWARD the dead engine. The farther the engines sit from the longitudinal axis, the greater that moment.",
+    relationships: [
+      "Engine fails → operating engine yaws the aircraft TOWARD the dead one",
+      "Engines farther from the longitudinal axis → greater yawing moment",
+      "The yaw may be enough to cause PROVERSE roll",
+      "Full opposite RUDDER for the yaw · opposite AILERON for the proverse roll",
+    ],
+    commonTraps: [
+      "The yaw is toward the DEAD engine, not toward the working one.",
+      "Every multi-engine aircraft has a minimum directional control speed that must be flown to keep the vertical stabiliser effective after an engine failure.",
+    ],
+    source: {
+      document: TG,
+      chapter: "Performance and Maneuvering",
+      eo: ["2.186"],
+    },
+  },
 ];
 
 export const CONCEPT_BY_ID: Record<string, Concept> = Object.fromEntries(
