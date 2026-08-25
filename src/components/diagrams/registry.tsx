@@ -134,6 +134,7 @@ import {
   ProductTimeline,
   MountainWave,
 } from "./weather";
+import { MetarDecode, TafDecode } from "./weather-products";
 
 export type DiagramRenderer = (props: DiagramProps) => ReactElement;
 
@@ -257,6 +258,8 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
   "wx-station-model": StationModel,
   "wx-product-timeline": ProductTimeline,
   "wx-mountain-wave": MountainWave,
+  "wx-metar-decode": MetarDecode,
+  "wx-taf-decode": TafDecode,
 
   /* Gap-fill diagrams for lessons that previously had no visual. */
   "mass-weight-density": MassWeightDensity,

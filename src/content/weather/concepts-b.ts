@@ -159,7 +159,7 @@ export const CONCEPTS_B: Concept[] = [
     commonTraps: [
       "CAT is not a fifth cause. It describes turbulence occurring where there is no cloud to warn you.",
     ],
-    source: TG("Turbulence", ["2.246"]),
+    source: TG("Turbulence", ["2.255"]),
   },
   {
     id: "wx-mountain-wave",
@@ -309,5 +309,87 @@ export const CONCEPTS_B: Concept[] = [
       "Sierra, Tango and Zulu are reserved for the scheduled AIRMETs, which is why non-convective SIGMETs use other phonetic designators.",
     ],
     source: TG("Weather Products", ["2.277", "2.278"]),
+  },
+  /* ================= w10 · reading the coded reports ================= */
+  {
+    id: "wx-metar-groups",
+    unit: "w10",
+    name: "The METAR code groups",
+    definition:
+      "A METAR is positional: type of report, station identifier, date-time group, wind, visibility, runway visual range, present weather, sky condition, temperature and dew point, altimeter setting, then remarks. Wind is three digits of true direction then speed then KT. Sky condition is three letters of coverage then three digits of height in hundreds of feet AGL. Temperature and dew point are two-digit Celsius separated by a slash, prefixed M when below zero. The altimeter is A followed by four digits of inches of mercury.",
+    relationships: [
+      "Visibility below 7 SM → an obstruction to vision must also be reported",
+      "RVR is reported when visibility is 1 SM or less, or RVR is 6,000 ft or less",
+    ],
+    commonTraps: [
+      "The same four digits mean different things in different slots. Position is what tells you whether 011 is a cloud height or part of a time.",
+      "SCT000 is a partial obscuration, not a ceiling. The ceiling is the lowest BROKEN or OVERCAST layer.",
+    ],
+    source: TG("Weather Products", ["4.19"]),
+  },
+  {
+    id: "wx-metar-speci",
+    unit: "w10",
+    name: "METAR versus SPECI",
+    definition:
+      "METAR is the hourly routine scheduled observation, taken in the window from 55 to 59 minutes past the hour. SPECI is an unscheduled special observation containing the same elements, taken as soon as possible whenever critical data have changed from the previous observation. Two modifiers may follow the date-time group: COR for a corrected report, and AUTO for a fully automated observation with no human intervention.",
+    relationships: ["Routine and hourly → METAR", "Something changed → SPECI"],
+    commonTraps: [
+      "AUTO means nobody was involved. A manual observation using automatic sensors shows AO1 or AO2 in remarks with no AUTO after the time.",
+    ],
+    source: TG("Weather Products", ["4.18"]),
+  },
+  {
+    id: "wx-taf-change-groups",
+    unit: "w10",
+    name: "TAF change groups",
+    definition:
+      "FM marks a rapid, permanent change and carries every element of the forecast, superseding all previous lines. BECMG marks a slow permanent change, normally developing over about two hours and at most four, and carries only the elements that change — anything omitted carries over. TEMPO marks a temporary overlay between two times, affecting only the elements listed, after which the underlying forecast resumes. PROB gives a percentage chance and is a civilian group only.",
+    relationships: [
+      "FM → fast, permanent, all elements",
+      "BECMG → slow, permanent, only what changes",
+      "TEMPO → brief, NOT permanent, only what is listed",
+    ],
+    commonTraps: [
+      "TEMPO is the only change group that does not supersede anything. When its window closes the base forecast comes back.",
+      "USN and USMC stations do not use PROB.",
+    ],
+    source: TG("Weather Products", ["4.22"]),
+  },
+  {
+    id: "wx-taf-differences",
+    unit: "w10",
+    name: "Military, civil and international TAFs",
+    definition:
+      "Four differences separate a U.S. civil TAF from a U.S. military one. Civil stations report visibility in statute miles where military stations use metres. Civil stations include the date-time group of transmission before the forecast period. Civil stations may include a probability group. And where a military station amends, corrects or delays a forecast, it appends a remark to the last line rather than putting the modifier in the heading. Internationally, CAVOK — ceiling and visibility OK — appears, and is not used in U.S. military reporting.",
+    relationships: [
+      "9999 → visibility 7 miles or greater, i.e. unlimited",
+      "QNH____INS is the military altimeter group; civil stations generally do not forecast one",
+    ],
+    commonTraps: [
+      "Metres versus statute miles is the difference that changes the numbers rather than just the layout — 9000 on a military TAF is 6 miles, not 9,000 miles.",
+    ],
+    source: TG("Weather Products", ["4.21"]),
+  },
+  {
+    id: "wx-severe-weather-watch",
+    unit: "w10",
+    name: "Severe Weather Watch messages",
+    definition:
+      "A Severe Weather Watch bulletin defines an area and a period in which severe thunderstorms or tornadoes are expected to develop. It is a watch, not a warning: it says conditions are favourable for severe weather within the area, not that severe weather has been observed there.",
+    relationships: ["Watch → conditions are favourable", "Warning → it is happening"],
+    source: TG("Weather Products", ["4.31"]),
+  },
+  {
+    id: "wx-ground-icing",
+    unit: "w8",
+    name: "Ground icing hazards",
+    definition:
+      "Ice, frost or snow adhering to the airframe before takeoff disrupts the airflow over the wing in exactly the way in-flight ice does, but with no altitude in hand to recover. Even a thin layer of frost raises stall speed and reduces lift, which is why the surfaces must be clean before flight rather than merely mostly clean.",
+    relationships: ["Contamination before takeoff → lift down, stall speed up, at the worst moment"],
+    commonTraps: [
+      "Frost does not have to change the wing's shape to hurt it — roughening the surface alone is enough to disrupt the boundary layer.",
+    ],
+    source: TG("Icing", ["5.1"]),
   },
 ];

@@ -583,7 +583,7 @@ export const LESSONS_B: Lesson[] = [
     estimatedMinutes: 5,
     mapIcon: "wx-deice",
     enablingObjectives: [],
-    conceptIds: ["wx-icing-effects", "wx-icing-response"],
+    conceptIds: ["wx-icing-effects", "wx-icing-response", "wx-ground-icing"],
     masteryThreshold: 0.8,
     screens: [
       {
@@ -1098,6 +1098,7 @@ export const LESSONS_B: Lesson[] = [
       "wx-airmet",
       "wx-weather-briefing",
       "wx-advisory-identifiers",
+      "wx-severe-weather-watch",
     ],
     masteryThreshold: 0.85,
     screens: [

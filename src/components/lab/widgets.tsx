@@ -2540,6 +2540,76 @@ export const WIDGETS: Record<string, WidgetSpec> = {
     note: () =>
       "Observation, forecast, then two levels of warning. AIRMET is the moderate one and SIGMET the severe one — WA, WS, and WST for convective.",
   },
+
+  MetarGroupStepper: {
+    diagram: "wx-metar-decode",
+    controls: [
+      {
+        kind: "segmented",
+        key: "g",
+        label: "Group",
+        initial: 0,
+        options: [
+          { value: 0, label: "All" },
+          { value: 1, label: "Wind" },
+          { value: 2, label: "Vis" },
+          { value: 3, label: "Wx" },
+          { value: 4, label: "Sky" },
+          { value: 5, label: "T/Td" },
+          { value: 6, label: "Alt" },
+        ],
+      },
+    ],
+    toProps: (s) => ({
+      group: ["none", "wind", "vis", "weather", "sky", "temp", "altimeter"][s.g],
+    }),
+    readouts: (s) =>
+      [
+        [{ label: "Order", value: "Type, station, time, wind, vis, RVR, wx, sky, T/Td, altimeter", tone: "neutral" as const }],
+        [{ label: "27004KT", value: "From 270 true at 4 kt", tone: "brand" as const }, { label: "Format", value: "3 digits direction, then speed, then KT", tone: "neutral" as const }],
+        [{ label: "7/8SM", value: "Seven eighths of a statute mile", tone: "nogo" as const }, { label: "Under 7 SM", value: "An obstruction must also be reported", tone: "caution" as const }],
+        [{ label: "DZ FG", value: "Drizzle and fog", tone: "caution" as const }, { label: "Why here", value: "It is the obstruction the visibility demanded", tone: "neutral" as const }],
+        [{ label: "BKN011", value: "Broken at 1,100 ft AGL", tone: "nogo" as const }, { label: "Ceiling", value: "1,100 ft — lowest BKN or OVC", tone: "nogo" as const }, { label: "SCT000", value: "Partial obscuration, NOT a ceiling", tone: "caution" as const }],
+        [{ label: "19/18", value: "19 °C over 18 °C", tone: "brand" as const }, { label: "Spread", value: "1 °C — saturated, hence the fog", tone: "nogo" as const }],
+        [{ label: "A2997", value: "29.97 inHg", tone: "brand" as const }, { label: "Format", value: "Four digits: tens, units, tenths, hundredths", tone: "neutral" as const }],
+      ][s.g],
+    note: (s) =>
+      s.g === 4
+        ? "Ceiling is the lowest BROKEN or OVERCAST layer. SCT000 is a partial obscuration and does not count, which is the trap this report is built around."
+        : "A METAR is positional. The same four digits mean different things depending on which slot they sit in.",
+  },
+
+  TafChangeGroupPicker: {
+    diagram: "wx-taf-decode",
+    controls: [
+      {
+        kind: "segmented",
+        key: "line",
+        label: "Change group",
+        initial: 0,
+        options: [
+          { value: 0, label: "All" },
+          { value: 1, label: "Base" },
+          { value: 2, label: "FM" },
+          { value: 3, label: "BECMG" },
+          { value: 4, label: "TEMPO" },
+        ],
+      },
+    ],
+    toProps: (s) => ({ line: ["none", "base", "fm", "becmg", "tempo"][s.line] }),
+    readouts: (s) =>
+      [
+        [{ label: "The question", value: "How fast does it change, and does it stick?", tone: "neutral" as const }],
+        [{ label: "Valid", value: "26th 0900Z up to but NOT including 27th 0900Z", tone: "brand" as const }, { label: "9000", value: "Metres — 6 miles. Military TAFs use metres", tone: "caution" as const }],
+        [{ label: "Speed", value: "Fast", tone: "nogo" as const }, { label: "Sticks", value: "Yes — supersedes everything above", tone: "nogo" as const }, { label: "Carries", value: "ALL elements", tone: "neutral" as const }],
+        [{ label: "Speed", value: "Slow, over about 2 hours", tone: "caution" as const }, { label: "Sticks", value: "Yes", tone: "caution" as const }, { label: "Carries", value: "Only what changes; the rest carries over", tone: "neutral" as const }],
+        [{ label: "Speed", value: "Brief", tone: "brand" as const }, { label: "Sticks", value: "NO — the base forecast resumes after", tone: "go" as const }, { label: "Carries", value: "Only the listed elements", tone: "neutral" as const }],
+      ][s.line],
+    note: (s) =>
+      s.line === 4
+        ? "TEMPO is the only group that does not supersede anything. When its window closes, whatever was underneath comes back."
+        : "Three groups, two questions each: how quickly does it arrive, and does it replace what came before?",
+  },
 };
 
 /* ------------------------------------------------------------------ */
