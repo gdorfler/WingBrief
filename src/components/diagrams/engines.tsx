@@ -1631,7 +1631,7 @@ export function StartSequence(p: DiagramProps) {
         <text
           key={m.id}
           x={Math.min(Math.max(plot.sx(m.at), 46), 454)}
-          y={plot.y0 + 20 + (i % 2) * 16}
+          y={plot.y0 + 42 + (i % 2) * 16}
           textAnchor="middle"
           fontSize={9.3}
           fontWeight={750}
@@ -1705,7 +1705,10 @@ export function ElectricalBuses(p: DiagramProps) {
 /** Hydraulic circuit, Pascal's law made concrete. */
 export function HydraulicCircuit(p: DiagramProps) {
   const ratio = Math.max(1, Math.min(6, num(p.ratio, 3)));
-  const inputArea = 26;
+  // The piston height encodes area, and the tallest case (6x) has to fit
+  // between the fluid at y=140 and the load at y=64. At 26 the 3x case already
+  // overflowed, which drove the connecting rod to a negative height.
+  const inputArea = 11;
   const outputArea = inputArea * ratio;
   // Pascal: force scales with area, displacement scales inversely.
   const displacement = 1 / ratio;
@@ -1716,7 +1719,7 @@ export function HydraulicCircuit(p: DiagramProps) {
 
       <g>
         <rect x={78} y={140 - inputArea} width={44} height={inputArea} fill="var(--color-surface)" stroke={NAVY} strokeWidth={2} />
-        <rect x={92} y={64} width={16} height={140 - inputArea - 64} fill={MUTED} />
+        <rect x={92} y={64} width={16} height={Math.max(0, 140 - inputArea - 64)} fill={MUTED} />
         <text x={100} y={56} textAnchor="middle" fontSize={10} fontWeight={750} fill={NAVY}>
           Input
         </text>
@@ -1727,7 +1730,7 @@ export function HydraulicCircuit(p: DiagramProps) {
 
       <g>
         <rect x={314} y={140 - outputArea} width={72} height={outputArea} fill="var(--color-surface)" stroke={NAVY} strokeWidth={2} />
-        <rect x={342} y={64} width={16} height={140 - outputArea - 64} fill={MUTED} />
+        <rect x={342} y={64} width={16} height={Math.max(0, 140 - outputArea - 64)} fill={MUTED} />
         <text x={350} y={56} textAnchor="middle" fontSize={10} fontWeight={750} fill={NAVY}>
           Output
         </text>

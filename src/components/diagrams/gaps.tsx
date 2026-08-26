@@ -84,8 +84,8 @@ export function StabilityTrade(p: DiagramProps) {
       <g transform={`translate(250 150) rotate(${angle})`}>
         <rect x={-190} y={-6} width={380} height={12} rx={6} fill="var(--color-surface-3)" stroke={NAVY} strokeWidth={2} />
         <g transform="translate(-135 -46)">
-          <rect x={-62} y={-22} width={124} height={44} rx={10} fill="color-mix(in srgb, var(--color-brand) 14%, transparent)" stroke={BRAND} strokeWidth={2} />
-          <text x={0} y={-2} textAnchor="middle" fontSize={11.5} fontWeight={800} fill={BRAND}>
+          <rect x={-84} y={-24} width={168} height={48} rx={10} fill="color-mix(in srgb, var(--color-brand) 14%, transparent)" stroke={BRAND} strokeWidth={2} />
+          <text x={0} y={-5} textAnchor="middle" fontSize={11.5} fontWeight={800} fill={BRAND}>
             STABILITY
           </text>
           <text x={0} y={13} textAnchor="middle" fontSize={9} fontWeight={650} fill={MUTED}>
@@ -93,8 +93,8 @@ export function StabilityTrade(p: DiagramProps) {
           </text>
         </g>
         <g transform="translate(135 -46)">
-          <rect x={-70} y={-22} width={140} height={44} rx={10} fill="color-mix(in srgb, var(--color-caution) 16%, transparent)" stroke={CAUTION} strokeWidth={2} />
-          <text x={0} y={-2} textAnchor="middle" fontSize={11.5} fontWeight={800} fill={CAUTION}>
+          <rect x={-88} y={-24} width={176} height={48} rx={10} fill="color-mix(in srgb, var(--color-caution) 16%, transparent)" stroke={CAUTION} strokeWidth={2} />
+          <text x={0} y={-5} textAnchor="middle" fontSize={11.5} fontWeight={800} fill={CAUTION}>
             MANEUVERABILITY
           </text>
           <text x={0} y={13} textAnchor="middle" fontSize={9} fontWeight={650} fill={MUTED}>

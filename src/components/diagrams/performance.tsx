@@ -182,7 +182,7 @@ export function PowerCurves(p: DiagramProps) {
         color={NAVY}
         width={3}
         label="P required"
-        labelAt={{ x: plot.sx(V_MAX * 0.76), y: plot.sy(Math.min(yMax * 0.9, powerRequired(V_MAX * 0.76, cfg))) - 10 }}
+        labelAt={{ x: plot.sx(V_MAX * 0.93), y: plot.sy(Math.min(yMax * 0.9, powerRequired(V_MAX * 0.93, cfg))) - 12 }}
       />
 
       {showAvailable && (

@@ -312,7 +312,10 @@ export function AltimeterError(p: DiagramProps) {
       <text x={444} y={cfg.trueY + 4} textAnchor="end" fontSize={9.5} fontWeight={800} fill={cfg.tone} opacity={0.001}>
         .
       </text>
-      <text x={60} y={cfg.trueY - 8} fontSize={9.5} fontWeight={800} fill={cfg.tone}>
+      {/* Opposite end of the line from INDICATED: on a standard day the two
+          lines coincide, and two labels stacked on the same left margin was
+          unreadable in exactly the frame that says they agree. */}
+      <text x={440} y={cfg.trueY - 8} textAnchor="end" fontSize={9.5} fontWeight={800} fill={cfg.tone}>
         TRUE — where you actually are
       </text>
 

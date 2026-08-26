@@ -379,7 +379,7 @@ export function SlipSkid(p: DiagramProps) {
       <ArrowDefs colors={{ path: MUTED }} />
 
       <path d={`M40 ${cy + 80} Q${cx} ${cy - 96} ${cx + 130} ${cy + 48}`} fill="none" stroke={MUTED} strokeWidth={2} strokeDasharray="6 5" />
-      <text x={54} y={cy + 98} fill={MUTED} fontSize={9.5} fontWeight={700}>
+      <text x={46} y={cy + 72} fill={MUTED} fontSize={9.5} fontWeight={700}>
         flight path
       </text>
 

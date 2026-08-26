@@ -683,7 +683,7 @@ export function TacanFix(props: DiagramProps) {
     <Diagram title="Plotting a TACAN position fix">
       <Paper />
       <line x1={cx} y1={20} x2={cx} y2={286} stroke={GRID} strokeWidth={1.2} />
-      <Label x={cx + 5} y={30} size={9} fill={PENCIL}>
+      <Label x={cx + 5} y={48} size={9} fill={PENCIL}>
         TRUE N
       </Label>
 
@@ -712,7 +712,7 @@ export function TacanFix(props: DiagramProps) {
         strokeDasharray="6 4"
         opacity={stage === "true" ? 0.45 : 1}
       />
-      <Label x={magEnd.x + 4} y={magEnd.y + 4} size={10} fill="#d92d20">
+      <Label x={magEnd.x + 6} y={magEnd.y - 12} size={10} fill="#d92d20">
         {radial}° magnetic
       </Label>
 
@@ -721,7 +721,7 @@ export function TacanFix(props: DiagramProps) {
           <line x1={cx} y1={cy} x2={trueEnd.x} y2={trueEnd.y} className="plot-line" strokeWidth={2.2} />
           <circle cx={trueEnd.x} cy={trueEnd.y} r={5} fill="none" stroke={PLOT} strokeWidth={2} />
           <circle cx={trueEnd.x} cy={trueEnd.y} r={2} fill={PLOT} />
-          <Label x={trueEnd.x + 8} y={trueEnd.y - 6} size={10.5} fill={PLOT}>
+          <Label x={trueEnd.x + 8} y={trueEnd.y + 22} size={10.5} fill={PLOT}>
             {trueRadial}° true — the fix
           </Label>
         </>
