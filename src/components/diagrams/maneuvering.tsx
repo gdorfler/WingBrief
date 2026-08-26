@@ -69,7 +69,14 @@ export function TurnForces(p: DiagramProps) {
       </g>
 
       <Arrow x1={cx} y1={cy} x2={lx} y2={ly} color={GO} id="lift" width={3.6} />
-      <text x={lx + 8} y={ly - 6} fill={GO} fontWeight={800} fontSize={11}>
+      <text
+        x={lx > 300 ? lx - 8 : lx + 8}
+        y={ly - 6}
+        textAnchor={lx > 300 ? "end" : "start"}
+        fill={GO}
+        fontWeight={800}
+        fontSize={11}
+      >
         Total lift
       </text>
 

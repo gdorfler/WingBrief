@@ -694,10 +694,10 @@ export function RunwayNumbering(p: DiagramProps) {
         {Array.from({ length: 7 }, (_, i) => (
           <line key={i} x1={-96 + i * 32} y1={0} x2={-76 + i * 32} y2={0} stroke="#fff" strokeWidth={3} />
         ))}
-        <text x={-116} y={7} textAnchor="middle" fontSize={19} fontWeight={800} fill="#fff" transform={`rotate(${90 - rounded} -116 0)`}>
+        <text x={-76} y={7} textAnchor="middle" fontSize={19} fontWeight={800} fill="#fff" transform={`rotate(${90 - rounded} -76 0)`}>
           {label}
         </text>
-        <text x={116} y={7} textAnchor="middle" fontSize={19} fontWeight={800} fill="#fff" transform={`rotate(${90 - rounded} 116 0)`}>
+        <text x={76} y={7} textAnchor="middle" fontSize={19} fontWeight={800} fill="#fff" transform={`rotate(${90 - rounded} 76 0)`}>
           {recipLabel}
         </text>
       </g>

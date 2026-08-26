@@ -356,7 +356,13 @@ export function ClimbVectors(p: DiagramProps) {
             <text x={endX + 12} y={endY - 14} fill={pr.color} fontWeight={800} fontSize={11}>
               {pr.label}
             </text>
-            <text x={endX + 12} y={endY} fill={MUTED} fontSize={9.5}>
+            <text
+              x={endX + 12 > 330 ? 498 : endX + 12}
+              y={endY}
+              textAnchor={endX + 12 > 330 ? "end" : "start"}
+              fill={MUTED}
+              fontSize={9.5}
+            >
               {pr.note}
             </text>
           </g>

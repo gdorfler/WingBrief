@@ -910,12 +910,16 @@ export function AxialCompressor(p: DiagramProps) {
           <text x={x0 - 2 + step} y={cy - 66} textAnchor="middle" fontSize={9.5} fontWeight={800} fill={NAVY}>
             1 STAGE
           </text>
-          <text x={x0 + step * 0.5} y={cy + 78} textAnchor="middle" fontSize={9.5} fontWeight={750} fill={BRAND}>
-            rotor
-          </text>
-          <text x={x0 + step * 1.5} y={cy + 78} textAnchor="middle" fontSize={9.5} fontWeight={750} fill={MUTED}>
-            stator
-          </text>
+          {step >= 40 && (
+            <>
+              <text x={x0 + step * 0.5} y={cy + 78} textAnchor="middle" fontSize={9.5} fontWeight={750} fill={BRAND}>
+                rotor
+              </text>
+              <text x={x0 + step * 1.5} y={cy + 78} textAnchor="middle" fontSize={9.5} fontWeight={750} fill={MUTED}>
+                stator
+              </text>
+            </>
+          )}
           <text x={250} y={264} textAnchor="middle" fontSize={10.5} fontWeight={700} fill={MUTED}>
             Rotor: velocity and pressure ↑ · Stator: velocity ↓, pressure ↑, flow straightened
           </text>

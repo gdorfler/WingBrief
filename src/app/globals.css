@@ -377,13 +377,21 @@ button,
 
 .diagram text {
   font-family: var(--font-sans);
+}
+
+/* Defaults only — a label that states its own size or weight keeps it. */
+.diagram text:not([font-size]) {
   font-size: 11px;
+}
+
+.diagram text:not([font-weight]) {
   font-weight: 550;
 }
 
 .diagram text:not([fill]) {
   fill: var(--label);
 }
+
 
 .diagram .axis {
   stroke: var(--axis);

@@ -345,7 +345,7 @@ export function RegulatoryWording(p: DiagramProps) {
       {rows.map((r, i) => {
         const y = 66 + i * 52;
         const active = word === "none" || word === r.id;
-        const w = 24 + r.force * 300;
+        const w = 24 + r.force * 270;
         return (
           <g key={r.id} opacity={active ? 1 : 0.25}>
             <text x={44} y={y + 22} fontSize={12} fontWeight={800} fill={r.tone}>
@@ -576,7 +576,7 @@ export function AirportLighting(p: DiagramProps) {
         <path d="M404 200 L452 236" stroke={GO} strokeWidth={1.8} strokeDasharray="5 5" />
         <circle cx={416} cy={216} r={3.2} fill={BRAND} />
         <circle cx={438} cy={232} r={3.2} fill={BRAND} />
-        <text x={396} y={258} fontSize={9.5} fontWeight={750} fill={BRAND}>
+        <text x={496} y={258} textAnchor="end" fontSize={9.5} fontWeight={750} fill={BRAND}>
           taxiway: blue edges, green centerline
         </text>
       </g>

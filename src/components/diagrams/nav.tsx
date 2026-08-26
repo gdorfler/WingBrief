@@ -1069,7 +1069,7 @@ export function WindTriangle(props: DiagramProps) {
         stroke="#d98200"
         strokeWidth={2}
       />
-      <Label x={a.x + 96} y={a.y - 52} size={10.5} fill="#d98200">
+      <Label x={a.x + 104} y={a.y - 32} size={10.5} fill="#d98200">
         crab
       </Label>
       <circle cx={a.x} cy={a.y} r={4} fill={INK} />
