@@ -48,6 +48,7 @@ import {
   ThrustPowerPair,
 } from "./performance";
 import {
+  LeftTurningTendencies,
   SlipSkid,
   SpinWings,
   StabilityBall,
@@ -208,6 +209,7 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
 
   /* Unit 6 */
   "slip-skid": SlipSkid,
+  "left-turning": LeftTurningTendencies,
   "spin-wings": SpinWings,
   "wake-vortex": WakeVortex,
   "wind-shear": WindShear,

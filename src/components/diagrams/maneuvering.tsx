@@ -800,3 +800,198 @@ export function StabilityBall(p: DiagramProps) {
     </Diagram>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* Left-turning tendencies                                             */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The four propeller effects, and why every one of them ends up left.
+ *
+ * These genuinely need four different viewpoints — you cannot show a roll, a
+ * corkscrew striking a fin, a blade's angle of attack and a gyroscopic couple
+ * from one camera position without lying about at least three of them. So the
+ * drawing changes entirely with `effect`, and what stays constant is the
+ * verdict badge: the one thing the student is meant to carry out of all four.
+ *
+ * Handedness is stated on every panel, because left and right invert depending
+ * on whether you are looking at the aircraft or sitting in it — which is
+ * exactly where this topic loses people. Rotation is the US convention:
+ * clockwise as seen from the cockpit.
+ */
+export function LeftTurningTendencies(p: DiagramProps) {
+  const effect = str<"torque" | "slipstream" | "pfactor" | "gyro" | "all">(p.effect, "torque");
+  const verdict = bool(p.verdict, false);
+
+  const CX = 250;
+  const defs = <ArrowDefs colors={{ brand: BRAND, nogo: NOGO, caution: CAUTION, muted: MUTED }} />;
+
+  const Verdict = ({ text }: { text: string }) =>
+    verdict ? (
+      <g transform="translate(250 264)">
+        <rect x={-92} y={-16} width={184} height={30} rx={15} fill={NOGO} />
+        <text x={0} y={5} textAnchor="middle" fontSize={12.5} fontWeight={800} letterSpacing="0.08em" fill="#fff">
+          {text}
+        </text>
+      </g>
+    ) : null;
+
+  const ViewNote = ({ text }: { text: string }) => (
+    <text x={250} y={26} textAnchor="middle" fontSize={9.5} fontWeight={750} letterSpacing="0.07em" fill={MUTED}>
+      {text}
+    </text>
+  );
+
+  /* --- Torque: the airframe rolls against the propeller ------------- */
+  if (effect === "torque") {
+    return (
+      <Diagram title="Torque reaction rolls the airframe left">
+        {defs}
+        <ViewNote text="SEEN FROM THE COCKPIT" />
+
+        <circle cx={CX} cy={138} r={84} fill="var(--color-surface-2)" stroke={MUTED} strokeWidth={1.4} strokeDasharray="4 4" />
+        <path d="M245 62 L255 62 L252 130 L248 130 Z" fill={BRAND} />
+        <path d="M245 214 L255 214 L252 146 L248 146 Z" fill={BRAND} />
+        <circle cx={CX} cy={138} r={11} fill={NAVY} />
+
+        <path d={`M${CX + 56} 96 A 72 72 0 0 1 ${CX + 56} 180`} fill="none" stroke={BRAND} strokeWidth={3.4} strokeLinecap="round" markerEnd="url(#arrow-brand)" />
+        <text x={CX + 112} y={132} textAnchor="middle" fontSize={10} fontWeight={800} fill={BRAND}>prop turns</text>
+        <text x={CX + 112} y={145} textAnchor="middle" fontSize={10} fontWeight={800} fill={BRAND}>clockwise</text>
+
+        <path d={`M${CX - 56} 180 A 72 72 0 0 1 ${CX - 56} 96`} fill="none" stroke={NOGO} strokeWidth={3.4} strokeLinecap="round" markerEnd="url(#arrow-nogo)" />
+        <text x={CX - 112} y={132} textAnchor="middle" fontSize={10} fontWeight={800} fill={NOGO}>airframe rolls</text>
+        <text x={CX - 112} y={145} textAnchor="middle" fontSize={10} fontWeight={800} fill={NOGO}>the other way</text>
+
+        <text x={250} y={240} textAnchor="middle" fontSize={9.5} fontWeight={700} fill={MUTED}>
+          equal and opposite
+        </text>
+        <Verdict text="ROLLS LEFT" />
+      </Diagram>
+    );
+  }
+
+  /* --- Slipstream: the corkscrew strikes the fin -------------------- */
+  if (effect === "slipstream") {
+    return (
+      <Diagram title="Slipstream strikes the left side of the fin">
+        {defs}
+        <ViewNote text="SEEN FROM ABOVE · NOSE UP THE PAGE" />
+
+        {/* The shared top-view silhouette, so this reads as the same aeroplane
+            the rest of the course draws. Nose up, tail at roughly y=206. */}
+        <AircraftTop x={250} y={140} scale={3.1} />
+
+        {[0, 1, 2, 3].map((i) => {
+          const y = 82 + i * 32;
+          return (
+            <path
+              key={i}
+              d={`M208 ${y} Q250 ${y + 19} 292 ${y + 5}`}
+              fill="none"
+              stroke={BRAND}
+              strokeWidth={2.2}
+              strokeDasharray="5 4"
+              opacity={0.45 + i * 0.16}
+            />
+          );
+        })}
+
+        <path d="M132 206 L234 206" stroke={BRAND} strokeWidth={4} strokeLinecap="round" markerEnd="url(#arrow-brand)" />
+        <text x={128} y={202} textAnchor="end" fontSize={10} fontWeight={800} fill={BRAND}>hits the fin</text>
+        <text x={128} y={215} textAnchor="end" fontSize={10} fontWeight={800} fill={BRAND}>on its LEFT</text>
+
+        {verdict && (
+          <>
+            <path d="M268 206 L336 196" stroke={NOGO} strokeWidth={3.4} strokeLinecap="round" markerEnd="url(#arrow-nogo)" />
+            <text x={342} y={196} fontSize={10} fontWeight={800} fill={NOGO}>tail right</text>
+            <path d="M236 62 Q200 68 178 88" fill="none" stroke={NOGO} strokeWidth={3.4} strokeLinecap="round" markerEnd="url(#arrow-nogo)" />
+            <text x={170} y={82} textAnchor="end" fontSize={10} fontWeight={800} fill={NOGO}>nose left</text>
+          </>
+        )}
+        <Verdict text="YAWS LEFT" />
+      </Diagram>
+    );
+  }
+
+  /* --- P-factor: the descending blade takes the bigger bite --------- */
+  if (effect === "pfactor") {
+    return (
+      <Diagram title="P-factor: the descending blade bites harder">
+        {defs}
+        <ViewNote text="SEEN FROM THE COCKPIT · NOSE HIGH" />
+
+        <circle cx={CX} cy={134} r={82} fill="var(--color-surface-2)" stroke={MUTED} strokeWidth={1.4} strokeDasharray="4 4" />
+        <path d={`M${CX} 52 A 82 82 0 0 1 ${CX} 216 Z`} fill={NOGO} opacity={0.12} />
+
+        <path d="M245 58 L255 58 L252 126 L248 126 Z" fill={MUTED} />
+        <path d="M245 210 L255 210 L252 142 L248 142 Z" fill={MUTED} />
+        <circle cx={CX} cy={134} r={11} fill={NAVY} />
+        <path d={`M${CX + 54} 94 A 68 68 0 0 1 ${CX + 54} 174`} fill="none" stroke={BRAND} strokeWidth={2.6} strokeLinecap="round" markerEnd="url(#arrow-brand)" />
+
+        <path d={`M${CX + 94} 134 L${CX + 168} 134`} stroke={NOGO} strokeWidth={7} strokeLinecap="round" markerEnd="url(#arrow-nogo)" />
+        <path d={`M${CX - 94} 134 L${CX - 128} 134`} stroke={MUTED} strokeWidth={3} strokeLinecap="round" markerEnd="url(#arrow-muted)" />
+        <text x={CX + 126} y={102} textAnchor="middle" fontSize={10} fontWeight={800} fill={NOGO}>more thrust</text>
+        <text x={CX - 112} y={112} textAnchor="middle" fontSize={10} fontWeight={750} fill={MUTED}>less</text>
+
+        <text x={CX + 30} y={240} fontSize={9.5} fontWeight={800} fill={NOGO}>descending blade · higher AOA</text>
+        <text x={CX - 30} y={240} textAnchor="end" fontSize={9.5} fontWeight={700} fill={MUTED}>ascending</text>
+        <Verdict text="YAWS LEFT" />
+      </Diagram>
+    );
+  }
+
+  /* --- Gyroscopic precession: the couple arrives a quarter turn late - */
+  if (effect === "gyro") {
+    return (
+      <Diagram title="Gyroscopic precession acts 90 degrees later">
+        {defs}
+        <ViewNote text="SEEN FROM THE COCKPIT" />
+
+        <circle cx={CX} cy={140} r={82} fill="var(--color-surface-2)" stroke={MUTED} strokeWidth={1.4} strokeDasharray="4 4" />
+        <path d="M245 64 L255 64 L252 132 L248 132 Z" fill={MUTED} />
+        <path d="M245 216 L255 216 L252 148 L248 148 Z" fill={MUTED} />
+        <circle cx={CX} cy={140} r={11} fill={NAVY} />
+
+        <path d={`M${CX} 42 L${CX} 52`} stroke={BRAND} strokeWidth={5} strokeLinecap="round" markerEnd="url(#arrow-brand)" />
+        <text x={CX + 12} y={48} fontSize={10} fontWeight={800} fill={BRAND}>tail comes up — force here</text>
+
+        <path d={`M${CX + 20} 74 A 64 64 0 0 1 ${CX + 64} 120`} fill="none" stroke={CAUTION} strokeWidth={2.6} strokeDasharray="6 5" strokeLinecap="round" markerEnd="url(#arrow-caution)" />
+        <text x={CX + 62} y={94} fontSize={10} fontWeight={800} fill={CAUTION}>carried 90°</text>
+
+        <path d={`M${CX + 94} 140 L${CX + 158} 140`} stroke={NOGO} strokeWidth={6} strokeLinecap="round" markerEnd="url(#arrow-nogo)" />
+        <text x={CX + 126} y={126} textAnchor="middle" fontSize={10} fontWeight={800} fill={NOGO}>acts here</text>
+
+        <text x={250} y={240} textAnchor="middle" fontSize={9.5} fontWeight={700} fill={MUTED}>
+          a force on a spinning disc shows up a quarter turn later
+        </text>
+        <Verdict text="YAWS LEFT" />
+      </Diagram>
+    );
+  }
+
+  /* --- All four, one answer ---------------------------------------- */
+  const rows = [
+    { name: "Torque", detail: "airframe rolls against the propeller", out: "ROLL LEFT" },
+    { name: "Slipstream", detail: "corkscrew strikes the fin's left face", out: "YAW LEFT" },
+    { name: "P-factor", detail: "descending blade takes the bigger bite", out: "YAW LEFT" },
+    { name: "Precession", detail: "the couple arrives a quarter turn later", out: "YAW LEFT" },
+  ];
+  return (
+    <Diagram title="All four left-turning tendencies">
+      {defs}
+      <ViewNote text="FOUR MECHANISMS · ONE ANSWER" />
+      {rows.map((r, i) => (
+        <g key={r.name} transform={`translate(30 ${46 + i * 46})`}>
+          <rect x={0} y={0} width={440} height={38} rx={9} fill="var(--color-surface-2)" />
+          <rect x={0} y={0} width={5} height={38} rx={2.5} fill={NOGO} />
+          <text x={18} y={17} fontSize={11.5} fontWeight={800} fill={NAVY}>{r.name}</text>
+          <text x={18} y={31} fontSize={9.5} fontWeight={650} fill={MUTED}>{r.detail}</text>
+          <text x={426} y={24} textAnchor="end" fontSize={11} fontWeight={800} fill={NOGO}>{r.out}</text>
+        </g>
+      ))}
+      <text x={250} y={258} textAnchor="middle" fontSize={13.5} fontWeight={800} letterSpacing="0.06em" fill={GO}>
+        RIGHT RUDDER
+      </text>
+    </Diagram>
+  );
+}

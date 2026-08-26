@@ -712,7 +712,7 @@ export function TacanFix(props: DiagramProps) {
         strokeDasharray="6 4"
         opacity={stage === "true" ? 0.45 : 1}
       />
-      <Label x={magEnd.x + 6} y={magEnd.y - 12} size={10} fill="#d92d20">
+      <Label x={magEnd.x - 14} y={magEnd.y + 4} anchor="end" size={10} fill="#d92d20">
         {radial}° magnetic
       </Label>
 
@@ -721,7 +721,7 @@ export function TacanFix(props: DiagramProps) {
           <line x1={cx} y1={cy} x2={trueEnd.x} y2={trueEnd.y} className="plot-line" strokeWidth={2.2} />
           <circle cx={trueEnd.x} cy={trueEnd.y} r={5} fill="none" stroke={PLOT} strokeWidth={2} />
           <circle cx={trueEnd.x} cy={trueEnd.y} r={2} fill={PLOT} />
-          <Label x={trueEnd.x + 8} y={trueEnd.y + 22} size={10.5} fill={PLOT}>
+          <Label x={trueEnd.x - 14} y={trueEnd.y + 24} anchor="end" size={10.5} fill={PLOT}>
             {trueRadial}° true — the fix
           </Label>
         </>
