@@ -117,7 +117,7 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "So thrust falls away faster above that altitude.", hold: 2800, props: { factor: "altitude", marker: 48 } },
     ],
     predict: {
-      at: 2,
+      at: 1,
       question:
         "You keep climbing past 36,000 ft. What happens to the RATE at which thrust falls away?",
       options: ["It slows down","It gets faster","It stays the same"],

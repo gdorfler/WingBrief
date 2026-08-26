@@ -36,6 +36,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "NATOPS narrows it to YOUR aircraft — and outranks them all.", hold: 3200, props: { highlight: "natops" } },
       { caption: "The narrower the document, the higher the authority.", hold: 2800, props: { highlight: "none" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "NATOPS covers one aircraft type; FAR Part 91 covers everyone who flies. Which one outranks the other?",
+      options: [
+        "Part 91 — it is federal law",
+        "NATOPS — the narrower document wins",
+        "Whichever was published later",
+      ],
+      answer: 1,
+      because:
+        "Authority runs the opposite way to breadth. Part 91 is the floor for everybody, FLIP narrows it to the DoD, CNAF M-3710.7 to naval aircraft, and NATOPS to yours specifically — so NATOPS sits on top.",
+    },
     knowCold: "NATOPS → CNAF M-3710.7 → FLIP → FAR Part 91.",
     source: ORG,
   },
@@ -54,6 +67,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Center takes you en route, with positive control under IFR.", hold: 3000, props: { highlight: "artcc" } },
       { caption: "Coming home the chain runs in reverse: Center, Approach, Tower.", hold: 3000, props: { highlight: "none" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "You have just left the terminal area on an IFR flight plan. Who are you talking to next?",
+      options: [
+        "Approach — it owns you until landing",
+        "Center — it takes you en route",
+        "The FSS, which filed the plan",
+      ],
+      answer: 1,
+      because:
+        "Approach is the terminal-area agency and Center is the en-route one. The chain runs FSS, Tower, Approach, Center on the way out, and exactly the same list backwards on the way home.",
+    },
     knowCold: "Approach = terminal. Center = en route.",
     source: ORG,
   },
@@ -90,6 +116,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Above 13,000 with a system fitted, flight is prohibited.", hold: 3200, props: { altitude: 14500, equipped: true } },
       { caption: "With no system at all, the ceiling drops to 12,000 and one hour.", hold: 3400, props: { altitude: 12500, equipped: false } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "Cabin altitude is climbing past 13,000 ft and the aircraft HAS an oxygen system. What does the rule say?",
+      options: [
+        "Carry on — the system covers it",
+        "Flight is prohibited above 13,000",
+        "Three hours maximum, then descend",
+      ],
+      answer: 1,
+      because:
+        "10,000 is what triggers supplemental oxygen for all occupants. 13,000 is the hard ceiling with a system fitted; with no system at all the ceiling drops to 12,000 and one hour. Having the system raises the limit — it does not remove it.",
+    },
     knowCold: "10,000 triggers it. 13,000 with a system, 12,000 without.",
     source: ORG,
   },
@@ -107,6 +146,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Steady red: give way and continue circling.", hold: 2800, props: { highlight: "red" } },
       { caption: "Flashing white: return for landing — not yet a clearance.", hold: 3200, props: { highlight: "white" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "Radio out, and the tower gives you a FLASHING WHITE light. Are you cleared to land?",
+      options: [
+        "Yes — white means cleared",
+        "No — it only tells you to return for landing",
+        "No — it means give way and circle",
+      ],
+      answer: 1,
+      because:
+        "Only STEADY GREEN is a landing clearance. Flashing white sends you back to the field to await one, and steady red tells you to give way and keep circling. Treating flashing white as a clearance is landing without one.",
+    },
     knowCold: "Steady green clears you. Flashing white only sends you back.",
     source: VIFR,
   },
@@ -124,6 +176,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Too high: both bars white. Time to come down.", hold: 3000, props: { state: "high" } },
       { caption: "Back to red over white — the only one you want.", hold: 2800, props: { state: "on" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "You are on a VASI and both bars show WHITE. Where are you?",
+      options: [
+        "On slope",
+        "Too high",
+        "Too low",
+      ],
+      answer: 1,
+      because:
+        "Red over red, you're dead — too low. Red over white, you're alright — on slope. White over white and you are high, with too much runway disappearing behind you. Only one combination is the one you want.",
+    },
     knowCold: "Red over white, you're alright.",
     source: VIFR,
   },
@@ -157,6 +222,19 @@ export const EXPLAINERS: Explainer[] = [
         props: { question: "Can a safe landing be made?", yes: "Descend and land", no: "Go missed", chosen: "yes" },
       },
     ],
+    predict: {
+      at: 1,
+      question:
+        "At the MDA you have the runway environment clearly in sight. May you descend below?",
+      options: [
+        "Yes — having it in sight is the test",
+        "Not yet — a safe landing must also be judged possible",
+        "Only with a clearance from the tower",
+      ],
+      answer: 1,
+      because:
+        "The regulation asks two questions, not one. Runway environment in sight AND a normal descent to a safe landing judged possible. Either answer being no sends you missed — seeing the runway is necessary but not sufficient.",
+    },
     knowCold: "Runway environment in sight AND a safe landing judged. Both, or go missed.",
     source: VIFR,
   },
@@ -175,6 +253,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Switch to IFR and the 500 disappears.", hold: 3000, props: { course: 270, rules: "ifr" } },
       { caption: "179 is still east. 180 is west. It is the COURSE that decides.", hold: 3200, props: { course: 179, rules: "ifr" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "You are flying VFR on a course of 090. Which of these is a legal cruising altitude?",
+      options: [
+        "6,500",
+        "7,500",
+        "7,000",
+      ],
+      answer: 1,
+      because:
+        "A course of 0 to 179 is the east semicircle, which takes odd thousands, and VFR adds 500 on top — so 5,500, 7,500, 9,500. Note it is the COURSE that decides, not the heading you are holding to make it good.",
+    },
     knowCold: "0–179 east, odd. 180–359 west, even. VFR adds 500.",
     source: VIFR,
   },
@@ -194,6 +285,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Class B: the busiest. This one needs a CLEARANCE.", hold: 3200, props: { highlight: "b" } },
       { caption: "Class A caps it at 18,000 MSL. IFR only, to FL600.", hold: 3000, props: { highlight: "a" } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "You have established two-way radio communication with a Class B approach controller. Is that enough to enter?",
+      options: [
+        "Yes — same as Class C and D",
+        "No — Class B needs an explicit clearance",
+        "Only below 10,000 ft",
+      ],
+      answer: 1,
+      because:
+        "C and D need a conversation: two-way comms with your callsign is the requirement. B is the only one that needs an actual clearance. Hearing your callsign back is not the same thing as being cleared in.",
+    },
     knowCold: "B needs a clearance. C and D need a conversation.",
     source: AIR,
   },
@@ -232,6 +336,19 @@ export const EXPLAINERS: Explainer[] = [
         props: { question: "Is it over international waters?", yes: "WARNING area", no: "RESTRICTED area", chosen: "yes" },
       },
     ],
+    predict: {
+      at: 2,
+      question:
+        "The same gunnery hazard exists over land and 5 nm out to sea. Why can only one of them be RESTRICTED airspace?",
+      options: [
+        "The over-water one is less dangerous",
+        "Beyond 3 nm nobody has authority to forbid entry",
+        "Restricted areas are only drawn near airfields",
+      ],
+      answer: 1,
+      because:
+        "Restricted means entry can be legally denied, and that authority stops at the 3 nm territorial limit. Past it the same hazard can only be advertised — which is exactly what a Warning Area is. Same hazard, different legal reach.",
+    },
     knowCold: "Same hazard. Over water it can only warn.",
     source: AIR,
   },
@@ -250,6 +367,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Red only: you see its left side, crossing right to left.", hold: 3000, props: { view: "left" } },
       { caption: "Green only: its right side, crossing left to right.", hold: 3000, props: { view: "right" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "At night you see a red light and a green light side by side, no white. What is that aircraft doing?",
+      options: [
+        "Flying away from you",
+        "Coming straight at you",
+        "Crossing left to right",
+      ],
+      answer: 1,
+      because:
+        "Red is the left wingtip and green the right, so seeing both means you are looking at its nose. That is the one combination that matters — a single colour is a crossing aircraft, and white alone means you are behind it.",
+    },
     knowCold: "Red and green together is the one that matters.",
     source: AIR,
   },
@@ -268,6 +398,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Converging, same category: the one on your right.", hold: 3000, props: { scenario: "converging" } },
       { caption: "Different categories? Then the least manoeuvrable wins.", hold: 3200, props: { scenario: "converging" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "Two aircraft are converging and one is far less manoeuvrable. Does the category list settle it?",
+      options: [
+        "Yes — category is the rule",
+        "Only if the situation rules do not already cover it",
+        "No — category never applies",
+      ],
+      answer: 1,
+      because:
+        "The situation is checked first: distress, then head-on, overtaking, landing, and converging-same-category takes the aircraft on the right. Only when none of those settles it does the least-manoeuvrable category list decide. Category is the last resort, not the first.",
+    },
     knowCold: "Distress first. Then the situation. Category is the last resort.",
     source: AIR,
   },
@@ -286,6 +429,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Same 200 near a Class C or D field, within 4 nm to 2,500 AGL.", hold: 3200, props: { highlight: "cd" } },
       { caption: "The tighter number is where ATC is not separating you.", hold: 3000, props: { highlight: "none" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "You are just beneath the Class B shelf, below 10,000 ft. What is your speed limit?",
+      options: [
+        "250 knots, the general limit",
+        "200 knots",
+        "No limit outside the Class B itself",
+      ],
+      answer: 1,
+      because:
+        "It is the inversion everyone misses: inside Class B it stays 250, because ATC is separating everyone in there. Underneath the shelf, where nobody is separating you from the traffic above, it tightens to 200.",
+    },
     knowCold: "Inside B: 250. Under the shelf: 200.",
     source: AIR,
   },

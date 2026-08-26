@@ -36,6 +36,19 @@ export const EXPLAINERS_B: Explainer[] = [
       { caption: "The Navy writes CNAF M-3710.7, for all naval aircraft.", hold: 3200, props: { highlight: "cnaf" } },
       { caption: "And your aircraft's NATOPS is written for your model alone.", hold: 3200, props: { highlight: "natops" } },
     ],
+    predict: {
+      at: 0,
+      question:
+        "The AIM describes how to fly in US airspace in detail. Is it regulatory?",
+      options: [
+        "Yes — it is FAA-published",
+        "No — it explains; FAR Part 91 regulates",
+        "Only the IFR chapters are",
+      ],
+      answer: 1,
+      because:
+        "Four authors, four jobs. The FAR regulates and the AIM only explains it. FLIP charts, and CNAF M-3710.7 and NATOPS command. Quoting the AIM as a rule is quoting the wrong document.",
+    },
     knowCold: "FAR regulates. The AIM explains. FLIP charts. CNAF and NATOPS command.",
     source: ORG,
   },
@@ -69,6 +82,19 @@ export const EXPLAINERS_B: Explainer[] = [
         props: { question: "Does safety justify the deviation?", yes: "Deviate", no: "Follow the instruction", chosen: "yes" },
       },
     ],
+    predict: {
+      at: 1,
+      question:
+        "There is a genuine in-flight emergency. Is that on its own enough to authorise deviating from the specified instructions?",
+      options: [
+        "Yes — an emergency is the test",
+        "No — the PIC must also judge that safety justifies it",
+        "Only with ATC approval first",
+      ],
+      answer: 1,
+      because:
+        "It is a two-part test and both parts have to be satisfied: an emergency exists, AND the pilot in command judges that safety requires the deviation. Mission need on its own never gets you there.",
+    },
     knowCold: "Emergency, plus the PIC's judgment that safety justifies it.",
     source: ORG,
   },
@@ -102,6 +128,19 @@ export const EXPLAINERS_B: Explainer[] = [
         props: { question: "Is there any exemption?", yes: "No", no: "No", chosen: "no" },
       },
     ],
+    predict: {
+      at: 0,
+      question:
+        "A short local flight you have made a hundred times. Is preflight planning still required?",
+      options: [
+        "No — familiarity covers it",
+        "Yes — there is no familiarity exemption",
+        "Only the weather portion",
+      ],
+      answer: 1,
+      because:
+        "Weather, NOTAMs, fuel, alternates and delays are the minimum for every flight. There is no familiarity exemption and no urgency exemption — an urgent combat mission is caught by exactly the same requirement.",
+    },
     knowCold: "Weather, NOTAMs, fuel, alternates, delays — every flight.",
     source: ORG,
   },
@@ -120,6 +159,19 @@ export const EXPLAINERS_B: Explainer[] = [
       { caption: "Above 13,000, flight is prohibited, not merely limited.", hold: 3200, props: { altitude: 14500, equipped: true } },
       { caption: "With no system at all: 1 hour, and the ceiling drops to 12,000.", hold: 3400, props: { altitude: 12500, equipped: false } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "No oxygen system is fitted at all. What is the ceiling, and for how long?",
+      options: [
+        "13,000 ft for up to 3 hours",
+        "12,000 ft for up to 1 hour",
+        "10,000 ft with no time limit",
+      ],
+      answer: 1,
+      because:
+        "With a system you get the 10,000-to-13,000 band for up to 3 hours, and above 13,000 flight is prohibited. With no system the whole ladder shrinks: 1 hour, and the ceiling comes down to 12,000.",
+    },
     knowCold: "10,000 triggers it. 13,000 with a system, 12,000 without.",
     source: ORG,
   },
@@ -138,6 +190,19 @@ export const EXPLAINERS_B: Explainer[] = [
       { caption: "Turn around and the same strip is runway 27.", hold: 3000, props: { heading: 270 } },
       { caption: "355° rounds to 360, so it is runway 36 — never 00.", hold: 3400, props: { heading: 355 } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "You are lined up on a heading of 355°. What is the runway number?",
+      options: [
+        "Runway 00",
+        "Runway 36",
+        "Runway 35",
+      ],
+      answer: 1,
+      because:
+        "Round to the nearest ten and drop the last digit — but 355 rounds to 360, not 350, and a runway is never numbered 00. It is Runway 36, and the other end of the same strip is Runway 18.",
+    },
     knowCold: "Round to ten, drop a digit. The far end is 18 away.",
     source: VIFR,
   },
@@ -156,6 +221,19 @@ export const EXPLAINERS_B: Explainer[] = [
       { caption: "CNAF adds: no distinguishable horizon means IMC, whatever the numbers say.", hold: 3400, props: { regime: "classb" } },
       { caption: "And see-and-avoid applies under both sets of rules.", hold: 3200, props: { regime: "standard" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "You are on an IFR flight plan in clear air, VMC the whole way. Is that a contradiction?",
+      options: [
+        "Yes — IFR means you must be in cloud",
+        "No — VMC/IMC is the weather, VFR/IFR is the rulebook",
+        "Only if you never enter cloud at all",
+      ],
+      answer: 1,
+      because:
+        "They are two different axes. VMC and IMC describe the sky against the minima; VFR and IFR describe which rules you are operating under. An IFR flight plan flown entirely in VMC is completely ordinary.",
+    },
     knowCold: "VMC/IMC is the sky. VFR/IFR is the rulebook.",
     source: VIFR,
   },
@@ -194,6 +272,19 @@ export const EXPLAINERS_B: Explainer[] = [
         props: { question: "Does the route permit VFR?", yes: "File VFR", no: "File IFR", chosen: "yes" },
       },
     ],
+    predict: {
+      at: 1,
+      question:
+        "The destination forecast comfortably beats 1,000 and 3. Can you file VFR?",
+      options: [
+        "Yes — that is the test",
+        "Not yet — the route has to permit visual flight too",
+        "Only if you also file an alternate",
+      ],
+      answer: 1,
+      because:
+        "The destination is the first gate, not the only one. Marginal or deteriorating weather anywhere along the route means IFR regardless of how good the destination looks. Both have to pass.",
+    },
     knowCold: "Destination 1,000 and 3, and a route that permits VFR. Both.",
     source: VIFR,
   },
@@ -227,6 +318,19 @@ export const EXPLAINERS_B: Explainer[] = [
         props: { question: "Alternate forecast below 3,000 / 3?", yes: "Needs a no-radio approach", no: "Standard criteria", chosen: "yes" },
       },
     ],
+    predict: {
+      at: 2,
+      question:
+        "An alternate is required, and its forecast is below 3,000 and 3 at ETA plus or minus an hour. What must it then have?",
+      options: [
+        "A second alternate behind it",
+        "A published approach flyable without two-way radio",
+        "A precision approach specifically",
+      ],
+      answer: 1,
+      because:
+        "3,000 and 3 is the line. Below it the alternate has to offer an approach that still works if the radios fail — because an alternate you cannot get into when things go wrong is not an alternate.",
+    },
     knowCold: "3,000 and 3 at the alternate, ETA ± 1 hour.",
     source: VIFR,
   },
@@ -260,6 +364,19 @@ export const EXPLAINERS_B: Explainer[] = [
         props: { question: "Is it a NATOPS-conforming break?", yes: "NOT aerobatic", no: "Aerobatic", chosen: "yes" },
       },
     ],
+    predict: {
+      at: 1,
+      question:
+        "You exceed 60° of bank, but stay inside the pitch and g limits. Is that aerobatic flight?",
+      options: [
+        "No — it takes all three",
+        "Yes — any one of the three is enough",
+        "Only if sustained for more than a few seconds",
+      ],
+      answer: 1,
+      because:
+        "60° of bank, 45° of pitch or 2.0 g — exceeding ANY one of them makes it aerobatic. They are not a combination to be met together. The one carve-out is a break flown in conformance with the model NATOPS manual.",
+    },
     knowCold: "60, 45, 2.0 — and a NATOPS break is exempt.",
     source: VIFR,
   },
@@ -278,6 +395,19 @@ export const EXPLAINERS_B: Explainer[] = [
       { caption: "VFR flights get whatever the airspace classification provides.", hold: 3200, props: { highlight: "c" } },
       { caption: "Class G is uncontrolled: ATC has neither authority nor responsibility.", hold: 3400, props: { highlight: "g" } },
     ],
+    predict: {
+      at: 0,
+      question:
+        "You are VFR in Class E, which is controlled airspace. Does that mean ATC is separating you from other traffic?",
+      options: [
+        "Yes — that is what controlled means",
+        "No — controlled means the service is provided there; what you get depends how you are flying",
+        "Only when in radio contact",
+      ],
+      answer: 1,
+      because:
+        "Controlled airspace means ATC service is PROVIDED in it, not that you personally are being watched. IFR flights get separation throughout; VFR flights get whatever that classification offers. Only Class G is uncontrolled outright.",
+    },
     knowCold: "A, B, C, D, E are controlled. Only G is not.",
     source: AIR,
   },
@@ -296,6 +426,19 @@ export const EXPLAINERS_B: Explainer[] = [
       { caption: "Above 10,000 MSL it TIGHTENS instead: 1,000 / 1,000 / 1 SM.", hold: 3400, props: { regime: "high" } },
       { caption: "And visibility goes to 5 SM, because closing speeds are higher.", hold: 3200, props: { regime: "high" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "Above 10,000 ft MSL, do the VFR cloud clearances relax or tighten?",
+      options: [
+        "Relax — there is less traffic up there",
+        "Tighten — 1,000 above, 1,000 below, 1 SM, and 5 SM visibility",
+        "They stay on the standard row",
+      ],
+      answer: 1,
+      because:
+        "Class B is the one that relaxes, to clear of clouds, because ATC is separating everyone in there anyway. Above 10,000 it goes the other way and tightens, and visibility rises to 5 SM — closing speeds up there are far higher.",
+    },
     knowCold: "1,000 / 500 / 2,000 / 3. Except B, and except high.",
     source: AIR,
   },
@@ -314,6 +457,19 @@ export const EXPLAINERS_B: Explainer[] = [
       { caption: "Wildlife habitations: also 3,000 ft AGL, conditions permitting.", hold: 3200, props: { setting: "other" } },
       { caption: "Commercial carriers: 500 ft vertically and/or 1 SM laterally.", hold: 3400, props: { setting: "congested" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "Over open country the floor is 500 ft AGL. What about a noise-sensitive area or a wildlife habitation?",
+      options: [
+        "The same 500 ft",
+        "3,000 ft AGL",
+        "1,000 ft AGL",
+      ],
+      answer: 1,
+      because:
+        "Those both step up to 3,000 ft AGL, conditions permitting — six times the ordinary floor. Congested areas use a different rule again: 1,000 ft above the highest obstacle within 2,000 ft of the aircraft.",
+    },
     knowCold: "3,000 AGL for noise and wildlife. 500 and 1 SM for carriers.",
     source: AIR,
   },
@@ -352,6 +508,19 @@ export const EXPLAINERS_B: Explainer[] = [
         props: { question: "Do VFR weather minimums apply?", yes: "Yes", no: "No", chosen: "yes" },
       },
     ],
+    predict: {
+      at: 0,
+      question:
+        "You are cleared VFR-on-top. Are you still an IFR aircraft?",
+      options: [
+        "No — the clearance makes you VFR",
+        "Yes — VFR-on-top is an IFR clearance from start to finish",
+        "Only until you level off on top",
+      ],
+      answer: 1,
+      because:
+        "It never stops being an IFR clearance. What changes is that you choose the altitude — and you pick from the VFR cruising altitudes, odd or even thousands plus 500, with VFR visibility and cloud clearance binding you throughout.",
+    },
     knowCold: "IFR clearance, VFR altitudes, VFR minimums.",
     source: VIFR,
   },
@@ -374,6 +543,19 @@ export const EXPLAINERS_C: Explainer[] = [
       { caption: "WILL indicates futurity — and obliges nothing at all.", hold: 3400, props: { word: "will" } },
       { caption: "Which is exactly why WILL turns up in exam distractors.", hold: 3200, props: { word: "none" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "A procedure states the aircraft WILL be configured before the turn. Is that mandatory?",
+      options: [
+        "Yes — will is at least as strong as shall",
+        "No — WILL indicates futurity and obliges nothing; SHALL is the mandatory word",
+        "Only in NATOPS, not in CNAF",
+      ],
+      answer: 1,
+      because:
+        "Each word has exactly one job. SHALL is mandatory, SHOULD is recommended, MAY is optional, and WILL merely indicates something in the future. That is precisely why WILL shows up in exam distractors dressed as a requirement.",
+    },
     knowCold: "Shall is mandatory. Will is not a requirement.",
     source: ORG,
   },
@@ -392,6 +574,19 @@ export const EXPLAINERS_C: Explainer[] = [
       { caption: "ADS-B broadcasts GPS position, altitude and ground speed.", hold: 3200, props: { mode: "adsb" } },
       { caption: "Once per second, without being interrogated.", hold: 3000, props: { mode: "adsb" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "Mode C reports your altitude to ATC. Which altitude does it send?",
+      options: [
+        "Indicated, on the altimeter setting you have set",
+        "Pressure altitude",
+        "True altitude above sea level",
+      ],
+      answer: 1,
+      because:
+        "Mode C always sends PRESSURE altitude and lets the ground system correct it — that way every aircraft is reporting against the same datum whatever each pilot has dialled in. Mode 3 answers who you are; Mode C answers how high; ADS-B broadcasts both plus position, once a second, uninterrogated.",
+    },
     knowCold: "Mode 3 = who. Mode C = how high. ADS-B = all of it.",
     source: ORG,
   },
@@ -410,6 +605,19 @@ export const EXPLAINERS_C: Explainer[] = [
       { caption: "Except for mission requirement, emergency, or alternate landing.", hold: 3400, props: { item: "fuel" } },
       { caption: "Closing the plan is on BOTH the PIC and the formation leader.", hold: 3400, props: { item: "close" } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "You are flying as a wingman in a formation. Whose responsibility is it to close the flight plan?",
+      options: [
+        "The formation leader alone",
+        "Both the PIC and the formation leader",
+        "Base operations at the destination",
+      ],
+      answer: 1,
+      because:
+        "It rests on both, which is the point of the rule — a plan left open launches a search. Assuming the other party has done it is exactly how a flight plan stays open.",
+    },
     knowCold: "Permission, contract fuel, and both of them close the plan.",
     source: ORG,
   },
@@ -428,6 +636,19 @@ export const EXPLAINERS_C: Explainer[] = [
       { caption: "Survival knife and personal survival kit.", hold: 3000, props: { highlight: "kit" } },
       { caption: "Signal device, survival radio, beacon, flashlight, ID tags.", hold: 3400, props: { highlight: "signal" } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "Survival radio, beacon and signal device — required equipment, or carried at the crew's discretion?",
+      options: [
+        "Crew discretion",
+        "Required",
+        "Required only for overwater flights",
+      ],
+      answer: 1,
+      because:
+        "They are on the required list alongside the helmet, fire-resistant suit and gloves, boots, survival knife and kit, flashlight and ID tags. The list is what you wear and carry on every flight, not a recommendation to be judged trip by trip.",
+    },
     knowCold: "Helmet, boots, suit, gloves, knife, kit, signal, radio, beacon, light, tags.",
     source: ORG,
   },
@@ -447,6 +668,19 @@ export const EXPLAINERS_C: Explainer[] = [
       { caption: "Taxiways: blue edges, green centerline.", hold: 3000, props: { element: "taxiway" } },
       { caption: "And two quick white flashes on the beacon means a military field.", hold: 3200, props: { element: "beacon" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "Threshold lights show GREEN as you approach. What do the same fixtures show when you look back at them from the runway?",
+      options: [
+        "Green from both sides",
+        "Red — that face marks the overrun",
+        "White, like the runway edges",
+      ],
+      answer: 1,
+      because:
+        "They are two-faced on purpose: green approaching means the landing threshold, red from the runway means the end of usable surface. Same fixture, opposite meaning, depending on which way you are looking at it.",
+    },
     knowCold: "Green approaching, red from the runway. Blue edges, green centerline.",
     source: VIFR,
   },
@@ -465,6 +699,19 @@ export const EXPLAINERS_C: Explainer[] = [
       { caption: "At 18,000 the structure changes to jet routes.", hold: 3000, props: { band: "jet" } },
       { caption: "Those run up to FL450.", hold: 2800, props: { band: "none" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "You climb through 18,000 ft MSL. What happens to the airway structure?",
+      options: [
+        "Nothing — Victor airways continue upward",
+        "It changes to jet routes, which run to FL450",
+        "Airways stop and everyone goes direct",
+      ],
+      answer: 1,
+      because:
+        "18,000 is where the system swaps over. Below it, Victor airways from 1,200 ft AGL, 8 nm wide — four each side of centreline. At 18,000 they give way to jet routes, which carry on up to FL450.",
+    },
     knowCold: "Victor below 18,000. Jet routes above, to FL450.",
     source: AIR,
   },

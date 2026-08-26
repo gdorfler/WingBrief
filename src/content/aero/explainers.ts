@@ -50,6 +50,19 @@ export const EXPLAINERS: Explainer[] = [
         props: { aoa: 12, arrows: true, showResultant: true },
       },
     ],
+    predict: {
+      at: 1,
+      question:
+        "The streamtube over the top of the wing is squeezed into a smaller area. What happens to the air in it?",
+      options: [
+        "It slows down, and static pressure rises",
+        "It speeds up, and static pressure falls",
+        "Nothing — the wing pushes air down instead",
+      ],
+      answer: 1,
+      because:
+        "Two rules in sequence. Continuity says the same mass through a smaller area must move faster; Bernoulli says faster flow has lower static pressure. The wing is then pushed toward the low pressure — which is upward.",
+    },
     knowCold: "Continuity then Bernoulli. Lift acts toward the lower static pressure.",
     source: TG("Lift Production and Drag", ["2.82"]),
   },
@@ -108,6 +121,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Correct for wind → Ground. Your speed over the earth.", hold: 3200, props: { step: 4 } },
       { caption: "TAS = EAS × √(ρ₀/ρ). Above sea level, IAS is always less than TAS.", hold: 3800, props: { step: 5 } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "You have corrected indicated for instrument error and for compressibility. Which correction turns that into TRUE airspeed?",
+      options: [
+        "Wind",
+        "Density",
+        "Position error",
+      ],
+      answer: 1,
+      because:
+        "ICE-TG in order: Indicated, Calibrated, Equivalent, True, Ground. Instrument and position error give calibrated, compressibility gives equivalent, DENSITY gives true, and only wind takes you to ground speed.",
+    },
     knowCold: "IAS → CAS → EAS → TAS → GS.",
     source: TG("Basic Theory", ["2.42", "2.46"]),
   },
@@ -126,6 +152,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "To hold the same indication, you must fly faster.", hold: 3200, props: { altitude: 15000 } },
       { caption: "Roughly +3 knots of TAS per 1,000 ft at constant IAS.", hold: 3600, props: { altitude: 20000 } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "You climb holding a constant indicated airspeed. What is your TRUE airspeed doing?",
+      options: [
+        "Holding steady — that is what indicated means",
+        "Rising steadily",
+        "Falling with the density",
+      ],
+      answer: 1,
+      because:
+        "The indicator measures dynamic pressure, and thinner air makes less of it at the same true speed. To keep the needle where it is you must genuinely fly faster — roughly 3 knots of TAS per 1,000 ft.",
+    },
     knowCold: "Constant IAS in a climb means a steadily rising TAS.",
     source: TG("Basic Theory", ["2.45", "2.47"]),
   },
@@ -145,6 +184,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Flaps down: the whole curve moves up and to the LEFT.", hold: 3600, props: { marker: 14, flaps: true } },
       { caption: "Higher CLmax, but it arrives at a LOWER angle of attack.", hold: 3800, props: { marker: 14, flaps: true } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "You lower the flaps. CLmax rises — but what happens to the angle of attack where it occurs?",
+      options: [
+        "It rises as well",
+        "It falls — CLmax arrives at a LOWER AOA",
+        "It does not move",
+      ],
+      answer: 1,
+      because:
+        "The whole curve shifts up and to the LEFT. You get more maximum lift, but the critical angle arrives sooner, which is why the stall warning comes at a lower nose attitude with flaps down.",
+    },
     knowCold: "Flaps down: CLmax ↑, CLmax AOA ↓.",
     source: TG("Lift Production and Drag", ["2.96"]),
   },
@@ -164,6 +216,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Far enough forward, the suction collapses and CL drops.", hold: 3600, props: { aoa: 18 } },
       { caption: "That is a stall. Airspeed never entered into it.", hold: 3800, props: { aoa: 22 } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "As angle of attack increases, which way does the boundary-layer separation point move?",
+      options: [
+        "Aft, toward the trailing edge",
+        "Forward, toward the leading edge",
+        "It stays where the wing is thickest",
+      ],
+      answer: 1,
+      because:
+        "More AOA drains the boundary layer's kinetic energy sooner against the adverse pressure gradient, so separation marches FORWARD. Far enough forward and the suction peak collapses and CL drops. Airspeed never entered into it.",
+    },
     knowCold: "AOA ↑ → separation moves forward → CL ↓ → stall.",
     source: TG("Stalls", ["3.3", "3.5"]),
   },
@@ -182,6 +247,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "The minimum is L/Dmax, exactly where the two curves cross.", hold: 3800, props: { reveal: "all", marker: 0.5 } },
       { caption: "Slow side: induced dominates. Fast side: parasite dominates.", hold: 3800, props: { reveal: "all", showRegions: true } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "Parasite drag climbs with velocity and induced drag falls with it. What is true at the bottom of the total drag curve?",
+      options: [
+        "Parasite drag is zero",
+        "The two are exactly equal",
+        "Induced drag is at its maximum",
+      ],
+      answer: 1,
+      because:
+        "The minimum of the sum sits precisely where the two curves cross, so at L/Dmax parasite drag equals induced drag. Slower than that and induced dominates; faster and parasite does.",
+    },
     knowCold: "At L/Dmax, parasite drag equals induced drag.",
     source: TG("Lift Production and Drag", ["2.98", "2.100"]),
   },
@@ -201,6 +279,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "For any aircraft, this is best glide range.", hold: 3200, props: { marker: 0.5, label: "glide" } },
       { caption: "Not maximum lift. Not maximum speed. Wing efficiency, not engine.", hold: 4000, props: { marker: 0.5, label: "caveat" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "L/Dmax is the most efficient angle of attack. Is it also the speed for maximum lift?",
+      options: [
+        "Yes — the name says maximum",
+        "No — it is the best lift-to-drag RATIO, not the most lift",
+        "Only in a glide",
+      ],
+      answer: 1,
+      because:
+        "It is a ratio, not a maximum of either term. L/Dmax gives minimum total drag, minimum thrust required, max range for a turboprop and best glide range for anything. It is a property of the wing, not the engine.",
+    },
     knowCold: "L/Dmax: min drag, min thrust required, max range (prop), best glide.",
     source: TG("Lift Production and Drag", ["2.98"]),
   },
@@ -220,6 +311,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Just before touchdown, induced drag is cut by about 60%.", hold: 3600, props: { heightFraction: 0.08 } },
       { caption: "Climb out of it and lift falls while induced drag returns. Do not coast.", hold: 4000, props: { heightFraction: 1.4 } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "You descend to within one wingspan of the runway. What does the ground do to the downwash?",
+      options: [
+        "Increases it, so induced drag rises",
+        "Blocks it, so induced drag falls",
+        "Nothing until the wheels touch",
+      ],
+      answer: 1,
+      because:
+        "With the downwash blocked the total lift vector rotates forward: effective lift goes up and induced drag comes down — by around 60% just before touchdown. Climb out of it and both reverse, which is why you never coast out of ground effect.",
+    },
     knowCold: "Within one wingspan: effective lift ↑, induced drag ↓.",
     source: TG("Lift Production and Drag", ["2.94", "2.95"]),
   },
@@ -238,6 +342,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Thrust available does not change — so excess thrust shrinks.", hold: 3400, props: { weight: 1.35, ghost: true, showExcess: true } },
       { caption: "Climb performance falls. Stall speed rises. Takeoff distance goes up as W².", hold: 4200, props: { weight: 1.35, ghost: true, showExcess: true } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "You add weight. Thrust available is unchanged. What happens to your excess thrust and climb performance?",
+      options: [
+        "Both unchanged — thrust available did not move",
+        "Both shrink, because thrust required moved up and right",
+        "Excess thrust grows at higher speed",
+      ],
+      answer: 1,
+      because:
+        "More weight needs more lift, so the same AOA needs more speed and the whole thrust-required curve shifts up and right. Thrust available stays put, so the gap between them — the excess — closes. Climb falls, stall speed rises, and takeoff distance goes as weight squared.",
+    },
     knowCold: "Weight ↑ → curves up and right, excesses down, stall speed up.",
     source: TG("Lift Production and Drag", ["2.112"]),
   },
@@ -257,6 +374,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Power required is thrust × velocity — so it shifts RIGHT AND UP.", hold: 3800, props: { altitude: 15000, highlight: "pr" } },
       { caption: "Both thrust available and power available fall. Excesses shrink.", hold: 3800, props: { altitude: 15000, showAvailable: true } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "You climb. The thrust-required curve shifts right. Does it also shift UP?",
+      options: [
+        "Yes — everything gets harder with altitude",
+        "No — dynamic pressure is unchanged, so drag is unchanged",
+        "Only above 10,000 ft",
+      ],
+      answer: 1,
+      because:
+        "At the same indicated speed the dynamic pressure is the same, so the drag is the same — thrust required moves RIGHT only. Power required is thrust times velocity, and since velocity grew, that one moves right AND up.",
+    },
     knowCold: "Altitude: T_R right only. P_R right and up.",
     source: TG("Lift Production and Drag", ["2.113"]),
   },
@@ -276,6 +406,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "To fly slower in level flight here, you must ADD power.", hold: 3600, props: { marker: 0.2, showRegions: true } },
       { caption: "Every takeoff and landing happens in or near this region.", hold: 3800, props: { marker: 0.2, showRegions: true } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "You are slow, left of max endurance, and a gust slows you further. What happens next if you do nothing?",
+      options: [
+        "Excess thrust appears and you speed back up",
+        "Power required rises and you slow down further",
+        "Nothing — airspeed is self-correcting",
+      ],
+      answer: 1,
+      because:
+        "That is what makes it REVERSE command: slower needs MORE power, so a speed loss feeds on itself instead of correcting. The fix is throttle, not stick — and every takeoff and landing happens in or near this region.",
+    },
     knowCold: "Reverse command: slower needs more power. Fix it with throttle, not stick.",
     source: TG("Performance and Maneuvering", ["2.145", "2.146"]),
   },
@@ -295,6 +438,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "More lift at the same speed means more AOA — closer to CLmax.", hold: 3600, props: { bank: 60, showAoa: true } },
       { caption: "Stall speed rises by √n. At 2 G that is 40% higher.", hold: 4000, props: { bank: 60, showStall: true } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "You roll into a 60° banked level turn. What does that do to stall speed?",
+      options: [
+        "Nothing — stall is an AOA limit, not a speed",
+        "It rises about 40%",
+        "It rises about 15%",
+      ],
+      answer: 1,
+      because:
+        "Holding altitude in a bank needs more total lift, so load factor rises — 2 G at 60°. Stall speed scales with the square root of load factor, and the square root of 2 is 1.41. The AOA limit has not moved; the speed at which you reach it has.",
+    },
     knowCold: "Bank ↑ → n ↑ → lift required ↑ → stall speed × √n.",
     source: TG("Performance and Maneuvering", ["2.163"]),
   },
@@ -313,6 +469,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Bank harder at the same speed: the circle shrinks and the rate rises.", hold: 3400, props: { bank: 60, speed: 0.5, show: "both" } },
       { caption: "Weight appears in neither formula. It cannot change the turn.", hold: 3800, props: { bank: 60, speed: 0.5, show: "formulas" } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "Two aircraft, same airspeed and same bank angle, but one is far heavier. Whose turn is tighter?",
+      options: [
+        "The lighter one",
+        "Neither — the turns are identical",
+        "The heavier one",
+      ],
+      answer: 1,
+      because:
+        "Weight appears in neither formula. Rate is g·tan(bank)/V and radius is V²/(g·tan(bank)) — airspeed and bank angle, nothing else. Weight changes what it costs you to hold the turn, not the geometry of the turn.",
+    },
     knowCold: "ω = g tan φ / V · r = V² / (g tan φ). Airspeed and bank only.",
     source: TG("Performance and Maneuvering", ["2.158", "2.160"]),
   },
@@ -332,6 +501,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Where the stall line meets the limit load is the maneuver point.", hold: 3600, props: { reveal: 5 } },
       { caption: "Below Va you stall before you over-G. Above it, you can break the aircraft.", hold: 4200, props: { reveal: 6 } },
     ],
+    predict: {
+      at: 3,
+      question:
+        "You haul back hard on the stick below manoeuvre speed, Va. What happens?",
+      options: [
+        "You exceed the limit load and damage the aircraft",
+        "You stall before you can over-G",
+        "Nothing — Va is only about gust loads",
+      ],
+      answer: 1,
+      because:
+        "Below Va the accelerated stall line is reached before the limit load line, so the wing gives up first and protects the structure. Above Va that protection is gone and full deflection can break the aeroplane. The corner where those two lines meet IS the manoeuvre point.",
+    },
     knowCold: "Maneuver point = accelerated stall line ∩ limit load. Below Va you cannot over-G.",
     source: TG("Performance and Maneuvering", ["2.166", "2.167"]),
   },
@@ -351,6 +533,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "The lift difference sustains the roll.", hold: 3200, props: { yaw: 1, highlight: "lift" } },
       { caption: "The drag difference sustains the yaw. Together: autorotation.", hold: 3800, props: { yaw: 1, highlight: "drag" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "Both wings are stalled and yaw is introduced. What is different about the DOWN-going wing?",
+      options: [
+        "It is less stalled — it has more airspeed",
+        "It is MORE stalled — its AOA is higher",
+        "Both wings behave identically",
+      ],
+      answer: 1,
+      because:
+        "The down-going wing meets a roll relative wind from below, which raises its angle of attack further. So it makes less lift and more drag than the up-going wing — the lift difference sustains the roll and the drag difference sustains the yaw. That is autorotation.",
+    },
     knowCold: "Down-going wing is more stalled. Lift differential rolls, drag differential yaws.",
     source: TG("Spins", ["3.19", "3.21"]),
   },
@@ -370,6 +565,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Stay ABOVE their flight path. Rotate before their rotation point.", hold: 3800, props: { time: 1, showAvoidance: "takeoff" } },
       { caption: "Landing: stay at or above the approach path, touch down BEYOND theirs.", hold: 4000, props: { time: 1, showAvoidance: "landing" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "You are landing behind a heavy. Where should you touch down relative to its touchdown point?",
+      options: [
+        "Short of it",
+        "Beyond it",
+        "Exactly on it",
+      ],
+      answer: 1,
+      because:
+        "The vortices start where its nosewheel left the ground and stop where its wheels touched, so beyond that point the runway is clean. Stay at or above its approach path on the way in, and on departure rotate BEFORE its rotation point.",
+    },
     knowCold: "Sink 400–500 fpm, level 900 ft below, drift 5 kt. Stay above; rotate before, land beyond.",
     source: TG("Wake Turbulence and Wind Shear", ["2.187", "2.191", "2.192"]),
   },
@@ -389,6 +597,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Cross the core: the headwind becomes a tailwind. IAS collapses.", hold: 3600, props: { phase: 4 } },
       { caption: "Lift falls with the nose already low and the power already back.", hold: 4200, props: { phase: 5 } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "Entering the outflow your airspeed jumps and you balloon above glidepath. What does instinct say — and is it right?",
+      options: [
+        "Nose down and power back, and yes",
+        "Nose down and power back, and no — the tailwind is coming",
+        "Add power, and yes",
+      ],
+      answer: 1,
+      because:
+        "Both instinctive corrections spend the energy the shear just lent you. Cross the core and the headwind becomes a tailwind: airspeed collapses with the nose already low and the power already back. The performance increase is the warning, not the gift.",
+    },
     knowCold: "Microburst: performance increase FIRST, then the decrease that kills.",
     source: TG("Wake Turbulence and Wind Shear", ["2.194", "2.195", "2.196"]),
   },
@@ -408,6 +629,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "But the turn is an acceleration. Forces do not cancel. Not equilibrium.", hold: 3800, props: { mode: "turn" } },
       { caption: "Equilibrium always implies trimmed. Trimmed does not imply equilibrium.", hold: 4000, props: { mode: "summary" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "A steady, constant-bank level turn. Moments cancel, so it is trimmed. Is it in equilibrium?",
+      options: [
+        "Yes — nothing is changing",
+        "No — a turn is an acceleration, so forces do not cancel",
+        "Only if the bank is under 30°",
+      ],
+      answer: 1,
+      because:
+        "Equilibrium needs forces AND moments to cancel; trimmed needs only moments. A turn is a continuous acceleration toward the centre, so it is trimmed but not in equilibrium. Equilibrium always implies trimmed — never the other way round.",
+    },
     knowCold: "Forces AND moments = equilibrium. Moments only = trimmed.",
     source: TG("Basic Theory", ["2.15", "2.16"]),
   },
@@ -427,6 +661,19 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Same volume, less mass — so density falls.", hold: 3400, props: { humidity: 1, showDensity: true } },
       { caption: "Humid means thin. Thin means longer takeoff rolls.", hold: 3800, props: { humidity: 1, showPerformance: true } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "Water vapour displaces air molecules one for one, so the particle count is unchanged. Why is humid air less dense?",
+      options: [
+        "It is not — density is unchanged",
+        "A water molecule has less mass than the air molecule it replaced",
+        "Water vapour occupies more volume",
+      ],
+      answer: 1,
+      because:
+        "Same volume, same particle count, but each swap trades a heavier molecule for a lighter one — so total mass falls and density with it. Humid means thin, and thin means longer takeoff rolls and worse climb.",
+    },
     knowCold: "Humidity ↑ → density ↓ → performance ↓.",
     source: TG("Basic Theory", ["2.23", "2.24"]),
   },
