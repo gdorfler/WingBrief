@@ -148,13 +148,17 @@ export function GrammarDefs() {
 /** A physical force or a real motion. Solid, arrowheaded. */
 export function Vector({
   x1, y1, x2, y2, role = "primary", width = 3, glow = false, label, labelSide = "above",
+  labelAt = 0.5,
 }: {
   x1: number; y1: number; x2: number; y2: number;
   role?: Role; width?: number; glow?: boolean;
   label?: string; labelSide?: "above" | "below";
+  /** Where along the vector the name sits, 0 at the tail and 1 at the head.
+   *  Vectors sharing a vertex crowd each other at the midpoint. */
+  labelAt?: number;
 }) {
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2;
+  const mx = x1 + (x2 - x1) * labelAt;
+  const my = y1 + (y2 - y1) * labelAt;
   const angle = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
   const flip = Math.abs(angle) > 90;
   return (

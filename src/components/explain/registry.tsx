@@ -13,11 +13,13 @@ import type { SceneRenderer } from "./player";
 import { AoaExplainer } from "./aoa";
 import { EngineFlowExplainer } from "./engine-flow";
 import { MicroburstExplainer } from "./microburst";
+import { WindTriangleExplainer } from "./wind-triangle";
 
 export const SCENE_EXPLAINERS: Record<string, SceneRenderer> = {
   "x-aoa-in-90-seconds": AoaExplainer as unknown as SceneRenderer,
   "ex-air-through-engine": EngineFlowExplainer as unknown as SceneRenderer,
   "wx-x-microburst": MicroburstExplainer as unknown as SceneRenderer,
+  "nx-wind-triangle": WindTriangleExplainer as unknown as SceneRenderer,
 };
 
 export function hasSceneVersion(id: string): boolean {
