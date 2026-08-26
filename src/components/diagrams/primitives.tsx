@@ -70,6 +70,8 @@ export function Diagram({
   children,
   width = DIAGRAM_W,
   height = DIAGRAM_H,
+  originX = 0,
+  originY = 0,
   ink = false,
   title,
   className = "",
@@ -77,13 +79,21 @@ export function Diagram({
   children: ReactNode;
   width?: number;
   height?: number;
+  /**
+   * Where the viewBox starts. A diagram that only draws into the middle band of
+   * the canvas can crop to it, so the empty space is not carried onto the
+   * screen and letterboxed — which is the difference between the drawing
+   * filling a third of the stage and filling most of it.
+   */
+  originX?: number;
+  originY?: number;
   ink?: boolean;
   title: string;
   className?: string;
 }) {
   return (
     <svg
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox={`${originX} ${originY} ${width} ${height}`}
       className={`diagram ${ink ? "diagram-ink" : ""} ${className}`}
       role="img"
       aria-label={title}
@@ -140,6 +150,20 @@ export function Axes({
     </g>
   );
 }
+
+/**
+ * Round a coordinate before it becomes an attribute.
+ *
+ * Node and the browser can disagree on the last bit of a Math.cos or Math.log10
+ * result. React serialises the whole double, so the server HTML says
+ * 245.99659572444872 and the client says ...75, and hydration reports a
+ * mismatch on an element that is visually identical. Rounding kills the
+ * difference — it is ~1e-14 and the tenth of a pixel we keep is far coarser.
+ *
+ * Anything derived from trigonometry or logarithms should go through this on
+ * its way into x/y/width/height. curvePath already does the same with toFixed.
+ */
+export const px = (n: number) => Math.round(n * 1000) / 1000;
 
 /** Samples f across the plot's x-range and returns an SVG path. */
 export function curvePath(

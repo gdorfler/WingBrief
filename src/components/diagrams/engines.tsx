@@ -25,6 +25,7 @@ import {
   bool,
   curvePath,
   makePlot,
+  px,
   num,
   str,
 } from "./primitives";
@@ -132,7 +133,7 @@ export function EngineCutaway(p: DiagramProps) {
   const dim = (s: Station) => (highlight === "none" || lit(s) ? 1 : 0.28);
 
   return (
-    <Diagram title="Gas turbine engine cutaway">
+    <Diagram originY={74} height={162} title="Gas turbine engine cutaway">
       <ArrowDefs colors={{ air: BRAND, hot: HOT, shaft: MUTED }} />
 
       <path d={casingPath(cy)} fill="var(--color-surface-2)" stroke={NAVY} strokeWidth={2.4} />
@@ -569,8 +570,23 @@ export function CycleCompare(p: DiagramProps) {
   const showBrayton = cycle === "brayton" || cycle === "both";
   const showOtto = cycle === "otto" || cycle === "both";
 
+  // One cycle drawn takes a little over half the height of two, so a fixed
+  // crop either clips the pair or leaves the single one floating in space.
+  const crop =
+    cycle === "both"
+      ? { y: 32, h: 190 }
+      : cycle === "brayton"
+        ? { y: 32, h: 122 }
+        : { y: 62, h: 116 };
+
   return (
-    <Diagram title="Brayton and Otto cycles">
+    <Diagram
+      originX={34}
+      width={430}
+      originY={crop.y}
+      height={crop.h}
+      title="Brayton and Otto cycles"
+    >
       {showBrayton && (
         <g>
           <text x={44} y={54} fontSize={11.5} fontWeight={800} fill={BRAND}>
@@ -770,12 +786,12 @@ export function CentrifugalCompressor(p: DiagramProps) {
         const r0 = 14;
         const r1 = 52;
         const curl = 0.55;
-        const x0 = cx + Math.cos(a0) * r0;
-        const y0 = cy + Math.sin(a0) * r0;
-        const x1 = cx + Math.cos(a0 + curl) * r1;
-        const y1 = cy + Math.sin(a0 + curl) * r1;
-        const xc = cx + Math.cos(a0 + curl * 0.35) * (r1 * 0.72);
-        const yc = cy + Math.sin(a0 + curl * 0.35) * (r1 * 0.72);
+        const x0 = px(cx + Math.cos(a0) * r0);
+        const y0 = px(cy + Math.sin(a0) * r0);
+        const x1 = px(cx + Math.cos(a0 + curl) * r1);
+        const y1 = px(cy + Math.sin(a0 + curl) * r1);
+        const xc = px(cx + Math.cos(a0 + curl * 0.35) * (r1 * 0.72));
+        const yc = px(cy + Math.sin(a0 + curl * 0.35) * (r1 * 0.72));
         return (
           <path
             key={i}
@@ -795,10 +811,10 @@ export function CentrifugalCompressor(p: DiagramProps) {
         return (
           <line
             key={i}
-            x1={cx + Math.cos(a) * 58}
-            y1={cy + Math.sin(a) * 58}
-            x2={cx + Math.cos(a + 0.3) * 76}
-            y2={cy + Math.sin(a + 0.3) * 76}
+            x1={px(cx + Math.cos(a) * 58)}
+            y1={px(cy + Math.sin(a) * 58)}
+            x2={px(cx + Math.cos(a + 0.3) * 76)}
+            y2={px(cy + Math.sin(a + 0.3) * 76)}
             stroke={GO}
             strokeWidth={2.4}
             strokeLinecap="round"

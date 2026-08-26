@@ -302,10 +302,10 @@ export function VnDiagram(p: DiagramProps) {
             stroke={NOGO}
             strokeWidth={2.6}
           />
-          <text x={plot.sx(300)} y={plot.sy(cfg.positiveLimit) - 8} textAnchor="end" fill={NOGO} fontSize={9.5} fontWeight={750}>
+          <text x={plot.sx(80)} y={plot.sy(cfg.positiveLimit) - 8} textAnchor="start" fill={NOGO} fontSize={9.5} fontWeight={750}>
             limit load +{cfg.positiveLimit.toFixed(1)} G
           </text>
-          <text x={plot.sx(300)} y={plot.sy(cfg.negativeLimit) + 16} textAnchor="end" fill={NOGO} fontSize={9.5} fontWeight={750}>
+          <text x={plot.sx(80)} y={plot.sy(cfg.negativeLimit) + 16} textAnchor="start" fill={NOGO} fontSize={9.5} fontWeight={750}>
             limit load {cfg.negativeLimit.toFixed(1)} G
           </text>
         </>
@@ -330,7 +330,7 @@ export function VnDiagram(p: DiagramProps) {
         <>
           <Marker x={plot.sx(va)} y={plot.sy(cfg.positiveLimit)} color={BRAND} label="maneuver point" side="top" pulse={reveal === 5} />
           <line x1={plot.sx(va)} y1={plot.sy(cfg.positiveLimit)} x2={plot.sx(va)} y2={plot.y0} stroke={BRAND} strokeWidth={1.3} strokeDasharray="4 4" />
-          <text x={plot.sx(va)} y={plot.y0 + 28} textAnchor="middle" fill={BRAND} fontSize={9.5} fontWeight={750}>
+          <text x={plot.sx(va)} y={plot.y0 - 6} textAnchor="middle" fill={BRAND} fontSize={9.5} fontWeight={750}>
             Va {Math.round(va)} KIAS
           </text>
         </>
@@ -778,7 +778,7 @@ export function StabilityBall(p: DiagramProps) {
   }[kind];
 
   return (
-    <Diagram title={bowls.label}>
+    <Diagram originY={136} height={156} title={bowls.label}>
       <ArrowDefs colors={{ tend: bowls.color }} />
       <path d={bowls.path} fill="none" stroke={NAVY} strokeWidth={3} strokeLinecap="round" />
       <circle cx={bowls.ball.x} cy={bowls.ball.y} r={12} fill={bowls.color} />

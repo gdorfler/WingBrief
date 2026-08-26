@@ -369,13 +369,13 @@ export function DewPointSpread(p: DiagramProps) {
 
       {/* Temperature */}
       <line x1={100} y1={y(temp)} x2={400} y2={y(temp)} stroke={NOGO} strokeWidth={3} />
-      <text x={408} y={y(temp) + 4} fontSize={10} fontWeight={800} fill={NOGO}>
+      <text x={408} y={y(temp) - 6} fontSize={10} fontWeight={800} fill={NOGO}>
         temp
       </text>
 
       {/* Dew point */}
       <line x1={100} y1={y(dew)} x2={400} y2={y(dew)} stroke={BRAND} strokeWidth={3} />
-      <text x={408} y={y(dew) + 4} fontSize={10} fontWeight={800} fill={BRAND}>
+      <text x={408} y={y(dew) + 14} fontSize={10} fontWeight={800} fill={BRAND}>
         dew pt
       </text>
 

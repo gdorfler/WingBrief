@@ -84,14 +84,14 @@ const LAND: Frame = {
   w: 820, h: 320, cx: 400, cy: 158, reach: 268, hz: 396,
   /* Both arcs must clear the fuselage — an arc drawn inside a navy silhouette
    * is invisible, which is what buried the AOA arc in the first pass. */
-  pitchR: 182, pitchGap: 84, aoaR: 96, aoaGap: 26,
-  values: "plates", tagR: 1, tagAlign: "start", hzSide: -1, hzDy: -13, tags: true, aircraft: 2.3,
+  pitchR: 200, pitchGap: 52, aoaR: 132, aoaGap: 26,
+  values: "plates", tagR: 1, tagAlign: "start", hzSide: -1, hzDy: -13, tags: true, aircraft: 4,
 };
 
 const PORT: Frame = {
   w: 360, h: 560, cx: 180, cy: 150, reach: 180, hz: 176,
-  pitchR: 112, pitchGap: 0, aoaR: 64, aoaGap: 0,
-  values: "blocks", tagR: 0.6, tagAlign: "end", hzSide: 1, hzDy: 19, tags: true, aircraft: 1.9,
+  pitchR: 150, pitchGap: 0, aoaR: 96, aoaGap: 0,
+  values: "blocks", tagR: 0.6, tagAlign: "end", hzSide: 1, hzDy: 19, tags: true, aircraft: 3,
 };
 
 /** Compare mode halves the width available, so it gets its own crop. */

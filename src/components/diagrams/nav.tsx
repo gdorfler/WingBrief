@@ -15,7 +15,7 @@
  * student is being asked to read is drawn at the size it would be read at.
  */
 
-import { Diagram, DIAGRAM_H, DIAGRAM_W, bool, num, str } from "./primitives";
+import { Diagram, DIAGRAM_H, DIAGRAM_W, bool, num, px, str } from "./primitives";
 import type { DiagramProps } from "./primitives";
 
 const PAPER = "#faf8f2";
@@ -839,7 +839,7 @@ export function LogScaleTicks() {
   const y = 150;
   const x0 = 40;
   const x1 = 460;
-  const pos = (v: number) => x0 + (Math.log10(v / 10) / 1) * (x1 - x0);
+  const pos = (v: number) => px(x0 + (Math.log10(v / 10) / 1) * (x1 - x0));
   const bands = [
     { from: 10, to: 15, per: "1", colour: EMERALD },
     { from: 15, to: 30, per: "2", colour: BLUE },

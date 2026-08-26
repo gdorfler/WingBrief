@@ -268,7 +268,7 @@ export function AirfoilPressure(p: DiagramProps) {
   const samples = 11;
 
   return (
-    <Diagram title="Pressure distribution around an airfoil">
+    <Diagram originY={22} height={156} title="Pressure distribution around an airfoil">
       <ArrowDefs colors={{ up: BRAND, down: CAUTION, res: GO, vel: NOGO }} />
 
       {showTubes && (
