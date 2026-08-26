@@ -38,6 +38,11 @@ const APPROACH_KT = 120;
 /** The portrait window: wide enough for the aircraft, its wind arrow and the
  *  glidepath under it, and nothing else. */
 const CROP = { w: 470, h: 400 };
+/** The horizontal extent of a drawing frame, in viewBox units. */
+interface Win {
+  x0: number;
+  x1: number;
+}
 /** The trace is a chart, so its portrait window is the burst span, not the sky. */
 const TRACE_CROP = { w: 480, h: 300 };
 
@@ -228,24 +233,41 @@ function Trace() {
   );
 }
 
-function Field({ show, x }: { show: Scene["show"]; x: number }) {
+/**
+ * Does a label fit entirely inside the camera window?
+ *
+ * The portrait crop moves with the aircraft, so a label that is comfortably in
+ * frame on desktop can end up sliced down the middle on a phone. Half a word is
+ * worse than no word, so anything that does not fit is not drawn.
+ */
+function fits(win: Win, x: number, chars: number, anchor: "start" | "middle" | "end" = "middle") {
+  const w = chars * 7.6;
+  const left = anchor === "start" ? x : anchor === "end" ? x - w : x - w / 2;
+  return left >= win.x0 + 4 && left + w <= win.x1 - 4;
+}
+
+function Field({ show, x, win }: { show: Scene["show"]; x: number; win: Win }) {
   const hw = headwind(x);
   return (
     <>
       {/* Ground and runway. */}
       <line x1={0} y1={GROUND} x2={VB.w} y2={GROUND} stroke="var(--color-navy)" strokeWidth={3} />
       <rect x={820} y={GROUND - 5} width={132} height={10} rx={2} fill="var(--color-navy)" opacity={0.28} />
-      <text x={886} y={GROUND + 24} textAnchor="middle" fontSize={12.5} fontWeight={800}
-        letterSpacing="0.06em" fill="var(--color-navy-faint)">
-        RUNWAY
-      </text>
+      {fits(win, 886, 6) && (
+        <text x={886} y={GROUND + 24} textAnchor="middle" fontSize={12.5} fontWeight={800}
+          letterSpacing="0.06em" fill="var(--color-navy-faint)">
+          RUNWAY
+        </text>
+      )}
 
       <line x1={60} y1={gpY(60)} x2={900} y2={gpY(900)}
         stroke="var(--color-navy-faint)" strokeWidth={2} strokeDasharray="8 7" />
-      <text x={92} y={gpY(92) - 14} fontSize={12.5} fontWeight={800}
-        letterSpacing="0.06em" fill="var(--color-navy-faint)">
-        GLIDEPATH
-      </text>
+      {fits(win, 92, 9, "start") && (
+        <text x={92} y={gpY(92) - 14} fontSize={12.5} fontWeight={800}
+          letterSpacing="0.06em" fill="var(--color-navy-faint)">
+          GLIDEPATH
+        </text>
+      )}
 
       {show.cloud && (
         <g>
@@ -266,7 +288,7 @@ function Field({ show, x }: { show: Scene["show"]; x: number }) {
             markerEnd="url(#wb-arrow-danger)"
           />
         ))}
-      {show.column && (
+      {show.column && fits(win, CORE_X + 64, 9, "start") && (
         <text x={CORE_X + 64} y={126} fontSize={13} fontWeight={800}
           letterSpacing="0.06em" fill="var(--color-nogo)">
           DOWNDRAFT
@@ -280,12 +302,16 @@ function Field({ show, x }: { show: Scene["show"]; x: number }) {
             stroke="var(--color-nogo)" strokeWidth={3.6} strokeLinecap="round" markerEnd="url(#wb-arrow-danger)" />
           <line x1={CORE_X + 60} y1={GROUND - 14} x2={CORE_X + 210} y2={GROUND - 14}
             stroke="var(--color-nogo)" strokeWidth={3.6} strokeLinecap="round" markerEnd="url(#wb-arrow-danger)" />
-          <text x={CORE_X - 136} y={GROUND + 24} textAnchor="middle" fontSize={12} fontWeight={800} fill="var(--color-nogo)">
-            OUTFLOW
-          </text>
-          <text x={CORE_X + 136} y={GROUND + 24} textAnchor="middle" fontSize={12} fontWeight={800} fill="var(--color-nogo)">
-            OUTFLOW
-          </text>
+          {fits(win, CORE_X - 136, 7) && (
+            <text x={CORE_X - 136} y={GROUND + 24} textAnchor="middle" fontSize={12} fontWeight={800} fill="var(--color-nogo)">
+              OUTFLOW
+            </text>
+          )}
+          {fits(win, CORE_X + 136, 7) && (
+            <text x={CORE_X + 136} y={GROUND + 24} textAnchor="middle" fontSize={12} fontWeight={800} fill="var(--color-nogo)">
+              OUTFLOW
+            </text>
+          )}
         </g>
       )}
 
@@ -398,14 +424,17 @@ export function MicroburstExplainer({
     ? "Airspeed trace across the microburst encounter"
     : `Aircraft in a microburst, airspeed ${Math.round(airspeed(x))} knots`;
 
-  const body = s.trace ? (
-    <Trace />
-  ) : (
-    <>
-      <Field show={s.show} x={x} />
-      <Aircraft x={x} y={acY(x)} danger={danger} />
-    </>
-  );
+  const frameFor = (win: Win) =>
+    s.trace ? (
+      <Trace />
+    ) : (
+      <>
+        <Field show={s.show} x={x} win={win} />
+        <Aircraft x={x} y={acY(x)} danger={danger} />
+      </>
+    );
+  const cropBody = frameFor({ x0: cropX, x1: cropX + crop.w });
+  const fullBody = frameFor({ x0: 0, x1: VB.w });
 
   const caption = s.predict ? (
     <PredictionGate
@@ -450,7 +479,7 @@ export function MicroburstExplainer({
               role="img"
               aria-label={label}
             >
-              {body}
+              {cropBody}
             </svg>
           </div>
 
@@ -462,7 +491,7 @@ export function MicroburstExplainer({
               role="img"
               aria-label={label}
             >
-              {body}
+              {fullBody}
             </svg>
           </div>
 
