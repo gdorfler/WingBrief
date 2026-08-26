@@ -589,6 +589,29 @@ export interface ExplainerFrame {
   hold: number;
   /** Diagram prop patch for this frame. */
   props?: Record<string, unknown>;
+  /** Optional second line: the detail that supports the caption. */
+  sub?: string;
+  /** Marks the payoff scene so it can be styled as a reveal. */
+  tone?: "reveal";
+}
+
+/**
+ * The moment an explainer stops and makes the student commit.
+ *
+ * Passive viewing produces recognition; committing to an answer first is what
+ * produces recall. Every explainer earns one of these, placed at the frame
+ * where the interesting thing is about to happen — not at the end, where it
+ * would only be a quiz.
+ */
+export interface ExplainerPredict {
+  /** Index of the frame the gate attaches to. */
+  at: number;
+  question: string;
+  options: string[];
+  /** Index into `options`. */
+  answer: number;
+  /** Shown after the student commits. Explains why, not just what. */
+  because: string;
 }
 
 export interface Explainer {
@@ -602,6 +625,10 @@ export interface Explainer {
   diagram: DiagramSpec;
   frames: ExplainerFrame[];
   knowCold: string;
+  /** Stop-and-commit moment. Explainers without one still play straight through. */
+  predict?: ExplainerPredict;
+  /** Closing recall lines. Falls back to splitting `knowCold`. */
+  anchor?: string[];
   source: SourceReference;
 }
 

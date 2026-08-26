@@ -1143,7 +1143,16 @@ export function IcingLadder(p: DiagramProps) {
 
   const band = (from: number, to: number, y: number, h: number, tone: string, label: string, sub: string) => (
     <g>
-      <rect x={x(to)} y={y} width={x(from) - x(to)} height={h} rx={6} fill={`color-mix(in srgb, ${tone} 20%, transparent)`} stroke={tone} strokeWidth={1.7} />
+      <rect
+        x={Math.min(x(from), x(to))}
+        y={y}
+        width={Math.abs(x(from) - x(to))}
+        height={h}
+        rx={6}
+        fill={`color-mix(in srgb, ${tone} 20%, transparent)`}
+        stroke={tone}
+        strokeWidth={1.7}
+      />
       {labels && (
         <>
           <text x={(x(from) + x(to)) / 2} y={y + 16} textAnchor="middle" fontSize={10} fontWeight={800} fill={tone}>

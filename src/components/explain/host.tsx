@@ -8,14 +8,24 @@
  * land explainer by explainer without a flag day.
  */
 
+import { useMemo } from "react";
 import type { Explainer } from "@/lib/types";
-import { ExplainerPlayer } from "../explainer-player";
+import { makeFramesRenderer } from "./frames-adapter";
 import { ScenePlayer } from "./player";
 import { SCENE_EXPLAINERS } from "./registry";
 
+/**
+ * Every explainer now plays as scenes.
+ *
+ * A bespoke renderer wins when one exists, because its geometry was rebuilt to
+ * teach. Everything else runs its existing diagram through the frames adapter,
+ * which gives it the same shell — stage-filling visual, caption on the stage,
+ * no transport, and a prediction gate.
+ */
 export function ExplainerHost({ explainer }: { explainer: Explainer }) {
-  const Render = SCENE_EXPLAINERS[explainer.id];
-  if (!Render) return <ExplainerPlayer explainer={explainer} />;
+  const bespoke = SCENE_EXPLAINERS[explainer.id];
+  const adapted = useMemo(() => makeFramesRenderer(explainer), [explainer]);
+  const Render = bespoke ?? adapted;
 
   return (
     <ScenePlayer

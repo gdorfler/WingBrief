@@ -392,6 +392,27 @@ button,
   stroke-width: 1;
 }
 
+/* ------------------------------------------------------------
+   A diagram inside an explainer stage.
+
+   The default .diagram is width-driven, which is right inside a card
+   and wrong inside a stage: it left the teaching visual at 47% of the
+   viewport on desktop and 24% on a phone. In a stage the figure owns
+   the whole box and the viewBox letterboxes inside it.
+   ------------------------------------------------------------ */
+
+.wb-stage-figure,
+.wb-stage-figure figure {
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+}
+
+.wb-stage-figure .diagram {
+  height: 100%;
+  width: 100%;
+}
+
 .diagram-ink {
   --grid: #1d3652;
   --axis: #3d5f85;

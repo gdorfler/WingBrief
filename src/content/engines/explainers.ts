@@ -60,6 +60,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Static pressure must fall to pay for it.", hold: 2800, props: { dynamic: 0.72 } },
       { caption: "Inside the engine we just call them pressure and velocity.", hold: 3000, props: { dynamic: 0.35 } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "The duct narrows and the air speeds up. What happens to its STATIC pressure?",
+      options: ["It rises too","It falls","It does not change"],
+      answer: 1,
+      because:
+        "Total pressure is static plus dynamic, and total is what stays constant. Speeding the air up spends energy on dynamic pressure, so static pressure has to give up exactly what dynamic gained.",
+    },
     knowCold: "Total = static + dynamic. One rises, the other falls.",
     source: L201,
   },
@@ -79,6 +88,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Divergent, supersonic: speeds up. Now it is a nozzle.", hold: 3000, props: { shape: "divergent", regime: "supersonic" } },
       { caption: "Shape does not decide the outcome. Speed regime does.", hold: 3000, props: { shape: "divergent", regime: "supersonic" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "A converging duct accelerates subsonic air. What does the same duct do to SUPERSONIC air?",
+      options: ["Accelerates it as well","Slows it down","Leaves the speed alone"],
+      answer: 1,
+      because:
+        "Past Mach 1 the air compresses faster than the duct narrows, so density wins the trade. Every duct does the opposite of what it did subsonically — convergent now decelerates, divergent now accelerates.",
+    },
     knowCold: "Above Mach 1, every duct does the opposite.",
     source: L201,
   },
@@ -98,6 +116,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Above 36,000 ft temperature stops helping entirely.", hold: 3200, props: { factor: "altitude", marker: 42 } },
       { caption: "So thrust falls away faster above that altitude.", hold: 2800, props: { factor: "altitude", marker: 48 } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "You keep climbing past 36,000 ft. What happens to the RATE at which thrust falls away?",
+      options: ["It slows down","It gets faster","It stays the same"],
+      answer: 1,
+      because:
+        "Below the tropopause, falling temperature partly props density up. Above it the temperature stops falling, so pressure drops with nothing to offset it and density — and thrust with it — falls away faster.",
+    },
     knowCold: "Altitude ↑ → thrust ↓. Faster above 36,000 ft.",
     source: L201,
   },
@@ -117,6 +144,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Stack the stages and pressure multiplies each time.", hold: 3000, props: { stages: 6 } },
       { caption: "Fifteen to thirty to one, overall. Then the diffuser finishes it.", hold: 3200, props: { stages: 8 } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "The rotor has just added both velocity and pressure. What does the stator behind it do?",
+      options: ["Adds more velocity","Slows the flow and turns that speed into pressure","Passes it through unchanged"],
+      answer: 1,
+      because:
+        "The stator is a diverging passage, so it trades velocity back for static pressure and straightens the flow for the next rotor. One rotor plus one stator is one stage — which is why a stage raises pressure twice over.",
+    },
     knowCold: "One rotor + one stator = one stage.",
     source: L202,
   },
@@ -136,6 +172,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "High pressure upstream and expansion aft keep the gas moving rearward.", hold: 3200 },
       { caption: "Burning must finish before the gas reaches the turbine.", hold: 3000 },
     ],
+    predict: {
+      at: 1,
+      question:
+        "Only about a quarter of the air entering the burner actually takes part in combustion. What is the rest doing?",
+      options: ["Waiting its turn further downstream","Cooling the liner and shaping the flame","Being dumped overboard"],
+      answer: 1,
+      because:
+        "That 75% of secondary air blankets the liner and pins the flame in the middle of the can. It is also what stops the fire propagating forward — the flame sits where the airflow lets it sit, and the airflow only lets it sit in one place.",
+    },
     knowCold: "25% primary burns, 75% secondary cools and controls.",
     source: L202,
   },
@@ -155,6 +200,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Only the remaining 25% is left to be thrust.", hold: 3000 },
       { caption: "Most of the fire simply keeps the engine turning.", hold: 3000 },
     ],
+    predict: {
+      at: 1,
+      question:
+        "Pressure rises across the compressor. What does pressure do across the turbine?",
+      options: ["Rises there too","Falls","Holds steady"],
+      answer: 1,
+      because:
+        "They are opposite machines on one shaft. The compressor spends shaft work to raise pressure; the turbine harvests pressure to make shaft work — about 75% of it going straight back to driving the compressor.",
+    },
     knowCold: "Turbine: 75% back to the compressor, 25% to thrust.",
     source: L202,
   },
@@ -174,6 +228,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Or starve the inlet airflow — same result.", hold: 3000, props: { inletFlow: 0.5, rpm: 1 } },
       { caption: "Past the limit, flow breaks away. The blade has stalled.", hold: 3200, props: { inletFlow: 0.35, rpm: 1.2 } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "Inlet airflow drops away but RPM stays where it was. What happens to the blades' angle of attack?",
+      options: ["It falls","It climbs","Nothing — RPM is what sets it"],
+      answer: 1,
+      because:
+        "A compressor blade is a wing, and its relative wind is the sum of axial airflow and blade rotation. Take away axial flow while the rotation stays put and the resultant swings — straight into a higher angle of attack, and eventually a stall.",
+    },
     knowCold: "Less inlet airflow or more RPM raises blade AOA.",
     source: L203,
   },
@@ -193,6 +256,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Torque and fuel flow fluctuate. Possibly loud bangs.", hold: 3000, props: { stalled: true } },
       { caption: "Two needles moving opposite ways: RPM down, ITT up.", hold: 3200, props: { stalled: true } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "RPM is falling while ITT climbs. What is the engine telling you?",
+      options: ["A compressor stall","A normal acceleration","A flameout"],
+      answer: 0,
+      because:
+        "The pair is what identifies it. The compressor is no longer delivering air, so RPM sags, while the same fuel now burns in less air and the turbine sees the heat. Falling RPM with rising ITT is the compressor-stall signature.",
+    },
     knowCold: "Stall: RPM down, ITT up.",
     source: L203,
   },
@@ -212,6 +284,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Without it, propeller tips would go supersonic and lose efficiency.", hold: 3200, props: { highlight: "rgb" } },
       { caption: "The propeller produces 90% of the thrust. Exhaust gives 10%.", hold: 3200, props: { highlight: "prop" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "In a turboprop, how much of the thrust comes out of the exhaust rather than the propeller?",
+      options: ["About 90%","About half","About 10%"],
+      answer: 2,
+      because:
+        "Nearly all the gas energy is extracted by the turbine and sent through the reduction gearbox to the propeller — roughly 90% of the thrust. The exhaust keeps only the remaining tenth.",
+    },
     knowCold: "Turbine → shaft → RGB → prop. 90% of thrust.",
     source: NOTES,
   },
@@ -231,6 +312,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Lowest fuel consumption of any gas turbine, but capped near 400–450 knots.", hold: 3200, props: { type: "turboprop" } },
       { caption: "Turboshaft: everything through the rotor, nothing from exhaust.", hold: 3200, props: { type: "turboshaft" } },
     ],
+    predict: {
+      at: 2,
+      question:
+        "A turboshaft sends essentially all its energy to the rotor. So how much thrust comes from its exhaust?",
+      options: ["None worth counting","About a quarter","About half"],
+      answer: 0,
+      because:
+        "That is the whole point of the type. A turbojet takes 100% of its thrust from exhaust, a turboprop about 90/10, and a turboshaft none at all — every bit of it leaves through the shaft.",
+    },
     knowCold: "Turbojet 100 exhaust · Turboprop 90/10 · Turboshaft 100 rotor.",
     source: NOTES,
   },
@@ -250,6 +340,15 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "The engine reaches self-accelerating speed and the starter drops out.", hold: 3000, props: { stage: "idle" } },
       { caption: "Break that order and you get a hot, hung, false or wet start.", hold: 3200, props: { stage: "none" } },
     ],
+    predict: {
+      at: 1,
+      question:
+        "Why does fuel wait until the starter has the engine up to about 30% RPM?",
+      options: ["To save fuel on the ground","So there is enough airflow to sustain the burn and carry the heat away","To give the oil time to warm"],
+      answer: 1,
+      because:
+        "Light off with too little airflow and the fire has neither the air to sustain it nor the mass flow to cool the turbine — that is a hot start. 30% RPM is the point where the compressor is moving enough air to do both.",
+    },
     knowCold: "Starter → 30% RPM → fuel → ignition.",
     source: { document: "Engines Condensed Notes", chapter: "Starting and Ignition" },
   },

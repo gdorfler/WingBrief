@@ -693,9 +693,9 @@ export function ThrustFactor(p: DiagramProps) {
 
   const plot = makePlot({
     left: 62,
-    right: 470,
+    right: 30,
     top: 44,
-    bottom: 226,
+    bottom: 74,
     xMin: config.xMin,
     xMax: config.xMax,
     yMin: 0,
@@ -705,7 +705,11 @@ export function ThrustFactor(p: DiagramProps) {
   return (
     <Diagram title={`Thrust versus ${factor}`}>
       <Axes plot={plot} xLabel={config.xLabel} yLabel="Thrust (relative)" xTicks={4} yTicks={3} />
-      <Curve d={curvePath(plot, config.f)} color={config.color} width={3} />
+      <Curve
+        d={curvePath(plot, config.f, { from: config.xMin, to: config.xMax })}
+        color={config.color}
+        width={3}
+      />
 
       {factor === "altitude" && (
         <g>
@@ -1575,7 +1579,7 @@ export function OilSystem(p: DiagramProps) {
 /** Start sequence as a timeline against RPM. */
 export function StartSequence(p: DiagramProps) {
   const stage = str<"starter" | "fuel" | "ignition" | "idle" | "none">(p.stage, "none");
-  const plot = makePlot({ left: 62, right: 464, top: 54, bottom: 214, xMin: 0, xMax: 100, yMin: 0, yMax: 100 });
+  const plot = makePlot({ left: 62, right: 36, top: 54, bottom: 86, xMin: 0, xMax: 100, yMin: 0, yMax: 100 });
 
   // Indexed spin-up curve: the shape matters, the clock does not.
   const rpm = (t: number) => 100 / (1 + Math.exp(-(t - 46) / 12));
@@ -1590,7 +1594,7 @@ export function StartSequence(p: DiagramProps) {
   return (
     <Diagram title="Normal starting sequence">
       <Axes plot={plot} xLabel="Time →" yLabel="Compressor RPM %" yTicks={3} />
-      <Curve d={curvePath(plot, rpm)} color={NAVY} width={3} />
+      <Curve d={curvePath(plot, rpm, { from: 0, to: 100 })} color={NAVY} width={3} />
 
       <line
         x1={plot.x0}
@@ -1626,8 +1630,9 @@ export function StartSequence(p: DiagramProps) {
       {marks.map((m, i) => (
         <text
           key={m.id}
-          x={54 + i * 106}
-          y={252 + (i % 2) * 15}
+          x={Math.min(Math.max(plot.sx(m.at), 46), 454)}
+          y={plot.y0 + 20 + (i % 2) * 16}
+          textAnchor="middle"
           fontSize={9.3}
           fontWeight={750}
           fill={m.color}
