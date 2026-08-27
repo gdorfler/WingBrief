@@ -1253,29 +1253,6 @@ export const WIDGETS: Record<string, WidgetSpec> = {
         : "A, B, C, D and E are controlled. Only G is not.",
   },
 
-  OxygenWidget: {
-    diagram: "frr-oxygen",
-    controls: [
-      { kind: "slider", key: "altitude", label: "Cabin altitude", min: 0, max: 16000, step: 250, initial: 9000, format: ft },
-      { kind: "toggle", key: "equipped", label: "Oxygen system fitted", initial: 1, onLabel: "Fitted", offLabel: "None" },
-    ],
-    toProps: (s) => ({ altitude: s.altitude, equipped: s.equipped === 1 }),
-    readouts: (s) => {
-      const eq = s.equipped === 1;
-      const ceiling = eq ? 13000 : 12000;
-      const hours = eq ? "3 hours" : "1 hour";
-      return [
-        { label: "Oxygen required", value: s.altitude > 10000 ? "Yes" : "No", tone: s.altitude > 10000 ? "caution" : "go" },
-        { label: "Time limit", value: s.altitude > 10000 ? hours : "—", tone: "neutral" },
-        { label: "Ceiling", value: ft(ceiling), tone: s.altitude > ceiling ? "nogo" : "neutral" },
-      ];
-    },
-    note: (s) =>
-      s.altitude > (s.equipped === 1 ? 13000 : 12000)
-        ? "Above this ceiling the flight is prohibited, not merely time-limited."
-        : "10,000 ft cabin altitude is the trigger. What happens above it depends on the equipment fitted.",
-  },
-
   /* ---------------- Weather ---------------- */
   LapseRateWidget: {
     diagram: "wx-lapse-rates",

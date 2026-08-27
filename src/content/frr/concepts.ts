@@ -277,35 +277,7 @@ export const CONCEPTS: Concept[] = [
       "Carried with sufficient capacity for all passengers and crew when there is significant risk of water entry during a mishap.",
     source: ORG(["2.356"]),
   },
-  {
-    id: "fr-oxygen",
-    unit: "f3",
-    name: "Oxygen requirements",
-    definition:
-      "All occupants aboard naval aircraft shall use supplemental oxygen on flights in which the cabin altitude exceeds 10,000 feet.",
-    relationships: ["Cabin altitude above 10,000 ft → supplemental oxygen for all occupants"],
-    source: ORG(["2.357"]),
-  },
-  {
-    id: "fr-oxygen-unpressurized",
-    unit: "f3",
-    name: "Oxygen in unpressurized aircraft",
-    definition:
-      "With oxygen systems fitted, the pilot at the controls and aircrew doing physical work use oxygen continuously above 10,000 feet cabin altitude. Where oxygen is not available to other occupants, flight between 10,000 and 13,000 feet shall not exceed 3 hours and flight above 13,000 feet is prohibited. Where no oxygen system exists, flight above 10,000 feet must be mission essential, shall not exceed 1 hour, and shall not exceed 12,000 feet.",
-    commonTraps: [
-      "Three different ceilings live in this rule: 13,000 ft with a system and no oxygen for passengers, 12,000 ft with no system at all, and 10,000 ft as the trigger throughout.",
-    ],
-    source: ORG(["2.357"]),
-  },
-  {
-    id: "fr-oxygen-tacjet",
-    unit: "f3",
-    name: "Oxygen in tactical jets",
-    definition:
-      "In tactical jet and tactical jet training aircraft, oxygen shall be used by all occupants from takeoff to landing. Emergency bailout bottles, when provided, shall be connected prior to takeoff.",
-    source: ORG(["2.357"]),
-  },
-  {
+{
     id: "fr-performance-factors",
     unit: "f3",
     name: "Factors affecting aircrew performance",
@@ -344,16 +316,7 @@ export const CONCEPTS: Concept[] = [
     ],
     source: ORG(["2.359"]),
   },
-  {
-    id: "fr-immunization-blood",
-    unit: "f3",
-    name: "Immunizations and blood donation",
-    definition:
-      "Immunizations ground aircrew for 12 hours. After donating one pint of blood, aircrew shall not participate in flight duties for 4 days.",
-    source: ORG(["2.359"]),
-  },
-
-  /* ================= f4 · The Airport ================= */
+/* ================= f4 · The Airport ================= */
   {
     id: "fr-runway-numbering",
     unit: "f4",
@@ -442,23 +405,7 @@ export const CONCEPTS: Concept[] = [
     ],
     source: VIFR(["2.361"]),
   },
-  {
-    id: "fr-iflols",
-    unit: "f4",
-    name: "IFLOLS",
-    definition:
-      "The Improved Fresnel Lens Optical Landing System, the 'meatball'. An amber centre ball moves relative to the aircraft's position on glideslope and aligns with a bar of green datum lights when on slope. Below glideslope the ball appears below the datum and turns red. Waveoff lights let the LSO or RDO order a waveoff.",
-    source: VIFR(["2.361"]),
-  },
-  {
-    id: "fr-sgsi",
-    unit: "f4",
-    name: "SGSI",
-    definition:
-      "A gyro-stabilised light system for shipboard helicopter landings. Red means below glideslope, an amber-red interface means on glideslope, amber means slightly above, and green means well above glideslope.",
-    source: VIFR(["2.361"]),
-  },
-  {
+{
     id: "fr-als",
     unit: "f4",
     name: "Approach Light Systems",
@@ -993,15 +940,7 @@ export const CONCEPTS: Concept[] = [
     ],
     source: AIR(["2.382"]),
   },
-  {
-    id: "fr-holding-speed",
-    unit: "f8",
-    name: "Maximum holding airspeeds",
-    definition:
-      "175 KIAS for all propeller-driven aircraft including turboprops. For turbojets, except those listed in FLIP General Planning, 230 KIAS below 14,000 feet MSL and 265 KIAS above. Helicopters hold at 80 KIAS.",
-    source: AIR(["2.382"]),
-  },
-  {
+{
     id: "fr-cnaf-speed-exemption",
     unit: "f8",
     name: "CNAF speed exemption",

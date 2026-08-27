@@ -14,78 +14,6 @@ const VIFR = (eo: string[]): SourceReference => ({
 /** Units f3 (safety and the human) and f4 (the airport). */
 export const F3_QUESTIONS: Question[] = [
   {
-    id: "fq-f3-001",
-    type: "spotTheTrap",
-    unit: "f3",
-    conceptIds: ["fr-oxygen"],
-    prompt:
-      '"All occupants aboard naval aircraft shall use supplemental oxygen on flights in which the cabin altitude exceeds 10,000 feet."',
-    options: ["True", "False"],
-    answer: 0,
-    explanation:
-      "True. 10,000 feet cabin altitude is the trigger for all occupants, with specific exceptions for unpressurized aircraft.",
-    knowCold: "Cabin altitude above 10,000 ft → oxygen for all occupants.",
-    difficulty: 1,
-    officialStyle: true,
-    source: ORG(["2.357"]),
-  },
-  {
-    id: "fq-f3-002",
-    type: "mcq",
-    unit: "f3",
-    conceptIds: ["fr-oxygen-unpressurized"],
-    prompt:
-      "In an unpressurized aircraft with an oxygen system, where oxygen is NOT available to other occupants, flight between 10,000 and 13,000 feet shall not exceed",
-    options: ["1 hour", "2 hours", "3 hours", "there is no time limit"],
-    answer: 2,
-    explanation:
-      "Three hours between 10,000 and 13,000 feet, and flight above 13,000 feet is prohibited outright in that case.",
-    whyWrong:
-      "One hour is the limit where the aircraft has NO oxygen system at all — and there the ceiling is 12,000 feet.",
-    knowCold: "System fitted: 3 hr to 13,000. No system: 1 hr to 12,000.",
-    difficulty: 3,
-    source: ORG(["2.357"]),
-  },
-  {
-    id: "fq-f3-003",
-    type: "mcq",
-    unit: "f3",
-    conceptIds: ["fr-oxygen-unpressurized"],
-    prompt:
-      "In an aircraft with no oxygen system fitted, such as a helicopter, flight above 10,000 feet must be mission essential, shall not exceed ___ in duration, and shall not exceed ___ in altitude.",
-    options: [
-      "3 hours, 13,000 feet",
-      "1 hour, 12,000 feet",
-      "1 hour, 10,000 feet",
-      "2 hours, 14,000 feet",
-    ],
-    answer: 1,
-    explanation:
-      "Where no oxygen system exists the limits tighten to 1 hour and 12,000 feet, and the flight must be mission essential.",
-    knowCold: "No system: mission essential, 1 hour, 12,000 feet.",
-    difficulty: 3,
-    source: ORG(["2.357"]),
-  },
-  {
-    id: "fq-f3-004",
-    type: "mcq",
-    unit: "f3",
-    conceptIds: ["fr-oxygen-tacjet"],
-    prompt: "In tactical jet aircraft, oxygen shall be used by all occupants",
-    options: [
-      "above 10,000 feet cabin altitude",
-      "above 13,000 feet cabin altitude",
-      "from takeoff to landing",
-      "only when the cabin is unpressurized",
-    ],
-    answer: 2,
-    explanation:
-      "Tactical jet and tactical jet training aircraft use oxygen from takeoff to landing regardless of altitude, and bailout bottles are connected before takeoff.",
-    knowCold: "Tac jets: oxygen from takeoff to landing.",
-    difficulty: 2,
-    source: ORG(["2.357"]),
-  },
-  {
     id: "fq-f3-005",
     type: "mcq",
     unit: "f3",
@@ -150,20 +78,6 @@ export const F3_QUESTIONS: Question[] = [
       "The trap is assuming over-the-counter is exempt because it needs no prescription. It is not.",
     knowCold: "Prescription AND over-the-counter: flight surgeon approval only.",
     difficulty: 2,
-    source: ORG(["2.359"]),
-  },
-  {
-    id: "fq-f3-009",
-    type: "mcq",
-    unit: "f3",
-    conceptIds: ["fr-immunization-blood"],
-    prompt: "After donating one pint of blood, aircrew shall not participate in flight duties for",
-    options: ["12 hours", "24 hours", "72 hours", "4 days"],
-    answer: 3,
-    explanation: "Four days after donating one pint of blood. Immunizations, by contrast, ground aircrew for 12 hours.",
-    knowCold: "Blood donation: 4 days. Immunizations: 12 hours.",
-    difficulty: 2,
-    officialStyle: true,
     source: ORG(["2.359"]),
   },
   {
@@ -391,6 +305,22 @@ export const F3_QUESTIONS: Question[] = [
     source: VIFR(["2.361"]),
   },
   {
+    id: "fq-f4-019",
+    type: "spotTheTrap",
+    unit: "f4",
+    conceptIds: ["fr-vasi"],
+    prompt:
+      '"All white on the VASI means the aircraft is safely established on the glideslope."',
+    options: ["True", "False"],
+    answer: 1,
+    explanation:
+      "False. White over white is ABOVE the glideslope. Only red over white is on slope. All white looks reassuring, which is exactly why it is worth knowing — it means you are high and will land long.",
+    knowCold: "White over white, you're high as a kite.",
+    difficulty: 2,
+    officialStyle: true,
+    source: VIFR(["2.361"]),
+  },
+  {
     id: "fq-f4-010",
     type: "mcq",
     unit: "f4",
@@ -480,39 +410,6 @@ export const F3_QUESTIONS: Question[] = [
       "A waveoff means do not land and compliance is mandatory except for emergencies. Any high intensity red lights at the approach end should be treated as a waveoff.",
     knowCold: "Waveoff = do not land, mandatory.",
     difficulty: 1,
-    source: VIFR(["2.361"]),
-  },
-  {
-    id: "fq-f4-015",
-    type: "mcq",
-    unit: "f4",
-    conceptIds: ["fr-iflols"],
-    prompt: "On the IFLOLS, the aircraft is on glideslope when the amber ball",
-    options: [
-      "sits above the green datum lights",
-      "aligns with the bar of green datum lights",
-      "turns red",
-      "disappears from view",
-    ],
-    answer: 1,
-    explanation:
-      "The ball aligns with the green datum bar when on glideslope. Below glideslope the ball appears below the datum and turns red.",
-    knowCold: "Ball aligned with the green datum = on glideslope.",
-    difficulty: 2,
-    source: VIFR(["2.361"]),
-  },
-  {
-    id: "fq-f4-016",
-    type: "mcq",
-    unit: "f4",
-    conceptIds: ["fr-sgsi"],
-    prompt: "On the SGSI, a pilot seeing a RED light is",
-    options: ["well above glideslope", "slightly above glideslope", "on glideslope", "below glideslope"],
-    answer: 3,
-    explanation:
-      "Red is below glideslope. An amber-red interface is on glideslope, amber is slightly above, and green is well above.",
-    knowCold: "SGSI red = low. Amber-red interface = on.",
-    difficulty: 2,
     source: VIFR(["2.361"]),
   },
   {

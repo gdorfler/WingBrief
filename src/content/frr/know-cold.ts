@@ -163,19 +163,10 @@ export const KNOW_COLD: KnowColdCard[] = [
   {
     id: "fkc-023",
     category: "number",
-    term: "Caffeine, immunizations, blood",
-    body: "Caffeine 450 mg per day recommended maximum. Grounded 12 hours after immunization. No flight duties for 4 days after donating a pint of blood.",
+    term: "Caffeine and medication",
+    body: "Caffeine 450 mg per day recommended maximum, about 3–4 cups of drip coffee. BOTH prescription and over-the-counter drugs are prohibited unless approved by a flight surgeon.",
     unit: "f3",
-    conceptIds: ["fr-caffeine-drugs", "fr-immunization-blood"],
-    source: ORG(),
-  },
-  {
-    id: "fkc-024",
-    category: "number",
-    term: "Oxygen",
-    body: "Required above 10,000 ft CABIN altitude. With a system fitted: 3 hours max, ceiling 13,000. Without: 1 hour max, ceiling 12,000. Tactical jets: takeoff to landing.",
-    unit: "f3",
-    conceptIds: ["fr-oxygen", "fr-oxygen-unpressurized", "fr-oxygen-tacjet"],
+    conceptIds: ["fr-caffeine-drugs"],
     source: ORG(),
   },
   {
@@ -275,15 +266,6 @@ export const KNOW_COLD: KnowColdCard[] = [
     body: "250 KIAS below 10,000 MSL. 250 inside Class B. 200 beneath the Class B shelf. 200 within 4 nm of a Class C or D primary airport, surface to 2,500 AGL.",
     unit: "f8",
     conceptIds: ["fr-airspeed"],
-    source: AIR(),
-  },
-  {
-    id: "fkc-036",
-    category: "number",
-    term: "Holding airspeeds",
-    body: "Propeller-driven, including turboprops: 175 KIAS. Turbojets: 230 KIAS below 14,000 MSL, 265 KIAS above. Helicopters: 80 KIAS.",
-    unit: "f8",
-    conceptIds: ["fr-holding-speed"],
     source: AIR(),
   },
   {

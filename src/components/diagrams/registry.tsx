@@ -89,7 +89,6 @@ import {
   CloudClearance,
   DecisionTree,
   LightGun,
-  OxygenLadder,
   PositionLights,
   PriorityStack,
   RightOfWay,
@@ -294,7 +293,6 @@ export const DIAGRAMS: Record<string, DiagramRenderer> = {
   "frr-vasi": Vasi,
   "frr-airspeed": AirspeedLimits,
   "frr-altitude": AltitudeRestrictions,
-  "frr-oxygen": OxygenLadder,
   "frr-decision": DecisionTree,
   "frr-brief-void": BriefVoidClock,
 

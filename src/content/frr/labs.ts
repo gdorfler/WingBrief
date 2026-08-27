@@ -123,20 +123,4 @@ export const LABS: Lab[] = [
       "The earlier of the two is the void time",
     ],
   },
-  {
-    id: "flab-oxygen",
-    title: "Oxygen Lab",
-    subtitle: "Cabin altitude in, rule out",
-    teaches:
-      "That 10,000 ft CABIN altitude is the trigger, and that the ceiling and time limit above it depend entirely on the equipment fitted.",
-    unit: "f3",
-    conceptIds: ["fr-oxygen", "fr-oxygen-unpressurized", "fr-oxygen-tacjet"],
-    component: "OxygenLab",
-    chain: [
-      "Cabin altitude above 10,000 ft triggers the requirement",
-      "System fitted: 3 hours, ceiling 13,000 ft",
-      "No system: 1 hour, ceiling 12,000 ft",
-      "Tactical jets: oxygen from takeoff to landing",
-    ],
-  },
 ];

@@ -406,14 +406,16 @@ describe(`${NAME} · enabling objective matrix`, () => {
     //
     //   aero    — the trainee guide, 227
     //   engines — nine SRC lectures, 65 between them
-    //   frr     — a contiguous block, 2.345 through 2.386
+    //   frr     — 2.345 through 2.386, less 2.357: the supplemental-oxygen
+    //             rules it covers appear in no systems deck, so the content that
+    //             claimed that objective was removed as off-syllabus
     //   weather — the trainee guide, 98
     //   nav     — the trainee guide, 37
     //
     // The Engines figure was 25 for as long as only three of the nine lecture
     // PDFs were available; the other six covered units e6 and e7 and were
     // mapped from the condensed notes with no EO claimed at all.
-    const floor = { aero: 227, engines: 65, frr: 42, weather: 98, nav: 37 }[course];
+    const floor = { aero: 227, engines: 65, frr: 41, weather: 98, nav: 37 }[course];
     expect(matrix.length).toBeGreaterThanOrEqual(floor);
   });
 

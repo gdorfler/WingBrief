@@ -145,37 +145,6 @@ export const EXPLAINERS_B: Explainer[] = [
     source: ORG,
   },
   {
-    id: "fx-oxygen-ladder",
-    title: "Climbing Past 10,000",
-    promise: "One trigger altitude, then three different ceilings.",
-    unit: "f3",
-    conceptIds: ["fr-oxygen", "fr-oxygen-unpressurized", "fr-oxygen-tacjet"],
-    lessonId: "fl12-human-performance",
-    diagram: { id: "frr-oxygen" },
-    frames: [
-      { caption: "Below 10,000 ft cabin altitude, nothing is required.", hold: 2800, props: { altitude: 8000, equipped: true } },
-      { caption: "Past 10,000, all occupants use supplemental oxygen.", hold: 3000, props: { altitude: 11000, equipped: true } },
-      { caption: "With a system fitted, that band is limited to 3 hours.", hold: 3200, props: { altitude: 12500, equipped: true } },
-      { caption: "Above 13,000, flight is prohibited, not merely limited.", hold: 3200, props: { altitude: 14500, equipped: true } },
-      { caption: "With no system at all: 1 hour, and the ceiling drops to 12,000.", hold: 3400, props: { altitude: 12500, equipped: false } },
-    ],
-    predict: {
-      at: 3,
-      question:
-        "No oxygen system is fitted at all. What is the ceiling, and for how long?",
-      options: [
-        "13,000 ft for up to 3 hours",
-        "12,000 ft for up to 1 hour",
-        "10,000 ft with no time limit",
-      ],
-      answer: 1,
-      because:
-        "With a system you get the 10,000-to-13,000 band for up to 3 hours, and above 13,000 flight is prohibited. With no system the whole ladder shrinks: 1 hour, and the ceiling comes down to 12,000.",
-    },
-    knowCold: "10,000 triggers it. 13,000 with a system, 12,000 without.",
-    source: ORG,
-  },
-  {
     id: "fx-runway-number",
     title: "Heading to Number",
     promise: "Turn a magnetic heading into the number painted on the runway.",

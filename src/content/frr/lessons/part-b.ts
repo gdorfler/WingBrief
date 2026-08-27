@@ -15,7 +15,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl17-vmc-imc-vfr-ifr",
     unit: "f5",
-    index: 17,
+    index: 16,
     title: "VMC, IMC, VFR, IFR",
     subtitle: "Weather versus rules",
     estimatedMinutes: 5,
@@ -73,7 +73,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl18-vfr-weather-minimums",
     unit: "f5",
-    index: 18,
+    index: 17,
     title: "VFR Weather Minimums",
     subtitle: "1,000 and 3, and where it changes",
     estimatedMinutes: 6,
@@ -151,7 +151,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl19-ifr-and-vfr-on-top",
     unit: "f5",
-    index: 19,
+    index: 18,
     title: "IFR and VFR-On-Top",
     subtitle: "Clearances, and a clearance that looks like VFR",
     estimatedMinutes: 5,
@@ -209,7 +209,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl20-approaches-and-minimums",
     unit: "f5",
-    index: 20,
+    index: 19,
     title: "Approaches and Landing Minimums",
     subtitle: "Precision, non-precision, and when you may descend",
     estimatedMinutes: 6,
@@ -286,7 +286,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl21-alternates-and-ifr-fuel",
     unit: "f5",
-    index: 21,
+    index: 20,
     title: "Alternates and IFR Fuel",
     subtitle: "When you need a second airfield",
     estimatedMinutes: 5,
@@ -345,7 +345,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl22-semicircular-rule",
     unit: "f6",
-    index: 22,
+    index: 21,
     title: "The Semicircular Rule",
     subtitle: "East odd, west even",
     estimatedMinutes: 6,
@@ -415,7 +415,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl23-aerobatic-flight",
     unit: "f6",
-    index: 23,
+    index: 22,
     title: "Aerobatic Flight",
     subtitle: "Three numbers define it",
     estimatedMinutes: 5,
@@ -482,7 +482,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl24-controlled-and-uncontrolled",
     unit: "f7",
-    index: 24,
+    index: 23,
     title: "Controlled and Uncontrolled",
     subtitle: "What the word actually means",
     estimatedMinutes: 4,
@@ -540,7 +540,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl25-airspace-classes",
     unit: "f7",
-    index: 25,
+    index: 24,
     title: "The Airspace Classes",
     subtitle: "Dimensions and how you get in",
     estimatedMinutes: 8,
@@ -620,7 +620,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl26-routes-and-transponders",
     unit: "f7",
-    index: 26,
+    index: 25,
     title: "Routes and Mode C",
     subtitle: "Victor airways, jet routes, and where the transponder is required",
     estimatedMinutes: 4,
@@ -676,7 +676,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl27-vfr-minimums-by-class",
     unit: "f7",
-    index: 27,
+    index: 26,
     title: "VFR Minimums by Class",
     subtitle: "The table",
     estimatedMinutes: 6,
@@ -736,7 +736,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl28-special-use-airspace",
     unit: "f7",
-    index: 28,
+    index: 27,
     title: "Special Use Airspace",
     subtitle: "Six kinds, and only one you may never enter",
     estimatedMinutes: 5,
@@ -815,7 +815,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl29-lights-and-relative-position",
     unit: "f8",
-    index: 29,
+    index: 28,
     title: "Lights and Relative Position",
     subtitle: "Reading another aircraft at night",
     estimatedMinutes: 5,
@@ -889,7 +889,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl30-right-of-way",
     unit: "f8",
-    index: 30,
+    index: 29,
     title: "Right of Way",
     subtitle: "Who yields to whom",
     estimatedMinutes: 5,
@@ -960,7 +960,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl31-altitude-and-airspeed",
     unit: "f8",
-    index: 31,
+    index: 30,
     title: "Altitude and Airspeed Limits",
     subtitle: "The numbers that get asked",
     estimatedMinutes: 6,
@@ -971,7 +971,6 @@ export const LESSONS_B: Lesson[] = [
       "fr-altitude-other",
       "fr-altitude-cnaf",
       "fr-airspeed",
-      "fr-holding-speed",
       "fr-cnaf-speed-exemption",
     ],
     masteryThreshold: 0.85,
@@ -1016,7 +1015,6 @@ export const LESSONS_B: Lesson[] = [
         statements: [
           "Congested: 1,000 up, 2,000 out · Elsewhere: 500 AGL",
           "250 below 10,000 MSL · 250 inside B · 200 under B · 200 near C and D",
-          "Holding: props 175, jets 230 below FL140 and 265 above, helos 80",
           "CNAF IFR uncontrolled: 1,000 ft within 22 miles, 2,000 ft over mountains",
         ],
       },
@@ -1024,7 +1022,6 @@ export const LESSONS_B: Lesson[] = [
       { kind: "question", questionId: "fq-f8-014" },
       { kind: "question", questionId: "fq-f8-019" },
       { kind: "question", questionId: "fq-f8-020" },
-      { kind: "question", questionId: "fq-f8-021" },
       { kind: "question", questionId: "fq-f8-030" },
     ],
     questionIds: [
@@ -1035,7 +1032,6 @@ export const LESSONS_B: Lesson[] = [
       "fq-f8-018",
       "fq-f8-019",
       "fq-f8-020",
-      "fq-f8-021",
       "fq-f8-030",
     ],
     memorize: ["Under the shelf 200, inside B 250."],
@@ -1046,7 +1042,7 @@ export const LESSONS_B: Lesson[] = [
   {
     id: "fl32-disturbances-and-conduct",
     unit: "f8",
-    index: 32,
+    index: 31,
     title: "Disturbances and Conduct",
     subtitle: "Noise, wildlife, TFRs, flat hatting",
     estimatedMinutes: 5,

@@ -57,7 +57,6 @@ import {
   RulesLab,
   PublicationLab,
   WeatherBriefLab,
-  OxygenLab,
 } from "./frr-labs";
 import { NAV_LAB_COMPONENTS } from "./nav-labs";
 import {
@@ -896,7 +895,6 @@ export const LAB_COMPONENTS: Record<string, () => React.ReactElement> = {
   RulesLab,
   PublicationLab,
   WeatherBriefLab,
-  OxygenLab,
 
   /* Weather */
   AtmosphereLab,

@@ -386,25 +386,6 @@ export const APPLICATION_QUESTIONS: Question[] = [
     difficulty: 3,
   }),
 
-  applied("fr-oxygen-tacjet", {
-    id: "fq-ap-021",
-    type: "mcq",
-    unit: "f3",
-    prompt:
-      "In a tactical jet training aircraft on a low-level sortie never exceeding 5,000 feet, oxygen shall be used",
-    options: [
-      "only above 10,000 feet cabin altitude",
-      "from takeoff to landing by all occupants",
-      "at the discretion of the PIC",
-      "only if the flight exceeds 30 minutes",
-    ],
-    answer: 1,
-    explanation:
-      "In tactical jet and tactical jet training aircraft, oxygen is used by ALL occupants from takeoff to landing — altitude does not enter into it. Emergency bailout bottles, where provided, are connected before takeoff.",
-    knowCold: "Tac jet: oxygen takeoff to landing, whatever the altitude.",
-    difficulty: 3,
-  }),
-
   applied("fr-performance-factors", {
     id: "fq-ap-022",
     type: "mcq",
@@ -454,20 +435,6 @@ export const APPLICATION_QUESTIONS: Question[] = [
     explanation:
       "False. BOTH prescription and over-the-counter drugs are prohibited for flight personnel unless specifically approved by a flight surgeon. The 'it's only over-the-counter' reasoning is the exact trap. Recommended maximum caffeine is separately set at 450 mg a day.",
     knowCold: "Prescription AND over-the-counter both need the flight surgeon.",
-    difficulty: 3,
-  }),
-
-  applied("fr-immunization-blood", {
-    id: "fq-ap-025",
-    type: "mcq",
-    unit: "f3",
-    prompt:
-      "An aircrew member donates one pint of blood on Monday morning. The earliest they may resume flight duties is",
-    options: ["Monday evening", "Tuesday morning", "Friday morning", "the following Monday"],
-    answer: 2,
-    explanation:
-      "Four days after donating a pint of blood — Monday to Friday. Immunizations are the shorter one at 12 hours, and the exam routinely offers the two intervals against each other.",
-    knowCold: "Immunization 12 hours · blood donation 4 days.",
     difficulty: 3,
   }),
 
@@ -566,39 +533,6 @@ export const APPLICATION_QUESTIONS: Question[] = [
     difficulty: 3,
   }),
 
-  applied("fr-iflols", {
-    id: "fq-ap-031",
-    type: "mcq",
-    unit: "f4",
-    prompt:
-      "Approaching the ship, the pilot sees the ball sitting below the green datum lights and turning red. The aircraft is",
-    options: ["above glideslope", "on glideslope", "below glideslope", "lined up left"],
-    answer: 2,
-    explanation:
-      "On the IFLOLS the amber centre ball moves with the aircraft's position relative to glideslope and aligns with the bar of green datum lights when on slope. Below the datum — and turning red — means below glideslope.",
-    knowCold: "Ball below the datum and red = you are low.",
-    difficulty: 3,
-  }),
-
-  applied("fr-sgsi", {
-    id: "fq-ap-032",
-    type: "mcq",
-    unit: "f4",
-    prompt:
-      "A helicopter approaching a ship sees a steady green on the SGSI. The aircraft is",
-    options: [
-      "on glideslope",
-      "slightly above glideslope",
-      "well above glideslope",
-      "below glideslope",
-    ],
-    answer: 2,
-    explanation:
-      "On the SGSI green means WELL ABOVE glideslope. Red is below, the amber-red interface is on slope, and amber alone is slightly above. Green being the 'wrong' answer here is what makes it worth knowing — it is not a go signal.",
-    knowCold: "SGSI: red low · amber-red on · amber slightly high · green well high.",
-    difficulty: 3,
-  }),
-
   applied("fr-als", {
     id: "fq-ap-033",
     type: "mcq",
@@ -612,7 +546,7 @@ export const APPLICATION_QUESTIONS: Question[] = [
     ],
     answer: 1,
     explanation:
-      "ALS bridges instrument flight and visual flight for landing, beginning at the landing threshold and extending into the approach area. Airport identification is the beacon's job; glideslope is IFLOLS, SGSI or an electronic system.",
+      "ALS bridges instrument flight and visual flight for landing, beginning at the landing threshold and extending into the approach area. Airport identification is the beacon's job; glideslope deviation is what the VASI shows.",
     knowCold: "ALS = the instrument-to-visual bridge at the threshold.",
     difficulty: 3,
   }),

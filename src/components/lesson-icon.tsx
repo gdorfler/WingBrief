@@ -293,14 +293,6 @@ export function LessonIcon({ name, className }: { name: string; className?: stri
         <path d="M13 15 H19" strokeWidth={1.6} opacity={0.6} />
       </>
     ),
-    "frr-oxygen": (
-      <>
-        <path d="M6 25 H26" strokeWidth={2} strokeLinecap="round" />
-        <path d="M6 18 H26" strokeWidth={1.8} strokeLinecap="round" strokeDasharray="3 3" opacity={0.7} />
-        <path d="M6 11 H26" strokeWidth={1.6} strokeLinecap="round" strokeDasharray="3 3" opacity={0.45} />
-        <path d="M16 28 V6 M13 9 L16 6 L19 9" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
-      </>
-    ),
     "frr-human": (
       <>
         <circle cx="16" cy="8" r="4" strokeWidth={2} />

@@ -102,37 +102,6 @@ export const EXPLAINERS: Explainer[] = [
     source: ORG,
   },
   {
-    id: "fx-oxygen",
-    title: "Climbing Past 10,000",
-    promise: "Watch the oxygen rules change as the cabin altitude rises.",
-    unit: "f3",
-    conceptIds: ["fr-oxygen", "fr-oxygen-unpressurized"],
-    lessonId: "fl11-oxygen",
-    diagram: { id: "frr-oxygen" },
-    frames: [
-      { caption: "Below 10,000 ft cabin altitude, nothing is required.", hold: 2600, props: { altitude: 8000, equipped: true } },
-      { caption: "Past 10,000 all occupants use supplemental oxygen.", hold: 3000, props: { altitude: 11000, equipped: true } },
-      { caption: "Where others have none, that band is limited to 3 hours.", hold: 3200, props: { altitude: 12500, equipped: true } },
-      { caption: "Above 13,000 with a system fitted, flight is prohibited.", hold: 3200, props: { altitude: 14500, equipped: true } },
-      { caption: "With no system at all, the ceiling drops to 12,000 and one hour.", hold: 3400, props: { altitude: 12500, equipped: false } },
-    ],
-    predict: {
-      at: 2,
-      question:
-        "Cabin altitude is climbing past 13,000 ft and the aircraft HAS an oxygen system. What does the rule say?",
-      options: [
-        "Carry on — the system covers it",
-        "Flight is prohibited above 13,000",
-        "Three hours maximum, then descend",
-      ],
-      answer: 1,
-      because:
-        "10,000 is what triggers supplemental oxygen for all occupants. 13,000 is the hard ceiling with a system fitted; with no system at all the ceiling drops to 12,000 and one hour. Having the system raises the limit — it does not remove it.",
-    },
-    knowCold: "10,000 triggers it. 13,000 with a system, 12,000 without.",
-    source: ORG,
-  },
-  {
     id: "fx-light-gun",
     title: "No Radio",
     promise: "Three light signals, and what each one is actually telling you to do.",

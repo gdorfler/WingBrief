@@ -348,20 +348,6 @@ export const F8_QUESTIONS: Question[] = [
     source: AIR(["2.382"]),
   },
   {
-    id: "fq-f8-021",
-    type: "mcq",
-    unit: "f8",
-    conceptIds: ["fr-holding-speed"],
-    prompt: "Maximum holding airspeed for all propeller-driven aircraft, including turboprops, is",
-    options: ["150 KIAS", "175 KIAS", "230 KIAS", "265 KIAS"],
-    answer: 1,
-    explanation:
-      "175 KIAS for propeller-driven aircraft. Turbojets hold at 230 KIAS below 14,000 MSL and 265 KIAS above; helicopters hold at 80 KIAS.",
-    knowCold: "Props 175 · jets 230/265 · helos 80.",
-    difficulty: 3,
-    source: AIR(["2.382"]),
-  },
-  {
     id: "fq-f8-022",
     type: "spotTheTrap",
     unit: "f8",
