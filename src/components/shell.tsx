@@ -291,13 +291,39 @@ function BottomNavItem({
   );
 }
 
+/**
+ * The WingBrief mark: a wing in planform under a nose chevron.
+ *
+ * The plate is a gradient rather than a flat fill so the mark has the same
+ * sense of depth as the cards, and the accent is drawn from the course ramp so
+ * the mark changes with the course like everything else.
+ *
+ * The gradient ids are fixed rather than generated. Two instances of this mark
+ * are on screen at once (the rail and the mobile bar) and both emit the same
+ * defs, so `url(#id)` resolving to whichever comes first in document order is
+ * harmless — the definitions are identical. A generated id would be worse here:
+ * it would have to be stable across server and client to avoid a mismatch.
+ */
 export function WingMark({ size = 30 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden className="shrink-0">
-      <rect width="32" height="32" rx="9" fill="var(--color-ink-800)" />
+      <defs>
+        <linearGradient id="wb-mark-plate" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-ink-700)" />
+          <stop offset="100%" stopColor="var(--color-ink-900)" />
+        </linearGradient>
+        <linearGradient id="wb-mark-wing" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="var(--color-brand)" />
+          <stop offset="55%" stopColor="var(--color-brand-light)" />
+          <stop offset="100%" stopColor="var(--color-brand)" />
+        </linearGradient>
+      </defs>
+      <rect width="32" height="32" rx="9" fill="url(#wb-mark-plate)" />
+      {/* A highlight along the top edge, the same trick the progress bar uses. */}
+      <rect width="32" height="15" rx="9" fill="#fff" opacity="0.06" />
       <path
         d="M6 19.5 C11 16.5 14 15.6 16 15.6 C18 15.6 21 16.5 26 19.5 L26 21.4 C20.6 19.6 18 19 16 19 C14 19 11.4 19.6 6 21.4 Z"
-        fill="var(--color-brand-light)"
+        fill="url(#wb-mark-wing)"
       />
       <path d="M16 8.6 L17.9 13.4 L16 15 L14.1 13.4 Z" fill="#fff" />
       <circle cx="16" cy="23.6" r="1.5" fill="var(--color-brand-light)" />

@@ -11,7 +11,7 @@
  * so a reader with reduced motion, or one who simply looks away, misses nothing.
  */
 
-import { Flame, Lock } from "lucide-react";
+import { Flame } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "./ui";
 
@@ -208,44 +208,35 @@ export function StreakFlame({
 /* ------------------------------------------------------------------ */
 
 /**
- * A mastery badge that pops the moment it is earned and then sits still.
+ * Pops whatever it wraps at the moment that thing is earned, and rings once.
  *
- * The expanding ring is a separate absolutely-positioned element rather than a
- * pseudo-element on the badge, so it can outgrow its parent without forcing
- * the badge itself to have room for it.
+ * A wrapper rather than a badge of its own, because the surfaces that need this
+ * — achievement tiles, mastery marks — already draw their own art and their own
+ * locked state. Giving this component its own chrome would mean two components
+ * competing to describe the same badge.
+ *
+ * This is a STATE, not an event: it stays silent on mount so that opening the
+ * profile does not re-celebrate everything earned so far.
  */
-export function MasteryBadge({
+export function EarnedPop({
   earned,
-  label,
-  icon,
+  children,
   className,
 }: {
   earned: boolean;
-  label: string;
-  icon: ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   const firing = useEarned(earned);
   return (
-    <span className={cn("relative inline-flex", className)}>
+    <span className={cn("relative inline-flex shrink-0", className)}>
       {firing && (
         <span
           aria-hidden
           className="animate-burst absolute inset-0 rounded-full border-2 border-gold"
         />
       )}
-      <span
-        className={cn(
-          "relative inline-flex h-11 w-11 items-center justify-center rounded-full border-2 transition-colors",
-          earned
-            ? "border-gold bg-[var(--color-gold-soft)] text-gold shadow-e2"
-            : "border-line bg-surface-2 text-navy-faint",
-          firing && "animate-pop",
-        )}
-        title={label}
-      >
-        {earned ? icon : <Lock size={16} />}
-      </span>
+      <span className={cn("relative inline-flex", firing && "animate-pop")}>{children}</span>
     </span>
   );
 }

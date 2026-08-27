@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/auth";
 import { AccountCard } from "@/components/account-card";
 import { CourseSwitcher } from "@/components/course-switcher";
 import { AchievementIcon } from "@/components/achievement-icon";
+import { EarnedPop } from "@/components/reward";
 import {
   Button,
   Card,
@@ -203,12 +204,15 @@ export default function ProfilePage() {
             return (
               <li key={a.id}>
                 <Card
+                  tinted={unlocked}
                   className={cn(
                     "flex h-full items-start gap-3",
                     !unlocked && "opacity-60",
                   )}
                 >
-                  <AchievementIcon icon={a.icon} size={38} locked={!unlocked} />
+                  <EarnedPop earned={unlocked}>
+                    <AchievementIcon icon={a.icon} size={38} locked={!unlocked} />
+                  </EarnedPop>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
                       <p className="text-[13.5px] font-semibold text-navy">{a.name}</p>
