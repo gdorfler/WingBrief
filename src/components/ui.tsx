@@ -19,14 +19,30 @@ export function Card({
   className,
   as: As = "div",
   padded = true,
+  interactive = false,
+  tinted = false,
 }: {
   children: ReactNode;
   className?: string;
   as?: "div" | "section" | "article" | "li";
   padded?: boolean;
+  /** Lifts toward the cursor. Only for cards that are actually clickable. */
+  interactive?: boolean;
+  /** A wash of the course accent, for cards that should not read as plain paper. */
+  tinted?: boolean;
 }) {
   return (
-    <As className={cn("card", padded && "p-5", className)}>{children}</As>
+    <As
+      className={cn(
+        "card",
+        padded && "p-5",
+        interactive && "card-lift",
+        tinted && "bg-[var(--color-surface-tint)]",
+        className,
+      )}
+    >
+      {children}
+    </As>
   );
 }
 
@@ -71,16 +87,21 @@ export function SectionHeading({
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "success" | "ink";
 type ButtonSize = "sm" | "md" | "lg";
 
+/*
+ * Solid buttons travel: they rise a pixel under the cursor and sink under the
+ * press, with the shadow compressing as they go. Ghost has no surface to
+ * raise, so it stays flat rather than pretending to have depth.
+ */
 const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150 active:scale-[0.985] disabled:pointer-events-none disabled:opacity-45 select-none";
+  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold disabled:pointer-events-none disabled:opacity-45 select-none";
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
-  primary: "bg-brand text-white shadow-sm hover:bg-brand-dark",
-  secondary: "bg-surface-2 text-navy hover:bg-surface-3 border border-line",
-  ghost: "text-navy-soft hover:bg-surface-2 hover:text-navy",
-  danger: "bg-nogo text-white hover:brightness-95",
-  success: "bg-go text-white hover:bg-go-dark",
-  ink: "bg-ink-700 text-white hover:bg-ink-600 border border-ink-line",
+  primary: "pressable bg-brand text-white hover:bg-brand-dark",
+  secondary: "pressable bg-surface-2 text-navy hover:bg-surface-3 border border-line",
+  ghost: "text-navy-soft transition-colors duration-150 hover:bg-surface-2 hover:text-navy",
+  danger: "pressable bg-nogo text-white hover:brightness-95",
+  success: "pressable bg-go text-white hover:bg-go-dark",
+  ink: "pressable bg-ink-700 text-white hover:bg-ink-600 border border-ink-line",
 };
 
 const BUTTON_SIZES: Record<ButtonSize, string> = {
@@ -230,18 +251,40 @@ export function ProgressBar({
   label?: string;
 }) {
   const pct = Math.max(0, Math.min(1, value)) * 100;
+
+  // A highlight sweeps the bar when the value climbs. Gated on having seen a
+  // previous value, so a bar that simply mounts at 60% does not celebrate.
+  const previous = useRef<number | null>(null);
+  const [gained, setGained] = useState(false);
+  useEffect(() => {
+    if (previous.current !== null && pct > previous.current) {
+      setGained(true);
+      const t = setTimeout(() => setGained(false), 1100);
+      previous.current = pct;
+      return () => clearTimeout(t);
+    }
+    previous.current = pct;
+  }, [pct]);
+
+  // Brand takes the gradient treatment; the semantic tones stay flat so that
+  // "you are in the red" reads as a state rather than as decoration.
   const fill: Record<Tone, string> = {
     neutral: "bg-navy-faint",
-    brand: "bg-brand",
+    brand: "progress-fill",
     go: "bg-go",
     caution: "bg-caution",
     nogo: "bg-nogo",
     gold: "bg-gold",
     violet: "bg-[var(--color-series-alt)]",
   };
+
   return (
     <div
-      className={cn("w-full overflow-hidden rounded-full bg-surface-3", className)}
+      className={cn(
+        "relative w-full overflow-hidden rounded-full bg-surface-3",
+        "shadow-[inset_0_1px_2px_rgb(10_30_56/0.07)]",
+        className,
+      )}
       style={{ height }}
       role="progressbar"
       aria-valuenow={Math.round(pct)}
@@ -250,7 +293,11 @@ export function ProgressBar({
       aria-label={label}
     >
       <div
-        className={cn("h-full rounded-full transition-[width] duration-500 ease-out", fill[tone])}
+        className={cn(
+          "h-full rounded-full transition-[width] duration-700 ease-out",
+          fill[tone],
+          gained && "progress-shine",
+        )}
         style={{ width: `${pct}%` }}
       />
     </div>

@@ -28,6 +28,12 @@
   --color-navy-soft: #48627f;
   --color-navy-faint: #7b91aa;
 
+  /* The course ink, defaulting to Aero's. Every course block below
+     repoints these; they live here too so shadows and tinted surfaces
+     still resolve on the routes that render before a course is chosen. */
+  --color-course-ink: #0d1c2e;
+  --color-course-ink-soft: #1d3652;
+
   /* Brand — repointed per course, see the course palettes below --- */
   --color-brand: #1b72f2;
   --color-brand-dark: #1259c8;
@@ -359,6 +365,265 @@ button,
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* ============================================================
+   EXPRESSION LAYER
+
+   Depth, reward and motion. The brief was "not louder — more alive,
+   expressive and reward-rich", so everything here is built to be felt
+   rather than noticed: shadows tinted with the course ink instead of
+   black, surfaces tinted instead of white, and celebration that fires
+   once and gets out of the way.
+
+   Every motif below is built from gradients rather than an inline SVG
+   data URI, because a data URI cannot read a custom property — a motif
+   drawn that way would keep Aero's blue after switching to Engines.
+   ============================================================ */
+
+@theme {
+  /* A surface that reads as "of this course" without reading as coloured. */
+  --color-surface-tint: color-mix(in srgb, var(--color-brand) 4%, var(--color-surface));
+  --color-surface-tint-2: color-mix(in srgb, var(--color-brand) 8%, var(--color-surface));
+}
+
+/*
+ * Elevation. Each step pairs a tight contact shadow with a wide soft one, and
+ * the tint is the course ink rather than black, so shadows belong to the
+ * palette instead of sitting on top of it.
+ *
+ * Declared as @utility rather than as --shadow-* theme keys: Tailwind will not
+ * build a shadow utility whose value contains color-mix(), so the generated
+ * .shadow-e2 came out empty and every raised element rendered flat.
+ */
+:root {
+  --shadow-e1:
+    0 1px 2px color-mix(in srgb, var(--color-course-ink) 6%, transparent),
+    0 10px 24px -18px color-mix(in srgb, var(--color-course-ink) 32%, transparent);
+  --shadow-e2:
+    0 2px 4px color-mix(in srgb, var(--color-course-ink) 7%, transparent),
+    0 16px 32px -20px color-mix(in srgb, var(--color-course-ink) 40%, transparent);
+  --shadow-e3:
+    0 4px 8px color-mix(in srgb, var(--color-course-ink) 9%, transparent),
+    0 28px 52px -24px color-mix(in srgb, var(--color-course-ink) 48%, transparent);
+}
+
+@utility shadow-e1 { box-shadow: var(--shadow-e1); }
+@utility shadow-e2 { box-shadow: var(--shadow-e2); }
+@utility shadow-e3 { box-shadow: var(--shadow-e3); }
+
+/* ---------- Depth ---------- */
+
+/* A card that invites a click. The lift is small on purpose: 3px reads as
+   responsive, 6px reads as a card falling off the page. */
+@utility card-lift {
+  transition:
+    transform 180ms var(--ease-out-quint),
+    box-shadow 180ms var(--ease-out-quint),
+    border-color 180ms var(--ease-out-quint);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-e3);
+    border-color: color-mix(in srgb, var(--color-brand) 35%, var(--color-line));
+  }
+
+  &:active {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-e1);
+  }
+}
+
+/* Buttons that travel. The shadow compresses as the button descends, which
+   is what sells the press — scale alone reads as a wobble. */
+@utility pressable {
+  box-shadow: var(--shadow-e1);
+  transition:
+    transform 120ms var(--ease-out-quint),
+    box-shadow 120ms var(--ease-out-quint),
+    background-color 120ms ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-e2);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 1px 1px color-mix(in srgb, var(--color-course-ink) 12%, transparent);
+  }
+}
+
+/* ---------- Course motifs ---------- */
+
+/*
+ * A decorative field for section headers and hero panels: the subject's own
+ * instrument, drawn faintly. Each is a single background-image built from
+ * gradients so it re-themes with --color-brand.
+ */
+@utility motif {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.55;
+    pointer-events: none;
+    background-image: var(--motif, none);
+  }
+}
+
+:root {
+  /* Airflow: streamlines bending over a surface. */
+  --motif-airflow: repeating-linear-gradient(
+    100deg,
+    transparent 0 22px,
+    color-mix(in srgb, var(--color-brand) 9%, transparent) 22px 23px,
+    transparent 23px 46px
+  );
+  /* Turbine: concentric compressor rings. */
+  --motif-rings: repeating-radial-gradient(
+    circle at 88% 18%,
+    transparent 0 16px,
+    color-mix(in srgb, var(--color-brand) 11%, transparent) 16px 18px,
+    transparent 18px 34px
+  );
+  /* Chart grid: the plotting table. */
+  --motif-grid:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-brand) 7%, transparent) 0 1px,
+      transparent 1px 28px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-brand) 7%, transparent) 0 1px,
+      transparent 1px 28px
+    );
+  /* Isobars: pressure contours curving across the panel. */
+  --motif-contour: repeating-radial-gradient(
+    ellipse 140% 90% at 12% 110%,
+    transparent 0 26px,
+    color-mix(in srgb, var(--color-brand) 10%, transparent) 26px 28px,
+    transparent 28px 54px
+  );
+}
+
+:root[data-course="aero"] { --motif: var(--motif-airflow); }
+:root[data-course="engines"] { --motif: var(--motif-rings); }
+:root[data-course="frr"] { --motif: var(--motif-grid); }
+:root[data-course="weather"] { --motif: var(--motif-contour); }
+:root[data-course="nav"] { --motif: var(--motif-grid); }
+
+/* ---------- Reward ---------- */
+
+@keyframes wb-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* A ring that expands and dissolves — the "something landed" cue. */
+@keyframes wb-burst {
+  0% { transform: scale(0.7); opacity: 0.55; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+/* XP rising off the thing that earned it. */
+@keyframes wb-rise {
+  0% { transform: translateY(6px); opacity: 0; }
+  22% { opacity: 1; }
+  100% { transform: translateY(-26px); opacity: 0; }
+}
+
+/* Streak flame: an idle flicker, never a loop that begs for attention. */
+@keyframes wb-flicker {
+  0%, 100% { transform: scale(1) rotate(-1.5deg); }
+  50% { transform: scale(1.06) rotate(1.5deg); }
+}
+
+/* A highlight travelling along a progress bar as it gains. */
+@keyframes wb-shine {
+  0% { transform: translateX(-105%); }
+  100% { transform: translateX(320%); }
+}
+
+@keyframes wb-confetti {
+  0% { transform: translateY(-8px) rotate(0deg); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translateY(190px) rotate(520deg); opacity: 0; }
+}
+
+@utility animate-pop { animation: wb-pop 420ms var(--ease-out-quint) both; }
+@utility animate-burst { animation: wb-burst 620ms var(--ease-out-quint) both; }
+@utility animate-rise { animation: wb-rise 1100ms var(--ease-out-quint) both; }
+@utility animate-flicker { animation: wb-flicker 2.4s ease-in-out infinite; }
+@utility animate-confetti { animation: wb-confetti 1500ms cubic-bezier(0.3, 0.7, 0.4, 1) both; }
+
+/*
+ * Progress that has some pop: a gradient along the fill so it is not a flat
+ * block of colour, a highlight along the top edge for roundness, and a shine
+ * that sweeps once when the value climbs.
+ */
+@utility progress-fill {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-brand-dark) 0%,
+    var(--color-brand) 55%,
+    var(--color-brand-light) 100%
+  );
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 45%;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0.28), transparent);
+  }
+}
+
+@utility progress-shine {
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 28%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+    animation: wb-shine 900ms var(--ease-out-quint) 120ms both;
+  }
+}
+
+/*
+ * Motion is decoration here, never information: every animation above only
+ * restates something the layout already says, so removing them all costs a
+ * reduced-motion reader nothing.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop,
+  .animate-burst,
+  .animate-rise,
+  .animate-flicker,
+  .animate-confetti,
+  .progress-shine::before {
+    animation: none !important;
+  }
+
+  .card-lift,
+  .pressable {
+    transition: none;
+  }
+
+  .card-lift:hover,
+  .pressable:hover:not(:disabled),
+  .pressable:active:not(:disabled) {
+    transform: none;
   }
 }
 
