@@ -30,6 +30,7 @@ import { DiagramHost } from "./diagrams/registry";
 import { NumericAnswerSummary, NumericBody } from "./nav/numeric-question";
 import { Widget } from "./lab/widgets";
 import { Button, Card, Pill, cn } from "./ui";
+import { XpBurst } from "./reward";
 
 /* ------------------------------------------------------------------ */
 /* Public API                                                          */
@@ -291,15 +292,22 @@ function Feedback({
   return (
     <div
       className={cn(
-        "rounded-2xl border p-4",
+        "relative rounded-2xl border p-4",
         correct ? "border-go/25 bg-go-soft" : "border-nogo/25 bg-nogo-soft",
       )}
     >
+      {/*
+       * The gain floats off the banner as it appears. Amounts match what the
+       * lesson actually awards, so the number here is the number earned rather
+       * than an encouraging fiction.
+       */}
+      <XpBurst amount={onRetry ? 4 : 10} show={correct} />
       <div className="mb-1.5 flex items-center gap-2">
         <span
           className={cn(
             "flex h-6 w-6 items-center justify-center rounded-full text-white",
             correct ? "bg-go" : "bg-nogo",
+            correct && "animate-pop",
           )}
         >
           {correct ? <Check size={14} strokeWidth={3} /> : <X size={14} strokeWidth={3} />}

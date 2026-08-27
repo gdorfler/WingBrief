@@ -3,11 +3,12 @@
 /**
  * Reward primitives — the parts of the interface whose job is to feel good.
  *
- * Two rules hold this file together. Reward fires ONCE on the transition into
- * the earned state and then gets out of the way, because an effect that keeps
- * running stops reading as a reward and starts reading as chrome. And nothing
- * here carries information that is not also written in text next to it, so a
- * reader with reduced motion, or one who simply looks away, misses nothing.
+ * Two rules hold this file together. Reward fires ONCE per earning and then
+ * gets out of the way, because an effect that keeps running stops reading as a
+ * reward and starts reading as chrome — see useEarned for what counts as an
+ * earning, which differs between a one-off event and a persistent state. And
+ * nothing here carries information that is not also written in text next to it,
+ * so a reader with reduced motion, or one who simply looks away, misses nothing.
  */
 
 import { Flame, Lock } from "lucide-react";
@@ -19,15 +20,23 @@ import { cn } from "./ui";
 /* ------------------------------------------------------------------ */
 
 /**
- * True for `ms` after `when` first becomes true.
+ * True for `ms` after `when` becomes true.
  *
- * The initial value is deliberately false even when `when` starts true: a
- * badge that is already earned when the page loads should render earned, not
- * re-celebrate on every navigation.
+ * There are two kinds of reward here and they need opposite behaviour at mount.
+ *
+ * An EVENT — a burst of XP, confetti on a finished lesson — belongs to a
+ * component that is created in response to the thing happening. The answer
+ * banner is keyed on the result and the completion screen replaces the player
+ * outright, so both mount with `when` already true and must fire anyway.
+ *
+ * A STATE — an earned mastery badge — persists across navigations. It must NOT
+ * fire on mount, or every visit to the profile re-celebrates work done weeks
+ * ago. It fires only on the transition into being earned.
  */
-function useEarned(when: boolean, ms = 1600): boolean {
+function useEarned(when: boolean, ms = 1600, fireOnMount = false): boolean {
   const [firing, setFiring] = useState(false);
-  const previous = useRef(when);
+  const previous = useRef(fireOnMount ? false : when);
+
   useEffect(() => {
     if (when && !previous.current) {
       setFiring(true);
@@ -37,6 +46,7 @@ function useEarned(when: boolean, ms = 1600): boolean {
     }
     previous.current = when;
   }, [when, ms]);
+
   return firing;
 }
 
@@ -84,7 +94,21 @@ export function useCountUp(target: number, duration = 900): number {
       if (p < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
+
+    /*
+     * A backstop, because requestAnimationFrame does not run at all while the
+     * tab is hidden. Without this, finishing a lesson and switching away mid
+     * count leaves the number frozen at its starting value — the student comes
+     * back to "+0 XP" and no later render corrects it, since the animation only
+     * restarts when the target itself changes. setTimeout still fires when
+     * hidden, so the final value always lands.
+     */
+    const settle = setTimeout(() => setN(target), duration + 150);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(settle);
+    };
   }, [target, duration]);
 
   return n;
@@ -109,7 +133,7 @@ export function XpBurst({
   show: boolean;
   className?: string;
 }) {
-  const firing = useEarned(show, 1100);
+  const firing = useEarned(show, 1100, true);
   if (!firing) return null;
   return (
     <span
@@ -246,7 +270,7 @@ const CONFETTI = Array.from({ length: 14 }, (_, i) => ({
  * mismatch on a component that exists purely to look nice.
  */
 export function Confetti({ show }: { show: boolean }) {
-  const firing = useEarned(show, 1700);
+  const firing = useEarned(show, 1700, true);
   if (!firing) return null;
   return (
     <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-20 h-0 overflow-visible">
