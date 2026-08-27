@@ -500,7 +500,7 @@ export function PressureSplit(p: DiagramProps) {
   const y = 118;
 
   return (
-    <Diagram title="Total pressure is static plus dynamic">
+    <Diagram mobile={{ zoom: 1.25, cx: 250, cy: 135 }} title="Total pressure is static plus dynamic">
       <text x={250} y={44} textAnchor="middle" fontSize={12} fontWeight={750} fill={NAVY}>
         Total pressure stays the same
       </text>

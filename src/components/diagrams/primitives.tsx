@@ -66,12 +66,34 @@ export function makePlot(opts: {
 }
 
 /** Root <svg> for every diagram. */
+/**
+ * How a diagram behaves on a phone.
+ *
+ * A 500x300 drawing on a 390px screen renders at 0.78 scale, which puts its
+ * labels near 8px — the single reason the corpus reads worse on a phone than
+ * on a desktop. Growing the type does not work; the layouts have no spare room
+ * and forcing it produced collisions across a measured sample. What works is
+ * what the bespoke explainers do: show LESS of the drawing, larger.
+ *
+ * zoom magnifies about a chosen point and lets the SVG viewport clip the
+ * rest, so at 1.6 the same label lands near 13px. Pick the centre so the part
+ * that carries the teaching stays in shot — the caption says which part that
+ * is, and the student is not being asked to compare across the whole canvas.
+ */
+export interface MobileView {
+  zoom: number;
+  /** Point held fixed while zooming, in viewBox units. Defaults to the middle. */
+  cx?: number;
+  cy?: number;
+}
+
 export function Diagram({
   children,
   width = DIAGRAM_W,
   height = DIAGRAM_H,
   originX = 0,
   originY = 0,
+  mobile,
   ink = false,
   title,
   className = "",
@@ -87,11 +109,13 @@ export function Diagram({
    */
   originX?: number;
   originY?: number;
+  /** Zoom in on phones so the type is readable. See MobileView. */
+  mobile?: MobileView;
   ink?: boolean;
   title: string;
   className?: string;
 }) {
-  return (
+  const svg = (
     <svg
       viewBox={`${originX} ${originY} ${width} ${height}`}
       className={`diagram ${ink ? "diagram-ink" : ""} ${className}`}
@@ -101,6 +125,37 @@ export function Diagram({
     >
       <title>{title}</title>
       {children}
+    </svg>
+  );
+  if (!mobile) return svg;
+
+  /* One markup tree, two cameras. A CSS transform on the group means no second
+   * copy of the children — which matters, because a duplicated <ArrowDefs>
+   * would put its marker ids in a hidden subtree and every arrowhead in the
+   * visible one would resolve to those and vanish. CSS transform syntax needs
+   * px units; the SVG attribute form is silently ignored here. */
+  const z = mobile.zoom;
+  const cx = mobile.cx ?? originX + width / 2;
+  const cy = mobile.cy ?? originY + height / 2;
+  const tx = (cx * (1 - z)).toFixed(1);
+  const ty = (cy * (1 - z)).toFixed(1);
+  const cls = `wb-mv-${`${z}-${cx}-${cy}`.replace(/[^0-9]+/g, "-")}`;
+
+  return (
+    <svg
+      viewBox={`${originX} ${originY} ${width} ${height}`}
+      className={`diagram ${ink ? "diagram-ink" : ""} ${className}`}
+      role="img"
+      aria-label={title}
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <title>{title}</title>
+      <style>{`
+        @media (max-width: 639px) {
+          .${cls} { transform: translate(${tx}px, ${ty}px) scale(${z}); }
+        }
+      `}</style>
+      <g className={cls}>{children}</g>
     </svg>
   );
 }

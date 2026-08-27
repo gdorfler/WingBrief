@@ -60,7 +60,7 @@ export function TurnForces(p: DiagramProps) {
   const ly = cy - Math.cos(rad) * liftLen;
 
   return (
-    <Diagram title="Lift components in a level banked turn">
+    <Diagram mobile={{ zoom: 1.35, cx: 271, cy: 143 }} title="Lift components in a level banked turn">
       <ArrowDefs colors={{ lift: GO, weight: NAVY, horiz: BRAND, vert: CAUTION }} />
 
       <g transform={`translate(${cx} ${cy}) rotate(${-bank})`}>
@@ -154,7 +154,7 @@ export function TurnGeometry(p: DiagramProps) {
   const cy = 158;
 
   return (
-    <Diagram title="Turn rate and turn radius">
+    <Diagram mobile={{ zoom: 1.35, cx: 267, cy: 150 }} title="Turn rate and turn radius">
       <ArrowDefs colors={{ r: BRAND }} />
       <circle cx={cx} cy={cy} r={pxRadius} fill="none" stroke={MUTED} strokeWidth={2} strokeDasharray="6 5" />
       <circle cx={cx} cy={cy} r={3.5} fill={MUTED} />
