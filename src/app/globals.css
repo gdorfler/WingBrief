@@ -316,10 +316,15 @@ button,
  * Course transition. Only the accent-bearing properties animate, and
  * only for a beat — long enough to read as a deliberate change of
  * course, short enough not to feel slow.
+ *
+ * A lifting card is excluded because this selector carries an attribute
+ * AND a class, so it outranks .card-lift and would replace its whole
+ * transition list — leaving the card to jump on hover instead of rise.
+ * .card-lift animates these same two properties itself.
  */
 @media (prefers-reduced-motion: no-preference) {
   :root[data-course] body,
-  :root[data-course] .card,
+  :root[data-course] .card:not(.card-lift),
   :root[data-course] .card-ink {
     transition:
       background-color 280ms ease,
@@ -421,7 +426,9 @@ button,
   transition:
     transform 180ms var(--ease-out-quint),
     box-shadow 180ms var(--ease-out-quint),
-    border-color 180ms var(--ease-out-quint);
+    border-color 180ms var(--ease-out-quint),
+    /* Carries the course-switch fade that the rule above hands over. */
+    background-color 280ms ease;
 
   &:hover {
     transform: translateY(-3px);

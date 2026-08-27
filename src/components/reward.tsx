@@ -49,7 +49,12 @@ const prefersReducedMotion = () =>
   window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 /**
- * Counts from zero to `target` once, on mount.
+ * Counts up to `target`, easing from whatever was last shown.
+ *
+ * Interpolating from the previous value rather than always from zero matters
+ * on screens whose numbers arrive late: the dashboard renders XP as 0 until the
+ * stored progress loads, and a hook that always restarts at zero would count
+ * up, snap back, and count up again.
  *
  * Eased rather than linear, because a linear count reads as a loading spinner
  * while an eased one reads as an arrival. Reduced-motion readers get the final
@@ -57,19 +62,25 @@ const prefersReducedMotion = () =>
  */
 export function useCountUp(target: number, duration = 900): number {
   const [n, setN] = useState(() => (prefersReducedMotion() ? target : 0));
+  // Read inside the effect only, so changing it never re-triggers the animation.
+  const shown = useRef(n);
+  shown.current = n;
 
   useEffect(() => {
     if (prefersReducedMotion()) {
       setN(target);
       return;
     }
+    const from = shown.current;
+    if (from === target) return;
+
     let raf = 0;
     let start: number | null = null;
     const step = (t: number) => {
       start ??= t;
       const p = Math.min(1, (t - start) / duration);
       // Quintic ease-out: fast arrival, soft landing.
-      setN(Math.round(target * (1 - Math.pow(1 - p, 5))));
+      setN(Math.round(from + (target - from) * (1 - Math.pow(1 - p, 5))));
       if (p < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
@@ -126,20 +137,33 @@ export function XpBurst({
 export function StreakFlame({
   days,
   size = "md",
+  onInk = false,
+  label = false,
+  className,
 }: {
   days: number;
   size?: "sm" | "md";
+  /** Sitting on one of the dark instrument panels rather than on paper. */
+  onInk?: boolean;
+  /** Spell out "N-day streak" instead of showing the bare count. */
+  label?: boolean;
+  className?: string;
 }) {
   const alive = days > 0;
-  const px = size === "sm" ? 15 : 19;
+  const px = size === "sm" ? 15 : 18;
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full font-extrabold",
-        size === "sm" ? "px-2 py-0.5 text-[12px]" : "px-2.5 py-1 text-[13px]",
+        size === "sm" ? "px-2 py-0.5 text-[12px]" : "px-2.5 py-1 text-[12.5px]",
         alive
-          ? "bg-[color-mix(in_srgb,var(--color-caution)_16%,transparent)] text-caution"
-          : "bg-surface-3 text-navy-faint",
+          ? onInk
+            ? "bg-white/10 text-[#ffb74d]"
+            : "bg-[color-mix(in_srgb,var(--color-caution)_16%,transparent)] text-caution"
+          : onInk
+            ? "bg-white/5 text-[#7d9cc0]"
+            : "bg-surface-3 text-navy-faint",
+        className,
       )}
       title={alive ? `${days}-day streak` : "No streak yet"}
     >
@@ -148,8 +172,9 @@ export function StreakFlame({
         className={cn(alive && "animate-flicker")}
         fill={alive ? "currentColor" : "none"}
         strokeWidth={alive ? 1.5 : 2}
+        aria-hidden
       />
-      <span className="tabular">{days}</span>
+      <span className="tabular">{label ? `${days}-day streak` : days}</span>
     </span>
   );
 }

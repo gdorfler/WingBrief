@@ -29,6 +29,7 @@ import {
 import { AchievementIcon } from "@/components/achievement-icon";
 import { LessonIcon } from "@/components/lesson-icon";
 import { achievementById } from "@/lib/xp";
+import { useCountUp } from "@/components/reward";
 import { NavDeskDashboard } from "@/components/nav/desk-dashboard";
 
 const UNIT_TONE = {
@@ -71,6 +72,11 @@ function StandardHome() {
   const lessonsDone = Object.values(state.lessons).filter((l) => l.completed).length;
   const isNew = ready && lessonsDone === 0 && state.attempts.length === 0;
 
+  // The two headline numbers settle into place as the stored progress loads,
+  // rather than appearing fully formed.
+  const readinessShown = useCountUp(readiness, 800);
+  const xpShown = useCountUp(state.xp);
+
   return (
     <div className="space-y-6">
       {/* ---------------- Hero ---------------- */}
@@ -86,7 +92,7 @@ function StandardHome() {
               trackClassName="stroke-ink-600"
             >
               <span className="tabular text-[27px] font-extrabold leading-none text-white">
-                {readiness}
+                {readinessShown}
                 <span className="text-base">%</span>
               </span>
             </ProgressRing>
@@ -106,7 +112,7 @@ function StandardHome() {
 
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:px-4">
             <StatTile ink label="Streak" value={`${streak}`} hint={streak === 1 ? "day" : "days"} tone={streak > 0 ? "caution" : "neutral"} />
-            <StatTile ink label="XP" value={state.xp.toLocaleString()} hint={`Level ${level.level}`} tone="brand" />
+            <StatTile ink label="XP" value={xpShown.toLocaleString()} hint={`Level ${level.level}`} tone="brand" />
             <StatTile ink label="Lessons" value={`${lessonsDone}/${stats.lessons}`} hint="completed" />
             <StatTile
               ink
@@ -148,7 +154,7 @@ function StandardHome() {
                 <li key={`${item.kind}-${i}`}>
                   <Link
                     href={item.href}
-                    className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-4 transition-all hover:border-brand/40 hover:shadow-sm"
+                    className="card card-lift group flex items-center gap-4 p-4"
                   >
                     <FlightIcon kind={item.kind} index={i} art={item.art} />
                     <div className="min-w-0 flex-1">

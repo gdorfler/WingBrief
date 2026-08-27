@@ -31,6 +31,7 @@ import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { ProgressRing, cn } from "./ui";
 import { CourseSwitcher } from "./course-switcher";
+import { StreakFlame } from "./reward";
 import { AwardToasts } from "./awards";
 
 interface NavItem {
@@ -181,9 +182,9 @@ function SideNav() {
           </div>
         </div>
         {streak > 0 && (
-          <p className="mt-3 flex items-center gap-1.5 text-[11.5px] font-bold text-[#ffb74d]">
-            <span aria-hidden>🔥</span> {streak}-day streak
-          </p>
+          <div className="mt-3">
+            <StreakFlame days={streak} size="sm" onInk label />
+          </div>
         )}
       </div>
 
@@ -226,12 +227,7 @@ function TopBarMobile() {
         </div>
       </div>
       <div className="flex items-center gap-3">
-        {streak > 0 && (
-          <span className="tabular flex items-center gap-1 text-[13px] font-bold text-caution">
-            <span aria-hidden>🔥</span>
-            {streak}
-          </span>
-        )}
+        {streak > 0 && <StreakFlame days={streak} size="sm" />}
         <Link
           href="/profile"
           className="tabular flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-[12.5px] font-bold text-navy"
