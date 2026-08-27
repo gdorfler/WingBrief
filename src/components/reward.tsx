@@ -41,6 +41,45 @@ function useEarned(when: boolean, ms = 1600): boolean {
 }
 
 /* ------------------------------------------------------------------ */
+/* Counting up                                                         */
+/* ------------------------------------------------------------------ */
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Counts from zero to `target` once, on mount.
+ *
+ * Eased rather than linear, because a linear count reads as a loading spinner
+ * while an eased one reads as an arrival. Reduced-motion readers get the final
+ * number immediately — a number ticking upward is motion like any other.
+ */
+export function useCountUp(target: number, duration = 900): number {
+  const [n, setN] = useState(() => (prefersReducedMotion() ? target : 0));
+
+  useEffect(() => {
+    if (prefersReducedMotion()) {
+      setN(target);
+      return;
+    }
+    let raf = 0;
+    let start: number | null = null;
+    const step = (t: number) => {
+      start ??= t;
+      const p = Math.min(1, (t - start) / duration);
+      // Quintic ease-out: fast arrival, soft landing.
+      setN(Math.round(target * (1 - Math.pow(1 - p, 5))));
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration]);
+
+  return n;
+}
+
+/* ------------------------------------------------------------------ */
 /* XP                                                                  */
 /* ------------------------------------------------------------------ */
 

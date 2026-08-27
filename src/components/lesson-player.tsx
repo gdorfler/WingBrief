@@ -28,6 +28,7 @@ import { summarizeLesson } from "@/lib/scoring";
 import { MASTERY_LABELS } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse, useEnsureCourse } from "@/lib/course";
+import { Confetti, useCountUp } from "./reward";
 import { DiagramHost } from "./diagrams/registry";
 import { NavToolPanel, WorkedExample } from "./nav/lesson-screens";
 import { Widget } from "./lab/widgets";
@@ -598,6 +599,21 @@ function LessonComplete({
     40 +
     (summary.perfect ? 25 : 0);
 
+  /*
+   * The panel arrives, then the numbers fill in. The ring is driven from state
+   * rather than counted directly so it animates along its existing width
+   * transition instead of being redrawn 60 times a second.
+   */
+  const xpCounted = useCountUp(xpEarned);
+  const scorePct = useCountUp(Math.round(summary.score * 100));
+  const [ringValue, setRingValue] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setRingValue(summary.score), 90);
+    return () => clearTimeout(t);
+  }, [summary.score]);
+
+  const celebrate = summary.score >= 0.8;
+
   const moved = lesson.conceptIds
     .map((id) => ({
       id,
@@ -640,20 +656,26 @@ function LessonComplete({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="rounded-3xl bg-ink-800 p-6 text-center sm:p-8">
+          <div className="relative overflow-hidden rounded-3xl bg-ink-800 p-6 text-center sm:p-8">
+            {/*
+             * Confetti is reserved for a strong finish. Firing it on every
+             * completion — including a 40% one — would make it meaningless,
+             * and would congratulate a student who should go back.
+             */}
+            <Confetti show={celebrate} />
             <p className="eyebrow text-[#8fb0d4]">Lesson complete</p>
             <h1 className="mt-1.5 text-2xl text-white sm:text-3xl">{lesson.title}</h1>
 
             <div className="mt-6 flex justify-center">
               <ProgressRing
-                value={summary.score}
+                value={ringValue}
                 size={120}
                 stroke={11}
                 tone={summary.score >= 0.8 ? "go" : summary.score >= 0.5 ? "brand" : "caution"}
                 trackClassName="stroke-ink-600"
               >
                 <span className="tabular text-[30px] font-extrabold leading-none text-white">
-                  {Math.round(summary.score * 100)}
+                  {scorePct}
                   <span className="text-lg">%</span>
                 </span>
                 <span className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8fb0d4]">
@@ -663,7 +685,7 @@ function LessonComplete({
             </div>
 
             {summary.perfect && (
-              <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-gold/15 px-3 py-1.5 text-[12.5px] font-bold text-gold">
+              <p className="animate-pop mt-4 inline-flex items-center gap-1.5 rounded-full bg-gold/15 px-3 py-1.5 text-[12.5px] font-bold text-gold">
                 <Check size={13} strokeWidth={3} /> Perfect lesson — every question first try
               </p>
             )}
@@ -677,7 +699,7 @@ function LessonComplete({
               </div>
               <div className="rounded-xl bg-ink-700/70 px-3 py-3">
                 <p className="eyebrow text-[#8fb0d4]">XP earned</p>
-                <p className="tabular mt-1 text-xl font-bold text-brand-light">+{xpEarned}</p>
+                <p className="tabular mt-1 text-xl font-bold text-brand-light">+{xpCounted}</p>
               </div>
               <div className="rounded-xl bg-ink-700/70 px-3 py-3">
                 <p className="eyebrow text-[#8fb0d4]">Concepts</p>
