@@ -9,9 +9,11 @@
  * is looking at one thing.
  */
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Check,
   ClipboardCheck,
   Compass,
   FlaskConical,
@@ -32,6 +34,7 @@ import { useCourse } from "@/lib/course";
 import { ProgressRing, cn } from "./ui";
 import { CourseSwitcher } from "./course-switcher";
 import { StreakFlame } from "./reward";
+import { claimsFor, evaluateClaims, summariseClaims } from "@/lib/claims";
 import { AwardToasts } from "./awards";
 
 interface NavItem {
@@ -141,8 +144,13 @@ function NavItem({
 
 function SideNav() {
   const { state, ready } = useProgress();
-  const { content, meta } = useCourse();
+  const { id: course, content, meta } = useCourse();
   const readiness = overallReadiness(content.concepts, state.mastery);
+  const claims = claimsFor(course);
+  const claimSummary = useMemo(
+    () => (claims.length ? summariseClaims(evaluateClaims(content, state.attempts, claims)) : null),
+    [claims, content, state.attempts],
+  );
   const streak = liveStreak(state.streak, Date.now());
   const { primary, secondary } = navFor(meta.layout);
 
@@ -158,6 +166,37 @@ function SideNav() {
       </div>
 
       <div className="mb-5 rounded-2xl bg-ink-800 p-4">
+        {/*
+          A course that reports claims must not also report coverage. Leaving
+          the readiness ring in the rail would put the metric the hero exists to
+          replace back on screen, three inches to the left of it.
+        */}
+        {claimSummary ? (
+          <div className="min-w-0">
+            <p className="eyebrow text-[#8fb0d4]">What I&apos;ll vouch for</p>
+            {claimSummary.earned.length > 0 ? (
+              <ul className="mt-2 space-y-1.5">
+                {claimSummary.earned.slice(0, 3).map((s) => (
+                  <li key={s.claim.id} className="flex items-start gap-2">
+                    <Check size={13} strokeWidth={3} className="mt-0.5 shrink-0 text-go" />
+                    <span className="text-[11.5px] font-semibold leading-tight text-[#c9dcf0]">
+                      {s.claim.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-1.5 text-[11.5px] font-semibold leading-tight text-[#c9dcf0]">
+                Nothing yet. Applied work earns a claim.
+              </p>
+            )}
+            {claimSummary.contested.length > 0 && (
+              <p className="mt-2 text-[11px] font-bold leading-tight text-caution">
+                {claimSummary.contested.length} withdrawn
+              </p>
+            )}
+          </div>
+        ) : (
         <div className="flex items-center gap-3.5">
           <ProgressRing
             value={ready ? readiness / 100 : 0}
@@ -181,6 +220,7 @@ function SideNav() {
             </p>
           </div>
         </div>
+        )}
         {streak > 0 && (
           <div className="mt-3">
             <StreakFlame days={streak} size="sm" onInk label />
@@ -213,8 +253,13 @@ function SideNav() {
 
 function TopBarMobile() {
   const { state } = useProgress();
-  const { content } = useCourse();
+  const { id: course, content } = useCourse();
   const readiness = overallReadiness(content.concepts, state.mastery);
+  const claims = claimsFor(course);
+  const claimSummary = useMemo(
+    () => (claims.length ? summariseClaims(evaluateClaims(content, state.attempts, claims)) : null),
+    [claims, content, state.attempts],
+  );
   const streak = liveStreak(state.streak, Date.now());
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface/90 px-4 backdrop-blur-md lg:hidden">
@@ -232,13 +277,35 @@ function TopBarMobile() {
           href="/profile"
           className="tabular flex items-center gap-1.5 rounded-full bg-surface-2 px-2.5 py-1 text-[12.5px] font-bold text-navy"
         >
-          <span
-            className={cn(
-              "inline-block h-2 w-2 rounded-full",
-              readiness >= 80 ? "bg-go" : readiness >= 50 ? "bg-brand" : "bg-caution",
-            )}
-          />
-          {readiness}%
+          {claimSummary ? (
+            <>
+              {/* Claims, not coverage — and a withdrawn one is the thing worth
+                  showing in the two centimetres a phone header has. */}
+              <span
+                className={cn(
+                  "inline-block h-2 w-2 rounded-full",
+                  claimSummary.contested.length > 0
+                    ? "bg-caution"
+                    : claimSummary.earned.length > 0
+                      ? "bg-go"
+                      : "bg-navy-faint",
+                )}
+              />
+              {claimSummary.contested.length > 0
+                ? `${claimSummary.contested.length} withdrawn`
+                : `${claimSummary.earned.length} vouched`}
+            </>
+          ) : (
+            <>
+              <span
+                className={cn(
+                  "inline-block h-2 w-2 rounded-full",
+                  readiness >= 80 ? "bg-go" : readiness >= 50 ? "bg-brand" : "bg-caution",
+                )}
+              />
+              {readiness}%
+            </>
+          )}
         </Link>
       </div>
     </header>

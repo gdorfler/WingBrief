@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -30,6 +31,8 @@ import { AchievementIcon } from "@/components/achievement-icon";
 import { LessonIcon } from "@/components/lesson-icon";
 import { achievementById } from "@/lib/xp";
 import { useCountUp } from "@/components/reward";
+import { ClaimsHero } from "@/components/claims-hero";
+import { claimsFor, evaluateClaims, summariseClaims } from "@/lib/claims";
 import { NavDeskDashboard } from "@/components/nav/desk-dashboard";
 
 const UNIT_TONE = {
@@ -54,7 +57,7 @@ export default function HomePage() {
 
 function StandardHome() {
   const { state, ready } = useProgress();
-  const { content, stats, meta } = useCourse();
+  const { id: activeCourse, content, stats, meta } = useCourse();
   const now = Date.now();
 
   const readiness = overallReadiness(content.concepts, state.mastery);
@@ -77,9 +80,35 @@ function StandardHome() {
   const readinessShown = useCountUp(readiness, 800);
   const xpShown = useCountUp(state.xp);
 
+  /*
+   * Weather leads with claims rather than with coverage.
+   *
+   * Readiness measures how much of the syllabus has been touched — the
+   * publisher's view of the student. A claim is a sentence the app will stand
+   * behind, earned by applied work and withdrawn when contradicted. Weather
+   * goes first because it is examined on production as much as Navigation is:
+   * three of its objectives use the word INTERPRET.
+   *
+   * Every other course keeps the readiness hero until this is proven out, which
+   * is the point of changing one course rather than five.
+   */
+  const claims = claimsFor(activeCourse);
+  const claimSummary = useMemo(
+    () => (claims.length ? summariseClaims(evaluateClaims(content, state.attempts, claims)) : null),
+    [claims, content, state.attempts],
+  );
+
   return (
     <div className="space-y-6">
       {/* ---------------- Hero ---------------- */}
+      {claimSummary ? (
+        <ClaimsHero
+          summary={claimSummary}
+          courseName={meta.name}
+          continueHref={flight.items[0]?.href ?? "/lessons"}
+          isNew={isNew}
+        />
+      ) : (
       <InkCard className="relative overflow-hidden" padded={false}>
         <BackdropGrid />
         <div className="relative grid gap-6 p-5 sm:p-7 lg:grid-cols-[auto_1fr_auto] lg:items-center">
@@ -135,6 +164,23 @@ function StandardHome() {
           </div>
         </div>
       </InkCard>
+      )}
+
+      {/* The stat row still belongs on a claims course; it is the streak and XP
+          that motivate returning, and neither is a coverage metric. */}
+      {claimSummary && (
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <StatTile label="Streak" value={`${streak}`} hint={streak === 1 ? "day" : "days"} tone={streak > 0 ? "caution" : "neutral"} />
+          <StatTile label="XP" value={xpShown.toLocaleString()} hint={`Level ${level.level}`} tone="brand" />
+          <StatTile label="Lessons" value={`${lessonsDone}/${stats.lessons}`} hint="completed" />
+          <StatTile
+            label="Applied"
+            value={claimSummary.states.reduce((n, s) => n + s.have, 0)}
+            hint="questions worked"
+            tone="go"
+          />
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <div className="min-w-0 space-y-6">
@@ -185,9 +231,16 @@ function StandardHome() {
 
           {/* ---------------- Unit readiness ---------------- */}
           <section>
+            {/*
+              On a claims course this list is navigation, not a verdict. Calling
+              it "concept mastery" and "where you stand" would put the coverage
+              metric back as an assessment of the student, two sections below the
+              panel that exists to replace it. The bars still say what has been
+              worked through, which is a fair thing for them to say.
+            */}
             <SectionHeading
-              eyebrow="Concept mastery by unit"
-              title="Where you stand"
+              eyebrow={claimSummary ? "Ground covered" : "Concept mastery by unit"}
+              title={claimSummary ? "By unit" : "Where you stand"}
               action={
                 <Link href="/lessons" className="text-[13px] font-semibold text-brand hover:underline">
                   Flight path
