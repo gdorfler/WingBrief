@@ -22,7 +22,7 @@
 import { useRef, useState } from "react";
 import type { Explainer } from "@/lib/types";
 import { DiagramHost } from "../diagrams/registry";
-import type { SceneRenderer } from "./player";
+import type { SceneRenderer, GateOutcome } from "./player";
 import { PredictionGate, SceneIdea, Stage, StageChip } from "./stage";
 import { revealKey, useRevealEntrance, useTweenedProps } from "./motion";
 
@@ -56,7 +56,7 @@ export function makeFramesRenderer(e: Explainer): SceneRenderer {
     onResolveGate,
   }: {
     scene: number;
-    onResolveGate: (ok: boolean) => void;
+    onResolveGate: (outcome: GateOutcome) => void;
   }) {
     const [choice, setChoice] = useState<number | null>(null);
     const n = Math.min(Math.max(scene, 0), total - 1);
@@ -88,7 +88,7 @@ export function makeFramesRenderer(e: Explainer): SceneRenderer {
         because={gate.because}
         onChoose={(n) => {
           setChoice(n);
-          onResolveGate(true);
+          onResolveGate({ chosen: n, answer: gate.answer });
         }}
       />
     ) : (

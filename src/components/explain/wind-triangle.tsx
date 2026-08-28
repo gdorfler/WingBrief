@@ -22,6 +22,7 @@
 
 import { useState } from "react";
 import { AngleArc, Tag, Vector } from "./grammar";
+import type { GateOutcome } from "./player";
 import { PredictionGate, SceneIdea, Stage, StageChip } from "./stage";
 
 /* ------------------------------------------------------------------ */
@@ -291,7 +292,7 @@ export function WindTriangleExplainer({
   onResolveGate,
 }: {
   scene: number;
-  onResolveGate: (ok: boolean) => void;
+  onResolveGate: (outcome: GateOutcome) => void;
 }) {
   const [choice, setChoice] = useState<number | null>(null);
   const [wd, setWd] = useState(WD_DEFAULT);
@@ -318,7 +319,7 @@ export function WindTriangleExplainer({
       because={s.predict.because}
       onChoose={(i) => {
         setChoice(i);
-        onResolveGate(true);
+        onResolveGate({ chosen: i, answer: s.predict!.answer });
       }}
     />
   ) : (

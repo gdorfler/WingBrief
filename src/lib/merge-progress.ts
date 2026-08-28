@@ -19,6 +19,7 @@ import type {
   ExamResult,
   LessonProgress,
   MasteryRecord,
+  PredictionRecord,
   StreakState,
 } from "./types";
 import { COURSE_ORDER } from "@/content/courses";
@@ -36,6 +37,20 @@ function mergeAttempts(a: Attempt[], b: Attempt[]): Attempt[] {
   const byKey = new Map<string, Attempt>();
   for (const attempt of [...a, ...b]) {
     byKey.set(`${attempt.questionId}@${attempt.at}`, attempt);
+  }
+  return [...byKey.values()].sort((x, y) => x.at - y.at);
+}
+
+/**
+ * Predictions are an event log like attempts, so the same rule applies: one
+ * event is one gate answered at one instant. The scene is part of the key
+ * because a student who watches an explainer twice has predicted twice, and
+ * both are real observations of what they believed at the time.
+ */
+function mergePredictions(a: PredictionRecord[], b: PredictionRecord[]): PredictionRecord[] {
+  const byKey = new Map<string, PredictionRecord>();
+  for (const p of [...a, ...b]) {
+    byKey.set(`${p.explainerId}#${p.scene}@${p.at}`, p);
   }
   return [...byKey.values()].sort((x, y) => x.at - y.at);
 }
@@ -176,6 +191,7 @@ function mergeCourse(a: CourseProgress, b: CourseProgress): CourseProgress {
     savedQuestionIds: unionIds(a.savedQuestionIds, b.savedQuestionIds),
     savedKnowColdIds: unionIds(a.savedKnowColdIds, b.savedKnowColdIds),
     watchedExplainerIds: unionIds(a.watchedExplainerIds, b.watchedExplainerIds),
+    predictions: mergePredictions(a.predictions ?? [], b.predictions ?? []),
   };
 }
 
@@ -214,7 +230,8 @@ export function isEmptyProgress(state: ProgressState): boolean {
       Object.keys(c.lessons).length === 0 &&
       c.savedQuestionIds.length === 0 &&
       c.savedKnowColdIds.length === 0 &&
-      c.watchedExplainerIds.length === 0
+      c.watchedExplainerIds.length === 0 &&
+      (c.predictions?.length ?? 0) === 0
     );
   }) && state.achievements.length === 0;
 }

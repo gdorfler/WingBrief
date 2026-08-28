@@ -860,6 +860,35 @@ export const PROGRESS_SCHEMA_VERSION = 2;
  * Everything a student has done in ONE course. Kept in its own bucket so
  * studying Engines can never move an Aerodynamics number.
  */
+/**
+ * A prediction made at an explainer's gate, BEFORE the reveal.
+ *
+ * This is the cleanest read of a student's mental model the app ever gets: a
+ * commitment made while they still hold whatever they believed walking in,
+ * uncontaminated by the explanation that follows. An answer given after
+ * instruction tells you whether they were paying attention; this tells you what
+ * they thought was true.
+ *
+ * Deliberately NOT an Attempt, and deliberately not fed to mastery. Being wrong
+ * here is the system working — the whole point of asking before showing is that
+ * an honest wrong guess is more useful than a cautious right one. Penalising it
+ * would teach students to game the gate, and would destroy the signal in the
+ * act of measuring it.
+ */
+export interface PredictionRecord {
+  explainerId: string;
+  /** Scene index the gate sat on, so repeat runs are distinguishable. */
+  scene: number;
+  /** The concepts the explainer teaches — where this belief attaches. */
+  conceptIds: ConceptId[];
+  /** Option index the student committed to. */
+  chosen: number;
+  /** Option index that was correct. */
+  answer: number;
+  correct: boolean;
+  at: number;
+}
+
 export interface CourseProgress {
   xp: number;
   mastery: Record<ConceptId, MasteryRecord>;
@@ -869,6 +898,8 @@ export interface CourseProgress {
   savedQuestionIds: string[];
   savedKnowColdIds: string[];
   watchedExplainerIds: string[];
+  /** Absent on progress written before predictions were recorded. */
+  predictions: PredictionRecord[];
 }
 
 /**

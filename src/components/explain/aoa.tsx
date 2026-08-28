@@ -40,6 +40,7 @@
 
 import { useState } from "react";
 import { AngleArc, Datum, Layer, PulseRing, ROLE_STROKE, Tag, Vector } from "./grammar";
+import type { GateOutcome } from "./player";
 import { PredictionGate, SceneIdea, Stage, StageChip } from "./stage";
 
 /* ------------------------------------------------------------------ */
@@ -496,7 +497,7 @@ export function AoaExplainer({
   onResolveGate,
 }: {
   scene: number;
-  onResolveGate: (ok: boolean) => void;
+  onResolveGate: (outcome: GateOutcome) => void;
 }) {
   const [choice, setChoice] = useState<number | null>(null);
   const [drag, setDrag] = useState(4);
@@ -514,7 +515,7 @@ export function AoaExplainer({
       because={s.predict.because}
       onChoose={(i) => {
         setChoice(i);
-        onResolveGate(true);
+        onResolveGate({ chosen: i, answer: s.predict!.answer });
       }}
     />
   ) : (

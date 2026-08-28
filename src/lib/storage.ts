@@ -35,6 +35,7 @@ export function emptyCourseProgress(): CourseProgress {
     savedQuestionIds: [],
     savedKnowColdIds: [],
     watchedExplainerIds: [],
+    predictions: [],
   };
 }
 
@@ -93,6 +94,7 @@ function migrateCourse(raw: unknown): CourseProgress {
     watchedExplainerIds: Array.isArray(input.watchedExplainerIds)
       ? input.watchedExplainerIds
       : [],
+    predictions: Array.isArray(input.predictions) ? input.predictions : [],
   };
 }
 

@@ -41,6 +41,7 @@ import type {
   CourseId,
   CourseProgressView,
   ExamResult,
+  PredictionRecord,
   ProgressState,
 } from "./types";
 import { QUESTION_BY_ID, conceptIdsFor, unitConceptIds, unitLessonIds } from "@/content";
@@ -55,6 +56,15 @@ export interface AnswerInput {
   context: Attempt["context"];
   /** What they answered, for courses that diagnose the kind of error. */
   answerKey?: string;
+}
+
+/** A commitment made at an explainer gate. Correctness is derived, not passed. */
+export interface PredictionInput {
+  explainerId: string;
+  scene: number;
+  conceptIds: ConceptId[];
+  chosen: number;
+  answer: number;
 }
 
 export interface ProgressApi {
@@ -80,6 +90,7 @@ export interface ProgressApi {
   ) => void;
   recordExam: (result: ExamResult) => void;
   markExplainerWatched: (id: string) => void;
+  recordPrediction: (input: PredictionInput) => void;
   markLabExplored: (id: string) => void;
   toggleSavedQuestion: (id: string) => void;
   toggleSavedKnowCold: (id: string) => void;
@@ -384,6 +395,39 @@ export function ProgressProvider({
     [mutate],
   );
 
+  /**
+   * Record a prediction made at an explainer gate.
+   *
+   * Deliberately does NOT touch mastery, XP or the streak.
+   *
+   * A prediction is made BEFORE the explanation, which is the entire reason it
+   * is worth having: it reads what the student believed walking in. Scoring it
+   * would invert that. A student who worked out that guessing wrong costs them
+   * something starts picking the safe option instead of the one they actually
+   * believe, and the signal disappears at exactly the moment it is measured.
+   * Being wrong at a gate is the system working.
+   *
+   * It is stored so that later analysis can ask what a student believed and
+   * when they stopped believing it — not so it can be graded.
+   */
+  const recordPrediction = useCallback(
+    (input: PredictionInput) => {
+      mutate((prev) => {
+        const record: PredictionRecord = {
+          explainerId: input.explainerId,
+          scene: input.scene,
+          conceptIds: input.conceptIds,
+          chosen: input.chosen,
+          answer: input.answer,
+          correct: input.chosen === input.answer,
+          at: Date.now(),
+        };
+        return { ...prev, predictions: [...(prev.predictions ?? []), record] };
+      });
+    },
+    [mutate],
+  );
+
   const markExplainerWatched = useCallback(
     (id: string) => {
       mutate((prev) => {
@@ -472,6 +516,7 @@ export function ProgressProvider({
       pendingAwards,
       clearAwards,
       recordAnswer,
+      recordPrediction,
       introduceConcepts,
       completeLesson,
       recordExam,
@@ -492,6 +537,7 @@ export function ProgressProvider({
       pendingAwards,
       clearAwards,
       recordAnswer,
+      recordPrediction,
       introduceConcepts,
       completeLesson,
       recordExam,

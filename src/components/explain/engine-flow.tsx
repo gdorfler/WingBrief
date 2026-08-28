@@ -30,6 +30,7 @@
 
 import { useState } from "react";
 import { PulseRing } from "./grammar";
+import type { GateOutcome } from "./player";
 import { PredictionGate, SceneIdea, Stage, StageChip } from "./stage";
 
 /* ------------------------------------------------------------------ */
@@ -404,7 +405,7 @@ export function EngineFlowExplainer({
   onResolveGate,
 }: {
   scene: number;
-  onResolveGate: (ok: boolean) => void;
+  onResolveGate: (outcome: GateOutcome) => void;
 }) {
   const [choice, setChoice] = useState<number | null>(null);
   const [scrub, setScrub] = useState(40);
@@ -448,7 +449,7 @@ export function EngineFlowExplainer({
       because={s.predict.because}
       onChoose={(i) => {
         setChoice(i);
-        onResolveGate(true);
+        onResolveGate({ chosen: i, answer: s.predict!.answer });
       }}
     />
   ) : (

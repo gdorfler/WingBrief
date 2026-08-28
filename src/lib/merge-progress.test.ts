@@ -1,13 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { isEmptyProgress, mergeProgress } from "./merge-progress";
 import { emptyProgress } from "./storage";
-import type { Attempt, CourseProgress, ExamResult, ProgressState } from "./types";
+import type { Attempt, CourseProgress, ExamResult, PredictionRecord, ProgressState } from "./types";
 
 const DAY = 86_400_000;
 const T0 = Date.UTC(2026, 0, 10, 12, 0, 0);
 
 function attempt(questionId: string, at: number, correct = true): Attempt {
   return { questionId, conceptIds: ["c-lift-def"], correct, elapsedMs: 4000, at, context: "lesson" };
+}
+
+function prediction(explainerId: string, scene: number, at: number): PredictionRecord {
+  return {
+    explainerId,
+    scene,
+    conceptIds: ["c-lift-def"],
+    chosen: 0,
+    answer: 1,
+    correct: false,
+    at,
+  };
 }
 
 function exam(id: string, at: number, score: number): ExamResult {
@@ -70,6 +82,17 @@ function populated(overrides: Over = {}): ProgressState {
     savedQuestionIds: ["q1"],
     savedKnowColdIds: ["k1"],
     watchedExplainerIds: ["x1"],
+    predictions: [
+      {
+        explainerId: "x-what-lift-really-is",
+        scene: 2,
+        conceptIds: ["c-lift-def"],
+        chosen: 0,
+        answer: 1,
+        correct: false,
+        at: 1_700_000_100_000,
+      },
+    ],
     ...course,
   };
   return {
@@ -124,6 +147,34 @@ describe("mergeProgress", () => {
     const phone = populated({ attempts: [attempt("q1", T0)] });
     const laptop = populated({ attempts: [attempt("q1", T0 + 5000)] });
     expect(aeroOf(mergeProgress(phone, laptop)).attempts).toHaveLength(2);
+  });
+
+  it("unions predictions without duplicating a gate answered on both devices", () => {
+    const shared = prediction("x-cl-vs-aoa", 3, T0);
+    const phone = populated({
+      predictions: [shared, prediction("x-aoa-in-90-seconds", 5, T0 + 1000)],
+    });
+    const laptop = populated({ predictions: [shared, prediction("fx-brief-void", 2, T0 + 2000)] });
+    const merged = mergeProgress(phone, laptop);
+    expect(aeroOf(merged).predictions.map((p) => p.explainerId)).toEqual([
+      "x-cl-vs-aoa",
+      "x-aoa-in-90-seconds",
+      "fx-brief-void",
+    ]);
+  });
+
+  it("treats the same gate answered on a second viewing as two predictions", () => {
+    // Watching an explainer again and predicting again is two observations of
+    // what the student believed, taken at two different times.
+    const phone = populated({ predictions: [prediction("x-cl-vs-aoa", 3, T0)] });
+    const laptop = populated({ predictions: [prediction("x-cl-vs-aoa", 3, T0 + 5000)] });
+    expect(aeroOf(mergeProgress(phone, laptop)).predictions).toHaveLength(2);
+  });
+
+  it("keeps two gates in the same explainer apart", () => {
+    const phone = populated({ predictions: [prediction("x-cl-vs-aoa", 3, T0)] });
+    const laptop = populated({ predictions: [prediction("x-cl-vs-aoa", 6, T0)] });
+    expect(aeroOf(mergeProgress(phone, laptop)).predictions).toHaveLength(2);
   });
 
   it("keeps the mastery record built from more practice", () => {

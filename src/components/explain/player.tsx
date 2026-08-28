@@ -21,8 +21,22 @@ import { CONCEPT_BY_ID, LESSON_BY_ID } from "@/content";
 import { ButtonLink, Pill } from "../ui";
 import { MemoryAnchor, SceneControls } from "./stage";
 
+/**
+ * What the student committed to at a gate.
+ *
+ * The previous contract was `(ok: boolean)`, which every renderer called with a
+ * hard-coded `true` — the flag only ever meant "the gate is satisfied, let them
+ * through", and satisfying a gate has nothing to do with being right. So the
+ * one observation worth having was computed at the call site and thrown away
+ * there, before anything could store it.
+ */
+export interface GateOutcome {
+  chosen: number;
+  answer: number;
+}
+
 export interface SceneRenderer {
-  (props: { scene: number; onResolveGate: (ok: boolean) => void }): React.ReactNode;
+  (props: { scene: number; onResolveGate: (outcome: GateOutcome) => void }): React.ReactNode;
   sceneCount: number;
   blocksAt: (scene: number) => boolean;
   nextLabel: (scene: number) => string;
@@ -44,7 +58,7 @@ export function ScenePlayer({
   conceptIds: string[];
   Render: SceneRenderer;
 }) {
-  const { state, markExplainerWatched } = useProgress();
+  const { state, markExplainerWatched, recordPrediction } = useProgress();
   const [scene, setScene] = useState(0);
   const [resolved, setResolved] = useState<Record<number, boolean>>({});
   const [done, setDone] = useState(false);
@@ -160,9 +174,23 @@ export function ScenePlayer({
         </div>
       </header>
 
+      {/*
+        A gate opens on being answered, not on being answered correctly — the
+        student has committed, which is all the gate was ever asking for.
+        Whether they were right is recorded rather than enforced.
+      */}
       <Render
         scene={scene}
-        onResolveGate={(ok) => setResolved((r) => ({ ...r, [scene]: ok }))}
+        onResolveGate={(outcome) => {
+          setResolved((r) => ({ ...r, [scene]: true }));
+          recordPrediction({
+            explainerId: id,
+            scene,
+            conceptIds,
+            chosen: outcome.chosen,
+            answer: outcome.answer,
+          });
+        }}
       />
 
       <div className="shrink-0">
