@@ -14,6 +14,7 @@ import { MASTERY_LABELS } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse, useEnsureCourse } from "@/lib/course";
 import { QuestionReview } from "@/components/questions";
+import { MakeItClick } from "@/components/click/trigger";
 import {
   ButtonLink,
   Card,
@@ -63,10 +64,16 @@ export default function ConceptPage() {
         title={concept.name}
         subtitle={concept.definition}
         actions={
-          <ButtonLink href="/review/weak" size="md">
-            Drill this
-            <ArrowRight size={16} />
-          </ButtonLink>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* This page is where a weak concept and a review session both land,
+                so it is the natural place to offer a different explanation
+                before offering more repetitions of the same one. */}
+            <MakeItClick conceptId={concept.id} />
+            <ButtonLink href="/review/weak" size="md">
+              Drill this
+              <ArrowRight size={16} />
+            </ButtonLink>
+          </div>
         }
       />
 

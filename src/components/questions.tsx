@@ -31,6 +31,7 @@ import { NumericAnswerSummary, NumericBody } from "./nav/numeric-question";
 import { Widget } from "./lab/widgets";
 import { Button, Card, Pill, cn } from "./ui";
 import { XpBurst } from "./reward";
+import { MakeItClick } from "./click/trigger";
 
 /* ------------------------------------------------------------------ */
 /* Public API                                                          */
@@ -241,7 +242,7 @@ export function QuestionPlayer(props: QuestionPlayerProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
             >
-              <Feedback question={question} correct={correct} onRetry={attempts > 1} />
+              <Feedback question={question} correct={correct} onRetry={attempts > 1} chosen={answer} />
             </motion.div>
           )}
 
@@ -283,12 +284,34 @@ function Feedback({
   question,
   correct,
   onRetry,
+  chosen,
 }: {
   question: Question;
   correct: boolean;
   /** True once this is a retry, so the banner can stay honest about the mark. */
   onRetry: boolean;
+  /** The serialised answer given, so a miss can be explained in its own words. */
+  chosen: string | null;
 }) {
+  /*
+   * The wrong option, in the question's own words.
+   *
+   * This is what turns a generic explanation into an addressed one: the student
+   * is not told about the concept, they are told why the thing THEY picked is
+   * wrong. Only choice questions carry option prose, so anything else simply
+   * offers the plain "make it click".
+   */
+  const wrongText = (() => {
+    if (correct || !chosen?.startsWith("i:")) return null;
+    const i = Number(chosen.slice(2));
+    const opts = (question as unknown as { options?: unknown }).options;
+    const answerIdx = (question as unknown as { answer?: unknown }).answer;
+    if (!Array.isArray(opts) || typeof answerIdx !== "number") return null;
+    if (!Number.isInteger(i) || i === answerIdx) return null;
+    return typeof opts[i] === "string"
+      ? { chosenText: opts[i] as string, correctText: (opts[answerIdx] as string) ?? "" }
+      : null;
+  })();
   return (
     <div
       className={cn(
@@ -334,6 +357,25 @@ function Feedback({
           <p className="mt-0.5 text-[13px] font-semibold leading-snug text-navy">
             {question.knowCold}
           </p>
+        </div>
+      )}
+
+      {/*
+        The explanation above says what the right answer is. That is not always
+        enough, and the student has just demonstrated which concept and which
+        wrong reading are in play — so the offer to go deeper is made here,
+        addressed to the answer they actually gave.
+      */}
+      {!correct && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {question.conceptIds.map((id) => (
+            <MakeItClick
+              key={id}
+              conceptId={id}
+              mistake={wrongText ?? undefined}
+              variant="inline"
+            />
+          ))}
         </div>
       )}
     </div>
