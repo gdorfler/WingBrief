@@ -635,6 +635,61 @@ button,
 }
 
 /* ============================================================
+   EXPLAINER MOTION
+
+   An audit of the 144 explainers found that 80% of scene transitions
+   already changed the picture — they just did it instantly. Things
+   appeared rather than developed, which is why a staged diagram still
+   read as a slideshow of finished pictures.
+
+   Whatever a scene reveals gets an entrance here, and the rest of the
+   drawing steps back while it arrives, so every scene has one obvious
+   place to look.
+   ============================================================ */
+
+@keyframes wb-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(5px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * transform-box: fill-box makes the scale grow from the element's own centre
+ * rather than the SVG origin, which would fling it across the canvas.
+ */
+.diagram .wb-enter {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wb-enter 520ms var(--ease-out-quint) both;
+}
+
+/*
+ * Focus. While new content arrives the established drawing drops back, so the
+ * eye lands on what changed. Held deliberately shallow — this is the reference
+ * the new thing is measured against, and it still has to be readable.
+ */
+@keyframes wb-recede {
+  0%, 100% { opacity: 1; }
+  35% { opacity: 0.55; }
+}
+
+.diagram .wb-recede {
+  animation: wb-recede 900ms ease-in-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diagram .wb-enter,
+  .diagram .wb-recede {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
    SVG diagram defaults — diagrams are interface, not decoration
    ============================================================ */
 

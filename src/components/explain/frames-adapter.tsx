@@ -19,11 +19,12 @@
  * ceiling — an explainer graduates out of here when its diagram is rebuilt.
  */
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Explainer } from "@/lib/types";
 import { DiagramHost } from "../diagrams/registry";
 import type { SceneRenderer } from "./player";
 import { PredictionGate, SceneIdea, Stage, StageChip } from "./stage";
+import { revealKey, useRevealEntrance, useTweenedProps } from "./motion";
 
 /** Know Cold is one line; an anchor wants the two or three facts inside it. */
 function anchorFor(e: Explainer): string[] {
@@ -67,6 +68,15 @@ export function makeFramesRenderer(e: Explainer): SceneRenderer {
     let props: Record<string, unknown> = { ...(e.diagram.props ?? {}) };
     for (let k = 0; k <= i; k++) props = { ...props, ...(frames[k].props ?? {}) };
 
+    /*
+     * Numbers ease to their new value instead of jumping, so the wing rotates
+     * from 4 degrees to 12 rather than teleporting, and whatever the scene
+     * reveals fades in while the settled drawing steps back.
+     */
+    const shown = useTweenedProps(props, n);
+    const figure = useRef<HTMLDivElement>(null);
+    useRevealEntrance(figure, revealKey(shown));
+
     const gate = n === gateScene && e.predict ? e.predict : null;
 
     const caption = gate ? (
@@ -96,8 +106,11 @@ export function makeFramesRenderer(e: Explainer): SceneRenderer {
         {/* wb-stage-figure lets the diagram fill the stage rather than sit in a
             fixed-width card — the single change that moves 141 explainers from
             a 47% visual to a stage-filling one. */}
-        <div className="wb-stage-figure flex h-full w-full items-center justify-center p-3 sm:p-5">
-          <DiagramHost id={e.diagram.id} props={props} />
+        <div
+          ref={figure}
+          className="wb-stage-figure flex h-full w-full items-center justify-center p-3 sm:p-5"
+        >
+          <DiagramHost id={e.diagram.id} props={shown} />
         </div>
       </Stage>
     );
