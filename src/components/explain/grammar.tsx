@@ -316,17 +316,24 @@ export function PulseRing({ cx, cy, r = 34, role = "primary" }: {
  * corner and let the geometry drift away from them; this cannot.
  */
 export function Tag({
-  x, y, dx = 0, dy = 0, text, role = "primary", align = "start", strong = false,
+  x, y, dx = 0, dy = 0, text, role = "primary", align = "start", strong = false, size,
 }: {
   x: number; y: number; dx?: number; dy?: number;
   text: string; role?: Role; align?: "start" | "middle" | "end"; strong?: boolean;
+  /**
+   * Overrides the default size. A portrait frame draws on a narrower viewBox
+   * and is scaled down harder to fit a phone, so a tag that reads at 12px on a
+   * desktop lands near 8px there — small enough to be the thing a student
+   * complains about before they complain about anything else.
+   */
+  size?: number;
 }) {
   return (
     <text
       x={x + dx}
       y={y + dy}
       textAnchor={align}
-      fontSize={strong ? 13 : 12}
+      fontSize={size ?? (strong ? 13 : 12)}
       fontWeight={strong ? 800 : 700}
       fill={ROLE_STROKE[role]}
       style={{ transition: "all 460ms cubic-bezier(0.22, 1, 0.36, 1)" }}

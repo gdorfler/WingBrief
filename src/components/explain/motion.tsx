@@ -93,6 +93,47 @@ export function useTweenedProps(
   return shown;
 }
 
+/**
+ * Eases one number toward a target, keeping the fractional value.
+ *
+ * The counterpart to useCountUp, which rounds because it drives a readout. This
+ * one drives geometry — a bar length, a bar's tip, a plotted point — where
+ * rounding to an integer would make the motion visibly step.
+ */
+export function useEasedNumber(target: number, ms = 620): number {
+  const [v, setV] = useState(() => (reduced() ? target : target));
+  const live = useRef(v);
+  live.current = v;
+
+  useEffect(() => {
+    if (reduced()) {
+      setV(target);
+      return;
+    }
+    const from = live.current;
+    if (from === target) return;
+
+    let raf = 0;
+    let start: number | null = null;
+    const step = (t: number) => {
+      start ??= t;
+      const p = Math.min(1, (t - start) / ms);
+      setV(from + (target - from) * (1 - Math.pow(1 - p, 4)));
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    // rAF is paused in a hidden tab; without this the value would never arrive.
+    const settle = setTimeout(() => setV(target), ms + 150);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(settle);
+    };
+  }, [target, ms]);
+
+  return v;
+}
+
 /* ------------------------------------------------------------------ */
 /* Reveals: entrance and emphasis                                      */
 /* ------------------------------------------------------------------ */
