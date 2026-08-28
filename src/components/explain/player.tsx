@@ -20,6 +20,7 @@ import { useProgress } from "@/lib/progress-store";
 import { CONCEPT_BY_ID, LESSON_BY_ID } from "@/content";
 import { ButtonLink, Pill } from "../ui";
 import { MemoryAnchor, SceneControls } from "./stage";
+import { MakeItClick } from "../click/trigger";
 
 /**
  * What the student committed to at a gate.
@@ -123,6 +124,18 @@ export function ScenePlayer({
                     </Link>
                   );
                 })}
+              </div>
+
+              {/*
+                Watching the explainer is exactly the point at which a student
+                discovers it did not land — they have just been shown the thing
+                and can tell. Offering a different route out here, rather than
+                sending them back to replay the same scenes, is the whole idea.
+              */}
+              <div className="mt-3 flex flex-wrap gap-1.5 border-t border-line pt-3 empty:hidden">
+                {conceptIds.map((cid) => (
+                  <MakeItClick key={cid} conceptId={cid} variant="inline" />
+                ))}
               </div>
             </div>
 

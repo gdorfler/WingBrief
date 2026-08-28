@@ -26,6 +26,7 @@ import {
 } from "@/content";
 import { summarizeLesson } from "@/lib/scoring";
 import { MASTERY_LABELS } from "@/lib/mastery";
+import { MakeItClick } from "./click/trigger";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse, useEnsureCourse } from "@/lib/course";
 import { Confetti, useCountUp } from "./reward";
@@ -719,6 +720,10 @@ function LessonComplete({
                       <span className="min-w-0 flex-1 truncate text-[13.5px] font-medium text-navy">
                         {m.name}
                       </span>
+                      {/* Renders nothing where no entry exists, so this stays a
+                          quiet affordance on the concepts that have one rather
+                          than a chip on every row. */}
+                      <MakeItClick conceptId={m.id} variant="inline" className="shrink-0" />
                       {delta > 0 && (
                         <Pill tone="go" size="sm">
                           +{delta}
@@ -762,9 +767,14 @@ function LessonComplete({
               <Card className="space-y-2.5">
                 <ul className="space-y-1.5">
                   {weak.map((w) => (
-                    <li key={w.id} className="flex items-center gap-2 text-[13.5px] text-navy">
+                    <li key={w.id} className="flex flex-wrap items-center gap-2 text-[13.5px] text-navy">
                       <span className="h-1.5 w-1.5 rounded-full bg-caution" />
                       {w.name}
+                      {/* The student has just finished the lesson and is still
+                          weak on this. More repetitions of the same explanation
+                          are the obvious move and often the wrong one, so the
+                          other option is offered right beside it. */}
+                      <MakeItClick conceptId={w.id} variant="inline" />
                     </li>
                   ))}
                 </ul>
