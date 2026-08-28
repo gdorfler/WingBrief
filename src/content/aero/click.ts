@@ -285,4 +285,126 @@ export const CLICK: ClickEntry[] = [
     deeper:
       "The left boundary is a curve rather than a line because lift varies with the SQUARE of airspeed while load factor varies directly — so the speed needed to reach C_Lmax goes up with the square root of the load factor. That square root is the shape of the wall.",
   },
+
+  /* ================================================================ */
+  {
+    conceptId: "c-ldmax",
+    intuition:
+      "There are two kinds of drag and they pull in opposite directions as you change speed. Go slower and one grows; go faster and the other grows. Somewhere in between is the speed where the total is as small as it will ever be.",
+    analogies: [
+      {
+        picture:
+          "Fuel economy in a car. Crawling in a low gear the engine labours and you waste fuel; at 90 mph the wind eats it. The best miles per gallon is at neither end — it is the speed where the two costs together are smallest.",
+        maps: [
+          ["Induced drag, worst when slow", "the engine labouring at crawling speed"],
+          ["Parasite drag, worst when fast", "wind resistance at high speed"],
+          ["Total drag", "total fuel burned per mile"],
+          ["L/Dmax", "the speed with the best economy"],
+        ],
+        breaksDown:
+          "A car's best economy speed changes with the engine. L/Dmax is a property of the WING, and it does not move when you change weight or altitude — only the airspeed you fly it at does.",
+      },
+    ],
+    chain: [
+      { label: "Fly slower than best speed", trend: "down" },
+      {
+        label: "The wing needs a higher angle of attack to hold you up",
+        trend: "up",
+        because: "Less speed means less dynamic pressure, so the only lever left is angle.",
+      },
+      {
+        label: "Induced drag climbs steeply",
+        trend: "up",
+        because: "More angle means more downwash, and more of the lift vector tilting backwards.",
+      },
+      {
+        label: "Total drag rises even though parasite drag has fallen",
+        trend: "up",
+        because:
+          "Below L/Dmax the induced side is winning, and it wins faster than parasite drag is shrinking.",
+      },
+      {
+        label: "You are on the back side — slower now costs MORE thrust, not less",
+        trend: "up",
+        terminal: true,
+        because: "Which is the whole reason the region of reverse command feels wrong the first time.",
+      },
+    ],
+    manipulate: {
+      labId: "lab-drag",
+      driver: "Airspeed",
+      proves: "Slide the speed and watch the two curves trade places. They cross exactly at L/Dmax.",
+    },
+    wrongModel: {
+      brainWants:
+        "L/Dmax must be about getting the most lift — it has L on top. So it is where the wing lifts hardest, probably somewhere near the stall.",
+      actually:
+        "L/Dmax is MINIMUM TOTAL DRAG — the most efficient angle of attack, where parasite drag and induced drag are exactly equal. It is not maximum lift and it is not maximum speed.",
+      whyItsTempting:
+        "The letter L sits on top of the fraction and the name ends in max. Both point at lift, and the answer is about drag.",
+    },
+    deeper:
+      "Weight and altitude move the AIRSPEED at which you fly L/Dmax, but never L/Dmax itself and never the angle of attack that produces it. L/D is a ratio of two forces on the same wing — change the conditions and both scale together.",
+  },
+
+  /* ================================================================ */
+  {
+    conceptId: "c-load-factor",
+    intuition:
+      "In a turn the wing has to hold you up AND haul you round the corner, so it must pull harder than your weight. How much harder depends only on how far you are banked — not on how fast you are going.",
+    analogies: [
+      {
+        picture:
+          "A motorcycle leaning through a bend. The further it leans, the harder the road has to push back through the tyres, and the heavier you feel in the seat.",
+        maps: [
+          ["Angle of bank", "how far the bike is leaned over"],
+          ["Total lift", "how hard the road pushes back through the tyres"],
+          ["Weight", "your actual weight, unchanged throughout"],
+          ["Load factor", "how heavy you feel in the seat"],
+        ],
+        breaksDown:
+          "A bike can slow down to reduce the load. A wing in a level turn cannot — at 60° of bank it is 2 G whatever the airspeed.",
+      },
+    ],
+    chain: [
+      { label: "Increase the angle of bank", trend: "up" },
+      {
+        label: "Lift now has to do two jobs at once",
+        trend: "none",
+        because:
+          "Part of it holds you up; the rest pulls you round the turn. Only the vertical part fights weight.",
+      },
+      {
+        label: "Total lift must rise to keep the vertical part equal to weight",
+        trend: "up",
+        because: "n = 1 ÷ cos φ. At 60° of bank the cosine is one half, so lift must be twice weight.",
+      },
+      {
+        label: "Load factor rises — and past 45° it rises fast",
+        trend: "up",
+        because: "The cosine curve steepens, so each extra degree of bank costs more than the last.",
+      },
+      {
+        label: "Stall speed rises with the square root of load factor",
+        trend: "up",
+        terminal: true,
+        because: "2 G raises the stall speed by about 40%. The wing did not change; the demand on it did.",
+      },
+    ],
+    manipulate: {
+      labId: "lab-vn",
+      driver: "Angle of bank",
+      proves: "Bank angle alone sets the G. Airspeed does not appear in the relationship at all.",
+    },
+    wrongModel: {
+      brainWants:
+        "Pulling harder or flying faster is what makes the G, so a fast turn must load the aircraft more than a slow one at the same bank.",
+      actually:
+        "In a level, constant-airspeed turn load factor depends ONLY on bank angle. 60° of bank is 2 G in a trainer and 2 G in a fighter.",
+      whyItsTempting:
+        "Speed is the thing you feel changing, and nearly every other performance number in the course really does depend on it. This one does not.",
+    },
+    deeper:
+      "Load factor is lift divided by weight — a ratio, which is why it carries no units and why it is the same number for every aircraft at a given bank. L/D is also a ratio and measures something else entirely; confusing the two is the trap the exam actually sets.",
+  },
 ];

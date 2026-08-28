@@ -11,8 +11,11 @@ import type { ClickEntry } from "@/lib/make-it-click";
 import type { ConceptId } from "@/lib/types";
 import { CLICK as AERO } from "./aero/click";
 import { CLICK as ENGINES } from "./engines/click";
+import { CLICK as FRR } from "./frr/click";
+import { CLICK as NAV } from "./nav/click";
+import { CLICK as WEATHER } from "./weather/click";
 
-const ALL: ClickEntry[] = [...AERO, ...ENGINES];
+const ALL: ClickEntry[] = [...AERO, ...ENGINES, ...FRR, ...NAV, ...WEATHER];
 
 export const CLICK_BY_CONCEPT: Map<ConceptId, ClickEntry> = new Map(
   ALL.map((e) => [e.conceptId, e]),

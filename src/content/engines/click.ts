@@ -88,4 +88,66 @@ export const CLICK: ClickEntry[] = [
       "This is why the two apparently opposite causes — losing inlet airflow and gaining RPM — produce the same failure. They are not two mechanisms. They are two ways of swinging the same resultant vector past the same critical angle.",
     prerequisites: ["e-compressor-relative-wind"],
   },
+
+  /* ================================================================ */
+  {
+    conceptId: "e-altitude-thrust",
+    intuition:
+      "Climbing does two opposite things to the engine. The air gets colder, which helps it. The air gets thinner, which hurts it. Thinner wins, so thrust falls the whole way up — and above about 36,000 feet the helping half stops entirely.",
+    analogies: [
+      {
+        picture:
+          "A tug of war where one side was always stronger. Cold air is pulling for you and thin air is pulling against you, and thin air wins. Then at 36,000 feet your side simply lets go of the rope.",
+        maps: [
+          ["Falling temperature — denser air, better combustion", "the side pulling for you"],
+          ["Falling pressure — less air mass per second", "the stronger side pulling against you"],
+          ["Net thrust loss with altitude", "the rope moving steadily the wrong way"],
+          ["The tropopause, about 36,000 ft", "your side letting go of the rope"],
+        ],
+        breaksDown:
+          "In a tug of war the rope can come back. Thrust does not recover with further climb — above the tropopause it only falls faster.",
+      },
+    ],
+    chain: [
+      { label: "Climb", trend: "up" },
+      {
+        label: "Pressure falls and temperature falls together",
+        trend: "down",
+        because: "Both are properties of the standard atmosphere, and both change on the way up.",
+      },
+      {
+        label: "Colder air helps thrust; thinner air hurts it",
+        trend: "none",
+        because:
+          "Denser air burns better, but there is simply less mass flowing through the engine each second.",
+      },
+      {
+        label: "The pressure loss outweighs the temperature gain, so thrust falls",
+        trend: "down",
+        because: "This is the whole answer to the exam question: pressure wins.",
+      },
+      {
+        label: "Above 36,000 ft temperature stabilises and thrust falls faster",
+        trend: "down",
+        terminal: true,
+        because:
+          "The offsetting effect has stopped, so nothing works against the pressure loss any more.",
+      },
+    ],
+    manipulate: {
+      labId: "elab-thrust",
+      driver: "Altitude",
+      proves: "Move altitude alone. Watch thrust fall, then fall harder past the tropopause.",
+    },
+    wrongModel: {
+      brainWants:
+        "Cold air is denser and engines like cold air, so climbing into colder air should help thrust.",
+      actually:
+        "Both things happen at once and the pressure drop is the larger effect. Thrust decreases with altitude, and above 36,000 ft it decreases more rapidly because temperature has stopped falling.",
+      whyItsTempting:
+        "The cold-air-is-good rule is true on the ground — a cold day really does give better performance. It fails on the climb because altitude changes pressure as well, and a cold day at sea level does not.",
+    },
+    deeper:
+      "36,000 feet matters because it is the base of the tropopause, where temperature stops falling with height. Almost every altitude answer in this course keys off that one fact.",
+  },
 ];
