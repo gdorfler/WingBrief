@@ -150,4 +150,103 @@ export const CLICK: ClickEntry[] = [
     deeper:
       "36,000 feet matters because it is the base of the tropopause, where temperature stops falling with height. Almost every altitude answer in this course keys off that one fact.",
   },
+
+  /* ================================================================ */
+  {
+    conceptId: "e-rpm-thrust",
+    intuition:
+      "Thrust does not grow evenly as you push the throttle up. Down low, a big handful of throttle buys you almost nothing; up near the top, the same handful buys you a lot. Most of an engine's thrust lives in the top of the RPM range, not spread evenly across it.",
+    analogies: [
+      {
+        picture:
+          "Wringing out a soaking wet towel. The first twists barely squeeze out any water because the towel is still loosely bunched — but once you have taken up the slack, each additional twist wrings out noticeably more water per turn.",
+        maps: [
+          ["Low RPM range", "the first twists, taking up slack"],
+          ["High RPM range", "the twists once the towel is already tight"],
+          ["A given throttle increase producing more thrust at high RPM", "a given twist wringing out more water once the towel is tight"],
+        ],
+        breaksDown:
+          "A towel eventually runs out of water to wring. The thrust curve keeps climbing all the way to max RPM — the rate of increase only ever gets steeper, it never reverses.",
+      },
+    ],
+    chain: [
+      { label: "Throttle moved up by a fixed amount, anywhere in the range", trend: "none" },
+      {
+        label: "At low RPM the compressor is turning slowly and inefficiently, so the extra fuel buys little extra airflow",
+        trend: "none",
+        because: "A slow compressor cannot take advantage of the added fuel — most of the engine's efficiency depends on RPM itself.",
+      },
+      {
+        label: "At high RPM the same fuel increase meets a compressor already moving fast and efficiently",
+        trend: "up",
+        because: "Efficiency compounds with speed, so the compressor turns the same extra fuel into much more added airflow.",
+      },
+      {
+        label: "Thrust output for that same throttle movement is far larger at high RPM",
+        trend: "up",
+        terminal: true,
+        because: "Which is why the top of the RPM range is where the power lives, and why small throttle movements up there demand a light touch.",
+      },
+    ],
+    wrongModel: {
+      brainWants:
+        "Thrust should track the throttle in a straight line — halfway on the throttle should mean roughly half the thrust.",
+      actually:
+        "The curve is bowed, not straight. Most of the thrust is packed into the top of the RPM range, so identical throttle movements produce very different results depending on where you already are.",
+      whyItsTempting:
+        "Most things you operate with a lever — volume knobs, a car's gas pedal at low speed — feel roughly linear, so a throttle is easy to assume behaves the same way until you actually fly one.",
+    },
+    deeper:
+      "This is also why small throttle corrections near max RPM move thrust — and therefore airspeed — more than the same-sized correction would down low. Precise power control means using smaller inputs the higher up the range you already are.",
+    prerequisites: ["e-compressor-purpose"],
+  },
+
+  /* ================================================================ */
+  {
+    conceptId: "e-turbine-purpose",
+    intuition:
+      "The turbine has one job that matters for keeping the engine alive: spend most of the energy in the hot gas turning the compressor and accessories. Whatever is left over after that is what actually leaves out the back as thrust.",
+    analogies: [
+      {
+        picture:
+          "An old mill wheel on a river that grinds grain first, then lets whatever flow is left over continue downstream to also turn a smaller wheel at the farm beyond it. The mill takes its share; the farm gets only what's left over.",
+        maps: [
+          ["The turbine extracting energy from the hot gas", "the mill wheel taking energy from the flowing river"],
+          ["75% of that energy driving the compressor and accessory gearbox", "most of the water's force turning the millstone"],
+          ["The remaining 25% continuing on as thrust", "the leftover flow continuing downstream to the smaller wheel"],
+        ],
+        breaksDown:
+          "The mill takes a fixed share by design, at every flow rate — which is the whole point: the turbine is not a leftover-thrust generator that occasionally helps the compressor. It exists FOR the compressor, and thrust is what happens to be left when that job is done.",
+      },
+    ],
+    chain: [
+      { label: "Hot, high-energy gas leaves the combustion chamber", trend: "none" },
+      {
+        label: "The turbine extracts roughly 75% of that energy as the gas passes through",
+        trend: "down",
+        because: "The turbine's blades are shaped to pull the maximum energy the compressor and gearbox actually need.",
+      },
+      {
+        label: "That extracted energy drives the compressor and accessory gearbox",
+        trend: "none",
+        because: "This is the turbine's entire reason for existing — without it, the compressor has nothing spinning it.",
+      },
+      {
+        label: "The remaining ~25% of the gas's energy continues rearward as thrust",
+        trend: "none",
+        terminal: true,
+        because: "That leftover is what accelerates out the nozzle — a byproduct of the split, not the turbine's main assignment.",
+      },
+    ],
+    wrongModel: {
+      brainWants:
+        "The turbine's job is to make thrust — it's part of the engine, and the engine makes thrust, so the turbine must be a thrust-making part.",
+      actually:
+        "The turbine's sole purpose is turning the compressor and accessory gearbox. Thrust comes from whatever gas energy the turbine did NOT take — a separate 25%, further downstream, that the turbine had nothing to do with producing.",
+      whyItsTempting:
+        "There's a genuinely separate 25/75 split just one section earlier: in the combustor, 25% of the AIR is primary air for combustion and 75% is secondary air for cooling and dilution. Two different 25/75 splits, back to back, about two different things, is a made-to-be-confused trap.",
+    },
+    deeper:
+      "Notice the two splits run in opposite proportions: 25% of the AIR does the combusting, but 75% of the resulting ENERGY does the compressor-driving. Keeping straight which stage and which quantity a 25 or 75 belongs to is the entire difficulty here — the physics itself is simple once the two are not tangled together.",
+  },
 ];

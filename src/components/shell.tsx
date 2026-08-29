@@ -19,6 +19,7 @@ import {
   FlaskConical,
   Home,
   Layers,
+  Lightbulb,
   Repeat,
   RotateCcw,
   Snowflake,
@@ -72,6 +73,7 @@ const DESK_NAV: NavItem[] = [
 
 const SECONDARY: NavItem[] = [
   { href: "/explainers", label: "Explainers", icon: Sparkles },
+  { href: "/click", label: "Make it click", icon: Lightbulb },
   { href: "/know-cold", label: "Know Cold", icon: Snowflake },
   { href: "/profile", label: "Profile", icon: User },
 ];
@@ -81,6 +83,7 @@ const DESK_SECONDARY: NavItem[] = [
   { href: "/review", label: "Review", icon: RotateCcw },
   { href: "/lab", label: "", icon: FlaskConical },
   { href: "/explainers", label: "Explainers", icon: Sparkles },
+  { href: "/click", label: "Make it click", icon: Lightbulb },
   { href: "/know-cold", label: "Know Cold", icon: Snowflake },
   { href: "/profile", label: "Profile", icon: User },
 ];

@@ -407,4 +407,115 @@ export const CLICK: ClickEntry[] = [
     deeper:
       "Load factor is lift divided by weight — a ratio, which is why it carries no units and why it is the same number for every aircraft at a given bank. L/D is also a ratio and measures something else entirely; confusing the two is the trap the exam actually sets.",
   },
+
+  /* ================================================================ */
+  {
+    conceptId: "c-ground-effect",
+    intuition:
+      "Close to the ground, the wing cannot push air downward as freely — the runway is in the way. With less downwash forming, the lift vector tilts less far backward, so the same wing gives you a little more lift and noticeably less drag, but only within about one wingspan of height.",
+    analogies: [
+      {
+        picture:
+          "Clapping your hands normally sends a puff of air outward in every direction. Clap them an inch above a tabletop instead, and you feel a sharper slap against your palms — the table did not blow anything back at you; it just blocked the air under your hands from squirting downward and away, so more of the impact stayed between your palms.",
+        maps: [
+          ["The wing pushing air downward (downwash)", "your clap pushing air downward and outward"],
+          ["The ground blocking that downward path, within one wingspan", "the tabletop blocking the air under your palms"],
+          ["Downwash that cannot fully form", "air squirting out sideways instead of down, because down is blocked"],
+          ["More effective lift, less induced drag", "the sharper slap you feel"],
+        ],
+        breaksDown:
+          "Move your hands a few feet above the table and the effect vanishes instantly, just like ground effect — it exists only within roughly one wingspan, not partway down the runway.",
+      },
+    ],
+    chain: [
+      { label: "The wing descends to within one wingspan of the ground", trend: "down" },
+      {
+        label: "The ground blocks the downwash from fully forming",
+        trend: "down",
+        because: "Downwash needs room to develop behind and below the wing, and the runway is in the way.",
+      },
+      {
+        label: "Less downwash means the total lift vector tilts less far backward",
+        trend: "down",
+        because: "Induced drag is just the backward-tilted slice of the lift vector — less tilt is less drag.",
+      },
+      {
+        label: "Induced drag drops sharply — up to 60% right at touchdown or liftoff",
+        trend: "down",
+        because: "At one-quarter wingspan the reduction is already 23.5%; it keeps growing the closer you get.",
+      },
+      {
+        label: "Effective lift rises while induced drag falls",
+        trend: "up",
+        terminal: true,
+        because: "The aircraft floats — which is exactly why it needs to be flown off firmly, not allowed to mush along just above the runway.",
+      },
+    ],
+    wrongModel: {
+      brainWants:
+        "Ground effect is a cushion of compressed air between the wing and the runway holding the aircraft up, like a hovercraft.",
+      actually:
+        "It works on downwash, not pressure. The ground blocks the wingtip vortices and downwash from forming fully, so the lift vector tilts less far backward — induced drag falls and effective lift rises, without any new air pressure pushing up from below.",
+      whyItsTempting:
+        "You feel it as a cushion — the aircraft floats and resists touching down — and 'compressed air holding me up' matches that sensation far better than 'my own trailing vortices got interrupted.'",
+    },
+    deeper:
+      "This is also why leaving ground effect is a real hazard: climb back out of that one-wingspan layer and the downwash — and the induced drag it costs — returns immediately, while you may not yet have enough airspeed for the lift to return with it. That is the physics behind rotating too early and settling back onto the runway.",
+    prerequisites: ["c-induced-drag"],
+  },
+
+  /* ================================================================ */
+  {
+    conceptId: "c-p-factor",
+    intuition:
+      "Each propeller blade is its own small wing, and at high power and low airspeed the whole disc is tilted nose-up into the oncoming air. That tilt means the down-swinging blade on the right bites the air at a steeper angle than the blade coming up on the left — a steeper angle makes more thrust, and that lopsided pull yaws the nose left.",
+    analogies: [
+      {
+        picture:
+          "An old paddle-wheel steamboat with its bow tilted up. On every turn of the wheel, the blade going down on one side bites deeper into the water than the blade lifting out on the other side — so that side of the wheel pulls harder, and the boat curves away from it.",
+        maps: [
+          ["The propeller disc tilted up relative to the oncoming air, at high AOA", "the paddle wheel's axle, tilted bow-up in the water"],
+          ["The down-swinging blade on the right, biting the air at a steeper angle", "the paddle blade entering the water on its downstroke"],
+          ["That blade's extra thrust", "that blade's extra push against the water"],
+          ["The nose yawing left, away from the harder-pulling side", "the boat curving away from the stronger-pulling side of the wheel"],
+        ],
+        breaksDown:
+          "A paddle wheel is tilted by the water, permanently. A prop disc is only tilted by AOA — which is why P-factor is a high-power, low-airspeed phenomenon that nearly disappears on its own at cruise.",
+      },
+    ],
+    chain: [
+      { label: "High power is set at low airspeed — high AOA", trend: "none" },
+      {
+        label: "The relative wind arrives from below the propeller's thrust line",
+        trend: "none",
+        because: "At high AOA the whole aircraft — and the prop disc bolted to it — is tilted nose-up into the oncoming air.",
+      },
+      {
+        label: "The down-going blade on the right meets that wind at a steeper angle than the up-going blade on the left",
+        trend: "up",
+        because: "One blade is descending into the tilted flow, the other is climbing out of it — same disc, opposite halves of the same rotation.",
+      },
+      {
+        label: "The right blade's steeper angle makes more thrust than the left blade's shallower one",
+        trend: "up",
+        because: "More blade AOA means more blade lift, up to the blade's own limit — the exact same rule as a wing.",
+      },
+      {
+        label: "The unequal pull yaws the nose LEFT, away from the stronger side",
+        trend: "none",
+        terminal: true,
+        because: "More thrust on the right pulls that side of the disc — and the nose — around to the left.",
+      },
+    ],
+    wrongModel: {
+      brainWants:
+        "More power should just mean more thrust straight ahead — any yaw must be something separate, like torque, not really about the propeller itself.",
+      actually:
+        "It is a paired-blade AOA problem, and it needs BOTH ingredients at once: high power AND low airspeed. At cruise the designers align the thrust line close enough to the relative wind that P-factor nearly vanishes, however much power you carry.",
+      whyItsTempting:
+        "The word 'thrust' points forward in your mind, so an asymmetry inside the disc that never shows up on the airspeed indicator is easy to miss — you only feel its result, a yaw you correct with rudder without ever seeing the cause.",
+    },
+    deeper:
+      "P-factor is one of four separate left-turning tendencies — P-factor, torque, gyroscopic precession, and spiraling slipstream — that all happen to push the nose the same direction on a typical right-hand-rotating prop. That is why right rudder becomes a reflex at high power and low speed, without most students ever needing to say which of the four they are countering at a given moment.",
+  },
 ];

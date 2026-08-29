@@ -67,4 +67,101 @@ export const CLICK: ClickEntry[] = [
       "Every one of these conversions is the same single question asked three ways: which north is this number referenced to, and which one do I need it in? Answer that first and the sign takes care of itself, which is faster under time pressure than recalling which version of the rhyme applies.",
     prerequisites: ["nav-measuring-direction"],
   },
+
+  /* ================================================================ */
+  {
+    conceptId: "nav-crab-drift",
+    intuition:
+      "Drift and crab describe the exact same angle, measured from opposite ends of the problem. Drift is what the wind does TO you with no correction; crab is what YOU do to cancel it back out — and when the correction is exactly right, the two numbers are identical.",
+    analogies: [
+      {
+        picture:
+          "Swimming straight across a river with a current. Aim your body straight at the far dock and the current sweeps you downstream past it — that sideways slide is drift. Aim upstream at an angle instead, and you land exactly at the dock — that upstream aim is your crab, and it is the same size as the drift it cancels.",
+        maps: [
+          ["Track — the path you actually want over the ground", "the straight line to the dock"],
+          ["Drift — how far the wind would push you off track, uncorrected", "how far the current sweeps you downstream if you swim straight at the dock"],
+          ["Heading — the direction you actually point", "the angle you aim your body upstream"],
+          ["Crab — the correction angle you add", "how far upstream of the dock you had to aim"],
+        ],
+        breaksDown:
+          "A swimmer can feel the current directly. A pilot has no such sense — heading and track only reveal the wind indirectly, through instruments and elapsed time, which is the entire reason a computed correction matters.",
+      },
+    ],
+    chain: [
+      { label: "Wind blows across your intended track", trend: "none" },
+      {
+        label: "Flown with no correction, the wind pushes the aircraft off track by the drift angle",
+        trend: "none",
+        because: "The aircraft is carried along with the air mass exactly as a boat is carried by a current.",
+      },
+      {
+        label: "Turn the nose into the wind by that same angle — now you are crabbed",
+        trend: "none",
+        because: "You are deliberately aiming off your desired path to cancel the sideways push before it happens.",
+      },
+      {
+        label: "Drift and crab exactly cancel, and the aircraft tracks the intended course over the ground",
+        trend: "none",
+        terminal: true,
+        because: "A right crosswind drifts you left, so the correction is a crab to the right — same angle, opposite direction, netting to zero sideways motion.",
+      },
+    ],
+    wrongModel: {
+      brainWants:
+        "Crab and drift sound like two different problems — drift is the mistake and crab is the fix, so they must be two separate numbers to solve for.",
+      actually:
+        "They are the same angle. Once you know the drift a crosswind would cause, you already know exactly how much crab cancels it — there is no separate calculation, only a sign flip.",
+      whyItsTempting:
+        "The two words show up in different parts of a nav problem — drift when analyzing the wind, crab when setting the heading — so it is easy to treat solving one as a separate step from solving the other, rather than seeing they are the same number stated twice.",
+    },
+    deeper:
+      "This equivalence is what makes the ten percent rule work as a shortcut: since crab exactly cancels drift, you never need to separately estimate how far the wind would blow you before correcting for it — the crab angle IS the answer to both questions at once.",
+    prerequisites: ["nav-track"],
+  },
+
+  /* ================================================================ */
+  {
+    conceptId: "nav-zulu-conversion",
+    intuition:
+      "Zone description is a signed number for the gap between your local clock and Zulu. The formula runs GMT = LMT minus that number, which sounds like plain subtraction — until the zone description itself is negative, and subtracting a negative flips into addition.",
+    analogies: [
+      {
+        picture:
+          "Think of zone description as a bill. If the bill is $6, subtracting it lowers your balance by $6. But if the bill is actually a $6 CREDIT — marked as −$6 — then 'subtracting' it does not lower your balance. It raises it by $6, because subtracting a negative amount adds.",
+        maps: [
+          ["Zone description, ZD", "the amount on the bill"],
+          ["GMT = LMT − ZD", "your balance after 'paying' the bill"],
+          ["A negative zone description", "a bill that's actually a credit, marked negative"],
+          ["Subtracting a negative ZD, so GMT ends up LATER than LMT", "subtracting a credit, so your balance goes UP instead of down"],
+        ],
+        breaksDown:
+          "Money never flips sign on its own. A zone description does, constantly, because it is defined relative to Greenwich in both directions — which is exactly why the sign has to be tracked explicitly rather than assumed.",
+      },
+    ],
+    chain: [
+      { label: "Read the zone description off the chart or table, sign and all", trend: "none" },
+      {
+        label: "Plug it into GMT = LMT − ZD exactly as signed, without treating it as always-positive",
+        trend: "none",
+        because: "The formula already has the subtraction built in — a negative ZD does the sign-flip work for you.",
+      },
+      {
+        label: "A negative ZD makes GMT come out LATER than LMT, not earlier",
+        trend: "up",
+        terminal: true,
+        because: "Double-negative arithmetic, not a special rule — subtracting a negative six hours is the same as adding six hours.",
+      },
+    ],
+    wrongModel: {
+      brainWants:
+        "Zone description is a hard offset — subtract it and get Zulu, full stop, regardless of the sign printed in front of it.",
+      actually:
+        "A zone description of −6 means GMT ends up SIX HOURS LATER than local, because GMT = LMT − (−6) = LMT + 6. Treating every zone description as something you just subtract, sign unread, gets exactly the wrong answer this problem is designed to catch.",
+      whyItsTempting:
+        "Every other subtraction in nav work makes the answer smaller. This is the one case where the number in front of the minus sign can itself be negative, and that single flipped sign is easy to skim past under time pressure.",
+    },
+    deeper:
+      "The same relationship, LMT = GMT + ZD, runs in reverse for converting a Zulu time back to local — worth deriving live from the one formula rather than memorizing twice.",
+    prerequisites: ["nav-zone-description"],
+  },
 ];

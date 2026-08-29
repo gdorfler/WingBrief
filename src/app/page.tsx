@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
   ChevronRight,
   ClipboardCheck,
   Clock,
+  Lightbulb,
   Play,
   Sparkles,
   TrendingUp,
@@ -34,6 +35,9 @@ import { useCountUp } from "@/components/reward";
 import { ClaimsHero } from "@/components/claims-hero";
 import { claimsFor, evaluateClaims, summariseClaims } from "@/lib/claims";
 import { NavDeskDashboard } from "@/components/nav/desk-dashboard";
+import { clickListingsFor } from "@/content/click";
+import { MakeItClickSheet } from "@/components/click/sheet";
+import type { ConceptId } from "@/lib/types";
 
 const UNIT_TONE = {
   brand: "brand",
@@ -97,6 +101,22 @@ function StandardHome() {
     () => (claims.length ? summariseClaims(evaluateClaims(content, state.attempts, claims)) : null),
     [claims, content, state.attempts],
   );
+
+  /*
+   * Featured Make It Click concepts: whatever is already flagged as weak takes
+   * priority, since that is exactly where a different explanation is worth
+   * the most right now. Falls back to the first few the course has so the
+   * section is never empty once a course has any coverage at all.
+   */
+  const clickListings = useMemo(() => clickListingsFor(content), [content]);
+  const [openClickId, setOpenClickId] = useState<ConceptId | null>(null);
+  const featuredClicks = useMemo(() => {
+    const weakIds = new Set(weak.map((w) => w.concept.id));
+    const prioritized = clickListings.filter((l) => weakIds.has(l.concept.id));
+    const rest = clickListings.filter((l) => !weakIds.has(l.concept.id));
+    return [...prioritized, ...rest].slice(0, 3);
+  }, [clickListings, weak]);
+  const openClick = clickListings.find((l) => l.concept.id === openClickId) ?? null;
 
   return (
     <div className="space-y-6">
@@ -349,6 +369,44 @@ function StandardHome() {
             )}
           </section>
 
+          {/* ---------------- Make it click ---------------- */}
+          {featuredClicks.length > 0 && (
+            <section>
+              <SectionHeading
+                eyebrow="A different explanation, not a louder one"
+                title="Make it click"
+                action={
+                  <Link href="/click" className="text-[13px] font-semibold text-brand hover:underline">
+                    All {clickListings.length}
+                  </Link>
+                }
+              />
+              <ul className="space-y-2">
+                {featuredClicks.map(({ concept, resolved }) => (
+                  <li key={concept.id}>
+                    <button
+                      type="button"
+                      onClick={() => setOpenClickId(concept.id)}
+                      className="group flex w-full items-center gap-3 rounded-xl border border-line bg-surface px-3.5 py-3 text-left transition-all hover:border-gold/45"
+                    >
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-gold-soft)] text-gold">
+                        <Lightbulb size={15} />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[13.5px] font-semibold text-navy">{concept.name}</p>
+                        <p className="truncate text-[11.5px] text-navy-faint">{resolved.intuition}</p>
+                      </div>
+                      <ArrowRight
+                        size={15}
+                        className="shrink-0 text-navy-faint transition-transform group-hover:translate-x-0.5 group-hover:text-brand"
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           {/* ---------------- Explainers ---------------- */}
           <section>
             <SectionHeading
@@ -417,6 +475,10 @@ function StandardHome() {
           )}
         </div>
       </div>
+
+      {openClick && (
+        <MakeItClickSheet click={openClick.resolved} onClose={() => setOpenClickId(null)} />
+      )}
     </div>
   );
 }
