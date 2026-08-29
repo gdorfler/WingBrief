@@ -22,7 +22,6 @@ import {
   Lightbulb,
   Repeat,
   RotateCcw,
-  Snowflake,
   Sparkles,
   Target,
   User,
@@ -49,9 +48,6 @@ const NAV: NavItem[] = [
   { href: "/", label: "Home", icon: Home, exact: true },
   { href: "/lessons", label: "Lessons", icon: Layers },
   { href: "/review", label: "Review", icon: RotateCcw },
-  // Label filled in per course: "Sim Lab" for the physical courses,
-  // "Scenario Lab" for Flight Rules.
-  { href: "/lab", label: "", icon: FlaskConical },
   { href: "/exam", label: "Exam", icon: ClipboardCheck },
 ];
 
@@ -74,7 +70,6 @@ const DESK_NAV: NavItem[] = [
 const SECONDARY: NavItem[] = [
   { href: "/explainers", label: "Explainers", icon: Sparkles },
   { href: "/click", label: "Make it click", icon: Lightbulb },
-  { href: "/know-cold", label: "Know Cold", icon: Snowflake },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
@@ -84,7 +79,6 @@ const DESK_SECONDARY: NavItem[] = [
   { href: "/lab", label: "", icon: FlaskConical },
   { href: "/explainers", label: "Explainers", icon: Sparkles },
   { href: "/click", label: "Make it click", icon: Lightbulb },
-  { href: "/know-cold", label: "Know Cold", icon: Snowflake },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
@@ -323,7 +317,7 @@ function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 backdrop-blur-md lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <ul className="grid grid-cols-5">
+      <ul className={cn("grid", primary.length === 5 ? "grid-cols-5" : "grid-cols-4")}>
         {primary.map((item) => (
           <BottomNavItem key={item.href} {...item} label={item.label || meta.labLabel} />
         ))}

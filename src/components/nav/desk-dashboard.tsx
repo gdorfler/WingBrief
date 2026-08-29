@@ -146,7 +146,6 @@ export function NavDeskDashboard() {
           {/* ---------------- Today's nav plan ---------------- */}
           <section>
             <SectionHeading
-              eyebrow="Built from your weakest skills"
               title="Today's nav plan"
               action={
                 <Pill tone="brand">
@@ -193,7 +192,6 @@ export function NavDeskDashboard() {
           {/* ---------------- Diagnostic breakdown ---------------- */}
           <section>
             <SectionHeading
-              eyebrow="Where the marks are going"
               title="By kind of work"
               action={
                 <Link href="/profile" className="text-[13px] font-semibold text-brand hover:underline">
@@ -284,7 +282,7 @@ export function NavDeskDashboard() {
 
           {errors.length > 0 && (
             <section>
-              <SectionHeading eyebrow="What keeps going wrong" title="Common errors" />
+              <SectionHeading title="Common errors" />
               <div className="space-y-2">
                 {errors.map((e) => (
                   <Card key={e.kind} className="border-caution/25 bg-caution-soft/40">
@@ -300,7 +298,7 @@ export function NavDeskDashboard() {
           )}
 
           <section>
-            <SectionHeading eyebrow="Quick start" title="Straight to work" />
+            <SectionHeading title="Quick start" />
             <div className="grid grid-cols-2 gap-2">
               <QuickTile href="/nav-desk" icon={Compass} label="Nav Desk" hint="Every tool" />
               <QuickTile href="/drills" icon={Repeat} label="Drills" hint={`${content.drills?.length ?? 0} sets`} />
@@ -310,7 +308,7 @@ export function NavDeskDashboard() {
           </section>
 
           <section>
-            <SectionHeading eyebrow="The route" title="Course progress" />
+            <SectionHeading title="Course progress" />
             <Card>
               <div className="flex items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand">
