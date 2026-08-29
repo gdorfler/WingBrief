@@ -43,9 +43,8 @@ export default function ClickIndexPage() {
   return (
     <>
       <PageHeader
-        eyebrow="A different explanation, not a louder one"
         title="Make it click"
-        subtitle="For the concepts where a definition alone hasn't worked: a plain-language intuition, a physical analogy, and the specific wrong idea most people default to before this clicks."
+        subtitle="A different explanation for concepts a definition alone hasn't fixed."
         actions={
           <Pill tone="brand">
             <Lightbulb size={12} /> {listings.length} available
