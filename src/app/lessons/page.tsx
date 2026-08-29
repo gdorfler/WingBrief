@@ -5,7 +5,6 @@ import { lessonStates, unitReadiness } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { LessonMap } from "@/components/lesson-map";
-import { NavRouteMap } from "@/components/nav/route-map";
 import { ChipRail, PageHeader, Pill } from "@/components/ui";
 import { PlacementBanner } from "@/components/placement-banner";
 
@@ -52,26 +51,12 @@ export default function LessonsPage() {
 
       <PlacementBanner />
 
-      {/*
-       * Navigation progresses across a chart rather than along a path. Same
-       * data, same states, a different drawing — because a course whose
-       * subject is plotting should look like something plotted.
-       */}
-      {meta.layout === "desk" ? (
-        <NavRouteMap
-          units={content.units}
-          lessons={content.lessons}
-          states={states}
-          readinessByUnit={readinessByUnit}
-        />
-      ) : (
-        <LessonMap
-          units={content.units}
-          lessons={content.lessons}
-          states={states}
-          readinessByUnit={readinessByUnit}
-        />
-      )}
+      <LessonMap
+        units={content.units}
+        lessons={content.lessons}
+        states={states}
+        readinessByUnit={readinessByUnit}
+      />
     </>
   );
 }

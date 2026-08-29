@@ -266,6 +266,246 @@ export function LessonIcon({ name, className }: { name: string; className?: stri
         <path d="M13 11 L15 13 L20 8" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
       </>
     ),
+    /* ---------------- Engines ---------------- */
+    "eng-pressure": (
+      <>
+        <path d="M6 24 V17" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M14 24 V11" strokeWidth={2.2} strokeLinecap="round" opacity={0.6} />
+        <path d="M6 17 L14 11" strokeWidth={1.4} strokeDasharray="2 2" opacity={0.5} />
+        <path d="M23 24 V6" strokeWidth={2.6} strokeLinecap="round" />
+        <path d="M14 11 L23 6" strokeWidth={1.4} strokeDasharray="2 2" opacity={0.5} />
+      </>
+    ),
+    "eng-duct": (
+      <>
+        <path d="M4 9 C13 9 15 15 21 15" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 23 C13 23 15 17 21 17" strokeWidth={2} strokeLinecap="round" />
+        <path d="M23 12 L28 16 L23 20" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" opacity={0.6} />
+      </>
+    ),
+    "eng-supersonic": (
+      <>
+        <path d="M4 15 C10 15 12 9 21 9" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 17 C10 17 12 23 21 23" strokeWidth={2} strokeLinecap="round" />
+        <path d="M23 12 L28 16 L23 20" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" opacity={0.6} />
+      </>
+    ),
+    "eng-core": (
+      <>
+        <path d="M4 11 H12 V21 H4 Z" strokeWidth={2} />
+        <path d="M12 8 H20 V24 H12 Z" strokeWidth={2} />
+        <path d="M20 11 H28 V21 H20 Z" strokeWidth={2} />
+      </>
+    ),
+    "eng-thrust": (
+      <>
+        <path d="M4 10 L18 10 L24 16 L18 22 L4 22 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M22 16 H28" strokeWidth={2.4} strokeLinecap="round" />
+        <path d="M25 12.5 L29 16 L25 19.5" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "eng-density": (
+      <>
+        <path d="M16 27 V6" strokeWidth={1.8} strokeLinecap="round" />
+        <path d="M12 10 L16 5 L20 10" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="9" cy="24" r="1.6" fill="currentColor" stroke="none" />
+        <circle cx="14.5" cy="24" r="1.6" fill="currentColor" stroke="none" />
+        <circle cx="20" cy="24" r="1.6" fill="currentColor" stroke="none" />
+        <circle cx="25.5" cy="24" r="1.6" fill="currentColor" stroke="none" />
+        <circle cx="11" cy="16.5" r="1.3" fill="currentColor" stroke="none" opacity={0.6} />
+        <circle cx="18" cy="15.5" r="1.3" fill="currentColor" stroke="none" opacity={0.6} />
+        <circle cx="24" cy="17" r="1.3" fill="currentColor" stroke="none" opacity={0.6} />
+      </>
+    ),
+    "eng-rpm": (
+      <>
+        <circle cx="16" cy="16" r="2.2" fill="currentColor" stroke="none" />
+        <path d="M16 16 C16 9 22 7 25 10" strokeWidth={2} strokeLinecap="round" />
+        <path d="M16 16 C10 18 7 24 11 27" strokeWidth={2} strokeLinecap="round" />
+        <path d="M16 16 C22 15 27 19 25 24" strokeWidth={2} strokeLinecap="round" />
+      </>
+    ),
+    "eng-gauge": (
+      <>
+        <circle cx="16" cy="17" r="10" strokeWidth={2} />
+        <path d="M16 17 L21 11" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M16 7 V9.4 M25 12.4 L23 13.6 M7 12.4 L9 13.6 M16 27 V24.6" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
+        <circle cx="16" cy="17" r="1.4" fill="currentColor" stroke="none" />
+      </>
+    ),
+    "eng-gauge-alert": (
+      <>
+        <circle cx="13" cy="18" r="8.5" strokeWidth={2} />
+        <path d="M13 18 L18.5 11" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M25 21 V26.4" strokeWidth={2.2} strokeLinecap="round" />
+        <circle cx="25" cy="29.4" r="1.1" fill="currentColor" stroke="none" />
+      </>
+    ),
+    "eng-inlet": (
+      <>
+        <path d="M4 8 C8 8 8 12 12 12 H28" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 24 C8 24 8 20 12 20 H28" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 8 V24" strokeWidth={2} strokeLinecap="round" opacity={0.5} />
+      </>
+    ),
+    "eng-variable": (
+      <>
+        <path d="M4 10 H24" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 22 H16 L24 15" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M16 22 V26" strokeWidth={1.6} strokeDasharray="2 2" opacity={0.5} />
+        <path d="M20 25 L25 22.5 L25 26.5 Z" fill="currentColor" stroke="none" opacity={0.6} />
+      </>
+    ),
+    "eng-centrifugal": (
+      <>
+        <circle cx="16" cy="16" r="5" strokeWidth={2} />
+        <path
+          d="M16 16 L16 6 M16 16 L24.5 11 M16 16 L24.5 21 M16 16 L16 26 M16 16 L7.5 21 M16 16 L7.5 11"
+          strokeWidth={1.6}
+          strokeLinecap="round"
+          opacity={0.65}
+        />
+      </>
+    ),
+    "eng-axial": (
+      <path
+        d="M5 8 V24 M9 9 V23 M13 10 V22 M17 11 V21 M21 12 V20 M25 13 V19"
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
+    ),
+    "eng-diffuser": (
+      <>
+        <path d="M6 14 C12 14 12 10 20 8 C24 7 26 7 28 7" strokeWidth={2} strokeLinecap="round" />
+        <path d="M6 18 C12 18 12 22 20 24 C24 25 26 25 28 25" strokeWidth={2} strokeLinecap="round" />
+        <path d="M10 15 V17 M14 14.5 V17.5 M18 14 V18" strokeWidth={1.6} strokeLinecap="round" opacity={0.55} />
+      </>
+    ),
+    "eng-burner": (
+      <>
+        <path d="M6 8 H26 V24 H6 Z" strokeWidth={2} />
+        <path d="M16 20 C13 17 13 14 16 10 C19 14 19 17 16 20 Z" strokeWidth={1.8} strokeLinejoin="round" />
+        <circle cx="9" cy="12" r="0.9" fill="currentColor" stroke="none" opacity={0.6} />
+        <circle cx="9" cy="20" r="0.9" fill="currentColor" stroke="none" opacity={0.6} />
+        <circle cx="23" cy="12" r="0.9" fill="currentColor" stroke="none" opacity={0.6} />
+        <circle cx="23" cy="20" r="0.9" fill="currentColor" stroke="none" opacity={0.6} />
+      </>
+    ),
+    "eng-chamber": (
+      <>
+        <circle cx="16" cy="16" r="10" strokeWidth={2} />
+        <circle cx="16" cy="16" r="5" strokeWidth={2} />
+        <path d="M16 6 V11 M26 16 H21 M16 26 V21 M6 16 H11" strokeWidth={1.6} strokeLinecap="round" opacity={0.5} />
+      </>
+    ),
+    "eng-turbine": (
+      <>
+        <circle cx="16" cy="16" r="4" strokeWidth={2} />
+        <path d="M16 12 L19 5 L21 6.5 L18 13 Z" strokeWidth={1.6} strokeLinejoin="round" opacity={0.75} />
+        <path d="M20 16 L27 14 L27 16.5 L20.5 18 Z" strokeWidth={1.6} strokeLinejoin="round" opacity={0.75} />
+        <path d="M16 20 L14 27 L11.5 26 L13.5 19 Z" strokeWidth={1.6} strokeLinejoin="round" opacity={0.75} />
+        <path d="M12 16 L5 18 L5 15.5 L11.5 14 Z" strokeWidth={1.6} strokeLinejoin="round" opacity={0.75} />
+      </>
+    ),
+    "eng-exhaust": (
+      <>
+        <path d="M6 11 L20 11 L26 16 L20 21 L6 21 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M26 16 L30 12 M26 16 H30 M26 16 L30 20" strokeWidth={1.8} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "eng-blade": (
+      <>
+        <path d="M6 22 C10 16 20 12 26 14 C21 19 13 23 6 22 Z" strokeWidth={2} strokeLinejoin="round" />
+        <path d="M4 24 L26 14" strokeWidth={1.4} strokeDasharray="2.4 2" opacity={0.55} />
+        <path d="M10.5 21 A8 8 0 0 1 12.5 16.2" strokeWidth={1.4} opacity={0.6} />
+      </>
+    ),
+    "eng-distortion": (
+      <>
+        <path d="M4 10 C8 6 10 14 14 10" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 16 C9 18 11 12 16 16" strokeWidth={2} strokeLinecap="round" />
+        <path d="M4 22 C7 20 12 24 15 20" strokeWidth={2} strokeLinecap="round" opacity={0.6} />
+        <path d="M19 6 V26" strokeWidth={1.8} strokeDasharray="2.4 2" opacity={0.5} />
+      </>
+    ),
+    "eng-recovery": (
+      <>
+        <path d="M8 18 A9 9 0 1 1 11 24.5" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M11 20 L11 25 L6 25" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M20 12 L23 15 L28 8" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+      </>
+    ),
+    "eng-turbofan": (
+      <>
+        <circle cx="12" cy="16" r="9" strokeWidth={2} />
+        <path d="M12 8 V24 M5 16 H19" strokeWidth={1.6} strokeLinecap="round" opacity={0.5} />
+        <circle cx="23" cy="16" r="4" strokeWidth={2} />
+        <path d="M27 16 H30" strokeWidth={2} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "eng-prop": (
+      <>
+        <circle cx="16" cy="16" r="2" fill="currentColor" stroke="none" />
+        <path d="M16 16 C13 9 17 4 22 5 C21 10 19 14 16 16 Z" strokeWidth={1.8} strokeLinejoin="round" />
+        <path d="M16 16 C19 23 15 28 10 27 C11 22 13 18 16 16 Z" strokeWidth={1.8} strokeLinejoin="round" />
+      </>
+    ),
+    "eng-piston": (
+      <>
+        <path d="M11 6 H19 V18 H11 Z" strokeWidth={2} />
+        <path d="M15 18 V22" strokeWidth={2.2} strokeLinecap="round" />
+        <circle cx="15" cy="25" r="3.4" strokeWidth={2} />
+        <path d="M15 22 L18 25" strokeWidth={1.8} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "eng-fuel": (
+      <>
+        <path d="M4 12 H12 V22 H4 Z" strokeWidth={2} />
+        <path d="M12 17 H21" strokeWidth={2} strokeLinecap="round" />
+        <circle cx="24" cy="17" r="3.4" strokeWidth={2} />
+        <path d="M24 13.6 V14.6 M24 19.4 V20.4" strokeWidth={1.6} strokeLinecap="round" opacity={0.6} />
+      </>
+    ),
+    "eng-fuel-type": (
+      <>
+        <path
+          d="M16 6 C21 14 23 18 23 21.5 A7 7 0 1 1 9 21.5 C9 18 11 14 16 6 Z"
+          strokeWidth={2}
+          strokeLinejoin="round"
+        />
+        <path d="M16 16 V24" strokeWidth={1.6} strokeDasharray="2 2" opacity={0.5} />
+      </>
+    ),
+    "eng-oil": (
+      <>
+        <path
+          d="M14 6 C18 12 20 15 20 18 A6 6 0 1 1 8 18 C8 15 10 12 14 6 Z"
+          strokeWidth={2}
+          strokeLinejoin="round"
+        />
+        <path d="M22 20 A6 6 0 1 1 20 14.5" strokeWidth={1.8} strokeLinecap="round" opacity={0.55} />
+        <path d="M19 13 L20 15 L22 13.6" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" opacity={0.55} />
+      </>
+    ),
+    "eng-start": <path d="M17 4 L9 18 H15 L13 28 L23 13 H17 Z" strokeWidth={1.8} strokeLinejoin="round" />,
+    "eng-hydraulic": (
+      <>
+        <path d="M6 12 H18 V20 H6 Z" strokeWidth={2} />
+        <path d="M12 12 V6" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M9 8 L12 4.6 L15 8" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" opacity={0.6} />
+        <path d="M20 16 H27" strokeWidth={2} strokeLinecap="round" opacity={0.5} />
+        <path d="M24 13 L27 16 L24 19" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" opacity={0.5} />
+      </>
+    ),
+    "eng-electrical": (
+      <>
+        <path d="M5 10 H27" strokeWidth={2} strokeLinecap="round" />
+        <path d="M5 22 H27" strokeWidth={2} strokeLinecap="round" opacity={0.5} />
+        <path d="M10 10 V22 M16 10 V22 M22 10 V22" strokeWidth={1.6} opacity={0.5} />
+        <path d="M17 4 L12 15 H16 L14 22 L21 11 H17 Z" strokeWidth={1.6} strokeLinejoin="round" />
+      </>
+    ),
+
     "frr-plan": (
       <>
         <rect x="7" y="4" width="18" height="24" rx="2.5" strokeWidth={2} />
