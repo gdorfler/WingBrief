@@ -3,23 +3,33 @@
 /**
  * The flight path.
  *
- * A snaking route through the six units. Node states are read from concept
+ * A snaking route through the units. Node states are read from concept
  * mastery, not just completion, so a lesson you passed but have since gone
  * weak on is visibly amber rather than quietly green.
  *
  * The connecting line is a real curve threaded through the measured centre of
  * every node rather than a straight rule behind them, so the route reads as one
  * continuous path. Segments already flown are drawn solid in the unit accent;
- * the rest stay faint, which turns the spine itself into a progress bar.
+ * the leg leading out of the current lesson gets a slow marching glow, as the
+ * one you are about to fly; everything further out stays faint.
+ *
+ * One route marker — a small wing, tinted to the unit it is over — sits at
+ * whichever lesson is current, drifting gently at rest. When a lesson has
+ * just been finished, it flies there from the lesson that earned it, measured
+ * in page coordinates so the flight can cross a unit boundary if it needs to.
+ * A one-shot session signal (see `lib/route-marker-signal`) is what tells this
+ * component that a flight — rather than a plain arrival — is called for.
  */
 
 import Link from "next/link";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Check, FastForward, Lock, Play, Star, TriangleAlert } from "lucide-react";
 import type { Lesson, Unit } from "@/lib/types";
 import type { LessonNodeState } from "@/lib/review";
+import { clearLessonCompletedSignal, peekLessonCompletedSignal } from "@/lib/route-marker-signal";
 import { LessonIcon } from "./lesson-icon";
+import { RouteMarker, WingGlyph, type RouteMarkerPoint } from "./route-marker";
 import { Pill, cn } from "./ui";
 
 const FLOWN: LessonNodeState[] = ["completed", "perfect", "mastered", "weak"];
@@ -91,6 +101,12 @@ const NODE_STYLES: Record<
   },
 };
 
+/** A measured node centre, in a coordinate space shared across the whole map. */
+interface Point {
+  x: number;
+  y: number;
+}
+
 export function LessonMap({
   units,
   lessons,
@@ -102,8 +118,151 @@ export function LessonMap({
   states: Record<string, LessonNodeState>;
   readinessByUnit: Record<string, number>;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const nodeElsRef = useRef<Record<string, HTMLElement | null>>({});
+  const registerNode = useCallback((id: string, el: HTMLElement | null) => {
+    nodeElsRef.current[id] = el;
+  }, []);
+
+  // Exactly one lesson is ever "current" — lessonStates() guarantees it.
+  const currentLessonId = useMemo(
+    () => lessons.find((l) => states[l.id] === "current")?.id ?? null,
+    [lessons, states],
+  );
+
+  // Read once, on mount: which lesson (if any) was just finished. Cleared
+  // from an effect below, so a later visit to this page never replays it.
+  const [signal] = useState(() => peekLessonCompletedSignal(lessons.map((l) => l.id)));
+  useEffect(() => {
+    if (signal) clearLessonCompletedSignal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [marker, setMarker] = useState<{
+    point: RouteMarkerPoint;
+    accent: string;
+    angle: number;
+    /** Set only on the render(s) where a flight has just been newly measured. */
+    from: RouteMarkerPoint | null;
+  } | null>(null);
+
+  const measure = useCallback(() => {
+    const container = containerRef.current;
+    if (!container || !currentLessonId) {
+      setMarker(null);
+      return;
+    }
+    const currentEl = nodeElsRef.current[currentLessonId];
+    if (!currentEl) return;
+    const box = container.getBoundingClientRect();
+    const toPoint = (el: HTMLElement): Point => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2 };
+    };
+    const point = toPoint(currentEl);
+
+    const currentLesson = lessons.find((l) => l.id === currentLessonId);
+    const currentUnit = currentLesson ? units.find((u) => u.id === currentLesson.unit) : undefined;
+    const accent = currentUnit ? UNIT_ACCENT[currentUnit.accent] : "var(--color-brand)";
+
+    // Face the direction just travelled: from the just-finished lesson when
+    // this is a fresh arrival, otherwise from whichever lesson precedes the
+    // current one in the overall course order — so an idle marker still
+    // banks the way it must have come in, rather than sitting square-on.
+    const ordered = [...lessons].sort((a, b) => a.index - b.index);
+    const precedingId = ordered[ordered.findIndex((l) => l.id === currentLessonId) - 1]?.id;
+    const originId = signal?.lessonId ?? precedingId ?? null;
+    const originEl = originId ? nodeElsRef.current[originId] : null;
+    const from = originEl ? toPoint(originEl) : null;
+    const angle = from ? angleBetween(from, point) : 180;
+
+    setMarker({ point, accent, angle, from: signal ? from : null });
+  }, [currentLessonId, lessons, signal, units]);
+
+  // Layout effect so the marker lands in the same frame the nodes do, rather
+  // than popping in a beat later.
+  useLayoutEffect(() => {
+    measure();
+  }, [measure, states]);
+
+  useEffect(() => {
+    // Node entrance transforms can still be settling a beat after mount, and
+    // a resize should always relocate the marker rather than strand it.
+    const settle = setTimeout(measure, 400);
+    window.addEventListener("resize", measure);
+    if (typeof ResizeObserver === "undefined") {
+      return () => {
+        clearTimeout(settle);
+        window.removeEventListener("resize", measure);
+      };
+    }
+    const ro = new ResizeObserver(measure);
+    if (containerRef.current) ro.observe(containerRef.current);
+    return () => {
+      clearTimeout(settle);
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure]);
+
+  /*
+   * The flight's own timing, kept entirely separate from measuring: a timer
+   * created inside an arbitrary callback (inside `measure`, say) has no
+   * effect of its own to be cleaned up by, so React's Strict Mode mount →
+   * cleanup → mount rehearsal on first mount cancels it via whatever
+   * unrelated effect happens to be tracking it, before it ever gets to fire.
+   * A timer that is itself the entire body of a `useEffect` does not have
+   * that problem: Strict Mode's rehearsal cancels it and immediately
+   * reschedules a fresh one in the same synchronous pass, and THAT one runs
+   * normally afterward.
+   *
+   * `pendingFlight` flips true the moment `measure` first reports a fresh
+   * `from`; `flightHandled` guards against the point that follows (a resize,
+   * the 400ms settle) re-arming a flight that already ran.
+   */
+  const [flying, setFlying] = useState(false);
+  const [pendingFlight, setPendingFlight] = useState(false);
+  const flightHandled = useRef(false);
+
+  useEffect(() => {
+    if (!marker?.from || flightHandled.current) return;
+    flightHandled.current = true;
+    setPendingFlight(true);
+  }, [marker?.from]);
+
+  useEffect(() => {
+    if (!pendingFlight) return;
+    const t = setTimeout(() => {
+      setFlying(true);
+      setPendingFlight(false);
+    }, 50);
+    return () => clearTimeout(t);
+  }, [pendingFlight]);
+
+  useEffect(() => {
+    if (!flying) return;
+    const t = setTimeout(() => setFlying(false), 700);
+    return () => clearTimeout(t);
+  }, [flying]);
+
+  // While priming (from just measured, not yet airborne) the marker renders
+  // at the origin with no transition; once `flying`, at the real point with
+  // one. `pendingFlight` therefore doubles as "hold at the origin."
+  const displayPoint = pendingFlight && marker?.from ? marker.from : marker?.point;
+
+  // Which unit, if any, was just finished off by the signalled lesson — the
+  // cue for that unit's header to take its one arrival bow.
+  const justArrivedUnitId = useMemo(() => {
+    if (!signal) return null;
+    const completedLesson = lessons.find((l) => l.id === signal.lessonId);
+    if (!completedLesson) return null;
+    const unitLessons = lessons.filter((l) => l.unit === completedLesson.unit);
+    const doneCount = unitLessons.filter((l) => FLOWN.includes(states[l.id])).length;
+    return doneCount === unitLessons.length ? completedLesson.unit : null;
+  }, [lessons, signal, states]);
+
   return (
-    <div className="space-y-8">
+    <div ref={containerRef} className="relative space-y-8">
       {units.map((unit) => {
         const unitLessons = lessons
           .filter((l) => l.unit === unit.id)
@@ -128,17 +287,34 @@ export function LessonMap({
               done={done}
               total={unitLessons.length}
               readiness={readinessByUnit[unit.id] ?? 0}
+              justArrived={unit.id === justArrivedUnitId}
             />
             <UnitTrack
               lessons={unitLessons}
               states={states}
               accent={accent}
+              currentLessonId={currentLessonId}
+              justCompletedLessonId={signal?.lessonId ?? null}
+              xpEarned={signal?.xpEarned}
+              registerNode={registerNode}
             />
           </section>
         );
       })}
+
+      {marker && displayPoint && (
+        <RouteMarker point={displayPoint} accent={marker.accent} angle={marker.angle} flying={flying} />
+      )}
     </div>
   );
+}
+
+/** Compass angle, in the CSS-rotation degrees the marker's glyph expects. */
+function angleBetween(from: Point, to: Point): number {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return 180;
+  return (Math.atan2(dy, dx) * 180) / Math.PI + 90;
 }
 
 function UnitHeader({
@@ -147,22 +323,37 @@ function UnitHeader({
   done,
   total,
   readiness,
+  justArrived,
 }: {
   unit: Unit;
   accent: string;
   done: number;
   total: number;
   readiness: number;
+  /** This unit's last lesson was the one just finished — its one arrival bow. */
+  justArrived: boolean;
 }) {
   return (
     <div className="border-b border-line/70 px-4 pb-4 pt-5 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 gap-3.5">
-          <span
-            className="tabular mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-[15px] font-extrabold text-white"
-            style={{ backgroundColor: accent }}
-          >
-            {String(unit.index).padStart(2, "0")}
+          <span className="relative mt-0.5 shrink-0">
+            {justArrived && (
+              <span
+                className="animate-burst pointer-events-none absolute inset-0 rounded-2xl"
+                style={{ backgroundColor: accent }}
+                aria-hidden
+              />
+            )}
+            <span
+              className={cn(
+                "tabular relative flex h-11 w-11 items-center justify-center rounded-2xl text-[15px] font-extrabold text-white",
+                justArrived && "animate-pop",
+              )}
+              style={{ backgroundColor: accent }}
+            >
+              {String(unit.index).padStart(2, "0")}
+            </span>
           </span>
           <div className="min-w-0">
             <p className="eyebrow" style={{ color: accent }}>
@@ -195,20 +386,22 @@ function UnitHeader({
   );
 }
 
-/** A measured node centre, in the track's own coordinate space. */
-interface Point {
-  x: number;
-  y: number;
-}
-
 function UnitTrack({
   lessons,
   states,
   accent,
+  currentLessonId,
+  justCompletedLessonId,
+  xpEarned,
+  registerNode,
 }: {
   lessons: Lesson[];
   states: Record<string, LessonNodeState>;
   accent: string;
+  currentLessonId: string | null;
+  justCompletedLessonId: string | null;
+  xpEarned?: number;
+  registerNode: (id: string, el: HTMLElement | null) => void;
 }) {
   const trackRef = useRef<HTMLOListElement | null>(null);
   const nodeRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -251,6 +444,8 @@ function UnitTrack({
     };
   }, [measure]);
 
+  const currentIndex = lessons.findIndex((l) => l.id === currentLessonId);
+
   return (
     <div className="relative px-4 py-6 sm:px-6">
       {/* Capped and centred: at full width the snake stretches so wide that
@@ -265,16 +460,21 @@ function UnitTrack({
           >
             {points.slice(0, -1).map((_from, i) => {
               const flown = FLOWN.includes(states[lessons[i]?.id]);
+              // The one leg not yet flown that leads OUT of the current
+              // lesson — the next thing to do, so it gets a slow glow
+              // instead of the neutral dashes every other unflown leg gets.
+              const isNextLeg = i === currentIndex;
               return (
                 <motion.path
                   key={i}
                   d={curveBetween(points, i)}
                   fill="none"
-                  stroke={flown ? accent : "var(--color-line-strong)"}
-                  strokeWidth={flown ? 3 : 2.5}
+                  stroke={flown || isNextLeg ? accent : "var(--color-line-strong)"}
+                  strokeWidth={flown ? 3 : isNextLeg ? 2.75 : 2.5}
                   strokeLinecap="round"
-                  strokeDasharray={flown ? undefined : "1 9"}
-                  opacity={flown ? 0.85 : 0.75}
+                  strokeDasharray={flown ? undefined : isNextLeg ? "5 8" : "1 9"}
+                  opacity={flown ? 0.85 : isNextLeg ? 0.65 : 0.75}
+                  className={isNextLeg && !reduceMotion ? "flow-line-slow" : undefined}
                   initial={reduceMotion ? false : { pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 0.5, delay: 0.05 * i, ease: "easeOut" }}
@@ -292,8 +492,11 @@ function UnitTrack({
             side={i % 2 === 0 ? "left" : "right"}
             index={i}
             reduceMotion={Boolean(reduceMotion)}
+            justCompleted={lesson.id === justCompletedLessonId}
+            xpEarned={lesson.id === justCompletedLessonId ? xpEarned : undefined}
             tileRef={(el) => {
               nodeRefs.current[i] = el;
+              registerNode(lesson.id, el);
             }}
           />
         ))}
@@ -324,6 +527,8 @@ function MapNode({
   side,
   index,
   reduceMotion,
+  justCompleted,
+  xpEarned,
   tileRef,
 }: {
   lesson: Lesson;
@@ -331,6 +536,9 @@ function MapNode({
   side: "left" | "right";
   index: number;
   reduceMotion: boolean;
+  /** This is the lesson the route marker just flew from — its one XP pulse. */
+  justCompleted: boolean;
+  xpEarned?: number;
   tileRef: (el: HTMLSpanElement | null) => void;
 }) {
   const style = NODE_STYLES[state];
@@ -348,19 +556,21 @@ function MapNode({
           aria-hidden
         />
       )}
-      <span
+      <motion.span
         className={cn(
           "relative flex items-center justify-center rounded-[22px] border-2 transition-transform duration-200",
           style.tile,
           !locked && "group-hover:scale-[1.05]",
         )}
         style={{ height: style.size, width: style.size }}
+        animate={current && !reduceMotion ? { scale: [1, 1.015, 1] } : undefined}
+        transition={current && !reduceMotion ? { duration: 3.2, repeat: Infinity, ease: "easeInOut" } : undefined}
       >
         <LessonIcon
           name={lesson.mapIcon}
           className={cn("h-[58%] w-[58%]", style.art)}
         />
-      </span>
+      </motion.span>
       <span
         className={cn(
           "absolute -bottom-1 -right-1 flex h-[22px] w-[22px] items-center justify-center rounded-full border-2 border-surface shadow-sm",
@@ -371,10 +581,33 @@ function MapNode({
         {current && <Play size={11} fill="currentColor" />}
         {state === "completed" && <Check size={12} strokeWidth={3.5} />}
         {state === "weak" && <TriangleAlert size={11} strokeWidth={3} />}
-        {(state === "mastered" || state === "perfect") && (
-          <Star size={11} fill="currentColor" strokeWidth={0} />
-        )}
+        {state === "perfect" && <Star size={11} fill="currentColor" strokeWidth={0} />}
+        {/* Mastered earns the same wing the route marker carries, not just
+            another star — a visibly different reward for a visibly different
+            state. */}
+        {state === "mastered" && <WingGlyph className="h-[11px] w-[11px]" />}
       </span>
+
+      {/* The one moment this node gets: a quiet burst as the marker leaves it,
+          and — if the lesson just finished said how much — a small +XP that
+          rises and fades. Plays once, on the visit right after finishing. */}
+      {justCompleted && !reduceMotion && (
+        <>
+          <span
+            className="animate-burst pointer-events-none absolute inset-0 rounded-[22px]"
+            style={{ backgroundColor: "var(--color-go)" }}
+            aria-hidden
+          />
+          {typeof xpEarned === "number" && (
+            <span
+              className="animate-rise tabular pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-extrabold text-go"
+              aria-hidden
+            >
+              +{xpEarned} XP
+            </span>
+          )}
+        </>
+      )}
     </span>
   );
 

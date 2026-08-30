@@ -29,6 +29,7 @@ import { MASTERY_LABELS } from "@/lib/mastery";
 import { MakeItClick } from "./click/trigger";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse, useEnsureCourse } from "@/lib/course";
+import { signalLessonCompleted } from "@/lib/route-marker-signal";
 import { Confetti, useCountUp } from "./reward";
 import { DiagramHost } from "./diagrams/registry";
 import { NavToolPanel, WorkedExample } from "./nav/lesson-screens";
@@ -599,6 +600,13 @@ function LessonComplete({
     (summary.answered - summary.firstTryCorrect) * 4 +
     40 +
     (summary.perfect ? 25 : 0);
+
+  // Tells the flight-path page, on its next visit, to fly the route marker
+  // here from this lesson rather than simply appearing at the next one.
+  useEffect(() => {
+    signalLessonCompleted(lesson.id, xpEarned);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lesson.id]);
 
   /*
    * The panel arrives, then the numbers fill in. The ring is driven from state
