@@ -13,12 +13,17 @@
  * the leg leading out of the current lesson gets a slow marching glow, as the
  * one you are about to fly; everything further out stays faint.
  *
- * One route marker — a small wing, tinted to the unit it is over — sits at
- * whichever lesson is current, drifting gently at rest. When a lesson has
- * just been finished, it flies there from the lesson that earned it, measured
- * in page coordinates so the flight can cross a unit boundary if it needs to.
- * A one-shot session signal (see `lib/route-marker-signal`) is what tells this
- * component that a flight — rather than a plain arrival — is called for.
+ * One route marker — a small waypoint puck, tinted to the unit it is over —
+ * docks on the path just off the edge of the current lesson's tile, on the
+ * side the student arrived from. It is deliberately never centred on the
+ * tile: the card is the destination, the marker is the traveller, and the
+ * two must never occupy the same spot or the marker reads as a badge pasted
+ * over the lesson rather than a position on a route. When a lesson has just
+ * been finished, it flies there from a matching dock beside the lesson that
+ * earned it, measured in page coordinates so the flight can cross a unit
+ * boundary if it needs to. A one-shot session signal (see
+ * `lib/route-marker-signal`) is what tells this component that a flight —
+ * rather than a plain arrival — is called for.
  */
 
 import Link from "next/link";
@@ -63,7 +68,7 @@ const NODE_STYLES: Record<
     tile: "border-brand bg-brand shadow-[0_10px_28px_-10px_var(--color-brand)]",
     art: "text-white",
     badge: "bg-white text-brand",
-    label: "Start here",
+    label: "Current sortie",
     tone: "text-brand",
     size: 86,
   },
@@ -105,6 +110,17 @@ const NODE_STYLES: Record<
 interface Point {
   x: number;
   y: number;
+}
+
+/** Gap between a tile's edge and the marker docked beside it, in pixels. */
+const DOCK_CLEARANCE = 15;
+
+/** A point `distance` px from `origin`, along the line toward `toward`. */
+function pointAtDistance(origin: Point, toward: Point, distance: number): Point {
+  const dx = toward.x - origin.x;
+  const dy = toward.y - origin.y;
+  const len = Math.hypot(dx, dy) || 1;
+  return { x: origin.x + (dx / len) * distance, y: origin.y + (dy / len) * distance };
 }
 
 export function LessonMap({
@@ -159,7 +175,8 @@ export function LessonMap({
       const r = el.getBoundingClientRect();
       return { x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2 };
     };
-    const point = toPoint(currentEl);
+    const currentCentre = toPoint(currentEl);
+    const currentRadius = (NODE_STYLES.current.size ?? 86) / 2;
 
     const currentLesson = lessons.find((l) => l.id === currentLessonId);
     const currentUnit = currentLesson ? units.find((u) => u.id === currentLesson.unit) : undefined;
@@ -173,11 +190,28 @@ export function LessonMap({
     const precedingId = ordered[ordered.findIndex((l) => l.id === currentLessonId) - 1]?.id;
     const originId = signal?.lessonId ?? precedingId ?? null;
     const originEl = originId ? nodeElsRef.current[originId] : null;
-    const from = originEl ? toPoint(originEl) : null;
-    const angle = from ? angleBetween(from, point) : 180;
+    const originCentre = originEl ? toPoint(originEl) : null;
+    const angle = originCentre ? angleBetween(originCentre, currentCentre) : 180;
 
-    setMarker({ point, accent, angle, from: signal ? from : null });
-  }, [currentLessonId, lessons, signal, units]);
+    // Dock on the path just short of the current tile, on the side the
+    // student is arriving from — never centred on the tile itself. With no
+    // preceding node (the very first lesson) fall back to docking just above
+    // it, as if the route simply begins there.
+    const arrivingFrom = originCentre ?? { x: currentCentre.x, y: currentCentre.y - 120 };
+    const point = pointAtDistance(currentCentre, arrivingFrom, currentRadius + DOCK_CLEARANCE);
+
+    // The flight's departure dock, symmetrically placed just past the edge
+    // of the lesson that was just finished, on the side facing the current
+    // lesson — so the marker visibly leaves one checkpoint before arriving
+    // at the next rather than teleporting from a tile's centre.
+    let from: Point | null = null;
+    if (signal && originCentre && originId) {
+      const originRadius = (NODE_STYLES[states[originId] ?? "completed"]?.size ?? 72) / 2;
+      from = pointAtDistance(originCentre, currentCentre, originRadius + DOCK_CLEARANCE);
+    }
+
+    setMarker({ point, accent, angle, from });
+  }, [currentLessonId, lessons, signal, states, units]);
 
   // Layout effect so the marker lands in the same frame the nodes do, rather
   // than popping in a beat later.
@@ -687,7 +721,7 @@ function MapNode({
               "group flex w-full items-center gap-4 rounded-2xl border p-2.5 transition-all duration-200",
               side === "left" && "sm:flex-row-reverse",
               current
-                ? "border-brand/30 bg-brand-soft/45 shadow-[0_2px_10px_-4px_rgba(13,28,46,0.14)] hover:border-brand/55 hover:bg-brand-soft/70"
+                ? "-translate-y-0.5 border-brand/35 bg-brand-soft/45 shadow-[0_8px_20px_-10px_rgba(13,28,46,0.28)] hover:border-brand/55 hover:bg-brand-soft/70"
                 : "border-transparent hover:border-line hover:bg-surface-2/70",
             )}
           >
