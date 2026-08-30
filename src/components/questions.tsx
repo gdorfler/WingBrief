@@ -432,6 +432,30 @@ function QuestionBody({ question, answer, graded, onChange, mode = "practice" }:
 
 const LETTERS = ["A", "B", "C", "D", "E", "F"];
 
+/**
+ * Which original option index renders at each on-screen position.
+ *
+ * Authored option lists cluster the correct answer in the same slot far more
+ * than chance would — this content skews heavily toward "B" — so a fixed
+ * display order quietly teaches slot position instead of the concept. The
+ * identity order is the safe first paint (it matches what static generation
+ * baked into the HTML); the effect immediately re-randomizes it before the
+ * student can act on anything, and reruns whenever a new question takes this
+ * slot, so every fresh encounter gets its own shuffle.
+ *
+ * `state` is unaffected by any of this: options are always scored, recorded
+ * and diagnosed by their ORIGINAL index, never by where they happened to
+ * land on screen.
+ */
+function useShuffledOrder(length: number, seedKey: string): number[] {
+  const [order, setOrder] = useState(() => Array.from({ length }, (_, i) => i));
+  useEffect(() => {
+    const identity = Array.from({ length }, (_, i) => i);
+    setOrder(seededShuffle(identity, `${seedKey}:${Math.random()}`));
+  }, [seedKey, length]);
+  return order;
+}
+
 function OptionRow({
   index,
   label,
@@ -512,6 +536,7 @@ function ChoiceBody({
   onChange: (v: string) => void;
 }) {
   const selected = answer?.startsWith("i:") ? Number(answer.slice(2)) : null;
+  const order = useShuffledOrder(q.options.length, q.id);
   return (
     <div className="space-y-3">
       {q.diagram && (
@@ -520,11 +545,11 @@ function ChoiceBody({
         </div>
       )}
       <div className={cn("grid gap-2", q.options.length === 2 && "sm:grid-cols-2")}>
-        {q.options.map((opt, i) => (
+        {order.map((i, pos) => (
           <OptionRow
             key={i}
-            index={i}
-            label={opt}
+            index={pos}
+            label={q.options[i]}
             selected={selected === i}
             state={optionState(i, selected, q.answer, graded)}
             onClick={() => !graded && onChange(serializeAnswer({ kind: "index", value: i }))}
@@ -551,15 +576,16 @@ function SliderPredictBody({
   onChange: (v: string) => void;
 }) {
   const selected = answer?.startsWith("i:") ? Number(answer.slice(2)) : null;
+  const order = useShuffledOrder(q.options.length, q.id);
   return (
     <div className="space-y-3">
       <Widget name={q.widget} compact />
       <div className="grid gap-2">
-        {q.options.map((opt, i) => (
+        {order.map((i, pos) => (
           <OptionRow
             key={i}
-            index={i}
-            label={opt}
+            index={pos}
+            label={q.options[i]}
             selected={selected === i}
             state={optionState(i, selected, q.answer, graded)}
             onClick={() => !graded && onChange(serializeAnswer({ kind: "index", value: i }))}
