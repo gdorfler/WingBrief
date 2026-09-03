@@ -371,7 +371,7 @@ export default function ProfilePage() {
       <p className="mt-8 text-center text-[11px] leading-relaxed text-navy-faint">
         Educational aid only. Not a substitute for official NIFE instruction or NATOPS.
         <br />
-        Content traced to NAVAVSCOLSCOM-SG-200 Unit 2 and lecture decks the lecture decks.
+        Content traced to NAVAVSCOLSCOM-SG-200 Unit 2.
       </p>
     </>
   );

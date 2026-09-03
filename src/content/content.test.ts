@@ -405,7 +405,7 @@ describe(`${NAME} · enabling objective matrix`, () => {
     // real assertion rather than a placeholder:
     //
     //   aero    — the trainee guide, 227
-    //   engines — nine SRC lectures, 65 between them
+    //   engines — nine systems lectures, 65 between them
     //   frr     — 2.345 through 2.386, less 2.357: the supplemental-oxygen
     //             rules it covers appear in no systems deck, so the content that
     //             claimed that objective was removed as off-syllabus

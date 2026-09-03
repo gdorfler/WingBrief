@@ -3,7 +3,7 @@ import type { Concept, SourceReference } from "@/lib/types";
 /**
  * Engines concepts — the atoms mastery is tracked against.
  *
- * Provenance matters here. All nine SRC lectures are now available, so every
+ * Provenance matters here. All nine systems lectures are now available, so every
  * concept below cites the lecture that actually publishes it and carries that
  * lecture's enabling objectives — including units e6 and e7, which were built
  * from the condensed notes for as long as the systems lectures were

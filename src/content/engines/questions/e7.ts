@@ -5,7 +5,7 @@ const NOTES = (chapter: string): SourceReference => ({
   chapter,
 });
 
-/** is now the authority for the lubrication block. */
+/** The lubrication lecture is now the authority for the lubrication block. */
 const L208: SourceReference = {
   document: "Lubricants and Lubrication Systems",
   chapter: "Lubricants and Lubrication Systems",

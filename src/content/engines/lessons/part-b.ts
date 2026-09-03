@@ -4,7 +4,7 @@ const L203: SourceReference = {
   document: "Compressor Stalls",
   chapter: "Compressor Stalls",
 };
-/** is the authority for the accessory, starter and ignition block. */
+/** The systems lecture is the authority for the accessory, starter and ignition block. */
 const L209: SourceReference = {
   document: "Accessory, Starter and Ignition Systems",
   chapter: "Accessory, Starter and Ignition Systems",
@@ -870,7 +870,7 @@ export const LESSONS_B: Lesson[] = [
         ],
         watchFor:
           "The same low volatility that makes JP-5 safe to carry aboard ship is what makes a powerful igniter necessary.",
-        authority: "Systems lecture",
+        authority: "Ignition systems",
       },
       {
         kind: "compare",
