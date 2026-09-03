@@ -10,8 +10,9 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, ChevronDown, Lock } from "lucide-react";
+import { Check, ChevronDown, Lock, ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import type { CourseMeta } from "@/lib/types";
 import { PLANNED_COURSES, contentFor } from "@/content";
@@ -248,11 +249,28 @@ export function CourseSwitcher({ compact = false }: { compact?: boolean }) {
             })}
           </ul>
 
+          {/*
+            The "coming soon" line this replaces read as a lock icon followed
+            by a bare " coming soon": PLANNED_COURSES is empty, and joining an
+            empty array yields an empty string. When there is genuinely
+            something to announce the branch below brings it back.
+          */}
           <div className="border-t border-line bg-surface-2/60 px-3.5 py-2.5">
-            <p className="flex items-center gap-1.5 text-[11px] font-semibold text-navy-faint">
-              <Lock size={11} />
-              {PLANNED_COURSES.join(" · ")} coming soon
-            </p>
+            {PLANNED_COURSES.length > 0 ? (
+              <p className="flex items-center gap-1.5 text-[11px] font-semibold text-navy-faint">
+                <Lock size={11} />
+                {PLANNED_COURSES.join(" · ")} coming soon
+              </p>
+            ) : (
+              <Link
+                href="/courses"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-between gap-2 text-[12px] font-bold text-navy-soft transition-colors hover:text-brand"
+              >
+                Compare all courses
+                <ArrowRight size={13} />
+              </Link>
+            )}
           </div>
         </motion.div>
       )}

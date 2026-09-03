@@ -35,6 +35,7 @@ import type { LessonNodeState } from "@/lib/review";
 import { clearLessonCompletedSignal, peekLessonCompletedSignal } from "@/lib/route-marker-signal";
 import { LessonIcon } from "./lesson-icon";
 import { RouteMarker, WingGlyph, type RouteMarkerPoint } from "./route-marker";
+import { SkyBackdrop } from "./sky";
 import { Pill, cn } from "./ui";
 
 const FLOWN: LessonNodeState[] = ["completed", "perfect", "mastered", "weak"];
@@ -60,7 +61,17 @@ const UNIT_ACCENT: Record<Unit["accent"], string> = {
  */
 const NODE_STYLES: Record<
   LessonNodeState,
-  { tile: string; art: string; badge: string; label: string; tone: string; size: number; lip: string }
+  {
+    tile: string;
+    art: string;
+    badge: string;
+    label: string;
+    tone: string;
+    size: number;
+    lip: string;
+    /** The state label colour once the map sits on the night sky. */
+    onSky: string;
+  }
 > = {
   locked: {
     tile: "border-line bg-surface-2 border-dashed",
@@ -70,6 +81,7 @@ const NODE_STYLES: Record<
     tone: "text-navy-faint",
     size: 74,
     lip: "var(--color-line-strong)",
+    onSky: "text-white/45",
   },
   current: {
     tile: "border-brand bg-brand",
@@ -79,6 +91,7 @@ const NODE_STYLES: Record<
     tone: "text-brand",
     size: 96,
     lip: "var(--color-brand-dark)",
+    onSky: "text-brand-light",
   },
   completed: {
     tile: "border-go/45 bg-go-soft",
@@ -88,6 +101,7 @@ const NODE_STYLES: Record<
     tone: "text-go",
     size: 80,
     lip: "color-mix(in srgb, var(--color-go) 32%, transparent)",
+    onSky: "text-[color-mix(in_srgb,var(--color-go)_45%,white)]",
   },
   perfect: {
     tile: "border-go bg-go",
@@ -97,6 +111,7 @@ const NODE_STYLES: Record<
     tone: "text-go",
     size: 80,
     lip: "var(--color-go-dark)",
+    onSky: "text-[color-mix(in_srgb,var(--color-go)_45%,white)]",
   },
   mastered: {
     tile: "border-gold/55 bg-gold-soft",
@@ -106,6 +121,7 @@ const NODE_STYLES: Record<
     tone: "text-gold",
     size: 82,
     lip: "color-mix(in srgb, var(--color-gold) 38%, transparent)",
+    onSky: "text-[color-mix(in_srgb,var(--color-gold)_40%,white)]",
   },
   weak: {
     tile: "border-caution/50 bg-caution-soft",
@@ -115,6 +131,7 @@ const NODE_STYLES: Record<
     tone: "text-caution",
     size: 80,
     lip: "color-mix(in srgb, var(--color-caution) 34%, transparent)",
+    onSky: "text-[color-mix(in_srgb,var(--color-caution)_38%,white)]",
   },
 };
 
@@ -319,13 +336,20 @@ export function LessonMap({
           <section
             key={unit.id}
             id={unit.id}
-            className="scroll-mt-20 overflow-hidden rounded-3xl border border-line shadow-[0_1px_2px_rgba(13,28,46,0.04),0_12px_28px_-20px_rgba(13,28,46,0.28)]"
+            className="relative scroll-mt-20 overflow-hidden rounded-3xl bg-ink-900 shadow-[0_1px_2px_rgba(13,28,46,0.06),0_18px_40px_-24px_rgba(13,28,46,0.45)]"
             style={{
-              // A whisper of the unit's colour, so the six sections read as
-              // distinct chapters without turning into a paint chart.
-              background: `linear-gradient(180deg, color-mix(in srgb, ${accent} 5%, var(--color-surface)) 0%, var(--color-surface) 190px)`,
+              // A whisper of the unit's colour over the ink, so the sections
+              // still read as distinct chapters rather than one long night.
+              backgroundImage: `linear-gradient(180deg, color-mix(in srgb, ${accent} 16%, transparent) 0%, transparent 240px)`,
             }}
           >
+            {/*
+              The route runs through the sky rather than across a page. Node
+              tiles are all either light or fully saturated, so they gain
+              contrast against the ink rather than losing it; the labels beside
+              them switch to their `onSky` tones to keep up.
+            */}
+            <SkyBackdrop arc={false} />
             <UnitHeader
               unit={unit}
               accent={accent}
@@ -382,10 +406,10 @@ function UnitHeader({
 }) {
   return (
     <div
-      className="border-b px-4 pb-4 pt-5 sm:px-6"
+      className="relative border-b px-4 pb-4 pt-5 sm:px-6"
       style={{
-        borderColor: `color-mix(in srgb, ${accent} 20%, transparent)`,
-        background: `color-mix(in srgb, ${accent} 7%, transparent)`,
+        borderColor: "rgba(255,255,255,0.12)",
+        background: `color-mix(in srgb, ${accent} 14%, transparent)`,
       }}
     >
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
@@ -409,8 +433,8 @@ function UnitHeader({
             </span>
           </span>
           <div className="min-w-0">
-            <h2 className="text-[19px] font-extrabold leading-tight text-navy">{unit.title}</h2>
-            <p className="mt-0.5 max-w-xl text-[13.5px] leading-snug text-navy-soft">
+            <h2 className="text-[19px] font-extrabold leading-tight text-white">{unit.title}</h2>
+            <p className="mt-0.5 max-w-xl text-[13.5px] leading-snug text-[#bed2e6]">
               {unit.promise}
             </p>
           </div>
@@ -421,7 +445,7 @@ function UnitHeader({
           </Pill>
           <Link
             href={`/exam?mode=unit&unit=${unit.id}`}
-            className="flex items-center gap-1 rounded-full border border-line px-2.5 py-1 text-[11.5px] font-semibold text-navy-soft transition-colors hover:border-brand/40 hover:text-brand"
+            className="flex items-center gap-1 rounded-full border border-white/25 px-2.5 py-1 text-[11.5px] font-semibold text-[#cfe0f0] transition-colors hover:border-white/50 hover:text-white"
             title="Already know this unit? Take its exam to test out."
           >
             <FastForward size={12} />
@@ -494,7 +518,7 @@ function UnitTrack({
   const currentIndex = lessons.findIndex((l) => l.id === currentLessonId);
 
   return (
-    <div className="relative px-4 py-6 sm:px-6">
+    <div className="relative z-10 px-4 py-6 sm:px-6">
       {/* Capped and centred: at full width the snake stretches so wide that
           consecutive lessons stop reading as one route. */}
       <ol ref={trackRef} className="relative mx-auto max-w-3xl">
@@ -516,14 +540,16 @@ function UnitTrack({
                   key={i}
                   d={curveBetween(points, i)}
                   fill="none"
-                  stroke={flown || isNextLeg ? accent : "var(--color-line-strong)"}
+                  // Unflown legs are white-based rather than the light-mode
+                  // hairline colour, which all but vanished against the ink.
+                  stroke={flown || isNextLeg ? accent : "rgba(255,255,255,0.9)"}
                   // The route is the subject of this screen, so it is drawn
                   // heavy enough to read as one continuous line at a glance
                   // rather than as hairlines between cards.
                   strokeWidth={flown ? 5 : isNextLeg ? 4.5 : 3.5}
                   strokeLinecap="round"
-                  strokeDasharray={flown ? undefined : isNextLeg ? "6 9" : "1 11"}
-                  opacity={flown ? 0.9 : isNextLeg ? 0.7 : 0.6}
+                  strokeDasharray={flown ? undefined : isNextLeg ? "6 9" : "3 9"}
+                  opacity={flown ? 0.95 : isNextLeg ? 0.85 : 0.3}
                   className={isNextLeg && !reduceMotion ? "flow-line-slow" : undefined}
                   initial={reduceMotion ? false : { pathLength: 0 }}
                   animate={{ pathLength: 1 }}
@@ -684,7 +710,7 @@ function MapNode({
         className={cn(
           "block leading-snug",
           current ? "text-[18px] font-extrabold" : "text-[16px] font-bold",
-          locked ? "text-navy-faint" : "text-navy",
+          locked ? "text-white/55" : "text-white",
         )}
       >
         {lesson.title}
@@ -695,10 +721,10 @@ function MapNode({
           side === "left" && "sm:justify-end",
         )}
       >
-        <span className={cn("text-[11px] font-extrabold uppercase tracking-wider", style.tone)}>
+        <span className={cn("text-[11px] font-extrabold uppercase tracking-wider", style.onSky)}>
           {style.label}
         </span>
-        <span className="tabular text-[11.5px] font-semibold text-navy-faint">
+        <span className="tabular text-[11.5px] font-semibold text-white/55">
           {lesson.estimatedMinutes} min
         </span>
       </span>
@@ -766,8 +792,8 @@ function MapNode({
               "group flex w-full items-center gap-4 rounded-2xl p-2.5 transition-all duration-200",
               side === "left" && "sm:flex-row-reverse",
               current
-                ? "-translate-y-0.5 border-2 border-brand/40 bg-brand-soft/55 shadow-[0_10px_24px_-12px_rgba(13,28,46,0.32)] hover:border-brand/60 hover:bg-brand-soft/75"
-                : "hover:bg-surface-2/60",
+                ? "-translate-y-0.5 border-2 border-brand/60 bg-brand/[0.16] shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)] hover:border-brand/80 hover:bg-brand/[0.24]"
+                : "hover:bg-white/[0.07]",
             )}
           >
             {inner}
