@@ -62,7 +62,7 @@ const NODE_STYLES: Record<
     badge: "bg-surface-3 text-navy-faint",
     label: "Locked",
     tone: "text-navy-faint",
-    size: 66,
+    size: 74,
   },
   current: {
     tile: "border-brand bg-brand shadow-[0_10px_28px_-10px_var(--color-brand)]",
@@ -70,7 +70,7 @@ const NODE_STYLES: Record<
     badge: "bg-white text-brand",
     label: "Current sortie",
     tone: "text-brand",
-    size: 86,
+    size: 96,
   },
   completed: {
     tile: "border-go/45 bg-go-soft",
@@ -78,7 +78,7 @@ const NODE_STYLES: Record<
     badge: "bg-go text-white",
     label: "Complete",
     tone: "text-go",
-    size: 72,
+    size: 80,
   },
   perfect: {
     tile: "border-go bg-go shadow-[0_8px_22px_-12px_var(--color-go)]",
@@ -86,7 +86,7 @@ const NODE_STYLES: Record<
     badge: "bg-white text-go",
     label: "Perfect",
     tone: "text-go",
-    size: 72,
+    size: 80,
   },
   mastered: {
     tile: "border-gold/55 bg-gold-soft shadow-[0_8px_22px_-12px_var(--color-gold)]",
@@ -94,7 +94,7 @@ const NODE_STYLES: Record<
     badge: "bg-gold text-white",
     label: "Mastered",
     tone: "text-gold",
-    size: 74,
+    size: 82,
   },
   weak: {
     tile: "border-caution/50 bg-caution-soft",
@@ -102,7 +102,7 @@ const NODE_STYLES: Record<
     badge: "bg-caution text-white",
     label: "Needs review",
     tone: "text-caution",
-    size: 72,
+    size: 80,
   },
 };
 
@@ -301,7 +301,6 @@ export function LessonMap({
         const unitLessons = lessons
           .filter((l) => l.unit === unit.id)
           .sort((a, b) => a.index - b.index);
-        const done = unitLessons.filter((l) => FLOWN.includes(states[l.id])).length;
         const accent = UNIT_ACCENT[unit.accent];
 
         return (
@@ -318,8 +317,6 @@ export function LessonMap({
             <UnitHeader
               unit={unit}
               accent={accent}
-              done={done}
-              total={unitLessons.length}
               readiness={readinessByUnit[unit.id] ?? 0}
               justArrived={unit.id === justArrivedUnitId}
             />
@@ -351,27 +348,37 @@ function angleBetween(from: Point, to: Point): number {
   return (Math.atan2(dy, dx) * 180) / Math.PI + 90;
 }
 
+/**
+ * The banner a unit's stretch of path hangs under.
+ *
+ * Reduced to the three things that help someone decide whether to fly this
+ * unit: which one it is, what it promises, and how well it has landed. The
+ * category eyebrow duplicated the title, and the lesson count duplicated the
+ * path directly below it, which already shows every stop and which are done.
+ */
 function UnitHeader({
   unit,
   accent,
-  done,
-  total,
   readiness,
   justArrived,
 }: {
   unit: Unit;
   accent: string;
-  done: number;
-  total: number;
   readiness: number;
   /** This unit's last lesson was the one just finished — its one arrival bow. */
   justArrived: boolean;
 }) {
   return (
-    <div className="border-b border-line/70 px-4 pb-4 pt-5 sm:px-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex min-w-0 gap-3.5">
-          <span className="relative mt-0.5 shrink-0">
+    <div
+      className="border-b px-4 pb-4 pt-5 sm:px-6"
+      style={{
+        borderColor: `color-mix(in srgb, ${accent} 20%, transparent)`,
+        background: `color-mix(in srgb, ${accent} 7%, transparent)`,
+      }}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <div className="flex min-w-0 items-center gap-3.5">
+          <span className="relative shrink-0">
             {justArrived && (
               <span
                 className="animate-burst pointer-events-none absolute inset-0 rounded-2xl"
@@ -381,7 +388,7 @@ function UnitHeader({
             )}
             <span
               className={cn(
-                "tabular relative flex h-11 w-11 items-center justify-center rounded-2xl text-[15px] font-extrabold text-white",
+                "tabular relative flex h-12 w-12 items-center justify-center rounded-2xl text-[16px] font-extrabold text-white",
                 justArrived && "animate-pop",
               )}
               style={{ backgroundColor: accent }}
@@ -390,19 +397,13 @@ function UnitHeader({
             </span>
           </span>
           <div className="min-w-0">
-            <p className="eyebrow" style={{ color: accent }}>
-              {unit.subtitle}
-            </p>
-            <h2 className="mt-0.5 text-xl leading-tight text-navy">{unit.title}</h2>
-            <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-navy-soft">
+            <h2 className="text-[19px] font-extrabold leading-tight text-navy">{unit.title}</h2>
+            <p className="mt-0.5 max-w-xl text-[13.5px] leading-snug text-navy-soft">
               {unit.promise}
             </p>
           </div>
         </div>
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-          <Pill tone="neutral">
-            {done}/{total} lessons
-          </Pill>
+        <div className="flex shrink-0 items-center gap-2">
           <Pill tone={readiness >= 80 ? "go" : readiness >= 40 ? "brand" : "neutral"}>
             {readiness}% mastery
           </Pill>
@@ -504,10 +505,13 @@ function UnitTrack({
                   d={curveBetween(points, i)}
                   fill="none"
                   stroke={flown || isNextLeg ? accent : "var(--color-line-strong)"}
-                  strokeWidth={flown ? 3 : isNextLeg ? 2.75 : 2.5}
+                  // The route is the subject of this screen, so it is drawn
+                  // heavy enough to read as one continuous line at a glance
+                  // rather than as hairlines between cards.
+                  strokeWidth={flown ? 5 : isNextLeg ? 4.5 : 3.5}
                   strokeLinecap="round"
-                  strokeDasharray={flown ? undefined : isNextLeg ? "5 8" : "1 9"}
-                  opacity={flown ? 0.85 : isNextLeg ? 0.65 : 0.75}
+                  strokeDasharray={flown ? undefined : isNextLeg ? "6 9" : "1 11"}
+                  opacity={flown ? 0.9 : isNextLeg ? 0.7 : 0.6}
                   className={isNextLeg && !reduceMotion ? "flow-line-slow" : undefined}
                   initial={reduceMotion ? false : { pathLength: 0 }}
                   animate={{ pathLength: 1 }}
@@ -645,37 +649,36 @@ function MapNode({
     </span>
   );
 
+  /*
+   * A stop on a route needs to say what it is and where you stand with it.
+   * The lesson number is already implied by position on the path, and the
+   * subtitle is a second sentence nobody reads while scanning for the next
+   * thing to do, so both are gone: title first and biggest, state and length
+   * underneath it in one quiet line.
+   */
   const text = (
     <span className="min-w-0 flex-1">
       <span
         className={cn(
-          "flex flex-wrap items-center gap-x-2 gap-y-0.5",
-          side === "left" && "sm:justify-end",
-        )}
-      >
-        <span className="tabular text-[11px] font-bold text-navy-faint">
-          {String(lesson.index).padStart(2, "0")}
-        </span>
-        <span
-          className={cn("text-[10.5px] font-extrabold uppercase tracking-wider", style.tone)}
-        >
-          {style.label}
-        </span>
-        <span className="tabular text-[11px] font-semibold text-navy-faint">
-          {lesson.estimatedMinutes} min
-        </span>
-      </span>
-      <span
-        className={cn(
-          "mt-0.5 block leading-snug",
-          current ? "text-[17px] font-bold" : "text-[15.5px] font-semibold",
+          "block leading-snug",
+          current ? "text-[18px] font-extrabold" : "text-[16px] font-bold",
           locked ? "text-navy-faint" : "text-navy",
         )}
       >
         {lesson.title}
       </span>
-      <span className="mt-0.5 block text-[12.5px] leading-snug text-navy-soft">
-        {lesson.subtitle}
+      <span
+        className={cn(
+          "mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-0.5",
+          side === "left" && "sm:justify-end",
+        )}
+      >
+        <span className={cn("text-[11px] font-extrabold uppercase tracking-wider", style.tone)}>
+          {style.label}
+        </span>
+        <span className="tabular text-[11.5px] font-semibold text-navy-faint">
+          {lesson.estimatedMinutes} min
+        </span>
       </span>
     </span>
   );
@@ -688,11 +691,22 @@ function MapNode({
   );
 
   return (
+    /*
+     * Entrance is driven by mount, not by `whileInView`.
+     *
+     * The scroll-reveal version gated visibility on an IntersectionObserver
+     * callback that does not reliably fire on first paint — if the tab is not
+     * being painted when the observer is installed, nothing fires, `once:
+     * true` never latches, and the whole map sits at opacity 0 until the
+     * student happens to scroll. A blank flight path is a far worse failure
+     * than a reveal that plays slightly early, so the nodes now always
+     * animate in and the stagger alone carries the sense of the route
+     * drawing itself.
+     */
     <motion.li
       className="relative pb-5 last:pb-0"
       initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-30px" }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, delay: Math.min(index, 6) * 0.035, ease: "easeOut" }}
     >
       <div
@@ -704,10 +718,19 @@ function MapNode({
           side === "left" ? "sm:flex-row-reverse sm:text-right" : "sm:ml-auto",
         )}
       >
+        {/*
+          Only the current lesson is a card. Giving every stop a bordered
+          container turned the route into a stack of tiles joined by hairlines;
+          without them the node tiles sit on the path itself and the eye
+          follows the line, which is the whole point of a map. Note the border
+          utility is applied per-branch rather than in the shared base: a
+          global border-colour default overrides `border-transparent`, so a
+          base `border` would draw a visible outline on every row.
+        */}
         {locked ? (
           <div
             className={cn(
-              "flex w-full cursor-not-allowed items-center gap-4 rounded-2xl border border-transparent p-2.5",
+              "flex w-full cursor-not-allowed items-center gap-4 rounded-2xl p-2.5",
               side === "left" && "sm:flex-row-reverse",
             )}
             title="Finish the lesson before this one to unlock"
@@ -718,11 +741,11 @@ function MapNode({
           <Link
             href={`/lessons/${lesson.id}`}
             className={cn(
-              "group flex w-full items-center gap-4 rounded-2xl border p-2.5 transition-all duration-200",
+              "group flex w-full items-center gap-4 rounded-2xl p-2.5 transition-all duration-200",
               side === "left" && "sm:flex-row-reverse",
               current
-                ? "-translate-y-0.5 border-brand/35 bg-brand-soft/45 shadow-[0_8px_20px_-10px_rgba(13,28,46,0.28)] hover:border-brand/55 hover:bg-brand-soft/70"
-                : "border-transparent hover:border-line hover:bg-surface-2/70",
+                ? "-translate-y-0.5 border-2 border-brand/40 bg-brand-soft/55 shadow-[0_10px_24px_-12px_rgba(13,28,46,0.32)] hover:border-brand/60 hover:bg-brand-soft/75"
+                : "hover:bg-surface-2/60",
             )}
           >
             {inner}

@@ -79,8 +79,21 @@
    Base
    ============================================================ */
 
-* {
-  border-color: var(--color-line);
+/*
+ * The default border colour, so a bare `border` utility draws the hairline
+ * everything in this app expects.
+ *
+ * It MUST stay inside `@layer base`. Unlayered CSS beats every layered rule
+ * regardless of specificity, and Tailwind v4 emits utilities into a layer —
+ * so as a bare `*` selector this silently overrode every border-colour
+ * utility in the codebase. `border-brand`, `border-go/45`, `border-gold/55`
+ * and even `border-transparent` all resolved to this one beige, which is why
+ * the state colours on the lesson map never reached their borders.
+ */
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
 }
 
 html {
