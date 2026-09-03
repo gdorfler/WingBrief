@@ -8,7 +8,16 @@
  * envelope, the spin spiral.
  */
 
-export function LessonIcon({ name, className }: { name: string; className?: string }) {
+export function LessonIcon({
+  name,
+  className,
+  style,
+}: {
+  name: string;
+  className?: string;
+  /** Lets a caller set the icon colour and give it a drop shadow. */
+  style?: React.CSSProperties;
+}) {
   const S = 32;
   const glyph: Record<string, React.ReactNode> = {
     vector: (
@@ -1122,6 +1131,7 @@ export function LessonIcon({ name, className }: { name: string; className?: stri
     <svg
       viewBox={`0 0 ${S} ${S}`}
       className={className}
+      style={style}
       fill="none"
       stroke="currentColor"
       aria-hidden

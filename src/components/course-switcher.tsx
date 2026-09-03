@@ -263,11 +263,11 @@ export function CourseSwitcher({ compact = false }: { compact?: boolean }) {
               </p>
             ) : (
               <Link
-                href="/courses"
+                href="/#courses"
                 onClick={() => setOpen(false)}
                 className="flex items-center justify-between gap-2 text-[12px] font-bold text-navy-soft transition-colors hover:text-brand"
               >
-                Compare all courses
+                All courses
                 <ArrowRight size={13} />
               </Link>
             )}

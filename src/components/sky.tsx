@@ -43,9 +43,17 @@ export function SkyBackdrop({
   className,
   /** Draws the dashed arc a plane would have left. */
   arc = true,
+  /*
+   * Multiplier on the cloud bank. A hero is short and wide, so full-strength
+   * clouds read as horizon; a unit section on the lesson map can be two
+   * thousand pixels tall, and at full strength the bank turns into fog across
+   * the nodes at the bottom. Panels pass a fraction.
+   */
+  clouds = 1,
 }: {
   className?: string;
   arc?: boolean;
+  clouds?: number;
 }) {
   const reduceMotion = useReducedMotion();
 
@@ -107,7 +115,7 @@ export function SkyBackdrop({
 
         <g filter="url(#sky-cloud-blur)">
           {CLOUDS.map(([cx, cy, rx, ry, o], i) => (
-            <ellipse key={i} cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#sky-cloud-fill)" opacity={o} />
+            <ellipse key={i} cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#sky-cloud-fill)" opacity={o * clouds} />
           ))}
         </g>
       </svg>

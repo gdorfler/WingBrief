@@ -29,12 +29,12 @@
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Check, FastForward, Lock, Play, Star, TriangleAlert } from "lucide-react";
+import { FastForward } from "lucide-react";
 import type { Lesson, Unit } from "@/lib/types";
 import type { LessonNodeState } from "@/lib/review";
 import { clearLessonCompletedSignal, peekLessonCompletedSignal } from "@/lib/route-marker-signal";
-import { LessonIcon } from "./lesson-icon";
-import { RouteMarker, WingGlyph, type RouteMarkerPoint } from "./route-marker";
+import { LessonToken } from "./lesson-token";
+import { RouteMarker, type RouteMarkerPoint } from "./route-marker";
 import { SkyBackdrop } from "./sky";
 import { Pill, cn } from "./ui";
 
@@ -50,87 +50,44 @@ const UNIT_ACCENT: Record<Unit["accent"], string> = {
 };
 
 /**
- * Per-state presentation. Locked nodes still show their diagram — a wall of
- * grey padlocks tells a student nothing about what is coming.
+ * Per-state presentation, reduced to what this file still decides: the words,
+ * the diameter, and the label colour against the sky.
  *
- * Each state carries a `lip`: a darker shade of its own tile, set as --lip so
- * the `chunky` utility can draw a solid edge under the node. That is what
- * makes a stop on the path feel like a key you press rather than a sticker,
- * and it is the one place besides the primary button where the treatment is
- * worth the weight it adds.
+ * How a node actually looks — its face, rim, glow, badge and warning ring —
+ * belongs to <LessonToken>, so the two cannot drift apart. Locked nodes keep
+ * showing their diagram, drained rather than hidden: a wall of grey padlocks
+ * tells a student nothing about what is coming.
  */
 const NODE_STYLES: Record<
   LessonNodeState,
   {
-    tile: string;
-    art: string;
-    badge: string;
     label: string;
-    tone: string;
+    /** Token diameter. The current lesson is the largest thing on the path. */
     size: number;
-    lip: string;
-    /** The state label colour once the map sits on the night sky. */
+    /** The state label's colour against the night sky. */
     onSky: string;
   }
 > = {
-  locked: {
-    tile: "border-line bg-surface-2 border-dashed",
-    art: "text-navy-faint opacity-60",
-    badge: "bg-surface-3 text-navy-faint",
-    label: "Locked",
-    tone: "text-navy-faint",
-    size: 74,
-    lip: "var(--color-line-strong)",
-    onSky: "text-white/45",
-  },
-  current: {
-    tile: "border-brand bg-brand",
-    art: "text-white",
-    badge: "bg-white text-brand",
-    label: "Current sortie",
-    tone: "text-brand",
-    size: 96,
-    lip: "var(--color-brand-dark)",
-    onSky: "text-brand-light",
-  },
+  locked: { label: "Locked", size: 74, onSky: "text-white/45" },
+  current: { label: "Current sortie", size: 96, onSky: "text-brand-light" },
   completed: {
-    tile: "border-go/45 bg-go-soft",
-    art: "text-go",
-    badge: "bg-go text-white",
     label: "Complete",
-    tone: "text-go",
     size: 80,
-    lip: "color-mix(in srgb, var(--color-go) 32%, transparent)",
     onSky: "text-[color-mix(in_srgb,var(--color-go)_45%,white)]",
   },
   perfect: {
-    tile: "border-go bg-go",
-    art: "text-white",
-    badge: "bg-white text-go",
     label: "Perfect",
-    tone: "text-go",
     size: 80,
-    lip: "var(--color-go-dark)",
-    onSky: "text-[color-mix(in_srgb,var(--color-go)_45%,white)]",
+    onSky: "text-[color-mix(in_srgb,var(--color-gold)_40%,white)]",
   },
   mastered: {
-    tile: "border-gold/55 bg-gold-soft",
-    art: "text-gold",
-    badge: "bg-gold text-white",
     label: "Mastered",
-    tone: "text-gold",
     size: 82,
-    lip: "color-mix(in srgb, var(--color-gold) 38%, transparent)",
     onSky: "text-[color-mix(in_srgb,var(--color-gold)_40%,white)]",
   },
   weak: {
-    tile: "border-caution/50 bg-caution-soft",
-    art: "text-caution",
-    badge: "bg-caution text-white",
     label: "Needs review",
-    tone: "text-caution",
     size: 80,
-    lip: "color-mix(in srgb, var(--color-caution) 34%, transparent)",
     onSky: "text-[color-mix(in_srgb,var(--color-caution)_38%,white)]",
   },
 };
@@ -349,7 +306,7 @@ export function LessonMap({
               contrast against the ink rather than losing it; the labels beside
               them switch to their `onSky` tones to keep up.
             */}
-            <SkyBackdrop arc={false} />
+            <SkyBackdrop arc={false} clouds={0.35} />
             <UnitHeader
               unit={unit}
               accent={accent}
@@ -622,79 +579,33 @@ function MapNode({
   const current = state === "current";
 
   const tile = (
-    <span ref={tileRef} className="relative shrink-0">
-      {/* A slow halo behind the one lesson the student should open next. */}
-      {current && !reduceMotion && (
-        <motion.span
-          className="absolute inset-0 rounded-[22px] bg-brand"
-          animate={{ opacity: [0.28, 0, 0.28], scale: [1, 1.28, 1] }}
-          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-          aria-hidden
-        />
-      )}
-      {/*
-        A locked stop has nothing to press, so it keeps a flat face; every
-        other node gets the solid lip and sinks under the tap.
-      */}
-      <motion.span
-        className={cn(
-          "relative flex items-center justify-center rounded-[22px] border-2",
-          style.tile,
-          locked ? "transition-transform duration-200" : "chunky group-hover:brightness-[1.03]",
-        )}
-        style={
-          {
-            height: style.size,
-            width: style.size,
-            ...(locked ? {} : { "--lip": style.lip }),
-          } as React.CSSProperties
-        }
-        animate={current && !reduceMotion ? { scale: [1, 1.015, 1] } : undefined}
-        transition={current && !reduceMotion ? { duration: 3.2, repeat: Infinity, ease: "easeInOut" } : undefined}
-      >
-        <LessonIcon
-          name={lesson.mapIcon}
-          className={cn("h-[58%] w-[58%]", style.art)}
-        />
-      </motion.span>
-      <span
-        className={cn(
-          "absolute -bottom-1 -right-1 flex h-[22px] w-[22px] items-center justify-center rounded-full border-2 border-surface shadow-sm",
-          style.badge,
-        )}
-      >
-        {locked && <Lock size={11} strokeWidth={3} />}
-        {current && <Play size={11} fill="currentColor" />}
-        {state === "completed" && <Check size={12} strokeWidth={3.5} />}
-        {state === "weak" && <TriangleAlert size={11} strokeWidth={3} />}
-        {state === "perfect" && <Star size={11} fill="currentColor" strokeWidth={0} />}
-        {/* Mastered earns the same wing the route marker carries, not just
-            another star — a visibly different reward for a visibly different
-            state. */}
-        {state === "mastered" && <WingGlyph className="h-[11px] w-[11px]" />}
-      </span>
+    <motion.span
+      ref={tileRef}
+      className="relative shrink-0"
+      // Hover bob: the token lifts toward the cursor, the whole badge with
+      // its shadow, so the depth reads on the way up.
+      animate={reduceMotion ? undefined : { y: 0 }}
+      whileHover={reduceMotion || locked ? undefined : { y: -4 }}
+      transition={{ type: "spring", stiffness: 340, damping: 22 }}
+    >
+      <LessonToken
+        state={state}
+        icon={lesson.mapIcon}
+        size={style.size}
+        celebrate={justCompleted}
+      />
 
-      {/* The one moment this node gets: a quiet burst as the marker leaves it,
-          and — if the lesson just finished said how much — a small +XP that
-          rises and fades. Plays once, on the visit right after finishing. */}
-      {justCompleted && !reduceMotion && (
-        <>
-          <span
-            className="animate-burst pointer-events-none absolute inset-0 rounded-[22px]"
-            style={{ backgroundColor: "var(--color-go)" }}
-            aria-hidden
-          />
-          {typeof xpEarned === "number" && (
-            <span
-              className="animate-rise tabular pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-extrabold text-go"
-              aria-hidden
-            >
-              +{xpEarned} XP
-            </span>
-          )}
-        </>
+      {/* The XP the lesson just paid, rising once and gone. The sparkle
+          itself lives in the token. */}
+      {justCompleted && !reduceMotion && typeof xpEarned === "number" && (
+        <span
+          className="animate-rise tabular pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-[12px] font-extrabold text-gold"
+          aria-hidden
+        >
+          +{xpEarned} XP
+        </span>
       )}
-    </span>
+    </motion.span>
   );
 
   /*

@@ -51,6 +51,7 @@ import {
   cn,
 } from "@/components/ui";
 import { LessonIcon } from "@/components/lesson-icon";
+import { CourseGrid, useCourseRows } from "@/components/course-grid";
 import { SkyBackdrop } from "@/components/sky";
 import { WingGlyph } from "@/components/route-marker";
 import { useCountUp } from "@/components/reward";
@@ -90,11 +91,33 @@ function StandardHome() {
   const lessonsDone = Object.values(state.lessons).filter((l) => l.completed).length;
   const isNew = ready && lessonsDone === 0 && state.attempts.length === 0;
 
+  /*
+   * Home is the platform dashboard, so its headline number is every course
+   * averaged rather than whichever one happens to be selected. The active
+   * course still gets its own ring on its own card in the grid.
+   */
+  const rows = useCourseRows();
+  const totals = useMemo(
+    () => ({
+      lessonsDone: rows.reduce((n, r) => n + r.lessonsDone, 0),
+      lessonsTotal: rows.reduce((n, r) => n + r.lessonsTotal, 0),
+      conceptsMastered: rows.reduce((n, r) => n + r.conceptsMastered, 0),
+    }),
+    [rows],
+  );
+  const platformReadiness = useMemo(
+    () =>
+      rows.length === 0
+        ? 0
+        : Math.round(rows.reduce((n, r) => n + r.readiness, 0) / rows.length),
+    [rows],
+  );
+
   const hour = new Date(now).getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   const doneToday = lessonsCompletedToday(state.lessons, now);
 
-  const readinessShown = useCountUp(readiness, 800);
+  const overallShown = useCountUp(platformReadiness, 800);
   const xpShown = useCountUp(state.xp);
 
   /*
@@ -181,14 +204,14 @@ function StandardHome() {
             <div className="mt-7 grid grid-cols-2 gap-y-5 rounded-2xl bg-ink-900/70 p-4 ring-1 ring-inset ring-white/10 backdrop-blur-md sm:grid-cols-4 sm:gap-y-0 sm:divide-x sm:divide-white/10">
               <div className="flex items-center gap-3 sm:pr-4">
                 <ProgressRing
-                  value={readiness / 100}
+                  value={platformReadiness / 100}
                   size={54}
                   stroke={6}
-                  tone={readiness >= 80 ? "go" : readiness >= 50 ? "brand" : "caution"}
+                  tone={platformReadiness >= 80 ? "go" : platformReadiness >= 50 ? "brand" : "caution"}
                   trackClassName="stroke-white/15"
                 >
                   <span className="tabular text-[14px] font-extrabold leading-none text-white">
-                    {readinessShown}
+                    {overallShown}
                   </span>
                 </ProgressRing>
                 <div className="min-w-0">
@@ -196,7 +219,7 @@ function StandardHome() {
                     Readiness
                   </p>
                   <p className="mt-0.5 text-[12.5px] font-semibold leading-tight text-white">
-                    {meta.name}
+                    all courses
                   </p>
                 </div>
               </div>
@@ -223,6 +246,20 @@ function StandardHome() {
           </div>
         </InkCard>
       )}
+
+      {/* ---------------- Across every course ---------------- */}
+      <section id="courses">
+        <SectionHeading
+          title="Your courses"
+          action={
+            <span className="tabular text-[13px] font-semibold text-navy-soft">
+              {totals.lessonsDone}/{totals.lessonsTotal} lessons · {totals.conceptsMastered} concepts
+              mastered
+            </span>
+          }
+        />
+        <CourseGrid rows={rows} />
+      </section>
 
       <div className="grid gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <div className="min-w-0 space-y-7">
