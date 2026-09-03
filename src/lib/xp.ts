@@ -61,6 +61,50 @@ export function levelFromXp(xp: number): {
   return { level, intoLevel, span, progress: Math.min(1, intoLevel / span) };
 }
 
+/**
+ * The name shown beside a level.
+ *
+ * Note this reverses the "deliberately no rank progression" line above, at the
+ * founder's request: a bare number turned out to read as a statistic rather
+ * than as progress. The names are training-pipeline vocabulary rather than
+ * real Navy rates, so nothing here claims a qualification the student has not
+ * earned in the real world.
+ */
+const RANKS: [minLevel: number, name: string][] = [
+  [1, "Trainee"],
+  [5, "Cadet"],
+  [10, "Aviator"],
+  [17, "Section Lead"],
+  [25, "Flight Lead"],
+  [35, "Instructor"],
+  [47, "Squadron Lead"],
+];
+
+export function rankForLevel(level: number): string {
+  let name = RANKS[0][1];
+  for (const [min, label] of RANKS) if (level >= min) name = label;
+  return name;
+}
+
+/**
+ * Lessons finished today, for the daily goal.
+ *
+ * Derived from the lessons themselves rather than stored, so it cannot drift
+ * out of step with actual progress and needs no migration.
+ */
+export function lessonsCompletedToday(
+  lessons: Record<string, LessonProgress>,
+  now: number = Date.now(),
+): number {
+  const today = dayKey(now);
+  return Object.values(lessons).filter(
+    (l) => l.completed && l.lastCompletedAt !== null && dayKey(l.lastCompletedAt) === today,
+  ).length;
+}
+
+/** How many lessons a day the app asks for. Deliberately small and hittable. */
+export const DAILY_LESSON_GOAL = 3;
+
 /* ------------------------------------------------------------------ */
 /* Streak                                                              */
 /* ------------------------------------------------------------------ */

@@ -96,7 +96,10 @@ const BUTTON_BASE =
   "inline-flex items-center justify-center gap-2 rounded-xl font-semibold disabled:pointer-events-none disabled:opacity-45 select-none";
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
-  primary: "pressable bg-brand text-white hover:bg-brand-dark",
+  // The one call to action on a screen gets the solid lip; everything else
+  // keeps the softer elevation so the primary still reads as the primary.
+  primary:
+    "chunky [--lip:var(--color-brand-dark)] bg-brand text-white hover:brightness-[1.04]",
   secondary: "pressable bg-surface-2 text-navy hover:bg-surface-3 border border-line",
   ghost: "text-navy-soft transition-colors duration-150 hover:bg-surface-2 hover:text-navy",
   danger: "pressable bg-nogo text-white hover:brightness-95",

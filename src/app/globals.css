@@ -476,6 +476,43 @@ button,
   }
 }
 
+/*
+ * The chunky press.
+ *
+ * `pressable` above is the soft-elevation version: a shadow that lifts and
+ * settles. This is the other kind — a solid lip under the element, so it reads
+ * as a physical key rather than a floating card, and travels its whole depth
+ * under the finger. Reserved for the primary action on a screen and for the
+ * lesson nodes on the flight path, which is where the tactility earns its
+ * keep; using it everywhere would turn the app into a toy.
+ *
+ * Callers set --lip to a darker shade of their own background.
+ */
+@utility chunky {
+  --lip: color-mix(in srgb, var(--color-course-ink) 24%, transparent);
+  box-shadow: 0 4px 0 0 var(--lip);
+  transition:
+    transform 90ms var(--ease-out-quint),
+    box-shadow 90ms var(--ease-out-quint),
+    background-color 140ms ease,
+    border-color 140ms ease;
+
+  &:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 0 var(--lip);
+  }
+
+  /* Nested inside the utility, not wrapped around it: Tailwind v4 rejects a
+     nested `@utility`, so the query has to live in here instead. */
+  @media (prefers-reduced-motion: reduce) {
+    transition: background-color 140ms ease;
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}
+
 /* ---------- Course motifs ---------- */
 
 /*
@@ -539,6 +576,28 @@ button,
 :root[data-course="frr"] { --motif: var(--motif-grid); }
 :root[data-course="weather"] { --motif: var(--motif-contour); }
 :root[data-course="nav"] { --motif: var(--motif-grid); }
+
+/* ---------- Sky ---------- */
+
+/* Stars breathe rather than blink: a hard on/off reads as a rendering fault. */
+@keyframes sky-twinkle {
+  0%,
+  100% {
+    opacity: inherit;
+  }
+  50% {
+    opacity: 0.22;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes sky-twinkle {
+    0%,
+    100% {
+      opacity: inherit;
+    }
+  }
+}
 
 /* ---------- Reward ---------- */
 

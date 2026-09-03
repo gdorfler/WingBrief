@@ -34,6 +34,7 @@ import { useCourse } from "@/lib/course";
 import { ProgressRing, cn } from "./ui";
 import { CourseSwitcher } from "./course-switcher";
 import { StreakFlame } from "./reward";
+import { StreakWeek } from "./streak-week";
 import { claimsFor, evaluateClaims, summariseClaims } from "@/lib/claims";
 import { AwardToasts } from "./awards";
 
@@ -226,11 +227,12 @@ function SideNav() {
           </div>
         </div>
         )}
-        {streak > 0 && (
-          <div className="mt-3">
-            <StreakFlame days={streak} size="sm" onInk label />
-          </div>
-        )}
+      </div>
+
+      {/* The week, not just the count: an unfilled ring on today is a far
+          better prompt than a number that has stopped going up. */}
+      <div className="mb-5 rounded-2xl bg-ink-800 px-4 py-3.5">
+        <StreakWeek history={state.streak.history} current={streak} onInk />
       </div>
 
       <nav className="flex flex-col gap-1">

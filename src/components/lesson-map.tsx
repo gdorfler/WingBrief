@@ -51,10 +51,16 @@ const UNIT_ACCENT: Record<Unit["accent"], string> = {
 /**
  * Per-state presentation. Locked nodes still show their diagram — a wall of
  * grey padlocks tells a student nothing about what is coming.
+ *
+ * Each state carries a `lip`: a darker shade of its own tile, set as --lip so
+ * the `chunky` utility can draw a solid edge under the node. That is what
+ * makes a stop on the path feel like a key you press rather than a sticker,
+ * and it is the one place besides the primary button where the treatment is
+ * worth the weight it adds.
  */
 const NODE_STYLES: Record<
   LessonNodeState,
-  { tile: string; art: string; badge: string; label: string; tone: string; size: number }
+  { tile: string; art: string; badge: string; label: string; tone: string; size: number; lip: string }
 > = {
   locked: {
     tile: "border-line bg-surface-2 border-dashed",
@@ -63,14 +69,16 @@ const NODE_STYLES: Record<
     label: "Locked",
     tone: "text-navy-faint",
     size: 74,
+    lip: "var(--color-line-strong)",
   },
   current: {
-    tile: "border-brand bg-brand shadow-[0_10px_28px_-10px_var(--color-brand)]",
+    tile: "border-brand bg-brand",
     art: "text-white",
     badge: "bg-white text-brand",
     label: "Current sortie",
     tone: "text-brand",
     size: 96,
+    lip: "var(--color-brand-dark)",
   },
   completed: {
     tile: "border-go/45 bg-go-soft",
@@ -79,22 +87,25 @@ const NODE_STYLES: Record<
     label: "Complete",
     tone: "text-go",
     size: 80,
+    lip: "color-mix(in srgb, var(--color-go) 32%, transparent)",
   },
   perfect: {
-    tile: "border-go bg-go shadow-[0_8px_22px_-12px_var(--color-go)]",
+    tile: "border-go bg-go",
     art: "text-white",
     badge: "bg-white text-go",
     label: "Perfect",
     tone: "text-go",
     size: 80,
+    lip: "var(--color-go-dark)",
   },
   mastered: {
-    tile: "border-gold/55 bg-gold-soft shadow-[0_8px_22px_-12px_var(--color-gold)]",
+    tile: "border-gold/55 bg-gold-soft",
     art: "text-gold",
     badge: "bg-gold text-white",
     label: "Mastered",
     tone: "text-gold",
     size: 82,
+    lip: "color-mix(in srgb, var(--color-gold) 38%, transparent)",
   },
   weak: {
     tile: "border-caution/50 bg-caution-soft",
@@ -103,6 +114,7 @@ const NODE_STYLES: Record<
     label: "Needs review",
     tone: "text-caution",
     size: 80,
+    lip: "color-mix(in srgb, var(--color-caution) 34%, transparent)",
   },
 };
 
@@ -594,13 +606,23 @@ function MapNode({
           aria-hidden
         />
       )}
+      {/*
+        A locked stop has nothing to press, so it keeps a flat face; every
+        other node gets the solid lip and sinks under the tap.
+      */}
       <motion.span
         className={cn(
-          "relative flex items-center justify-center rounded-[22px] border-2 transition-transform duration-200",
+          "relative flex items-center justify-center rounded-[22px] border-2",
           style.tile,
-          !locked && "group-hover:scale-[1.05]",
+          locked ? "transition-transform duration-200" : "chunky group-hover:brightness-[1.03]",
         )}
-        style={{ height: style.size, width: style.size }}
+        style={
+          {
+            height: style.size,
+            width: style.size,
+            ...(locked ? {} : { "--lip": style.lip }),
+          } as React.CSSProperties
+        }
         animate={current && !reduceMotion ? { scale: [1, 1.015, 1] } : undefined}
         transition={current && !reduceMotion ? { duration: 3.2, repeat: Infinity, ease: "easeInOut" } : undefined}
       >

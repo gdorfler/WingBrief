@@ -6,12 +6,19 @@
  * Three questions, in priority order: where am I, what do I do next, am I
  * making progress. Everything else is secondary and is allowed to be quiet.
  *
- * The hero deliberately carries only readiness, streak and level. Lessons
- * completed and concepts mastered are real numbers but they are review
- * material, not motivation, so they live on the profile where a student goes
- * to study their own record rather than on the screen they open to start
- * work. The daily flight leads with one elevated card because a plan with
+ * The hero carries the four numbers that answer "is coming back today worth
+ * it" — readiness, streak, XP and level — as one strip on a single surface
+ * rather than four boxed tiles. Coverage counts (lessons completed, concepts
+ * mastered) are review material rather than motivation, so they stay on the
+ * profile. The daily flight leads with one elevated card because a plan with
  * four equal rows is not a plan, it is a menu.
+ *
+ * On the gamification: streak, XP, level and a single reachable daily goal
+ * earn their place because each one is a real measure of work done. The
+ * layer past that in the reference designs — chests, timed daily rewards,
+ * "top 12% of trainees" — is deliberately absent. Two of those would require
+ * inventing data the app does not have, and all of them reward opening the
+ * app rather than learning anything.
  */
 
 import { useMemo } from "react";
@@ -24,11 +31,12 @@ import {
   Flame,
   Play,
   Sparkles,
+  Star,
   TrendingUp,
 } from "lucide-react";
 
 import { buildDailyFlight, overallReadiness, unitReadiness, weakConcepts } from "@/lib/review";
-import { levelFromXp, liveStreak } from "@/lib/xp";
+import { DAILY_LESSON_GOAL, levelFromXp, lessonsCompletedToday, liveStreak, rankForLevel } from "@/lib/xp";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import {
@@ -43,6 +51,8 @@ import {
   cn,
 } from "@/components/ui";
 import { LessonIcon } from "@/components/lesson-icon";
+import { SkyBackdrop } from "@/components/sky";
+import { WingGlyph } from "@/components/route-marker";
 import { useCountUp } from "@/components/reward";
 import { ClaimsHero } from "@/components/claims-hero";
 import { claimsFor, evaluateClaims, summariseClaims } from "@/lib/claims";
@@ -79,6 +89,10 @@ function StandardHome() {
   const unwatched = content.explainers.filter((e) => !state.watchedExplainerIds.includes(e.id)).slice(0, 3);
   const lessonsDone = Object.values(state.lessons).filter((l) => l.completed).length;
   const isNew = ready && lessonsDone === 0 && state.attempts.length === 0;
+
+  const hour = new Date(now).getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const doneToday = lessonsCompletedToday(state.lessons, now);
 
   const readinessShown = useCountUp(readiness, 800);
   const xpShown = useCountUp(state.xp);
@@ -119,53 +133,92 @@ function StandardHome() {
         </>
       ) : (
         <InkCard className="relative overflow-hidden" padded={false}>
-          <BackdropGrid />
-          <div className="relative flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-            <div className="flex items-center gap-5">
-              <ProgressRing
-                value={readiness / 100}
-                size={96}
-                stroke={9}
-                tone={readiness >= 80 ? "go" : readiness >= 50 ? "brand" : "caution"}
-                trackClassName="stroke-ink-600"
-              >
-                <span className="tabular text-[26px] font-extrabold leading-none text-white">
-                  {readinessShown}
-                  <span className="text-[15px]">%</span>
-                </span>
-              </ProgressRing>
+          <SkyBackdrop />
+          <div className="relative p-6 sm:p-8">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div className="min-w-0">
-                <p className="eyebrow text-[#8fb0d4]">{meta.name}</p>
-                <p className="mt-1 max-w-[17rem] text-[17px] font-bold leading-snug text-white">
+                {/* No display name is stored — only a sign-in email — and
+                    guessing a first name from an address gets it wrong more
+                    often than not, so the greeting stands on its own. */}
+                <p className="text-[13.5px] font-semibold text-[#a9c2da]">{greeting}</p>
+                <h1 className="mt-1 text-[30px] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[34px]">
+                  {isNew ? "Ready for takeoff?" : "Ready to keep climbing?"}
+                </h1>
+                <p className="mt-2 max-w-sm text-[14.5px] leading-snug text-[#bed2e6]">
                   {readiness >= 85
-                    ? "Checkride ready. Hold the edge."
+                    ? "Checkride ready. Hold the edge with exams."
                     : readiness >= 60
-                      ? "Strong base. Attack the weak areas."
+                      ? "Strong base. Attack the weak areas next."
                       : readiness > 0
-                        ? "Momentum building. Keep it going."
+                        ? "You're making progress. Let's keep going."
                         : "Welcome aboard. Start with Unit 1."}
                 </p>
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <InkChip tone={streak > 0 ? "caution" : "neutral"}>
-                    <Flame size={13} />
-                    {streak} day{streak === 1 ? "" : "s"}
-                  </InkChip>
-                  <InkChip>Level {level.level}</InkChip>
+                <div className="mt-5 flex flex-wrap items-center gap-2.5">
+                  <ButtonLink href={continueHref} variant="primary" size="lg">
+                    <Play size={17} fill="currentColor" />
+                    {isNew ? "Start flying" : "Continue"}
+                  </ButtonLink>
+                  <Link
+                    href="/exam"
+                    className="flex h-13 items-center gap-2 rounded-xl border border-white/20 px-5 text-[14.5px] font-bold text-white transition-colors hover:bg-white/10"
+                  >
+                    <ClipboardCheck size={16} />
+                    Exam
+                  </Link>
                 </div>
               </div>
             </div>
 
-            <div className="flex shrink-0 flex-col items-stretch gap-2.5 sm:w-48">
-              <ButtonLink href={continueHref} variant="primary" size="lg" fullWidth>
-                <Play size={17} fill="currentColor" />
-                {isNew ? "Start flying" : "Continue"}
-              </ButtonLink>
-              <Link
-                href="/exam"
-                className="text-center text-[12.5px] font-semibold text-[#8fb0d4] transition-colors hover:text-white"
-              >
-                Practice exam
-              </Link>
+            {/*
+              The four numbers live back inside the hero.
+              Readiness alone answered "where am I" but said nothing about
+              whether coming back today was worth it, which is what streak, XP
+              and level are for. They are a strip rather than four boxed
+              tiles: one surface, hairline dividers, no card apiece.
+            */}
+            {/* Opaque enough to hold its own contrast whatever the sky is
+                doing behind it — the cloud bank sits at exactly this height. */}
+            <div className="mt-7 grid grid-cols-2 gap-y-5 rounded-2xl bg-ink-900/70 p-4 ring-1 ring-inset ring-white/10 backdrop-blur-md sm:grid-cols-4 sm:gap-y-0 sm:divide-x sm:divide-white/10">
+              <div className="flex items-center gap-3 sm:pr-4">
+                <ProgressRing
+                  value={readiness / 100}
+                  size={54}
+                  stroke={6}
+                  tone={readiness >= 80 ? "go" : readiness >= 50 ? "brand" : "caution"}
+                  trackClassName="stroke-white/15"
+                >
+                  <span className="tabular text-[14px] font-extrabold leading-none text-white">
+                    {readinessShown}
+                  </span>
+                </ProgressRing>
+                <div className="min-w-0">
+                  <p className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#8fb0d4]">
+                    Readiness
+                  </p>
+                  <p className="mt-0.5 text-[12.5px] font-semibold leading-tight text-white">
+                    {meta.name}
+                  </p>
+                </div>
+              </div>
+
+              <HeroStat
+                icon={<Flame size={17} className="text-caution" fill="currentColor" strokeWidth={0} />}
+                label="Streak"
+                value={`${streak}`}
+                hint={streak === 1 ? "day" : "days"}
+              />
+              <HeroStat
+                icon={<Star size={17} className="text-gold" fill="currentColor" strokeWidth={0} />}
+                label="XP"
+                value={xpShown.toLocaleString()}
+                hint="points"
+              />
+              <HeroStat
+                icon={<WingGlyph className="h-[17px] w-[17px] text-brand-light" />}
+                label="Level"
+                value={`${level.level}`}
+                hint={rankForLevel(level.level)}
+              />
             </div>
           </div>
         </InkCard>
@@ -281,6 +334,40 @@ function StandardHome() {
         </div>
 
         <div className="min-w-0 space-y-7">
+          {/* ---------------- Daily goal ---------------- */}
+          {/*
+            One goal, real numbers, no prize attached. A small target that is
+            actually reachable is the part of a daily streak that works; the
+            chests and timed rewards around it are the part that turns a
+            training tool into a slot machine.
+          */}
+          <Card>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[15px] font-extrabold text-navy">Daily goal</p>
+                <p className="mt-0.5 text-[13px] text-navy-soft">
+                  {doneToday >= DAILY_LESSON_GOAL
+                    ? "Done for today. Anything more is a bonus."
+                    : `Complete ${DAILY_LESSON_GOAL} lessons`}
+                </p>
+              </div>
+              <span
+                className={cn(
+                  "tabular shrink-0 rounded-full px-2.5 py-1 text-[12.5px] font-extrabold",
+                  doneToday >= DAILY_LESSON_GOAL ? "bg-go-soft text-go" : "bg-brand-soft text-brand",
+                )}
+              >
+                {Math.min(doneToday, DAILY_LESSON_GOAL)} / {DAILY_LESSON_GOAL}
+              </span>
+            </div>
+            <ProgressBar
+              value={Math.min(1, doneToday / DAILY_LESSON_GOAL)}
+              tone={doneToday >= DAILY_LESSON_GOAL ? "go" : "brand"}
+              height={9}
+              className="mt-3"
+            />
+          </Card>
+
           {/* ---------------- Weak areas ---------------- */}
           {/*
             Make It Click lives here rather than in a section of its own: it is
@@ -384,25 +471,29 @@ function StandardHome() {
   );
 }
 
-/** A small inline stat for the hero, where a full StatTile would be too loud. */
-function InkChip({
-  children,
-  tone = "neutral",
+/** One cell of the hero's stat strip: icon, label, big number, unit. */
+function HeroStat({
+  icon,
+  label,
+  value,
+  hint,
 }: {
-  children: React.ReactNode;
-  tone?: "neutral" | "caution";
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  hint: string;
 }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-bold",
-        tone === "caution"
-          ? "bg-caution/20 text-[#ffc46b]"
-          : "bg-white/10 text-[#c5d8ec]",
-      )}
-    >
-      {children}
-    </span>
+    <div className="min-w-0 sm:px-4">
+      <div className="flex items-center gap-1.5">
+        {icon}
+        <p className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#8fb0d4]">
+          {label}
+        </p>
+      </div>
+      <p className="tabular mt-0.5 text-[22px] font-extrabold leading-none text-white">{value}</p>
+      <p className="mt-0.5 text-[11.5px] font-semibold text-[#8fb0d4]">{hint}</p>
+    </div>
   );
 }
 
@@ -437,22 +528,5 @@ function FlightIcon({
     >
       {art ? <LessonIcon name={art} className={lead ? "h-8 w-8" : "h-6 w-6"} /> : entry.glyph}
     </span>
-  );
-}
-
-function BackdropGrid() {
-  return (
-    <svg
-      className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.16]"
-      aria-hidden
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <pattern id="hero-grid" width="34" height="34" patternUnits="userSpaceOnUse">
-          <path d="M34 0 L0 0 0 34" fill="none" stroke="#4d7cae" strokeWidth="1" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#hero-grid)" />
-    </svg>
   );
 }
