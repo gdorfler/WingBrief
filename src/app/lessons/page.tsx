@@ -5,7 +5,7 @@ import { lessonStates, unitReadiness } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { LessonMap } from "@/components/lesson-map";
-import { ChipRail, PageHeader, Pill } from "@/components/ui";
+import { ChipRail, PageHeader, Pill, cn } from "@/components/ui";
 import { PlacementBanner } from "@/components/placement-banner";
 
 export default function LessonsPage() {
@@ -33,18 +33,44 @@ export default function LessonsPage() {
           </Pill>
         }
       >
+        {/*
+          Each chip carries its own progress. A row of unit names is a table of
+          contents; the same row with "6/6" against each one tells a student
+          where they actually are before they have scrolled anywhere, and marks
+          the finished units without needing a second colour.
+        */}
         <div className="mt-4">
           <ChipRail>
-            {content.units.map((u) => (
-              <a
-                key={u.id}
-                href={`#${u.id}`}
-                className="shrink-0 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[13px] font-semibold text-navy-soft transition-colors hover:border-line-strong hover:text-navy"
-              >
-                <span className="tabular mr-1.5 text-navy-faint">{u.index}</span>
-                {u.title}
-              </a>
-            ))}
+            {content.units.map((u) => {
+              const unitLessons = content.lessons.filter((l) => l.unit === u.id);
+              const doneInUnit = unitLessons.filter(
+                (l) => states[l.id] !== "locked" && states[l.id] !== "current",
+              ).length;
+              const finished = doneInUnit === unitLessons.length && unitLessons.length > 0;
+              return (
+                <a
+                  key={u.id}
+                  href={`#${u.id}`}
+                  className={cn(
+                    "flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors",
+                    finished
+                      ? "border-go/40 bg-go-soft text-go hover:border-go/60"
+                      : "border-line bg-surface text-navy-soft hover:border-line-strong hover:text-navy",
+                  )}
+                >
+                  <span className="tabular text-navy-faint">{u.index}</span>
+                  <span>{u.title}</span>
+                  <span
+                    className={cn(
+                      "tabular text-[12px] font-extrabold",
+                      finished ? "text-go" : "text-navy-faint",
+                    )}
+                  >
+                    {doneInUnit}/{unitLessons.length}
+                  </span>
+                </a>
+              );
+            })}
           </ChipRail>
         </div>
       </PageHeader>

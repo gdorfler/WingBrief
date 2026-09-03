@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { Check, Download, Trash2, Upload } from "lucide-react";
 import { buildEoMatrix } from "@/content";
 import { overallReadiness, unitReadiness } from "@/lib/review";
-import { ACHIEVEMENTS, dayKey, levelFromXp, liveStreak } from "@/lib/xp";
+import { ACHIEVEMENTS, dayKey, levelFromXp, liveStreak, rankForLevel } from "@/lib/xp";
 import { exportProgress, importProgress } from "@/lib/storage";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/auth";
 import { AccountCard } from "@/components/account-card";
 import { CourseSwitcher } from "@/components/course-switcher";
 import { AchievementIcon } from "@/components/achievement-icon";
+import { StreakWeek } from "@/components/streak-week";
 import { EarnedPop } from "@/components/reward";
 import {
   Button,
@@ -130,13 +131,24 @@ export default function ProfilePage() {
         <div className="mt-4">
           <div className="mb-1.5 flex items-baseline justify-between">
             <span className="text-[12px] font-semibold text-navy-soft">
-              Level {level.level} → {level.level + 1}
+              {rankForLevel(level.level)} · Level {level.level} → {level.level + 1}
             </span>
             <span className="tabular text-[12px] font-bold text-navy-faint">
-              {level.intoLevel} / {level.span} XP
+              {level.span - level.intoLevel} XP to go
             </span>
           </div>
           <ProgressBar value={level.progress} tone="brand" height={7} />
+        </div>
+
+        {/* The week, on the screen a student opens to look at their own
+            record. Same component as the rail so the two never disagree. */}
+        <div className="mt-5 border-t border-line pt-4">
+          <StreakWeek history={state.streak.history} current={streak} />
+          {state.streak.longest > streak && (
+            <p className="mt-2 text-[11.5px] font-semibold text-navy-faint">
+              Best run: {state.streak.longest} days
+            </p>
+          )}
         </div>
       </Card>
 
