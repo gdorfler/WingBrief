@@ -167,7 +167,7 @@ export default function ProfilePage() {
 
       {/* Units */}
       <section className="mb-6">
-        <SectionHeading eyebrow="Concept mastery" title="By unit" />
+        <SectionHeading title="Concept mastery by unit" />
         <Card padded={false}>
           <ul className="divide-y divide-line">
             {units.map((u) => (
@@ -178,7 +178,7 @@ export default function ProfilePage() {
                 </div>
                 <ProgressBar
                   value={u.readiness / 100}
-                  tone={u.readiness >= 80 ? "go" : u.readiness >= 40 ? "brand" : "caution"}
+                  tone="brand"
                   height={6}
                   className="mt-2"
                 />
@@ -289,7 +289,7 @@ export default function ProfilePage() {
       </section>
 
       <section className="mb-6">
-        <SectionHeading eyebrow="Platform" title="Active course" />
+        <SectionHeading title="Active course" />
         <Card>
           <div className="max-w-sm">
             <CourseSwitcher />

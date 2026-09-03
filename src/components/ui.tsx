@@ -492,6 +492,32 @@ export function FilterChip({
 /* Misc                                                                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * A small stat for a dark hero, where a full StatTile would be too loud.
+ *
+ * The heroes carry two of these at most. A hero's job is to say where you are
+ * and offer the next action; a row of four boxed metrics inside it turns that
+ * into a dashboard, which is the thing these screens are trying not to be.
+ */
+export function InkChip({
+  children,
+  tone = "neutral",
+}: {
+  children: ReactNode;
+  tone?: "neutral" | "caution";
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-bold",
+        tone === "caution" ? "bg-caution/20 text-[#ffc46b]" : "bg-white/10 text-[#c5d8ec]",
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
 export function StatTile({
   label,
   value,

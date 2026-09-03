@@ -17,9 +17,9 @@ import {
   ArrowRight,
   ClipboardCheck,
   Compass,
+  Flame,
   Gauge,
   Layers,
-  Play,
   Repeat,
   Target,
   Timer,
@@ -43,8 +43,8 @@ import {
   Pill,
   ProgressBar,
   ProgressRing,
+  InkChip,
   SectionHeading,
-  StatTile,
   cn,
 } from "@/components/ui";
 import { LessonIcon } from "@/components/lesson-icon";
@@ -73,70 +73,61 @@ export function NavDeskDashboard() {
       {/* ---------------- Hero: the planning station ---------------- */}
       <InkCard className="relative overflow-hidden" padded={false}>
         <ChartBackdrop />
-        <div className="relative grid gap-6 p-5 sm:p-7 lg:grid-cols-[auto_1fr_auto] lg:items-center">
+        {/*
+          Same shape as the standard hero: where you are, one sentence about
+          it, the two numbers that actually pull a student back, and one
+          obvious way in. Solve time and problems worked are real measures but
+          they are analysis, so they live in the panels below rather than
+          competing with the call to action.
+        */}
+        <div className="relative flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div className="flex items-center gap-5">
             <ProgressRing
               value={readiness / 100}
-              size={104}
-              stroke={10}
+              size={96}
+              stroke={9}
               tone={readiness >= 80 ? "go" : readiness >= 50 ? "brand" : "caution"}
               trackClassName="stroke-ink-600"
             >
-              <span className="figure text-[27px] font-extrabold leading-none text-white">
+              <span className="figure text-[26px] font-extrabold leading-none text-white">
                 {readiness}
-                <span className="text-base">%</span>
+                <span className="text-[15px]">%</span>
               </span>
             </ProgressRing>
-            <div>
-              <p className="eyebrow text-[#8fc4ac]">Navigation readiness</p>
-              <p className="mt-1 max-w-[15rem] text-[15px] font-semibold leading-snug text-white">
+            <div className="min-w-0">
+              <p className="eyebrow text-[#8fc4ac]">Navigation</p>
+              <p className="mt-1 max-w-[17rem] text-[17px] font-bold leading-snug text-white">
                 {isNew
-                  ? "Nothing solved yet. The desk is set up and waiting."
+                  ? "Nothing solved yet. The desk is waiting."
                   : readiness >= 85
                     ? "Fast and accurate. Hold it with missions."
                     : readiness >= 60
                       ? "The methods are there. Speed is the gap."
-                      : "Method first, then speed. Start with the drills."}
+                      : "Method first, then speed."}
               </p>
-              <p className="mt-2 text-[11.5px] leading-snug text-[#a7c9b8]">
-                Measured on skills performed, not concepts seen.
-              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <InkChip tone={streak > 0 ? "caution" : "neutral"}>
+                  <Flame size={13} />
+                  {streak} day{streak === 1 ? "" : "s"}
+                </InkChip>
+                <InkChip>
+                  {perf.calculationPct === null ? "No problems yet" : `${perf.calculationPct}% accurate`}
+                </InkChip>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:px-4">
-            <StatTile
-              ink
-              label="Accuracy"
-              value={perf.calculationPct === null ? "—" : `${perf.calculationPct}%`}
-              hint="on problems"
-              tone={perf.calculationPct !== null && perf.calculationPct >= 80 ? "go" : "brand"}
-            />
-            <StatTile
-              ink
-              label="Solve time"
-              value={perf.medianSolveSeconds === null ? "—" : formatSeconds(perf.medianSolveSeconds)}
-              hint="median"
-              tone="brand"
-            />
-            <StatTile
-              ink
-              label="Problems"
-              value={perf.totalProblems.toLocaleString()}
-              hint="worked"
-            />
-            <StatTile ink label="Streak" value={`${streak}`} hint={streak === 1 ? "day" : "days"} tone={streak > 0 ? "caution" : "neutral"} />
-          </div>
-
-          <div className="flex flex-col gap-2 lg:w-44">
+          <div className="flex shrink-0 flex-col items-stretch gap-2.5 sm:w-48">
             <ButtonLink href="/nav-desk" variant="primary" size="lg" fullWidth>
               <Compass size={17} />
               Open Nav Desk
             </ButtonLink>
-            <ButtonLink href={`/lessons/${nextLesson?.id ?? ""}`} variant="ink" size="md" fullWidth>
-              <Play size={15} fill="currentColor" />
+            <Link
+              href={`/lessons/${nextLesson?.id ?? ""}`}
+              className="text-center text-[12.5px] font-semibold text-[#8fc4ac] transition-colors hover:text-white"
+            >
               {isNew ? "Start the route" : "Continue route"}
-            </ButtonLink>
+            </Link>
           </div>
         </div>
       </InkCard>

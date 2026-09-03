@@ -153,10 +153,7 @@ export default function ReviewPage() {
        */}
       {meta.layout === "desk" && <NavReviewPanel content={content} attempts={state.attempts} />}
 
-      <SectionHeading
-        eyebrow={meta.layout === "desk" ? "And the recall underneath" : "Targeted drills"}
-        title="What needs work"
-      />
+      <SectionHeading title="What needs work" />
       <ul className="mb-8 grid gap-3 sm:grid-cols-2">
         {tiles.map((t) => (
           <li key={t.href}>
@@ -198,7 +195,6 @@ export default function ReviewPage() {
       {weak.length > 0 && (
         <section className="mb-8">
           <SectionHeading
-            eyebrow="Concept by concept"
             title="Exactly what is weak"
             action={
               <Link href="/review/weak" className="text-[13px] font-semibold text-brand hover:underline">
@@ -253,7 +249,7 @@ export default function ReviewPage() {
 
       {/* Unit rollup */}
       <section className="mb-8">
-        <SectionHeading eyebrow="By unit" title="Mastery rollup" />
+        <SectionHeading title="Mastery rollup" />
         <Card padded={false}>
           <ul className="divide-y divide-line">
             {units.map((u) => (
@@ -285,7 +281,7 @@ export default function ReviewPage() {
       </section>
 
       {/* Reference */}
-      <SectionHeading eyebrow="Reference" title="Study material" />
+      <SectionHeading title="Study material" />
       <ul className="grid gap-3 sm:grid-cols-2">
         {references.map((r) => (
           <li key={r.title}>

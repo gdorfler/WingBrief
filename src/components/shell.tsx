@@ -126,14 +126,22 @@ function NavItem({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group flex items-center gap-3 rounded-xl px-3 font-semibold transition-colors",
-        compact ? "h-9 text-[13px]" : "h-11 text-sm",
+        "group relative flex items-center gap-3 rounded-xl px-3 transition-colors",
+        compact ? "h-9 text-[13.5px]" : "h-11 text-[14.5px]",
         active
-          ? "bg-brand-soft text-brand"
-          : "text-navy-soft hover:bg-surface-2 hover:text-navy",
+          ? "bg-brand-soft font-extrabold text-brand"
+          : "font-semibold text-navy-soft hover:bg-surface-2 hover:text-navy",
       )}
     >
-      <Icon size={compact ? 16 : 18} strokeWidth={active ? 2.4 : 2} />
+      {/* Where you are should survive a glance from across the room, so the
+          current item gets a bar in the course accent as well as a tint. */}
+      {active && (
+        <span
+          className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand"
+          aria-hidden
+        />
+      )}
+      <Icon size={compact ? 16 : 18} strokeWidth={active ? 2.6 : 2} />
       <span>{label}</span>
     </Link>
   );

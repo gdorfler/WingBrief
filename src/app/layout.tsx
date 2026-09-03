@@ -26,8 +26,13 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  /*
+   * `data-scroll-behavior` opts in to the smooth scrolling globals.css asks
+   * for. Without it Next warns, and a future version will stop suppressing
+   * smooth scroll during route transitions on its own.
+   */
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className="antialiased">
         <AuthProvider>
           <ProgressProvider>

@@ -50,15 +50,6 @@ import { NavDeskDashboard } from "@/components/nav/desk-dashboard";
 import { hasClick } from "@/content/click";
 import { MakeItClick } from "@/components/click/trigger";
 
-const UNIT_TONE = {
-  brand: "brand",
-  go: "go",
-  caution: "caution",
-  violet: "violet",
-  navy: "neutral",
-  nogo: "nogo",
-} as const;
-
 export default function HomePage() {
   const { meta: activeMeta } = useCourse();
   /*
@@ -262,7 +253,6 @@ function StandardHome() {
               <ul className="divide-y divide-line">
                 {units.map((u) => {
                   const unit = content.units.find((x) => x.id === u.unit)!;
-                  const tone = UNIT_TONE[unit.accent];
                   return (
                     <li key={u.unit}>
                       <Link
@@ -279,7 +269,7 @@ function StandardHome() {
                               {u.readiness}%
                             </span>
                           </div>
-                          <ProgressBar value={u.readiness / 100} tone={tone} height={6} className="mt-2" />
+                          <ProgressBar value={u.readiness / 100} tone="brand" height={6} className="mt-2" />
                         </div>
                       </Link>
                     </li>
