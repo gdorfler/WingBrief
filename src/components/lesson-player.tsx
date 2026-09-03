@@ -400,7 +400,7 @@ function ScreenView({
             <div className="flex items-center justify-between gap-3 border-b border-brand/20 bg-brand-soft px-4 py-2.5">
               <p className="eyebrow text-brand">The rule</p>
               {screen.authority && (
-                <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-wide text-brand">
+                <span className="shrink-0 text-[11px] font-bold uppercase tracking-wide text-brand">
                   {screen.authority}
                 </span>
               )}
@@ -478,7 +478,7 @@ function ScreenView({
             <div className="mb-2.5 flex items-center justify-between gap-3">
               <p className="eyebrow text-navy-faint">The method</p>
               {screen.tolerance && (
-                <span className="figure shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[10.5px] font-bold text-navy-soft">
+                <span className="figure shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-bold text-navy-soft">
                   {screen.tolerance}
                 </span>
               )}
@@ -687,7 +687,7 @@ function LessonComplete({
                   {scorePct}
                   <span className="text-lg">%</span>
                 </span>
-                <span className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8fb0d4]">
+                <span className="mt-0.5 text-[11px] font-bold uppercase tracking-wider text-[#8fb0d4]">
                   first try
                 </span>
               </ProgressRing>

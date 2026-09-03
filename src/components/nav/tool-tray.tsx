@@ -154,7 +154,7 @@ export function NavToolTray({
             </button>
           );
         })}
-        <span className="ml-auto hidden pr-1 text-[10.5px] text-navy-faint sm:block">
+        <span className="ml-auto hidden pr-1 text-[11px] text-navy-faint sm:block">
           Tools stay open while you work
         </span>
       </div>

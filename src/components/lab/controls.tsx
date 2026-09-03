@@ -59,7 +59,7 @@ export function Slider({
           } as React.CSSProperties
         }
       />
-      {hint && <span className="mt-0.5 block text-[10.5px] text-navy-faint">{hint}</span>}
+      {hint && <span className="mt-0.5 block text-[11px] text-navy-faint">{hint}</span>}
     </label>
   );
 }
@@ -183,7 +183,7 @@ export function Readout({
       <p className={cn("tabular font-bold leading-none", big ? "mt-1.5 text-2xl" : "mt-1 text-lg", color[tone])}>
         {value}
       </p>
-      {hint && <p className="mt-1 text-[10.5px] text-navy-faint">{hint}</p>}
+      {hint && <p className="mt-1 text-[11px] text-navy-faint">{hint}</p>}
     </div>
   );
 }

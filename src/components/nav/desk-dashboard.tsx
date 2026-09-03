@@ -259,7 +259,7 @@ export function NavDeskDashboard() {
                           ))}
                         </div>
                         {s.medianSeconds !== null && (
-                          <span className="figure text-[10.5px] font-semibold text-navy-faint">
+                          <span className="figure text-[11px] font-semibold text-navy-faint">
                             {formatSeconds(s.medianSeconds)} median
                           </span>
                         )}

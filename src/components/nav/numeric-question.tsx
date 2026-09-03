@@ -184,7 +184,7 @@ export function NumericBody({
 
               <p
                 id={`nt-${question.id}-${field.key}`}
-                className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-navy-faint"
+                className="mt-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-navy-faint"
               >
                 {TOLERANCES[field.tolerance].label}
                 {field.qualifier ? ` · ${field.qualifier.label}` : ""}

@@ -32,7 +32,7 @@ export function AwardToasts() {
             >
               <AchievementIcon icon={def.icon} size={34} />
               <div className="min-w-0">
-                <p className="text-[10.5px] font-bold uppercase tracking-[0.09em] text-gold">
+                <p className="text-[11px] font-bold uppercase tracking-[0.09em] text-gold">
                   Achievement unlocked
                 </p>
                 <p className="text-[15px] font-bold leading-tight text-white">{def.name}</p>

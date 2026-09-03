@@ -104,7 +104,7 @@ export function StageChip({
   return (
     <div
       className={cn(
-        "absolute top-3 z-10 rounded-full bg-surface-2/90 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-navy-faint ring-1 ring-line backdrop-blur-sm",
+        "absolute top-3 z-10 rounded-full bg-surface-2/90 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-navy-faint ring-1 ring-line backdrop-blur-sm",
         corner === "tl" ? "left-3" : "right-3",
       )}
     >

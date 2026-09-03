@@ -100,7 +100,7 @@ export function LabDetail({ lab }: { lab: Lab }) {
               <ol className="space-y-1.5">
                 {lab.chain.map((step, i) => (
                   <li key={step} className="flex items-start gap-2">
-                    <span className="tabular mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-surface-2 text-[10.5px] font-extrabold text-navy-soft">
+                    <span className="tabular mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-surface-2 text-[11px] font-extrabold text-navy-soft">
                       {i + 1}
                     </span>
                     <span className="text-[12.5px] font-medium leading-snug text-navy">{step}</span>

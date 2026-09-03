@@ -189,7 +189,7 @@ export function CourseSwitcher({ compact = false }: { compact?: boolean }) {
             {meta.name}
           </span>
           {!compact && (
-            <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.09em] text-navy-faint">
+            <span className="mt-0.5 block text-[11px] font-semibold uppercase tracking-[0.09em] text-navy-faint">
               Course
             </span>
           )}

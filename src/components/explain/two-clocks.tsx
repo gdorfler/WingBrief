@@ -426,7 +426,7 @@ function Readout({ etd, show }: { etd: number; show: Scene["show"] }) {
 
   const cell = (label: string, value: string, sub: string, tone?: "navy" | "brand" | "nogo") => (
     <div className="min-w-0 rounded-xl bg-surface-2 px-3 py-2 sm:flex-1 sm:py-2.5">
-      <p className="text-[10.5px] font-bold uppercase tracking-[0.08em] text-navy-faint">{label}</p>
+      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-navy-faint">{label}</p>
       <p
         className={`tabular text-[21px] font-extrabold leading-tight sm:text-[24px] ${
           tone === "nogo" ? "text-nogo" : tone === "brand" ? "text-brand" : "text-navy"
@@ -548,7 +548,7 @@ export function TwoClocksExplainer({
                 onChange={(e) => setDrag(Number(e.target.value))}
                 className="w-full accent-[var(--color-brand)]"
               />
-              <span className="mt-0.5 block text-center text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">
+              <span className="mt-0.5 block text-center text-[11px] font-bold uppercase tracking-wider text-navy-faint">
                 ETD {hhmm(drag)} — {ceilingWins(drag) ? "ceiling governs" : "departure governs"}
               </span>
             </label>

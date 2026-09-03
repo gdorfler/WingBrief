@@ -241,7 +241,7 @@ function Readout({
   return (
     <div className="flex min-h-0 flex-1 flex-col justify-center border-t border-line px-4 py-3 sm:flex-none sm:px-6">
       <div className="mx-auto w-full max-w-3xl">
-        <p className="text-[10.5px] font-bold uppercase tracking-[0.09em] text-navy-faint">
+        <p className="text-[11px] font-bold uppercase tracking-[0.09em] text-navy-faint">
           Parcel is at
         </p>
         <p className="mb-3 text-[24px] font-extrabold leading-tight text-navy sm:mb-2 sm:text-[22px]">
@@ -540,7 +540,7 @@ export function EngineFlowExplainer({
         <div className="shrink-0 border-t border-line bg-surface-2 px-4 py-3">
           <div className="mx-auto flex max-w-3xl items-center gap-4">
             <div className="w-28 shrink-0">
-              <p className="text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">Station</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-navy-faint">Station</p>
               <p className="text-[15px] font-extrabold capitalize text-navy">
                 {at === "ambient" ? "Ambient" : at}
               </p>
@@ -556,7 +556,7 @@ export function EngineFlowExplainer({
                 onChange={(e) => setScrub(Number(e.target.value))}
                 className="w-full accent-[var(--color-brand)]"
               />
-              <span className="mt-0.5 block text-center text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">
+              <span className="mt-0.5 block text-center text-[11px] font-bold uppercase tracking-wider text-navy-faint">
                 Drag the parcel through the engine
               </span>
             </label>

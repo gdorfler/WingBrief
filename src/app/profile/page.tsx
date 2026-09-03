@@ -158,7 +158,7 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
-          <div className="mt-2 flex justify-between text-[10.5px] font-semibold text-navy-faint">
+          <div className="mt-2 flex justify-between text-[11px] font-semibold text-navy-faint">
             <span>30 days ago</span>
             <span>today</span>
           </div>

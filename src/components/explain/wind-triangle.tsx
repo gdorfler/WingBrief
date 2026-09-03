@@ -240,7 +240,7 @@ function Readout({
   const DASH = "—";
   const cell = (label: string, value: string, sub: string, tone?: "brand" | "go") => (
     <div className="min-w-0 rounded-xl bg-surface-2 px-3 py-2 sm:flex-1 sm:py-2.5">
-      <p className="text-[10.5px] font-bold uppercase tracking-[0.08em] text-navy-faint">{label}</p>
+      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-navy-faint">{label}</p>
       <p
         className={`tabular text-[21px] font-extrabold leading-tight sm:text-[24px] ${
           tone === "brand" ? "text-brand" : tone === "go" ? "text-go" : "text-navy"
@@ -371,7 +371,7 @@ export function WindTriangleExplainer({
                 onChange={(e) => setWd(Number(e.target.value) === 0 ? 360 : Number(e.target.value))}
                 className="w-full accent-[var(--color-brand)]"
               />
-              <span className="mt-0.5 block text-center text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">
+              <span className="mt-0.5 block text-center text-[11px] font-bold uppercase tracking-wider text-navy-faint">
                 Wind from {String(Math.round(norm(windDir)) || 360).padStart(3, "0")}° at {WS} kt
               </span>
             </label>

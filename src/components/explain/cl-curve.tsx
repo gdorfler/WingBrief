@@ -414,7 +414,7 @@ export function ClCurveExplainer({
         <div className="shrink-0 border-t border-line bg-surface-2 px-4 py-3">
           <div className="mx-auto flex max-w-3xl items-center gap-4">
             <div className="shrink-0">
-              <p className="text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">Critical</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-navy-faint">Critical</p>
               <p className="tabular text-[15px] font-extrabold text-navy">{CLEAN.aStall}°</p>
             </div>
             <label className="min-w-0 flex-1">
@@ -428,13 +428,13 @@ export function ClCurveExplainer({
                 onChange={(e) => setDrag(Number(e.target.value))}
                 className="w-full accent-[var(--color-brand)]"
               />
-              <span className="mt-0.5 block text-center text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">
+              <span className="mt-0.5 block text-center text-[11px] font-bold uppercase tracking-wider text-navy-faint">
                 AOA {drag > 0 ? "+" : ""}
                 {drag}°
               </span>
             </label>
             <div className="shrink-0 text-right">
-              <p className="text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">C∟</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-navy-faint">C∟</p>
               <p
                 className={`tabular text-[19px] font-extrabold leading-none ${
                   drag > CLEAN.aStall ? "text-nogo" : "text-brand"

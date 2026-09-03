@@ -161,7 +161,7 @@ function KnowCold() {
                         </div>
 
                         <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-line pt-2.5">
-                          <span className="text-[10.5px] font-bold uppercase tracking-wide text-navy-faint">
+                          <span className="text-[11px] font-bold uppercase tracking-wide text-navy-faint">
                             U{unit.index}
                           </span>
                           {c.conceptIds.slice(0, 2).map((id) => (

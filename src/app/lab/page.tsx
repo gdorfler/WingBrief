@@ -55,7 +55,7 @@ export default function LabIndexPage() {
                   <div className="mt-3 flex flex-wrap items-center gap-1">
                     {lab.chain.map((step, i) => (
                       <span key={step} className="flex items-center gap-1">
-                        <span className="rounded-md bg-surface-2 px-1.5 py-0.5 text-[10.5px] font-semibold text-navy-soft">
+                        <span className="rounded-md bg-surface-2 px-1.5 py-0.5 text-[11px] font-semibold text-navy-soft">
                           {step}
                         </span>
                         {i < lab.chain!.length - 1 && (

@@ -248,7 +248,7 @@ function SideNav() {
       </nav>
 
       <div className="mt-auto px-3 pt-4">
-        <p className="text-[10px] leading-relaxed text-navy-faint">
+        <p className="text-[11px] leading-relaxed text-navy-faint">
           Content traced to {meta.sourceLabel}.
         </p>
       </div>
@@ -352,7 +352,7 @@ function BottomNavItem({
         href={href}
         aria-current={active ? "page" : undefined}
         className={cn(
-          "flex h-16 flex-col items-center justify-center gap-1 text-[10.5px] font-semibold transition-colors",
+          "flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors",
           active ? "text-brand" : "text-navy-faint",
         )}
       >

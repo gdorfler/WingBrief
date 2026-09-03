@@ -532,7 +532,7 @@ export function LiftEquationExplainer({
         <div className="shrink-0 border-t border-line bg-surface-2 px-4 py-3">
           <div className="mx-auto flex max-w-3xl items-center gap-4">
             <div className="shrink-0">
-              <p className="text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">ρ · S · Cₗ</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-navy-faint">ρ · S · Cₗ</p>
               <p className="tabular text-[15px] font-extrabold text-navy">all locked</p>
             </div>
             <label className="min-w-0 flex-1">
@@ -546,12 +546,12 @@ export function LiftEquationExplainer({
                 onChange={(e) => setDrag(Number(e.target.value))}
                 className="w-full accent-[var(--color-brand)]"
               />
-              <span className="mt-0.5 block text-center text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">
+              <span className="mt-0.5 block text-center text-[11px] font-bold uppercase tracking-wider text-navy-faint">
                 Speed {drag.toFixed(1)}× normal
               </span>
             </label>
             <div className="shrink-0 text-right">
-              <p className="text-[10.5px] font-bold uppercase tracking-wider text-navy-faint">Lift</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-navy-faint">Lift</p>
               <p className="tabular text-[19px] font-extrabold leading-none text-brand">
                 {(drag * drag).toFixed(2)}×
               </p>

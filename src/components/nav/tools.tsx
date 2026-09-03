@@ -115,7 +115,7 @@ export function JetLog({
                 type="button"
                 onClick={() => setFocused(focused === c.key ? null : c.key)}
                 className={cn(
-                  "border-r border-line-strong px-2 py-1.5 text-left text-[10px] font-extrabold uppercase tracking-[0.1em] last:border-r-0",
+                  "border-r border-line-strong px-2 py-1.5 text-left text-[11px] font-extrabold uppercase tracking-[0.1em] last:border-r-0",
                   focused === c.key ? "bg-brand text-white" : "text-navy-soft",
                 )}
               >
@@ -608,7 +608,7 @@ export function ReferenceCard({ only }: { only?: string[] }) {
           </dl>
         </div>
       ))}
-      <p className="text-[10.5px] leading-relaxed text-navy-faint">
+      <p className="text-[11px] leading-relaxed text-navy-faint">
         Everything on this card is printed in NAVAVSCOLSCOM-SG-200 Unit 6 — the memory aids on the
         back sheets of Assignment 6-7-3, and the tolerances in Appendix A.
       </p>
