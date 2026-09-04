@@ -169,7 +169,7 @@ export function CourseSwitcher({ compact = false }: { compact?: boolean }) {
     if (next.id === id) return;
     setCourse(next.id);
     // Ids are course-specific, so any detail route would 404 after the swap.
-    router.push("/");
+    router.push("/course");
   };
 
   return (
@@ -263,7 +263,7 @@ export function CourseSwitcher({ compact = false }: { compact?: boolean }) {
               </p>
             ) : (
               <Link
-                href="/#courses"
+                href="/"
                 onClick={() => setOpen(false)}
                 className="flex items-center justify-between gap-2 text-[12px] font-bold text-navy-soft transition-colors hover:text-brand"
               >

@@ -97,7 +97,7 @@ export function CourseGrid({ rows }: { rows: CourseRow[] }) {
 
   const open = (id: CourseId) => {
     setCourse(id);
-    router.push("/lessons");
+    router.push("/course");
   };
 
   return (

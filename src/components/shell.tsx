@@ -46,7 +46,7 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { href: "/", label: "Home", icon: Home, exact: true },
+  { href: "/course", label: "Overview", icon: Home },
   { href: "/lessons", label: "Lessons", icon: Layers },
   { href: "/review", label: "Review", icon: RotateCcw },
   { href: "/exam", label: "Exam", icon: ClipboardCheck },
@@ -61,7 +61,7 @@ const NAV: NavItem[] = [
  * instead — it matters, but not five times a session.
  */
 const DESK_NAV: NavItem[] = [
-  { href: "/", label: "Home", icon: Home, exact: true },
+  { href: "/course", label: "Overview", icon: Home },
   { href: "/lessons", label: "Route", icon: Layers },
   { href: "/drills", label: "Drills", icon: Repeat },
   { href: "/nav-desk", label: "Desk", icon: Compass },
