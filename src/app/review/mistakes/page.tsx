@@ -5,13 +5,14 @@ import { outstandingMistakes } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { ReviewSession } from "@/components/review-session";
+import { LoadingState } from "@/components/ui";
 
 export default function MistakesPage() {
   const { state, ready } = useProgress();
   const { content } = useCourse();
   const questions = outstandingMistakes(content.questions, state).slice(0, 15);
 
-  if (!ready) return null;
+  if (!ready) return <LoadingState label="Loading mistakes…" fullPage />;
 
   return (
     <ReviewSession

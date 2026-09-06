@@ -7,21 +7,23 @@ import type { Lab } from "@/lib/types";
 import { CONCEPT_BY_ID, COURSES, COURSE_OF_UNIT, UNIT_BY_ID, lessonsForConcept } from "@/content";
 import { conceptFraction } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
-import { useCourse } from "@/lib/course";
-import { Card, PageHeader, Pill, ProgressBar, SectionHeading, cn } from "@/components/ui";
+import { useCourse, useEnsureCourse } from "@/lib/course";
+import { Card, LoadingState, PageHeader, Pill, ProgressBar, SectionHeading, cn } from "@/components/ui";
 import { LabHost } from "./labs";
 
 export function LabDetail({ lab }: { lab: Lab }) {
   const { state, markLabExplored } = useProgress();
   const { content } = useCourse();
+  const courseReady = useEnsureCourse(COURSE_OF_UNIT[lab.unit]);
   const unit = UNIT_BY_ID[lab.unit];
   // The section name follows the LAB, not the switcher: a deep link into an
   // Aerodynamics lab is still a Sim Lab even while Flight Rules is active.
   const labLabel = COURSES[COURSE_OF_UNIT[lab.unit]].labLabel;
 
   useEffect(() => {
+    if (!courseReady) return;
     markLabExplored(lab.id);
-  }, [lab.id, markLabExplored]);
+  }, [courseReady, lab.id, markLabExplored]);
 
   const relatedLessons = [
     ...new Map(
@@ -31,6 +33,8 @@ export function LabDetail({ lab }: { lab: Lab }) {
   const relatedExplainers = content.explainers.filter((e) =>
     e.conceptIds.some((c) => lab.conceptIds.includes(c)),
   );
+
+  if (!courseReady) return <LoadingState label="Loading lab progress…" />;
 
   return (
     <>

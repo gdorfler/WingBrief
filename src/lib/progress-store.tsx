@@ -215,6 +215,9 @@ export function ProgressProvider({
 
     return () => {
       cancelled = true;
+      // Strict Mode may cancel this hydration before it resolves, then run
+      // the same effect again. The next attempt must not look already loaded.
+      if (boundUserId.current === userId) boundUserId.current = undefined;
     };
   }, [authReady, user?.id, injected]);
 

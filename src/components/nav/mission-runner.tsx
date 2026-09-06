@@ -20,7 +20,7 @@ import { COURSE_OF_UNIT, QUESTION_BY_ID, UNIT_BY_ID } from "@/content";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse, useEnsureCourse } from "@/lib/course";
 import { QuestionPlayer, type QuestionResult } from "@/components/questions";
-import { ButtonLink, Card, PageHeader, Pill, ProgressBar, cn } from "@/components/ui";
+import { ButtonLink, Card, LoadingState, PageHeader, Pill, ProgressBar, cn } from "@/components/ui";
 import { JetLog, emptyJetLogRow, type JetLogRow } from "./tools";
 import { NavToolTray } from "./tool-tray";
 import type { NavToolId } from "@/lib/types";
@@ -37,7 +37,7 @@ const MISSION_TOOLS: NavToolId[] = [
 
 export function MissionRunner({ mission }: { mission: Mission }) {
   // Reached by direct link from any course; file the reps against this one.
-  useEnsureCourse(COURSE_OF_UNIT[mission.unit]);
+  const courseReady = useEnsureCourse(COURSE_OF_UNIT[mission.unit]);
   const { recordAnswer } = useProgress();
   const unit = UNIT_BY_ID[mission.unit];
 
@@ -81,6 +81,8 @@ export function MissionRunner({ mission }: { mission: Mission }) {
       setQuestionIndex(0);
     }
   };
+
+  if (!courseReady) return <LoadingState label="Loading mission progress…" fullPage />;
 
   if (finished) {
     return <MissionSummary mission={mission} outcomes={outcomes} rows={rows} />;

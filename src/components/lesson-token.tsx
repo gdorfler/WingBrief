@@ -58,19 +58,19 @@ const CAUTION = "var(--color-caution)";
  * icon to actually see it. The bedding-in is done by the rim, the glow and
  * the shadow instead — which is where it belongs anyway.
  */
-const INK = "#0e141d";
-const INK_WARM = "#141009";
+const INK = "#eef6ec";
+const INK_WARM = "#fff2cb";
 
 const LOOKS: Record<LessonNodeState, TokenLook> = {
   locked: {
-    face: "linear-gradient(158deg, #2a3240 0%, #191f29 100%)",
+    face: "linear-gradient(158deg, #eef0ea 0%, #d2dcd6 100%)",
     rimLight: "rgba(255,255,255,0.22)",
     rimDark: "rgba(255,255,255,0.06)",
-    icon: "rgba(255,255,255,0.42)",
+    icon: "#8c9c9a",
     glow: null,
     badge: {
-      bg: "rgba(255,255,255,0.18)",
-      fg: "rgba(255,255,255,0.66)",
+      bg: "#d3ddd5",
+      fg: "#697e79",
       glyph: <Lock size={10} strokeWidth={3} />,
     },
     ring: null,
@@ -90,17 +90,17 @@ const LOOKS: Record<LessonNodeState, TokenLook> = {
     face: `linear-gradient(158deg, color-mix(in srgb, ${GO} 42%, ${INK}) 0%, color-mix(in srgb, ${GO} 18%, ${INK}) 100%)`,
     rimLight: `color-mix(in srgb, ${GO} 40%, white)`,
     rimDark: `color-mix(in srgb, ${GO} 62%, ${INK})`,
-    icon: `color-mix(in srgb, ${GO} 18%, white)`,
+    icon: "#145237",
     glow: null,
     badge: { bg: GO, fg: "#ffffff", glyph: <Check size={11} strokeWidth={3.5} /> },
     ring: null,
   },
   perfect: {
     /* Flawless first try. Green face, but the reward is gold. */
-    face: `linear-gradient(158deg, color-mix(in srgb, ${GO} 68%, ${INK}) 0%, color-mix(in srgb, ${GO} 34%, ${INK}) 100%)`,
+    face: "linear-gradient(145deg, #fff6cc, #e9be55)",
     rimLight: `color-mix(in srgb, ${GOLD} 42%, white)`,
     rimDark: `color-mix(in srgb, ${GOLD} 58%, ${INK})`,
-    icon: "#ffffff",
+    icon: "#795311",
     glow: GOLD,
     badge: { bg: GOLD, fg: "#ffffff", glyph: <Star size={10} fill="currentColor" strokeWidth={0} /> },
     ring: null,
@@ -110,7 +110,7 @@ const LOOKS: Record<LessonNodeState, TokenLook> = {
     face: `linear-gradient(158deg, color-mix(in srgb, ${GOLD} 54%, ${INK_WARM}) 0%, color-mix(in srgb, ${GOLD} 22%, ${INK_WARM}) 100%)`,
     rimLight: `color-mix(in srgb, ${GOLD} 34%, white)`,
     rimDark: `color-mix(in srgb, ${GOLD} 58%, ${INK_WARM})`,
-    icon: `color-mix(in srgb, ${GOLD} 14%, white)`,
+    icon: "#795311",
     glow: GOLD,
     badge: { bg: GOLD, fg: "#ffffff", glyph: <WingGlyph className="h-[11px] w-[11px]" /> },
     ring: null,
@@ -119,7 +119,7 @@ const LOOKS: Record<LessonNodeState, TokenLook> = {
     face: `linear-gradient(158deg, color-mix(in srgb, ${CAUTION} 44%, ${INK_WARM}) 0%, color-mix(in srgb, ${CAUTION} 18%, ${INK_WARM}) 100%)`,
     rimLight: `color-mix(in srgb, ${CAUTION} 36%, white)`,
     rimDark: `color-mix(in srgb, ${CAUTION} 60%, ${INK_WARM})`,
-    icon: `color-mix(in srgb, ${CAUTION} 12%, white)`,
+    icon: "#85520d",
     glow: null,
     badge: {
       bg: CAUTION,
@@ -146,7 +146,7 @@ export function LessonToken({
 }) {
   const look = LOOKS[state];
   const reduceMotion = useReducedMotion();
-  const radius = Math.round(size * 0.29);
+  const radius = Math.round(size * (state === "mastered" || state === "perfect" ? 0.34 : 0.5));
 
   return (
     <span
@@ -168,7 +168,7 @@ export function LessonToken({
           }
           transition={
             look.pulse && !reduceMotion
-              ? { duration: 2.8, repeat: Infinity, ease: "easeInOut" }
+              ? { duration: 2.8, repeat: 2, ease: "easeInOut" }
               : { duration: 0.4 }
           }
           aria-hidden
@@ -194,7 +194,7 @@ export function LessonToken({
         style={{
           borderRadius: radius,
           background: `linear-gradient(158deg, ${look.rimLight} 0%, ${look.rimDark} 62%, ${look.rimLight} 100%)`,
-          boxShadow: `0 10px 18px -8px rgba(0,0,0,0.55), 0 2px 4px -2px rgba(0,0,0,0.4)`,
+          boxShadow: `0 5px 0 color-mix(in srgb, ${look.rimDark} 70%, #7e928b), 0 12px 16px -10px #19334355`,
         }}
       >
         <span

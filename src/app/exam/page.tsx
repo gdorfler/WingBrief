@@ -22,18 +22,19 @@ import {
   Timer,
 } from "lucide-react";
 import type { UnitId } from "@/lib/types";
+import { SessionBrief } from "@/components/session-brief";
+import { parsePickableExamMode, type PickableExamMode } from "@/lib/exam-config";
 
 import { weakConcepts } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
-import { Button, Card, PageHeader, Pill, ProgressBar, cn } from "@/components/ui";
+import { Button, Card, LoadingState, ProgressBar, cn } from "@/components/ui";
 
 /** The papers a student can pick. `custom` is not one of them — see below. */
-type PickableMode = "quick" | "full" | "unit" | "weak";
-type Mode = PickableMode | "custom";
+type Mode = PickableExamMode | "custom";
 
 const MODES: {
-  id: PickableMode;
+  id: PickableExamMode;
   title: string;
   body: string;
   count: number;
@@ -71,7 +72,7 @@ const MODES: {
 
 export default function ExamPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<LoadingState label="Loading exam options…" />}>
       <ExamConfigurator />
     </Suspense>
   );
@@ -90,8 +91,8 @@ function ExamConfigurator() {
    */
   const policy = meta.examPolicy;
 
-  const [mode, setMode] = useState<PickableMode>(
-    (params.get("mode") as PickableMode) ?? "quick",
+  const [mode, setMode] = useState<PickableExamMode>(() =>
+    parsePickableExamMode(params.get("mode")),
   );
   /*
    * Unit ids are course-scoped: Aerodynamics numbers them u1..u6, Engines
@@ -127,7 +128,7 @@ function ExamConfigurator() {
     if (mode === "unit") return content.questions.filter((q) => q.unit === activeUnit).length;
     if (mode === "weak") {
       const ids = new Set(weak.map((w) => w.concept.id));
-      return content.questions.filter((q) => q.conceptIds.some((c) => ids.has(c))).length;
+      return content.questions.filter((q) => q.conceptIds.some((c) => ids.has(c))).length || content.questions.length;
     }
     return content.questions.length;
   }, [content.questions, mode, activeUnit, weak]);
@@ -138,7 +139,7 @@ function ExamConfigurator() {
   const minutes = Math.max(5, Math.round(effectiveCount * perQuestion));
   const submittedMode: Mode = countOverride === null ? mode : "custom";
 
-  const pick = (m: PickableMode) => {
+  const pick = (m: PickableExamMode) => {
     setMode(m);
     setCountOverride(null);
   };
@@ -148,6 +149,7 @@ function ExamConfigurator() {
     const qs = new URLSearchParams({
       seed,
       mode: submittedMode,
+      scope: mode,
       count: String(effectiveCount),
       timed: timed ? "1" : "0",
       minutes: String(minutes),
@@ -163,15 +165,9 @@ function ExamConfigurator() {
 
   return (
     <>
-      <PageHeader
-        title="Practice exam"
-        subtitle="No hints and no explanations until you submit."
-        actions={
-          state.exams.length > 0 ? (
-            <Pill tone={best >= 0.9 ? "go" : "brand"}>Best {Math.round(best * 100)}%</Pill>
-          ) : undefined
-        }
-      />
+      <SessionBrief title="Ready for your check?" description="One focused paper. No hints. See how your knowledge holds up.">
+        {state.exams.length > 0 && <p className="mt-3 text-sm font-bold text-brand-dark">Personal best · {Math.round(best * 100)}%</p>}
+      </SessionBrief>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="min-w-0">

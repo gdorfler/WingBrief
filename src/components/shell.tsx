@@ -31,7 +31,7 @@ import { overallReadiness } from "@/lib/review";
 import { liveStreak } from "@/lib/xp";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
-import { ProgressRing, cn } from "./ui";
+import { LoadingState, ProgressRing, cn } from "./ui";
 import { CourseSwitcher } from "./course-switcher";
 import { StreakFlame } from "./reward";
 import { StreakWeek } from "./streak-week";
@@ -46,7 +46,7 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { href: "/course", label: "Overview", icon: Home },
+  { href: "/course", label: "Home", icon: Home },
   { href: "/lessons", label: "Lessons", icon: Layers },
   { href: "/review", label: "Review", icon: RotateCcw },
   { href: "/exam", label: "Exam", icon: ClipboardCheck },
@@ -61,7 +61,7 @@ const NAV: NavItem[] = [
  * instead — it matters, but not five times a session.
  */
 const DESK_NAV: NavItem[] = [
-  { href: "/course", label: "Overview", icon: Home },
+  { href: "/course", label: "Home", icon: Home },
   { href: "/lessons", label: "Route", icon: Layers },
   { href: "/drills", label: "Drills", icon: Repeat },
   { href: "/nav-desk", label: "Desk", icon: Compass },
@@ -93,6 +93,7 @@ function navFor(layout: "standard" | "desk" | undefined) {
 /** Routes that hide the shell so the student sees one thing at a time. */
 function isImmersive(pathname: string): boolean {
   return (
+    pathname === "/auth/callback" ||
     /^\/lessons\/[^/]+$/.test(pathname) ||
     /^\/explainers\/[^/]+$/.test(pathname) ||
     pathname.startsWith("/exam/run") ||
@@ -161,7 +162,7 @@ function SideNav() {
   const { primary, secondary } = navFor(meta.layout);
 
   return (
-    <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-line bg-surface px-3 py-5 lg:flex xl:w-64">
+    <aside className="flight-sidebar sticky top-0 hidden h-dvh w-60 shrink-0 flex-col overflow-y-auto border-r border-line bg-surface px-4 py-7 lg:flex xl:w-64">
       <Link href="/" className="mb-3 flex items-center gap-2.5 px-2">
         <WingMark />
         <p className="text-[15px] font-extrabold tracking-tight text-navy">WINGBRIEF</p>
@@ -171,7 +172,7 @@ function SideNav() {
         <CourseSwitcher />
       </div>
 
-      <div className="mb-5 rounded-2xl bg-ink-800 p-4">
+      <div className="sr-only">
         {/*
           A course that reports claims must not also report coverage. Leaving
           the readiness ring in the rail would put the metric the hero exists to
@@ -231,10 +232,6 @@ function SideNav() {
 
       {/* The week, not just the count: an unfilled ring on today is a far
           better prompt than a number that has stopped going up. */}
-      <div className="mb-5 rounded-2xl bg-ink-800 px-4 py-3.5">
-        <StreakWeek history={state.streak.history} current={streak} onInk />
-      </div>
-
       <nav className="flex flex-col gap-1">
         {primary.map((item) => (
           <NavItem key={item.href} {...item} label={item.label || meta.labLabel} />
@@ -250,9 +247,9 @@ function SideNav() {
       </nav>
 
       <div className="mt-auto px-3 pt-4">
-        <p className="text-[11px] leading-relaxed text-navy-faint">
-          Content traced to {meta.sourceLabel}.
-        </p>
+        <StreakWeek history={state.streak.history} current={streak} />
+        <Link href="/#courses" className="mt-6 block text-sm font-semibold text-navy-soft">Explore all courses →</Link>
+        <p className="mt-5 text-xs text-navy-faint">A little better. Every flight.</p>
       </div>
     </aside>
   );
@@ -271,7 +268,7 @@ function TopBarMobile() {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface/90 px-4 backdrop-blur-md lg:hidden">
       <div className="flex min-w-0 flex-1 items-center gap-2">
-        <Link href="/" className="shrink-0">
+        <Link href="/" className="shrink-0" aria-label="WingBrief home">
           <WingMark size={26} />
         </Link>
         <div className="min-w-0 max-w-[11rem]">
@@ -387,9 +384,9 @@ export function WingMark({ size = 30 }: { size?: number }) {
           <stop offset="100%" stopColor="var(--color-ink-900)" />
         </linearGradient>
         <linearGradient id="wb-mark-wing" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="var(--color-brand)" />
-          <stop offset="55%" stopColor="var(--color-brand-light)" />
-          <stop offset="100%" stopColor="var(--color-brand)" />
+          <stop offset="0%" stopColor="#e95d29" />
+          <stop offset="55%" stopColor="#ffb477" />
+          <stop offset="100%" stopColor="#e95d29" />
         </linearGradient>
       </defs>
       <rect width="32" height="32" rx="9" fill="url(#wb-mark-plate)" />
@@ -407,7 +404,17 @@ export function WingMark({ size = 30 }: { size?: number }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { ready, state } = useProgress();
   const immersive = isImmersive(pathname);
+
+  // Until storage/account hydration completes, the progress context contains
+  // an intentionally empty Aerodynamics default. Rendering that placeholder
+  // made returning students briefly see the wrong course, readiness, nav and
+  // recommendations. The callback must stay mounted because it participates
+  // in completing authentication; every other route can wait safely.
+  if (!ready && pathname !== "/auth/callback") {
+    return <LoadingState label="Loading your progress…" fullPage />;
+  }
 
   if (immersive) {
     return (
@@ -424,7 +431,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBarMobile />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-24 pt-5 sm:px-6 lg:pb-10 lg:pt-8">
-          {children}
+          <div key={state.activeCourse} className="course-arrival">{children}</div>
         </main>
         <BottomNav />
       </div>
@@ -432,4 +439,3 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-

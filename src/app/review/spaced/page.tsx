@@ -6,6 +6,7 @@ import { selectReviewQuestions } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { ReviewSession } from "@/components/review-session";
+import { LoadingState } from "@/components/ui";
 
 export default function SpacedReviewPage() {
   const { state, ready } = useProgress();
@@ -23,7 +24,7 @@ export default function SpacedReviewPage() {
     12,
   );
 
-  if (!ready) return null;
+  if (!ready) return <LoadingState label="Loading scheduled review…" fullPage />;
 
   return (
     <ReviewSession

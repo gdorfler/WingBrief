@@ -40,12 +40,15 @@ function useEarned(when: boolean, ms = 1600, fireOnMount = false): boolean {
   useEffect(() => {
     if (when && !previous.current) {
       setFiring(true);
-      const t = setTimeout(() => setFiring(false), ms);
       previous.current = when;
-      return () => clearTimeout(t);
     }
     previous.current = when;
-  }, [when, ms]);
+  }, [when]);
+  useEffect(() => {
+    if (!firing) return;
+    const timer = setTimeout(() => setFiring(false), ms);
+    return () => clearTimeout(timer);
+  }, [firing, ms]);
 
   return firing;
 }

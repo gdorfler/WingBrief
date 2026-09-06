@@ -71,13 +71,13 @@ export function levelFromXp(xp: number): {
  * earned in the real world.
  */
 const RANKS: [minLevel: number, name: string][] = [
-  [1, "Trainee"],
-  [5, "Cadet"],
-  [10, "Aviator"],
-  [17, "Section Lead"],
-  [25, "Flight Lead"],
-  [35, "Instructor"],
-  [47, "Squadron Lead"],
+  [1, "First Light"],
+  [5, "Clear Skies"],
+  [10, "Open Horizons"],
+  [17, "Tailwinds"],
+  [25, "High Flyer"],
+  [35, "Above the Clouds"],
+  [47, "Beyond the Horizon"],
 ];
 
 export function rankForLevel(level: number): string {

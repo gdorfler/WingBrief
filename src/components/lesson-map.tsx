@@ -35,7 +35,8 @@ import type { LessonNodeState } from "@/lib/review";
 import { clearLessonCompletedSignal, peekLessonCompletedSignal } from "@/lib/route-marker-signal";
 import { LessonToken } from "./lesson-token";
 import { RouteMarker, type RouteMarkerPoint } from "./route-marker";
-import { SkyBackdrop } from "./sky";
+import { WorldAtmosphere, WorldBadge } from "./flight-world";
+import { useCourse } from "@/lib/course";
 import { Pill, cn } from "./ui";
 
 const FLOWN: LessonNodeState[] = ["completed", "perfect", "mastered", "weak"];
@@ -68,8 +69,8 @@ const NODE_STYLES: Record<
     onSky: string;
   }
 > = {
-  locked: { label: "Locked", size: 74, onSky: "text-white/45" },
-  current: { label: "Current sortie", size: 96, onSky: "text-brand-light" },
+  locked: { label: "Locked", size: 70, onSky: "text-navy-faint" },
+  current: { label: "Start lesson", size: 94, onSky: "text-brand-dark" },
   completed: {
     label: "Complete",
     size: 80,
@@ -99,7 +100,7 @@ interface Point {
 }
 
 /** Gap between a tile's edge and the marker docked beside it, in pixels. */
-const DOCK_CLEARANCE = 15;
+const DOCK_CLEARANCE = 30;
 
 /** A point `distance` px from `origin`, along the line toward `toward`. */
 function pointAtDistance(origin: Point, toward: Point, distance: number): Point {
@@ -282,7 +283,8 @@ export function LessonMap({
   }, [lessons, signal, states]);
 
   return (
-    <div ref={containerRef} className="relative space-y-8">
+    <div ref={containerRef} className="lesson-world-map relative">
+      <WorldAtmosphere />
       {units.map((unit) => {
         const unitLessons = lessons
           .filter((l) => l.unit === unit.id)
@@ -293,11 +295,11 @@ export function LessonMap({
           <section
             key={unit.id}
             id={unit.id}
-            className="relative scroll-mt-20 overflow-hidden rounded-3xl bg-ink-900 shadow-[0_1px_2px_rgba(13,28,46,0.06),0_18px_40px_-24px_rgba(13,28,46,0.45)]"
+            className="flight-map-unit relative scroll-mt-20"
             style={{
               // A whisper of the unit's colour over the ink, so the sections
               // still read as distinct chapters rather than one long night.
-              backgroundImage: `linear-gradient(180deg, color-mix(in srgb, ${accent} 16%, transparent) 0%, transparent 240px)`,
+              backgroundImage: "none",
             }}
           >
             {/*
@@ -306,7 +308,6 @@ export function LessonMap({
               contrast against the ink rather than losing it; the labels beside
               them switch to their `onSky` tones to keep up.
             */}
-            <SkyBackdrop arc={false} clouds={0.35} />
             <UnitHeader
               unit={unit}
               accent={accent}
@@ -361,12 +362,12 @@ function UnitHeader({
   /** This unit's last lesson was the one just finished — its one arrival bow. */
   justArrived: boolean;
 }) {
+  const { id } = useCourse();
   return (
     <div
-      className="relative border-b px-4 pb-4 pt-5 sm:px-6"
+      className="map-unit-heading relative px-5 pb-4 pt-8 sm:px-9"
       style={{
-        borderColor: "rgba(255,255,255,0.12)",
-        background: `color-mix(in srgb, ${accent} 14%, transparent)`,
+        background: "transparent",
       }}
     >
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
@@ -390,8 +391,8 @@ function UnitHeader({
             </span>
           </span>
           <div className="min-w-0">
-            <h2 className="text-[19px] font-extrabold leading-tight text-white">{unit.title}</h2>
-            <p className="mt-0.5 max-w-xl text-[13.5px] leading-snug text-[#bed2e6]">
+            <h2 className="text-[21px] font-extrabold leading-tight text-navy">{unit.title}</h2>
+            <p className="mt-1 max-w-xl text-sm leading-snug text-navy-soft">
               {unit.promise}
             </p>
           </div>
@@ -402,12 +403,13 @@ function UnitHeader({
           </Pill>
           <Link
             href={`/exam?mode=unit&unit=${unit.id}`}
-            className="flex items-center gap-1 rounded-full border border-white/25 px-2.5 py-1 text-[11.5px] font-semibold text-[#cfe0f0] transition-colors hover:border-white/50 hover:text-white"
+            className="flex items-center gap-1 px-2.5 py-2 text-xs font-semibold text-navy-soft hover:text-brand"
             title="Already know this unit? Take its exam to test out."
           >
             <FastForward size={12} />
             Test out
           </Link>
+          <WorldBadge course={id} className="unit-world-badge" />
         </div>
       </div>
     </div>
@@ -417,7 +419,7 @@ function UnitHeader({
 function UnitTrack({
   lessons,
   states,
-  accent,
+  accent: _accent,
   currentLessonId,
   justCompletedLessonId,
   xpEarned,
@@ -499,7 +501,7 @@ function UnitTrack({
                   fill="none"
                   // Unflown legs are white-based rather than the light-mode
                   // hairline colour, which all but vanished against the ink.
-                  stroke={flown || isNextLeg ? accent : "rgba(255,255,255,0.9)"}
+                  stroke={flown ? "var(--color-go)" : isNextLeg ? "var(--color-brand)" : "#94a8ac"}
                   // The route is the subject of this screen, so it is drawn
                   // heavy enough to read as one continuous line at a glance
                   // rather than as hairlines between cards.
@@ -581,7 +583,7 @@ function MapNode({
   const tile = (
     <motion.span
       ref={tileRef}
-      className="relative shrink-0"
+      className="map-node-token relative shrink-0"
       // Hover bob: the token lifts toward the cursor, the whole badge with
       // its shadow, so the depth reads on the way up.
       animate={reduceMotion ? undefined : { y: 0 }}
@@ -621,7 +623,7 @@ function MapNode({
         className={cn(
           "block leading-snug",
           current ? "text-[18px] font-extrabold" : "text-[16px] font-bold",
-          locked ? "text-white/55" : "text-white",
+          locked ? "text-navy-faint" : "text-navy",
         )}
       >
         {lesson.title}
@@ -632,10 +634,10 @@ function MapNode({
           side === "left" && "sm:justify-end",
         )}
       >
-        <span className={cn("text-[11px] font-extrabold uppercase tracking-wider", style.onSky)}>
+        <span className={cn("text-xs font-bold", current ? "text-brand-dark" : state === "weak" ? "text-caution" : state === "locked" ? "text-navy-faint" : "text-go-dark")}>
           {style.label}
         </span>
-        <span className="tabular text-[11.5px] font-semibold text-white/55">
+        <span className="tabular text-xs text-navy-soft">
           {lesson.estimatedMinutes} min
         </span>
       </span>
@@ -663,7 +665,8 @@ function MapNode({
      * drawing itself.
      */
     <motion.li
-      className="relative pb-5 last:pb-0"
+      className="flight-waypoint relative pb-12 last:pb-4"
+      data-state={state}
       initial={reduceMotion ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, delay: Math.min(index, 6) * 0.035, ease: "easeOut" }}
@@ -692,6 +695,7 @@ function MapNode({
               "flex w-full cursor-not-allowed items-center gap-4 rounded-2xl p-2.5",
               side === "left" && "sm:flex-row-reverse",
             )}
+            aria-disabled="true"
             title="Finish the lesson before this one to unlock"
           >
             {inner}
@@ -703,8 +707,8 @@ function MapNode({
               "group flex w-full items-center gap-4 rounded-2xl p-2.5 transition-all duration-200",
               side === "left" && "sm:flex-row-reverse",
               current
-                ? "-translate-y-0.5 border-2 border-brand/60 bg-brand/[0.16] shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)] hover:border-brand/80 hover:bg-brand/[0.24]"
-                : "hover:bg-white/[0.07]",
+                ? "current-waypoint -translate-y-0.5"
+                : "hover:bg-white/40",
             )}
           >
             {inner}

@@ -99,7 +99,7 @@ const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
   // The one call to action on a screen gets the solid lip; everything else
   // keeps the softer elevation so the primary still reads as the primary.
   primary:
-    "chunky [--lip:var(--color-brand-dark)] bg-brand text-white hover:brightness-[1.04]",
+    "chunky [--lip:#bd481b] bg-orange text-white hover:brightness-[1.04]",
   secondary: "pressable bg-surface-2 text-navy hover:bg-surface-3 border border-line",
   ghost: "text-navy-soft transition-colors duration-150 hover:bg-surface-2 hover:text-navy",
   danger: "pressable bg-nogo text-white hover:brightness-95",
@@ -456,6 +456,31 @@ export function EmptyState({
       <p className="max-w-sm text-sm leading-relaxed text-navy-soft">{body}</p>
       {action}
     </Card>
+  );
+}
+
+/** Keeps async hydration from presenting a blank application frame. */
+export function LoadingState({
+  label = "Loading…",
+  fullPage = false,
+}: {
+  label?: string;
+  fullPage?: boolean;
+}) {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={cn(
+        "flex items-center justify-center bg-canvas px-4",
+        fullPage ? "min-h-dvh" : "min-h-[60vh]",
+      )}
+    >
+      <div className="flex items-center gap-2.5 text-[13px] font-semibold text-navy-faint">
+        <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-brand" aria-hidden />
+        {label}
+      </div>
+    </div>
   );
 }
 

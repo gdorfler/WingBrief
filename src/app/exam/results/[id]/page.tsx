@@ -17,6 +17,7 @@ import {
   Card,
   EmptyState,
   FilterChip,
+  LoadingState,
   Pill,
   ProgressBar,
   ProgressRing,
@@ -50,7 +51,7 @@ export default function ExamResultsPage() {
     [questions, result],
   );
 
-  if (!ready) return null;
+  if (!ready) return <LoadingState label="Loading exam result…" />;
 
   if (!result || !summary) {
     return (
@@ -257,7 +258,7 @@ export default function ExamResultsPage() {
               </ButtonLink>
             )}
             <ButtonLink
-              href={`/exam?mode=${result.mode}`}
+              href={result.mode === "custom" ? "/exam" : `/exam?mode=${result.mode}`}
               variant="secondary"
               size="lg"
               fullWidth
@@ -305,4 +306,3 @@ function Stat({ label, value, tone }: { label: string; value: string; tone: stri
     </div>
   );
 }
-

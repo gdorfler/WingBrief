@@ -5,6 +5,7 @@ import { selectReviewQuestions, weakConcepts } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { ReviewSession } from "@/components/review-session";
+import { LoadingState } from "@/components/ui";
 
 export default function WeakReviewPage() {
   const { state, ready } = useProgress();
@@ -18,7 +19,7 @@ export default function WeakReviewPage() {
     10,
   );
 
-  if (!ready) return null;
+  if (!ready) return <LoadingState label="Loading weak areas…" fullPage />;
 
   return (
     <ReviewSession

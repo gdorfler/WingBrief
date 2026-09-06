@@ -22,7 +22,7 @@ import { COURSE_OF_UNIT, QUESTION_BY_ID, UNIT_BY_ID } from "@/content";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse, useEnsureCourse } from "@/lib/course";
 import { QuestionPlayer, type QuestionResult } from "@/components/questions";
-import { Button, ButtonLink, Card, PageHeader, Pill, ProgressBar, cn } from "@/components/ui";
+import { Button, ButtonLink, Card, LoadingState, PageHeader, Pill, ProgressBar, cn } from "@/components/ui";
 
 interface Rep {
   questionId: string;
@@ -32,7 +32,7 @@ interface Rep {
 
 export function DrillRunner({ drill }: { drill: Drill }) {
   // Reached by direct link from any course; file the reps against this one.
-  useEnsureCourse(COURSE_OF_UNIT[drill.unit]);
+  const courseReady = useEnsureCourse(COURSE_OF_UNIT[drill.unit]);
   const { recordAnswer } = useProgress();
   const questions = drill.questionIds
     .map((id) => QUESTION_BY_ID[id])
@@ -47,10 +47,10 @@ export function DrillRunner({ drill }: { drill: Drill }) {
 
   /* A running clock, so pace is visible without being a countdown. */
   useEffect(() => {
-    if (done) return;
+    if (!courseReady || done) return;
     const t = window.setInterval(() => setElapsed(Date.now() - startedAt.current), 500);
     return () => window.clearInterval(t);
-  }, [done]);
+  }, [courseReady, done]);
 
   const handleAnswer = useCallback(
     (r: QuestionResult) => {
@@ -79,6 +79,8 @@ export function DrillRunner({ drill }: { drill: Drill }) {
     setElapsed(0);
     startedAt.current = Date.now();
   };
+
+  if (!courseReady) return <LoadingState label="Loading drill progress…" fullPage />;
 
   if (questions.length === 0) {
     return (
@@ -355,4 +357,3 @@ export function DrillIndex() {
     </>
   );
 }
-

@@ -10,6 +10,9 @@
 
 import { useMemo } from "react";
 import type { Explainer } from "@/lib/types";
+import { COURSE_OF_UNIT } from "@/content";
+import { useEnsureCourse } from "@/lib/course";
+import { LoadingState } from "@/components/ui";
 import { makeFramesRenderer } from "./frames-adapter";
 import { ScenePlayer } from "./player";
 import { SCENE_EXPLAINERS } from "./registry";
@@ -23,9 +26,12 @@ import { SCENE_EXPLAINERS } from "./registry";
  * no transport, and a prediction gate.
  */
 export function ExplainerHost({ explainer }: { explainer: Explainer }) {
+  const courseReady = useEnsureCourse(COURSE_OF_UNIT[explainer.unit]);
   const bespoke = SCENE_EXPLAINERS[explainer.id];
   const adapted = useMemo(() => makeFramesRenderer(explainer), [explainer]);
   const Render = bespoke ?? adapted;
+
+  if (!courseReady) return <LoadingState label="Loading explainer progress…" fullPage />;
 
   return (
     <ScenePlayer

@@ -21,7 +21,7 @@
  */
 
 import { motion, useReducedMotion } from "motion/react";
-import { Navigation2 } from "lucide-react";
+import Image from "next/image";
 
 export interface RouteMarkerPoint {
   x: number;
@@ -88,16 +88,9 @@ export function RouteMarker({
         {/* The puck: small, solid, and coloured — a position marker, not a
             second badge trying to look like the lesson tile's own state. */}
         <span
-          className="relative flex h-[18px] w-[18px] items-center justify-center rounded-full ring-2 ring-surface"
-          style={{ background: accent, boxShadow: "0 2px 7px -1px rgba(13,28,46,0.5)" }}
+          className="relative flex h-[48px] w-[48px] items-center justify-center"
         >
-          <Navigation2
-            size={9}
-            className="text-white"
-            style={{ transform: `rotate(${angle}deg)` }}
-            strokeWidth={3}
-            fill="white"
-          />
+          <Image src="/brand/trainer.png" width={72} height={72} alt="Your aircraft at the current lesson" className="h-[60px] w-[60px] max-w-none drop-shadow-md" style={{ transform: `rotate(${angle - 270}deg)` }} />
         </span>
       </div>
     </div>

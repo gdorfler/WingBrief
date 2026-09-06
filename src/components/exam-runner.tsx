@@ -13,25 +13,15 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { AlertTriangle, ChevronLeft, ChevronRight, Clock, Flag, Grid3x3, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CourseContent, ExamResult, Question, UnitId } from "@/lib/types";
+import type { CourseContent, Question } from "@/lib/types";
+import { normalizeExamConfig, type ExamConfig } from "@/lib/exam-config";
 import { CONCEPT_BY_ID, UNIT_BY_ID } from "@/content";
 import { buildExamResult, scoreExam, selectExamQuestions } from "@/lib/scoring";
 import { weakConcepts } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { QuestionPlayer } from "./questions";
-import { Button, Pill, ProgressBar, cn } from "./ui";
-
-export interface ExamConfig {
-  mode: ExamResult["mode"];
-  count: number;
-  timed: boolean;
-  /** Seconds allowed when timed. */
-  seconds: number;
-  unit?: UnitId;
-  seed: string;
-  label: string;
-}
+import { Button, LoadingState, Pill, ProgressBar, cn } from "./ui";
 
 /** Builds the question pool for a configuration. */
 export function poolFor(
@@ -39,13 +29,13 @@ export function poolFor(
   weakIds: string[],
   content: CourseContent,
 ): Question[] {
-  if (config.mode === "unit" && config.unit) {
+  if ((config.scope ?? config.mode) === "unit" && config.unit) {
     return content.questions.filter((q) => q.unit === config.unit);
   }
-  if (config.mode === "weak") {
+  if ((config.scope ?? config.mode) === "weak") {
     const wanted = new Set(weakIds);
     const targeted = content.questions.filter((q) => q.conceptIds.some((c) => wanted.has(c)));
-    return targeted.length >= config.count ? targeted : content.questions;
+    return targeted.length > 0 ? targeted : content.questions;
   }
   return content.questions;
 }
@@ -59,14 +49,11 @@ export function poolFor(
  */
 export function ExamRunner({ config }: { config: ExamConfig }) {
   const { ready } = useProgress();
+  const { content, id } = useCourse();
   if (!ready) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-[13px] font-semibold text-navy-faint">Building your paper…</p>
-      </div>
-    );
+    return <LoadingState label="Building your paper…" fullPage />;
   }
-  return <ExamPaper config={config} />;
+  return <ExamPaper key={`${config.seed}-${id}`} config={normalizeExamConfig(config, content)} />;
 }
 
 function ExamPaper({ config }: { config: ExamConfig }) {
@@ -161,17 +148,13 @@ function ExamPaper({ config }: { config: ExamConfig }) {
   useEffect(() => {
     if (!config.timed) return;
     const t = setInterval(() => {
-      setRemaining((r) => {
-        if (r <= 1) {
-          clearInterval(t);
-          submit();
-          return 0;
-        }
-        return r - 1;
-      });
+      setRemaining(Math.max(0, Math.ceil((startedAt.current + config.seconds * 1000 - Date.now()) / 1000)));
     }, 1000);
     return () => clearInterval(t);
-  }, [config.timed, submit]);
+  }, [config.timed, config.seconds]);
+  useEffect(() => {
+    if (config.timed && remaining === 0) submit();
+  }, [config.timed, remaining, submit]);
 
   const setAnswer = useCallback((qid: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [qid]: value }));

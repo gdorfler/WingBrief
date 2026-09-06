@@ -26,5 +26,5 @@ export default async function LessonPage({
   const { id } = await params;
   const lesson = LESSON_BY_ID[id];
   if (!lesson) notFound();
-  return <LessonPlayer lesson={lesson} />;
+  return <LessonPlayer key={lesson.id} lesson={lesson} />;
 }

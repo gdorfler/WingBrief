@@ -81,12 +81,16 @@ export function useCourse(): CourseApi {
  * Any screen that renders a course-scoped entity resolved by global id should
  * call this before recording anything.
  */
-export function useEnsureCourse(courseId: CourseId | undefined) {
-  const { ready, setActiveCourse } = useProgress();
+export function useEnsureCourse(courseId: CourseId | undefined): boolean {
+  const { state, ready, setActiveCourse } = useProgress();
   useEffect(() => {
     // Must wait for hydration. The store loads asynchronously and replaces the
     // whole document when it lands, so a switch made before that arrives is
     // silently overwritten by the stored activeCourse.
     if (ready && courseId) setActiveCourse(courseId);
   }, [ready, courseId, setActiveCourse]);
+
+  // Callers use this to withhold interactive content until mutations are
+  // guaranteed to land in the entity's own course bucket.
+  return ready && (courseId === undefined || state.activeCourse === courseId);
 }

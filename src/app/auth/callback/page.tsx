@@ -12,7 +12,7 @@
  * the student's history down once they see a signed-in user.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
@@ -27,12 +27,8 @@ export default function AuthCallbackPage() {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("working");
   const [message, setMessage] = useState<string | null>(null);
-  const started = useRef(false);
 
   useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-
     const supabase = getSupabase();
     if (!supabase) {
       setPhase("error");
@@ -41,7 +37,7 @@ export default function AuthCallbackPage() {
     }
 
     const params = new URLSearchParams(window.location.search);
-    const described = params.get("error_description");
+    const described = params.get("error_description") ?? new URLSearchParams(window.location.hash.slice(1)).get("error_description");
     if (described) {
       setPhase("error");
       setMessage(described);
@@ -49,12 +45,18 @@ export default function AuthCallbackPage() {
     }
 
     let cancelled = false;
+    const timeout = setTimeout(() => {
+      if (cancelled) return;
+      cancelled = true;
+      setPhase("error");
+      setMessage("That sign-in link could not be verified. Request a fresh link and try again.");
+    }, TIMEOUT_MS);
     void (async () => {
       const deadline = Date.now() + TIMEOUT_MS;
       while (!cancelled) {
         const { data } = await supabase.auth.getSession();
         if (data.session) {
-          if (!cancelled) setPhase("done");
+          if (!cancelled) { clearTimeout(timeout); setPhase("done"); }
           return;
         }
         if (Date.now() >= deadline) break;
@@ -66,10 +68,16 @@ export default function AuthCallbackPage() {
           "That link has expired, was already used, or was opened somewhere the session could not be read. Request a fresh one.",
         );
       }
-    })();
+    })().catch(() => {
+      if (cancelled) return;
+      clearTimeout(timeout);
+      setPhase("error");
+      setMessage("We couldn’t connect to your account. Please try again.");
+    });
 
     return () => {
       cancelled = true;
+      clearTimeout(timeout);
     };
   }, []);
 

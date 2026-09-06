@@ -19,6 +19,7 @@ import {
   ButtonLink,
   Card,
   Formula,
+  LoadingState,
   PageHeader,
   Pill,
   ProgressBar,
@@ -38,9 +39,10 @@ export default function ConceptPage() {
    * mastery bar and drilled the wrong subject. Called before the notFound so
    * the hook order is unconditional.
    */
-  useEnsureCourse(courseOfConcept(params.id));
+  const courseReady = useEnsureCourse(courseOfConcept(params.id));
   const concept = CONCEPT_BY_ID[params.id];
   if (!concept) notFound();
+  if (!courseReady) return <LoadingState label="Loading concept progress…" />;
 
   const record = state.mastery[concept.id];
   const level = record?.level ?? 0;

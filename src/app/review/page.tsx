@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { SessionBrief } from "@/components/session-brief";
 import {
   AlertTriangle,
   Bookmark,
   Clock,
   FlaskConical,
-  Plane,
   Sigma,
   Snowflake,
   Sparkles,
@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 
 import {
-  buildDailyFlight,
   outstandingMistakes,
   unitReadiness,
   weakConcepts,
@@ -25,7 +24,7 @@ import { useCourse } from "@/lib/course";
 import { NavReviewPanel } from "@/components/nav/diagnostics";
 import {
   Card,
-  PageHeader,
+  ButtonLink,
   Pill,
   ProgressBar,
   SectionHeading,
@@ -41,11 +40,6 @@ export default function ReviewPage() {
   const dueCount = content.concepts.filter((c) => isDue(state.mastery[c.id], now)).length;
   const mistakes = outstandingMistakes(content.questions, state);
   const saved = state.savedQuestionIds.length;
-  const flight = buildDailyFlight(
-    { lessons: content.lessons, concepts: content.concepts, questions: content.questions, explainers: content.explainers },
-    state,
-    now,
-  );
   const units = unitReadiness(content.units, content.concepts, content.lessons, state);
   const formulas = content.knowCold.filter((k) => k.category === "equation").length;
 
@@ -117,34 +111,9 @@ export default function ReviewPage() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="Adaptive review"
-        title="Review"
-        subtitle="The engine tracks mastery per concept and schedules each one to come back before you forget it. Everything here is chosen for you."
-      />
-
-      {/* Daily flight */}
-      <Card className="mb-6 border-brand/25 bg-brand-soft/40">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand text-white">
-              <Plane size={20} />
-            </span>
-            <div>
-              <p className="eyebrow text-brand">Today&rsquo;s flight</p>
-              <p className="text-[15px] font-semibold text-navy">
-                {flight.items.length} items · about {flight.totalMinutes} minutes
-              </p>
-            </div>
-          </div>
-          <Link
-            href={flight.items[0]?.href ?? "/lessons"}
-            className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
-          >
-            Start
-          </Link>
-        </div>
-      </Card>
+      <SessionBrief title="Keep your wings sharp." description="A short review today makes tomorrow’s flight feel easier.">
+        <ButtonLink className="mt-5" size="lg" href={dueCount ? "/review/spaced" : weak.length ? "/review/weak" : mistakes.length ? "/review/mistakes" : saved ? "/review/saved" : "/review/spaced"}>Begin review</ButtonLink>
+      </SessionBrief>
 
       {/*
        * Reviewing a calculation course means working problems, not re-reading

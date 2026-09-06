@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     template: "%s · WingBrief",
   },
   description:
-    "A visual, interactive Aerodynamics trainer for Student Naval Aviators and Naval Flight Officers, built from the Naval Aviation Fundamentals trainee guide.",
+    "A visual, interactive NIFE ground-school trainer for Student Naval Aviators and Naval Flight Officers.",
   applicationName: "WingBrief",
 };
 

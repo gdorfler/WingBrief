@@ -15,18 +15,13 @@ export default function LessonsPage() {
   const readiness = unitReadiness(content.units, content.concepts, content.lessons, state);
   const readinessByUnit = Object.fromEntries(readiness.map((r) => [r.unit, r.readiness]));
   const completed = Object.values(states).filter((s) => s !== "locked" && s !== "current").length;
-  const hasObjectives = content.lessons.some((l) => l.enablingObjectives.length > 0);
 
   return (
     <>
       <PageHeader
         eyebrow={meta.layout === "desk" ? "Your route" : "Your flight path"}
-        title={meta.layout === "desk" ? "Navigation route" : `${meta.name} course map`}
-        subtitle={`${stats.lessons} lessons across ${stats.units} units, about ${stats.totalMinutes} minutes of instruction. ${
-          hasObjectives
-            ? "Every enabling objective in the trainee guide is mapped to a lesson and assessed by a question."
-            : "Every concept is taught by a lesson and assessed by at least two questions."
-        }`}
+        title={`${meta.name}. One flight at a time.`}
+        subtitle="Follow your aircraft. Earn your wings along the way."
         actions={
           <Pill tone="brand">
             {completed}/{stats.lessons} complete
@@ -75,7 +70,7 @@ export default function LessonsPage() {
         </div>
       </PageHeader>
 
-      <PlacementBanner />
+      <details className="mb-5 text-sm text-navy-soft"><summary className="cursor-pointer py-2">Already know this material?</summary><PlacementBanner /></details>
 
       <LessonMap
         units={content.units}

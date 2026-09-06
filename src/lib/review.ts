@@ -151,8 +151,8 @@ export function lessonStates(
           : conceptLevels.reduce((a, b) => a + b, 0) / conceptLevels.length;
       const anyWeak = conceptLevels.some((l) => l > 0 && l < 3);
 
-      if (avg >= 4.5) out[lesson.id] = "mastered";
-      else if (anyWeak) out[lesson.id] = "weak";
+      if (anyWeak) out[lesson.id] = "weak";
+      else if (avg >= 4.5) out[lesson.id] = "mastered";
       else if (progress.perfect) out[lesson.id] = "perfect";
       else out[lesson.id] = "completed";
       continue;
@@ -170,7 +170,7 @@ export function isLessonOpen(
   lessonId: string,
   states: Record<string, LessonNodeState>,
 ): boolean {
-  return states[lessonId] !== "locked";
+  return states[lessonId] !== undefined && states[lessonId] !== "locked";
 }
 
 /* ------------------------------------------------------------------ */

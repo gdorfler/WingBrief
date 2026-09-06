@@ -3,6 +3,7 @@
 import { QUESTION_BY_ID } from "@/content";
 import { useProgress } from "@/lib/progress-store";
 import { ReviewSession } from "@/components/review-session";
+import { LoadingState } from "@/components/ui";
 
 export default function SavedPage() {
   const { state, ready } = useProgress();
@@ -10,7 +11,7 @@ export default function SavedPage() {
     .map((id) => QUESTION_BY_ID[id])
     .filter(Boolean);
 
-  if (!ready) return null;
+  if (!ready) return <LoadingState label="Loading saved questions…" fullPage />;
 
   return (
     <ReviewSession

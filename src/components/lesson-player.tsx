@@ -25,6 +25,8 @@ import {
   labsForUnit,
 } from "@/content";
 import { summarizeLesson } from "@/lib/scoring";
+import { lessonStates } from "@/lib/review";
+import { Aviator } from "./flight-world";
 import { MASTERY_LABELS } from "@/lib/mastery";
 import { MakeItClick } from "./click/trigger";
 import { useProgress } from "@/lib/progress-store";
@@ -43,6 +45,7 @@ import {
   Pill,
   ProgressBar,
   ProgressRing,
+  LoadingState,
   TrendChip,
   cn,
 } from "./ui";
@@ -51,9 +54,12 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const router = useRouter();
   // A lesson can be opened by direct link from any course; progress must be
   // filed against the course that owns it, not whichever was last active.
-  useEnsureCourse(COURSE_OF_UNIT[lesson.unit]);
+  const courseReady = useEnsureCourse(COURSE_OF_UNIT[lesson.unit]);
   const { state, recordAnswer, introduceConcepts, completeLesson, toggleSavedQuestion } =
     useProgress();
+  const { content } = useCourse();
+  const locked = courseReady && lessonStates(content.lessons, state)[lesson.id] === "locked";
+  const xpBefore = useRef<number | null>(null);
 
   const [index, setIndex] = useState(0);
   const [results, setResults] = useState<
@@ -65,13 +71,15 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
   // Snapshot mastery on entry so the summary can show what moved.
   useEffect(() => {
+    if (!courseReady || locked) return;
+    xpBefore.current ??= state.xp;
     masteryBefore.current = Object.fromEntries(
       lesson.conceptIds.map((id) => [id, state.mastery[id]?.level ?? 0]),
     );
     introduceConcepts(lesson.conceptIds);
     // Runs once per lesson.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lesson.id]);
+  }, [courseReady, lesson.id, locked]);
 
   const screens = lesson.screens;
   const screen = screens[index];
@@ -112,22 +120,27 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
   // Commit the lesson exactly once when the student reaches the end screen.
   useEffect(() => {
-    if (!finished || committed.current) return;
+    if (!courseReady || locked || !finished || committed.current) return;
     committed.current = true;
     completeLesson(lesson.id, summary.score, summary.perfect);
-  }, [finished, lesson.id, summary.score, summary.perfect, completeLesson]);
+  }, [courseReady, locked, finished, lesson.id, summary.score, summary.perfect, completeLesson]);
 
   // Keyboard: Escape leaves, Enter advances a learning screen.
   useEffect(() => {
+    if (!courseReady || locked) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") router.push("/lessons");
+      if ((e.target as HTMLElement)?.closest("button,a,input,textarea,select,[contenteditable=true]")) return;
       if (e.key === "Enter" && screen && screen.kind !== "question" && !finished) {
         advance();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [advance, finished, router, screen]);
+  }, [advance, courseReady, locked, finished, router, screen]);
+
+  if (!courseReady) return <LoadingState label="Loading lesson progress…" fullPage />;
+  if (locked) return <div className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-5 px-6 text-center"><h1 className="text-3xl font-extrabold">This waypoint is ahead of you.</h1><p className="text-navy-soft">Complete the current lesson to unlock the next flight.</p><ButtonLink href="/lessons">Back to your flight path</ButtonLink></div>;
 
   if (finished) {
     return (
@@ -135,6 +148,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         lesson={lesson}
         summary={summary}
         masteryBefore={masteryBefore.current}
+        xpEarned={Math.max(0, state.xp - (xpBefore.current ?? state.xp))}
       />
     );
   }
@@ -587,26 +601,22 @@ function LessonComplete({
   lesson,
   summary,
   masteryBefore,
+  xpEarned,
 }: {
   lesson: Lesson;
   summary: ReturnType<typeof summarizeLesson>;
   masteryBefore: Record<string, number>;
+  xpEarned: number;
 }) {
   const { state } = useProgress();
   const { content, meta } = useCourse();
   const next = content.lessons.find((l) => l.index === lesson.index + 1);
-  const xpEarned =
-    summary.firstTryCorrect * 10 +
-    (summary.answered - summary.firstTryCorrect) * 4 +
-    40 +
-    (summary.perfect ? 25 : 0);
 
   // Tells the flight-path page, on its next visit, to fly the route marker
   // here from this lesson rather than simply appearing at the next one.
   useEffect(() => {
     signalLessonCompleted(lesson.id, xpEarned);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lesson.id]);
+  }, [lesson.id, xpEarned]);
 
   /*
    * The panel arrives, then the numbers fill in. The ring is driven from state
@@ -672,6 +682,7 @@ function LessonComplete({
              * and would congratulate a student who should go back.
              */}
             <Confetti show={celebrate} />
+            <Aviator className="mx-auto mb-4 h-28 w-28 rounded-full bg-white/10 object-cover" />
             <p className="eyebrow text-[#8fb0d4]">Lesson complete</p>
             <h1 className="mt-1.5 text-2xl text-white sm:text-3xl">{lesson.title}</h1>
 
