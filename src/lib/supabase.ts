@@ -9,8 +9,8 @@
  * Configuring the two public env vars turns on accounts and cross-device sync.
  */
 
-import { createBrowserClient } from "@supabase/ssr";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createAuthCookieStorage } from "./auth-cookie-storage";
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -37,8 +37,15 @@ let client: SupabaseClient | null = null;
 export function getSupabase(): SupabaseClient | null {
   if (!isSupabaseConfigured()) return null;
   if (!client) {
-    client = createBrowserClient(URL!, ANON_KEY!, {
-      auth: { flowType: "implicit" },
+    client = createClient(URL!, ANON_KEY!, {
+      auth: {
+        flowType: "implicit",
+        storage: typeof document === "undefined" ? undefined : createAuthCookieStorage(
+          () => document.cookie,
+          cookie => { document.cookie = cookie; },
+          window.location.protocol === "https:",
+        ),
+      },
     });
   }
   return client;

@@ -18,6 +18,7 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { getSupabase, isSupabaseConfigured } from "./supabase";
+import { displayNameError, normalizeDisplayName, savedDisplayName } from "./display-name";
 
 export interface AuthApi {
   /** Null while signed out, or when no backend is configured. */
@@ -30,6 +31,8 @@ export interface AuthApi {
   /** Sends a sign-in link. Resolves with an error message, or null on success. */
   sendLink: (email: string) => Promise<string | null>;
   signOut: () => Promise<void>;
+  displayName: string;
+  saveDisplayName: (name: string) => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthApi | null>(null);
@@ -81,9 +84,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   }, []);
 
+  const saveDisplayName = useCallback(async (name: string): Promise<string | null> => {
+    const invalid = displayNameError(name);
+    if (invalid) return invalid;
+    const supabase = getSupabase();
+    if (!supabase || !session?.user) return "Please sign in before saving your name.";
+    const userId = session.user.id;
+    try {
+      const { data, error } = await supabase.auth.updateUser({ data: { display_name: normalizeDisplayName(name) } });
+      if (error) return "Your name couldn’t be saved. Check your connection and try again.";
+      if (!data.user || data.user.id !== userId) return "Your account changed. Please try again.";
+      setSession(current => current?.user.id === userId ? { ...current, user: data.user } : current);
+      return null;
+    } catch {
+      return "Your name couldn’t be saved. Check your connection and try again.";
+    }
+  }, [session?.user]);
+
   const value = useMemo<AuthApi>(
-    () => ({ user: session?.user ?? null, session, ready, enabled, sendLink, signOut }),
-    [session, ready, enabled, sendLink, signOut],
+    () => ({ user: session?.user ?? null, session, ready, enabled, sendLink, signOut,
+      displayName: savedDisplayName(session?.user.user_metadata), saveDisplayName }),
+    [session, ready, enabled, sendLink, signOut, saveDisplayName],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

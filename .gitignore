@@ -4,6 +4,7 @@ out/
 .env*.local
 *.tsbuildinfo
 next-env.d.ts
+.playwright-cli/
 
 # Seeded progress used for design QA. Generated on demand, never committed —
 # it is a large blob of fabricated progress and would read as real data.

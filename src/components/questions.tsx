@@ -246,7 +246,7 @@ export function QuestionPlayer(props: QuestionPlayerProps) {
             </motion.div>
           )}
 
-          <div className="flex gap-2">
+          <div className="question-actions flex gap-2">
             {!graded ? (
               <Button onClick={submit} disabled={answer === null} fullWidth size="lg">
                 Check
@@ -318,13 +318,15 @@ function Feedback({
         "relative rounded-2xl border p-4",
         correct ? "border-go/25 bg-go-soft" : "border-nogo/25 bg-nogo-soft",
       )}
+      role="status"
+      aria-live="polite"
     >
       {/*
        * The gain floats off the banner as it appears. Amounts match what the
        * lesson actually awards, so the number here is the number earned rather
        * than an encouraging fiction.
        */}
-      <XpBurst amount={onRetry ? 4 : 10} show={correct} />
+      <XpBurst amount={10} show={correct && !onRetry} />
       <div className="mb-1.5 flex items-center gap-2">
         <span
           className={cn(

@@ -1,4 +1,21 @@
 /* Orange belongs to WingBrief. Course accents identify learning environments. */
+.lesson-screen .question-actions { position:sticky; bottom:0; z-index:10; padding:12px 0 max(12px,env(safe-area-inset-bottom)); background:var(--color-canvas); }
+.name-welcome { min-height:100dvh; display:flex; align-items:center; justify-content:center; gap:60px; padding:36px 24px; background:radial-gradient(ellipse at 20% 60%,#e7eee1,transparent 60%); }
+.name-welcome-art { width:min(30vw,290px); flex:none; }
+.flight-debrief { isolation:isolate; position:relative; overflow:hidden; max-width:570px; margin:auto; padding:36px 32px 28px; border-radius:28px; background:color-mix(in srgb,var(--color-brand) 6%,#faf9f1); text-align:center; }
+.debrief-badge { display:flex; justify-content:center; padding:12px 0 26px; }
+.flight-debrief h1 { font-size:clamp(27px,4vw,36px); line-height:1.15; margin-top:12px; font-weight:800; text-wrap:balance; overflow-wrap:anywhere; }
+.debrief-lesson { margin-top:12px; color:var(--color-navy-soft); font-size:16px; }
+.debrief-totals { display:flex; justify-content:center; gap:28px; padding:25px 0; }
+.debrief-totals>span { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--color-navy-soft); }
+.debrief-totals strong { font-size:23px; color:var(--color-navy); font-variant-numeric:tabular-nums; }.debrief-totals svg { color:var(--color-gold); }
+.debrief-milestone { display:flex; align-items:center; gap:18px; text-align:left; padding:12px 18px 0; border-radius:20px; background:#eeeada; overflow:hidden; }
+.debrief-milestone .aviator-art { width:85px; align-self:end; margin-bottom:-4px; }.debrief-milestone>div { padding-bottom:14px; }
+.debrief-progress { margin:24px 0; text-align:left; }
+.lesson-debrief-details { max-width:570px; margin-left:auto; margin-right:auto; }.lesson-debrief-details>summary { cursor:pointer; padding:14px 0; font-size:14px; font-weight:600; color:var(--color-navy-soft); }
+.explainer-concept-thumbnail { width:340px; pointer-events:none; transform:scale(.6); transform-origin:center; }.explainer-preview-art:has(.explainer-concept-thumbnail):before { display:none; }
+.home-greeting>p,.pilot-profile h1 { overflow-wrap:anywhere; }
+@media(max-width:640px) { .name-welcome { flex-direction:column; gap:24px; padding-top:28px; }.name-welcome-art { width:130px; }.name-welcome h1 { font-size:32px; }.flight-debrief { padding:22px 20px; }.debrief-totals { gap:16px; }.debrief-totals strong { font-size:20px; }.debrief-milestone { gap:12px; padding-left:8px; padding-right:12px; }.debrief-milestone .aviator-art { width:70px; } }
 .session-brief { position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center; gap:20px; border-radius:26px; padding:28px 30px; margin-bottom:28px; background:color-mix(in srgb,var(--color-brand) 7%,#f5f6ed); }
 .session-brief h1 { font-size:32px; font-weight:800; letter-spacing:-.035em; margin-top:7px; }.session-description { font-size:15px; color:var(--color-navy-soft); line-height:1.6; margin-top:10px; max-width:500px; }
 @media(max-width:640px) { .session-brief { padding:24px 20px; }.session-brief .world-badge { width:48px; height:48px; }.session-brief .world-badge svg { width:27px; height:27px; }.session-brief h1 { font-size:27px; } }

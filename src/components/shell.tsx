@@ -37,6 +37,8 @@ import { StreakFlame } from "./reward";
 import { StreakWeek } from "./streak-week";
 import { claimsFor, evaluateClaims, summariseClaims } from "@/lib/claims";
 import { AwardToasts } from "./awards";
+import { useAuth } from "@/lib/auth";
+import { NameOnboarding } from "./name-onboarding";
 
 interface NavItem {
   href: string;
@@ -405,6 +407,7 @@ export function WingMark({ size = 30 }: { size?: number }) {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { ready, state } = useProgress();
+  const { user, displayName } = useAuth();
   const immersive = isImmersive(pathname);
 
   // Until storage/account hydration completes, the progress context contains
@@ -414,6 +417,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // in completing authentication; every other route can wait safely.
   if (!ready && pathname !== "/auth/callback") {
     return <LoadingState label="Loading your progress…" fullPage />;
+  }
+  if (user && !displayName && pathname !== "/auth/callback") {
+    return <NameOnboarding key={user.id} />;
   }
 
   if (immersive) {

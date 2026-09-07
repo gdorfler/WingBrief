@@ -26,13 +26,14 @@ import {
 } from "@/content";
 import { summarizeLesson } from "@/lib/scoring";
 import { lessonStates } from "@/lib/review";
-import { Aviator } from "./flight-world";
+import { FlightDebrief } from "./flight-debrief";
+import { pilotRecord } from "@/lib/pilot-record";
 import { MASTERY_LABELS } from "@/lib/mastery";
 import { MakeItClick } from "./click/trigger";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse, useEnsureCourse } from "@/lib/course";
 import { signalLessonCompleted } from "@/lib/route-marker-signal";
-import { Confetti, useCountUp } from "./reward";
+
 import { DiagramHost } from "./diagrams/registry";
 import { NavToolPanel, WorkedExample } from "./nav/lesson-screens";
 import { Widget } from "./lab/widgets";
@@ -44,7 +45,6 @@ import {
   Formula,
   Pill,
   ProgressBar,
-  ProgressRing,
   LoadingState,
   TrendChip,
   cn,
@@ -55,11 +55,13 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   // A lesson can be opened by direct link from any course; progress must be
   // filed against the course that owns it, not whichever was last active.
   const courseReady = useEnsureCourse(COURSE_OF_UNIT[lesson.unit]);
-  const { state, recordAnswer, introduceConcepts, completeLesson, toggleSavedQuestion } =
+  const { state, exportState, recordAnswer, introduceConcepts, completeLesson, toggleSavedQuestion } =
     useProgress();
   const { content } = useCourse();
   const locked = courseReady && lessonStates(content.lessons, state)[lesson.id] === "locked";
   const xpBefore = useRef<number | null>(null);
+  const pilotBefore = useRef<ReturnType<typeof pilotRecord> | null>(null);
+  const screenFocus = useRef<HTMLElement>(null);
 
   const [index, setIndex] = useState(0);
   const [results, setResults] = useState<
@@ -73,6 +75,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   useEffect(() => {
     if (!courseReady || locked) return;
     xpBefore.current ??= state.xp;
+    pilotBefore.current ??= pilotRecord(exportState());
     masteryBefore.current = Object.fromEntries(
       lesson.conceptIds.map((id) => [id, state.mastery[id]?.level ?? 0]),
     );
@@ -84,6 +87,12 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const screens = lesson.screens;
   const screen = screens[index];
   const progress = finished ? 1 : index / screens.length;
+
+  useEffect(() => {
+    if (!courseReady || locked || finished) return;
+    screenFocus.current?.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [courseReady, locked, finished, index]);
 
   const advance = useCallback(() => {
     setIndex((i) => {
@@ -148,6 +157,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         lesson={lesson}
         summary={summary}
         masteryBefore={masteryBefore.current}
+        pilotBefore={pilotBefore.current}
         xpEarned={Math.max(0, state.xp - (xpBefore.current ?? state.xp))}
       />
     );
@@ -176,7 +186,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 pb-28">
+      <main ref={screenFocus} tabIndex={-1} className="lesson-screen mx-auto w-full max-w-3xl flex-1 px-4 py-6 pb-28 outline-none">
         {/*
           Keyed remount replays the entry animation on every screen change.
           Deliberately enter-only: an exit animation that fails to settle would
@@ -602,11 +612,13 @@ function LessonComplete({
   summary,
   masteryBefore,
   xpEarned,
+  pilotBefore,
 }: {
   lesson: Lesson;
   summary: ReturnType<typeof summarizeLesson>;
   masteryBefore: Record<string, number>;
   xpEarned: number;
+  pilotBefore: ReturnType<typeof pilotRecord> | null;
 }) {
   const { state } = useProgress();
   const { content, meta } = useCourse();
@@ -617,21 +629,6 @@ function LessonComplete({
   useEffect(() => {
     signalLessonCompleted(lesson.id, xpEarned);
   }, [lesson.id, xpEarned]);
-
-  /*
-   * The panel arrives, then the numbers fill in. The ring is driven from state
-   * rather than counted directly so it animates along its existing width
-   * transition instead of being redrawn 60 times a second.
-   */
-  const xpCounted = useCountUp(xpEarned);
-  const scorePct = useCountUp(Math.round(summary.score * 100));
-  const [ringValue, setRingValue] = useState(0);
-  useEffect(() => {
-    const t = setTimeout(() => setRingValue(summary.score), 90);
-    return () => clearTimeout(t);
-  }, [summary.score]);
-
-  const celebrate = summary.score >= 0.8;
 
   const moved = lesson.conceptIds
     .map((id) => ({
@@ -675,59 +672,8 @@ function LessonComplete({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="relative overflow-hidden rounded-3xl bg-ink-800 p-6 text-center sm:p-8">
-            {/*
-             * Confetti is reserved for a strong finish. Firing it on every
-             * completion — including a 40% one — would make it meaningless,
-             * and would congratulate a student who should go back.
-             */}
-            <Confetti show={celebrate} />
-            <Aviator className="mx-auto mb-4 h-28 w-28 rounded-full bg-white/10 object-cover" />
-            <p className="eyebrow text-[#8fb0d4]">Lesson complete</p>
-            <h1 className="mt-1.5 text-2xl text-white sm:text-3xl">{lesson.title}</h1>
-
-            <div className="mt-6 flex justify-center">
-              <ProgressRing
-                value={ringValue}
-                size={120}
-                stroke={11}
-                tone={summary.score >= 0.8 ? "go" : summary.score >= 0.5 ? "brand" : "caution"}
-                trackClassName="stroke-ink-600"
-              >
-                <span className="tabular text-[30px] font-extrabold leading-none text-white">
-                  {scorePct}
-                  <span className="text-lg">%</span>
-                </span>
-                <span className="mt-0.5 text-[11px] font-bold uppercase tracking-wider text-[#8fb0d4]">
-                  first try
-                </span>
-              </ProgressRing>
-            </div>
-
-            {summary.perfect && (
-              <p className="animate-pop mt-4 inline-flex items-center gap-1.5 rounded-full bg-gold/15 px-3 py-1.5 text-[12.5px] font-bold text-gold">
-                <Check size={13} strokeWidth={3} /> Perfect lesson — every question first try
-              </p>
-            )}
-
-            <div className="mt-6 grid grid-cols-3 gap-2.5">
-              <div className="rounded-xl bg-ink-700/70 px-3 py-3">
-                <p className="eyebrow text-[#8fb0d4]">Correct</p>
-                <p className="tabular mt-1 text-xl font-bold text-go">
-                  {summary.firstTryCorrect}/{summary.answered}
-                </p>
-              </div>
-              <div className="rounded-xl bg-ink-700/70 px-3 py-3">
-                <p className="eyebrow text-[#8fb0d4]">XP earned</p>
-                <p className="tabular mt-1 text-xl font-bold text-brand-light">+{xpCounted}</p>
-              </div>
-              <div className="rounded-xl bg-ink-700/70 px-3 py-3">
-                <p className="eyebrow text-[#8fb0d4]">Concepts</p>
-                <p className="tabular mt-1 text-xl font-bold text-white">{lesson.conceptIds.length}</p>
-              </div>
-            </div>
-          </div>
-
+          <FlightDebrief lesson={lesson} score={summary.score} xp={xpEarned} before={pilotBefore} nextId={next?.id}/>
+          <details className="lesson-debrief-details mt-6"><summary>Review your flight · mastery & follow-up</summary>
           <section className="mt-6">
             <h2 className="mb-3 text-base text-navy">Concept mastery</h2>
             <Card padded={false}>
@@ -856,23 +802,7 @@ function LessonComplete({
             </Card>
           </section>
 
-          <div className="mt-7 flex flex-col gap-2.5 sm:flex-row">
-            <ButtonLink href="/lessons" variant="secondary" size="lg" fullWidth>
-              Back to flight path
-            </ButtonLink>
-            <ButtonLink
-              href={next ? `/lessons/${next.id}` : "/exam"}
-              variant="primary"
-              size="lg"
-              fullWidth
-            >
-              {next ? "Next lesson" : "Take a practice exam"}
-              <ArrowRight size={17} />
-            </ButtonLink>
-          </div>
-          <p className="mt-3 text-center text-[11px] text-navy-faint">
-            {next ? `Up next: ${next.title}` : "Course complete"} · progress saved automatically
-          </p>
+          </details>
         </motion.div>
       </div>
     </div>

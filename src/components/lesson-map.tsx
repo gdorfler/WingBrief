@@ -253,12 +253,13 @@ export function LessonMap({
 
   useEffect(() => {
     if (!pendingFlight) return;
+    if (currentLessonId) nodeElsRef.current[currentLessonId]?.closest("li")?.scrollIntoView({ block: "center", behavior: "instant" });
     const t = setTimeout(() => {
       setFlying(true);
       setPendingFlight(false);
-    }, 50);
+    }, 550);
     return () => clearTimeout(t);
-  }, [pendingFlight]);
+  }, [pendingFlight, currentLessonId]);
 
   useEffect(() => {
     if (!flying) return;
@@ -667,6 +668,7 @@ function MapNode({
     <motion.li
       className="flight-waypoint relative pb-12 last:pb-4"
       data-state={state}
+      id={`waypoint-${lesson.id}`}
       initial={reduceMotion ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, delay: Math.min(index, 6) * 0.035, ease: "easeOut" }}
