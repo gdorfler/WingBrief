@@ -402,7 +402,7 @@ export const CONCEPTS: Concept[] = [
     unit: "w7",
     name: "Turbulence intensity",
     definition:
-      "Classified light, moderate, severe and extreme. Extreme requires declaring an emergency and exiting the area as soon as possible. PIREPs use trace, light, moderate, severe and extreme.",
+      "Classified light, moderate, severe and extreme. Extreme requires declaring an emergency and exiting the area as soon as possible. PIREPs use light, moderate, severe and extreme; trace is an icing intensity.",
     relationships: ["Extreme → declare an emergency, exit ASAP"],
     source: NOTES("WX 3: Hazards", ["2.247"]),
   },

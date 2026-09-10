@@ -113,22 +113,22 @@ export const EXPLAINERS: Explainer[] = [
       { caption: "Your radio is out. The tower can still talk to you.", hold: 2600, props: { highlight: "none" } },
       { caption: "Steady green: cleared to land. This is the clearance.", hold: 3000, props: { highlight: "green" } },
       { caption: "Steady red: give way and continue circling.", hold: 2800, props: { highlight: "red" } },
-      { caption: "Flashing white: return for landing — not yet a clearance.", hold: 3200, props: { highlight: "white" } },
+      { caption: "Flashing green: return for landing — not yet a clearance.", hold: 3200, props: { highlight: "flashing-green" } },
     ],
     predict: {
       at: 2,
       question:
-        "Radio out, and the tower gives you a FLASHING WHITE light. Are you cleared to land?",
+        "Radio out, and the tower gives you a FLASHING GREEN light. Are you cleared to land?",
       options: [
-        "Yes — white means cleared",
+        "Yes — any green signal means cleared",
         "No — it only tells you to return for landing",
         "No — it means give way and circle",
       ],
       answer: 1,
       because:
-        "Only STEADY GREEN is a landing clearance. Flashing white sends you back to the field to await one, and steady red tells you to give way and keep circling. Treating flashing white as a clearance is landing without one.",
+        "Only STEADY GREEN is a landing clearance. Flashing green sends you back to the field to await one, and steady red tells you to give way and keep circling. Treating flashing green as a clearance is landing without one.",
     },
-    knowCold: "Steady green clears you. Flashing white only sends you back.",
+    knowCold: "Steady green clears you. Flashing green only sends you back.",
     source: VIFR,
   },
   {

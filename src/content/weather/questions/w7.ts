@@ -18,6 +18,18 @@ const HAZ = NOTES("WX 3: Hazards");
 
 /** Units w7–w9: turbulence, icing, storms and low visibility. */
 export const W7_QUESTIONS: Question[] = [
+  {
+    id: "wq-w7-causes",
+    type: "mcq",
+    unit: "w7",
+    conceptIds: ["wx-turbulence-causes"],
+    prompt: "On a clear afternoon, unevenly heated ground produces rising and sinking currents. What causes this turbulence?",
+    options: ["Thermal convection from surface heating", "Mechanical flow around an obstruction", "Lifting along a frontal surface", "Large-scale wind shear near a jet stream"],
+    answer: 0,
+    explanation: "Uneven surface heating drives localized vertical convective currents, producing thermal turbulence. Mechanical turbulence instead comes from flow around terrain or obstructions. These causes are categories, not steps in a sequence, and turbulence can occur outside clouds.",
+    difficulty: 3,
+    source: { document: "Weather Trainee Guide", chapter: "Turbulence — Thermal Turbulence", eo: ["2.249"] },
+  },
   /* ================= w7 · turbulence and wind shear ================= */
   {
     id: "wq-w7-001",
@@ -574,19 +586,7 @@ export const W7_QUESTIONS: Question[] = [
     difficulty: 1,
     source: HAZ,
   },
-  {
-    id: "wq-w9-002",
-    type: "mcq",
-    unit: "w9",
-    conceptIds: ["wx-thunderstorm-hazards"],
-    prompt: "How many hazards does the thunderstorm mnemonic list?",
-    options: ["Four", "Five", "Six", "Seven"],
-    answer: 2,
-    explanation: "Six: hail, icing, microbursts, extreme turbulence, lightning and tornados.",
-    knowCold: "Six hazards.",
-    difficulty: 2,
-    source: DUMP,
-  },
+
   {
     id: "wq-w9-003",
     type: "mcq",

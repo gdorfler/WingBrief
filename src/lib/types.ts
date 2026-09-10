@@ -192,6 +192,20 @@ export interface ChainNode {
 }
 
 export type LessonScreen =
+  /** Predict, explore a controlled model, then retrieve independently. */
+  | {
+      kind: "discovery";
+      experiment: "moment" | "density" | "energy" | "balance";
+      headline: string;
+      line: string;
+      prediction: string;
+      options: string[];
+      answer: number;
+      task: string;
+      takeaway: string;
+      controlLabel: string;
+      flightConnection?: { line: string; caveat: string };
+    }
   /** Why this matters — one sentence, then straight into the visual. */
   | { kind: "hook"; headline: string; line: string; diagram?: DiagramSpec }
   /** Diagram or animation carrying the model. */
@@ -560,6 +574,7 @@ export type Question =
 
 export interface Lesson {
   id: string;
+  experience?: "discovery";
   unit: UnitId;
   index: number;
   title: string;

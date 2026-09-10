@@ -448,8 +448,8 @@ export const KNOW_COLD: KnowColdCard[] = [
   {
     id: "fkc-094",
     category: "trap",
-    term: "Flashing white is not a landing clearance",
-    body: "Steady green is the clearance to land. Flashing white only means return for landing.",
+    term: "Flashing green is not a landing clearance",
+    body: "Steady green is the clearance to land. Flashing green only means return for landing.",
     unit: "f4",
     conceptIds: ["fr-aldis"],
     source: VIFR(),

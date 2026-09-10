@@ -206,21 +206,17 @@ export const F3_QUESTIONS: Question[] = [
     officialStyle: true,
     source: VIFR(["2.361"]),
   },
+
   {
-    id: "fq-f4-005",
+    id: "fq-f4-015",
     type: "mcq",
     unit: "f4",
     conceptIds: ["fr-aldis"],
-    prompt: "From the tower, a FLASHING WHITE light gun signal means",
-    options: ["Cleared to land", "Return for landing", "Give way and continue circling", "Airport unsafe, do not land"],
-    answer: 1,
-    explanation:
-      "Flashing white means return for landing. Steady green is cleared to land; steady red means give way and continue circling.",
-    whyWrong:
-      "Flashing white is easy to read as a clearance. It is not — steady green is the clearance.",
-    knowCold: "Steady green = cleared to land. Flashing white = return for landing.",
-    difficulty: 2,
-    officialStyle: true,
+    prompt: "While airborne with no radio contact, you receive a flashing green light from the tower. What does it mean?",
+    options: ["Return for landing; await a steady green landing clearance", "You are cleared to land immediately", "Give way and continue circling", "Return to your starting point on the airport"],
+    answer: 0,
+    explanation: "Flashing green tells an airborne aircraft to return for landing. A steady green signal at the appropriate time provides the landing clearance. Flashing white applies to aircraft on the ground.",
+    difficulty: 3,
     source: VIFR(["2.361"]),
   },
   {
@@ -233,11 +229,11 @@ export const F3_QUESTIONS: Question[] = [
     targets: [
       { id: "green", label: "Steady green", x: 90, y: 95, r: 30 },
       { id: "red", label: "Steady red", x: 90, y: 157, r: 30 },
-      { id: "white", label: "Flashing white", x: 90, y: 219, r: 30 },
+      { id: "flashing-green", label: "Flashing green", x: 90, y: 219, r: 30 },
     ],
     answer: "green",
     explanation:
-      "Steady green clears you to land. Of the other two on the gun, steady red means give way and keep circling, and flashing white means return for landing — an instruction to come back, not a clearance to put the wheels down.",
+      "Steady green clears you to land. Of the other two on the gun, steady red means give way and keep circling, and flashing green means return for landing — an instruction to come back, not a clearance to put the wheels down.",
     knowCold: "Steady green = cleared to land.",
     difficulty: 1,
     source: VIFR(["2.361"]),

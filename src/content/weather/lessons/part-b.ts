@@ -727,7 +727,7 @@ export const LESSONS_B: Lesson[] = [
       { kind: "question", questionId: "wq-wg-047" },
     ],
     questionIds: [
-      "wq-w9-001", "wq-w9-002", "wq-w9-003", "wq-w9-004", "wq-w9-005", "wcc-w9-006",
+      "wq-w9-001",  "wq-w9-003", "wq-w9-004", "wq-w9-005", "wcc-w9-006",
       "wq-wg-045", "wq-wg-046", "wq-wg-047",
     ],
     memorize: ["HI MELT", "COUT, and the order is the priority"],

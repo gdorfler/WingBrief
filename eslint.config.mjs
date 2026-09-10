@@ -13,7 +13,7 @@ const eslintConfig = [
     // body that it should not be edited. A `next dev` or `next build` adds a
     // triple-slash reference to it that the TypeScript rules then reject, so
     // linting it means the suite fails purely because someone ran the app.
-    ignores: [".next/**", ".playwright-cli/**", "node_modules/**", "out/**", "next-env.d.ts"],
+    ignores: [".next/**", ".playwright-cli/**", "tmp/**", "node_modules/**", "out/**", "next-env.d.ts"],
   },
   {
     rules: {

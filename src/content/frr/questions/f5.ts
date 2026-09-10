@@ -97,23 +97,17 @@ export const F5_QUESTIONS: Question[] = [
     difficulty: 2,
     source: VIFR(["2.363"]),
   },
+
   {
-    id: "fcc-f5-006",
-    type: "connectChain",
+    id: "fq-f5-vfr-alternate",
+    type: "mcq",
     unit: "f5",
     conceptIds: ["fr-precluding-vfr"],
-    prompt:
-      "You are VFR and encounter weather en route that precludes VFR minimums. Build the set of alternatives available to you.",
-    trigger: "En route weather falls below VFR minimums",
-    steps: [
-      "Alter the route of flight to continue in VMC",
-      "Remain in VMC until a flight plan change is filed and an IFR clearance obtained",
-      "Remain in VMC and land at a suitable alternate",
-    ],
-    explanation:
-      "All three keep you in VMC. Continuing into IMC in controlled airspace without a clearance is not among them.",
-    knowCold: "Alter route · get a clearance · land at an alternate.",
-    difficulty: 2,
+    prompt: "Weather ahead prevents continuing under VFR, and you cannot obtain an IFR clearance. A suitable alternate is reachable in VMC. Which action is available?",
+    options: ["Remain in VMC and land at the suitable alternate", "Enter IMC while waiting for a clearance", "Continue into IMC because a flight plan has been filed", "Try rerouting, then request IFR, and only then consider landing, in that mandatory order"],
+    answer: 0,
+    explanation: "The guide gives three alternatives: reroute in VMC, remain in VMC until the flight-plan change is filed and IFR clearance obtained, or remain in VMC and land at a suitable alternate. These are alternatives, not a required sequence.",
+    difficulty: 3,
     source: VIFR(["2.365"]),
   },
   {

@@ -10,6 +10,7 @@
  */
 
 import type { ReactElement } from "react";
+import { NewtonInteractionDiagram } from "./motion-discovery";
 import type { DiagramProps } from "./primitives";
 import {
   AoaVsPitch,
@@ -160,6 +161,7 @@ import {
 } from "./nav";
 
 export const DIAGRAMS: Record<string, DiagramRenderer> = {
+  "newton-interaction": NewtonInteractionDiagram,
   /* Unit 1 */
   "moment-arm": MomentArm,
   "atmosphere-column": AtmosphereColumn,

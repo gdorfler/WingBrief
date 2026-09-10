@@ -1,4 +1,5 @@
 import type { Lesson, SourceReference } from "@/lib/types";
+import { MOTION_DISCOVERY_SCREENS } from "./motion-discovery";
 
 const TG = (chapter: string, eo: string[]): SourceReference => ({
   document: "Aerodynamics Trainee Guide",
@@ -33,72 +34,8 @@ export const LESSONS_A: Lesson[] = [
       "c-trimmed",
     ],
     masteryThreshold: 0.75,
-    screens: [
-      {
-        kind: "hook",
-        headline: "Six words the exam will try to swap on you",
-        line: "Moment, work, power, force, equilibrium, trimmed. Get them exact once and a dozen questions become free.",
-      },
-      {
-        kind: "model",
-        headline: "A moment is force × PERPENDICULAR distance",
-        diagram: { id: "moment-arm", props: { arm: 0.7 } },
-        line: "Drag the force along the arm. The moment grows with distance, not with the force alone.",
-        bullets: [
-          "M = F × d",
-          "d is the moment arm — perpendicular to the force",
-          "Work is force × displacement. Power is work ÷ time.",
-        ],
-      },
-      {
-        kind: "manipulate",
-        headline: "Move the force. Watch the moment.",
-        widget: "MomentArmSlider",
-        line: "Same force, different arm. This is why a small trim tab far from the hinge can balance a large elevator force.",
-      },
-      {
-        kind: "compare",
-        headline: "Equilibrium vs trimmed",
-        line: "The single most swapped pair in Unit 1.",
-        columns: ["Equilibrium flight", "Trimmed flight"],
-        rows: [
-          { label: "Forces sum to zero", a: "Yes — required", b: "Not necessarily" },
-          { label: "Moments sum to zero", a: "Yes — required", b: "Yes — required" },
-          { label: "Acceleration", a: "None, linear or angular", b: "No angular acceleration" },
-          {
-            label: "Example",
-            a: "Steady climb at constant airspeed",
-            b: "Constant-bank, constant-rate turn",
-          },
-        ],
-      },
-      {
-        kind: "chain",
-        headline: "The containment relationship",
-        nodes: [
-          { label: "Equilibrium flight", emphasis: true },
-          { label: "always implies", trend: "none" },
-          { label: "Trimmed flight", emphasis: true },
-        ],
-        footnote: "But trimmed flight does NOT imply equilibrium. The arrow only runs one way.",
-      },
-      {
-        kind: "anchor",
-        headline: "Know Cold",
-        statements: [
-          "Moment = force × perpendicular distance from the fulcrum.",
-          "Work = force × displacement. Power = work ÷ time.",
-          "Equilibrium = forces AND moments zero. Trimmed = moments only.",
-          "Density = mass ÷ volume.",
-        ],
-        formula: "M = F \\times d \\quad\\quad \\rho = \\frac{m}{V}",
-      },
-      { kind: "question", questionId: "q-u1-001" },
-      { kind: "question", questionId: "q-u1-005" },
-      { kind: "question", questionId: "trap-u1-007" },
-      { kind: "question", questionId: "q-u1-003" },
-      { kind: "question", questionId: "q-u1-004" },
-    ],
+    experience: "discovery",
+    screens: MOTION_DISCOVERY_SCREENS,
     questionIds: [
       "q-u1-001", "q-u1-005", "trap-u1-007", "q-u1-003", "q-u1-004",
       "q-u1-002", "trap-u1-006", "q-u1-047", "q-cov-001",
@@ -455,12 +392,12 @@ export const LESSONS_A: Lesson[] = [
       { kind: "question", questionId: "q-u1-023" },
       { kind: "question", questionId: "cc-u1-024" },
       { kind: "question", questionId: "q-u1-021" },
-      { kind: "question", questionId: "q-u1-025" },
+
       { kind: "question", questionId: "cs-u1-027" },
       { kind: "question", questionId: "q-u1-015" },
     ],
     questionIds: [
-      "q-u1-023", "cc-u1-024", "q-u1-021", "q-u1-025", "cs-u1-027",
+      "q-u1-023", "cc-u1-024", "q-u1-021",  "cs-u1-027",
       "q-u1-015", "tap-u1-022", "q-u1-026", "q-u1-045", "cc-u1-014",
     ],
     memorize: [

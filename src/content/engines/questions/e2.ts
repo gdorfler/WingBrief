@@ -380,7 +380,7 @@ export const E2_QUESTIONS: Question[] = [
     id: "eq-e2-020",
     type: "mcq",
     unit: "e2",
-    conceptIds: ["e-rpm-thrust"],
+    conceptIds: ["e-epr"],
     prompt: "Which cockpit gauge is used in most turbojet and turbofan aircraft to monitor thrust?",
     options: ["Torquemeter", "Engine Pressure Ratio", "Tachometer", "Interstage Turbine Temperature"],
     answer: 1,

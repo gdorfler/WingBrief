@@ -9,7 +9,7 @@
  * student who abandons halfway still keeps what they learned.
  */
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, BookOpen, Check, FlaskConical, Sparkles, X } from "lucide-react";
@@ -37,6 +37,8 @@ import { signalLessonCompleted } from "@/lib/route-marker-signal";
 import { DiagramHost } from "./diagrams/registry";
 import { NavToolPanel, WorkedExample } from "./nav/lesson-screens";
 import { Widget } from "./lab/widgets";
+import { LessonDiscovery } from "./lesson-discovery";
+import { Trainer } from "./flight-world";
 import { QuestionPlayer, type QuestionResult } from "./questions";
 import {
   Button,
@@ -52,6 +54,7 @@ import {
 
 export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
   // A lesson can be opened by direct link from any course; progress must be
   // filed against the course that owns it, not whichever was last active.
   const courseReady = useEnsureCourse(COURSE_OF_UNIT[lesson.unit]);
@@ -64,6 +67,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   const screenFocus = useRef<HTMLElement>(null);
 
   const [index, setIndex] = useState(0);
+  const [discoveredIndex, setDiscoveredIndex] = useState(-1);
   const [results, setResults] = useState<
     { questionId: string; firstTry: boolean; correct: boolean }[]
   >([]);
@@ -140,13 +144,13 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") router.push("/lessons");
       if ((e.target as HTMLElement)?.closest("button,a,input,textarea,select,[contenteditable=true]")) return;
-      if (e.key === "Enter" && screen && screen.kind !== "question" && !finished) {
+      if (e.key === "Enter" && screen && screen.kind !== "question" && (screen.kind !== "discovery" || discoveredIndex === index) && !finished) {
         advance();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [advance, courseReady, locked, finished, router, screen]);
+  }, [advance, courseReady, locked, finished, router, screen, discoveredIndex, index]);
 
   if (!courseReady) return <LoadingState label="Loading lesson progress…" fullPage />;
   if (locked) return <div className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-5 px-6 text-center"><h1 className="text-3xl font-extrabold">This waypoint is ahead of you.</h1><p className="text-navy-soft">Complete the current lesson to unlock the next flight.</p><ButtonLink href="/lessons">Back to your flight path</ButtonLink></div>;
@@ -164,7 +168,7 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-canvas">
+    <div className="flex min-h-dvh flex-col bg-canvas" data-lesson-experience={lesson.experience}>
       <header className="sticky top-0 z-20 border-b border-line bg-surface/92 backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
           <Link
@@ -194,12 +198,14 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
         */}
         <motion.div
           key={index}
-          initial={{ opacity: 0, x: 14 }}
+          initial={reduceMotion ? false : { opacity: 0, x: 14 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
         >
           <ScreenView
             screen={screen}
+            discoveryExperience={lesson.experience === "discovery"}
+            onDiscoveryReady={() => setDiscoveredIndex(index)}
             onAdvance={advance}
             onAnswer={handleAnswer}
             savedIds={state.savedQuestionIds}
@@ -212,8 +218,8 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
       {screen.kind !== "question" && (
         <footer className="fixed inset-x-0 bottom-0 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur-md">
           <div className="mx-auto flex max-w-3xl">
-            <Button onClick={advance} size="lg" fullWidth>
-              Continue
+            <Button onClick={advance} size="lg" fullWidth disabled={screen.kind === "discovery" && discoveredIndex !== index}>
+              {screen.kind === "discovery" && discoveredIndex !== index ? "Explore to continue" : index === screens.length - 1 ? "Complete flight" : "Continue"}
               <ArrowRight size={17} />
             </Button>
           </div>
@@ -229,6 +235,8 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
 function ScreenView({
   screen,
+  discoveryExperience,
+  onDiscoveryReady,
   onAdvance,
   onAnswer,
   savedIds,
@@ -236,6 +244,8 @@ function ScreenView({
   isLast,
 }: {
   screen: LessonScreen;
+  discoveryExperience: boolean;
+  onDiscoveryReady: () => void;
   onAdvance: () => void;
   onAnswer: (r: QuestionResult) => void;
   savedIds: string[];
@@ -243,9 +253,12 @@ function ScreenView({
   isLast: boolean;
 }) {
   switch (screen.kind) {
+    case "discovery":
+      return <LessonDiscovery screen={screen} onReady={onDiscoveryReady}/>;
     case "hook":
       return (
-        <div className="pt-6 text-center sm:pt-12">
+        <div className={cn("pt-6 text-center sm:pt-12", discoveryExperience && "discovery-intro")}>
+          {discoveryExperience && <div className="discovery-intro-plane"><Trainer priority/></div>}
           <p className="eyebrow mb-3 text-brand">Why this matters</p>
           <h2 className="text-2xl leading-tight text-navy sm:text-3xl">{screen.headline}</h2>
           <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-navy-soft">
@@ -391,6 +404,7 @@ function ScreenView({
       );
 
     case "anchor":
+      if (discoveryExperience) return <section className="discovery-pocket"><p className="discovery-kicker">Ready for your next flight</p><h2>{screen.headline}</h2><ul>{screen.statements.map(statement => <li key={statement}><Check size={19}/><p>{statement}</p></li>)}</ul><p className="discovery-lead">You’ve explored the relationships and tested your recall. Keep these distinctions with you.</p></section>;
       return (
         <div className="pt-2">
           <div className="rounded-2xl bg-ink-800 p-5 sm:p-6">

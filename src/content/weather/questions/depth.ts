@@ -92,36 +92,8 @@ export const DEPTH_QUESTIONS: Question[] = [
     difficulty: 3,
     source: THEORY,
   },
-  {
-    id: "wq-wd-005",
-    type: "mcq",
-    unit: "w7",
-    conceptIds: ["wx-turbulence-intensity"],
-    prompt: "Which intensity is the lowest reported on a PIREP?",
-    options: ["Trace", "Light", "Moderate", "Occasional"],
-    answer: 0,
-    explanation:
-      "PIREPs report trace, light, moderate, severe and extreme. Occasional is a DURATION, not an intensity.",
-    whyWrong:
-      "Occasional belongs to the other scale entirely — it describes how much of the time, not how bad.",
-    knowCold: "Trace, light, moderate, severe, extreme.",
-    difficulty: 2,
-    source: HAZ,
-  },
-  {
-    id: "wq-wd-006",
-    type: "connectChain",
-    unit: "w7",
-    conceptIds: ["wx-turbulence-causes"],
-    prompt: "Name the four causative factors in order.",
-    trigger: "Turbulence is reported",
-    steps: ["Large scale wind shear", "Thermal", "Frontal", "Mechanical"],
-    explanation:
-      "Four causes. One of them — frontal — only exists at cold fronts, because warm fronts produce little or no lifting.",
-    knowCold: "Wind shear, Thermal, Frontal, Mechanical.",
-    difficulty: 2,
-    source: HAZ,
-  },
+
+
   {
     id: "wq-wd-007",
     type: "mcq",

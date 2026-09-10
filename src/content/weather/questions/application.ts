@@ -339,7 +339,7 @@ export const APPLICATION_QUESTIONS: Question[] = [
     ],
     answer: 1,
     explanation:
-      "Extreme is the category that carries a mandated response: declare an emergency and get out as soon as possible. Light, moderate and severe are flown through with technique; extreme is not. PIREPs additionally use 'trace' at the bottom of the scale.",
+      "Extreme is the category that carries a mandated response: declare an emergency and get out as soon as possible. The turbulence scale is light, moderate, severe and extreme. Trace belongs to icing reports, not turbulence.",
     knowCold: "Extreme turbulence → declare an emergency, exit ASAP.",
     difficulty: 3,
   }),

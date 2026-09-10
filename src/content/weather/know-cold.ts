@@ -329,7 +329,7 @@ export const KNOW_COLD: KnowColdCard[] = [
     id: "wkc-053",
     category: "sequence",
     term: "Turbulence intensity",
-    body: "Trace → Light → Moderate → Severe → Extreme. Extreme: declare an emergency, exit ASAP.",
+    body: "Light → Moderate → Severe → Extreme. Extreme: declare an emergency, exit ASAP.",
     unit: "w7",
     conceptIds: ["wx-turbulence-intensity"],
     source: DUMP(),

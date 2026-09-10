@@ -734,7 +734,7 @@ export function LightGun(p: DiagramProps) {
   const signals = [
     { id: "green", label: "Steady green", meaning: "Cleared to land", color: GO },
     { id: "red", label: "Steady red", meaning: "Give way and continue circling", color: NOGO },
-    { id: "white", label: "Flashing white", meaning: "Return for landing", color: "#ffffff" },
+    { id: "flashing-green", label: "Flashing green", meaning: "Return for landing", color: GO },
   ];
 
   return (
@@ -763,7 +763,7 @@ export function LightGun(p: DiagramProps) {
               cy={y + 25}
               r={15}
               fill={s.color}
-              stroke={s.id === "white" ? MUTED : "none"}
+              stroke={s.id === "flashing-green" ? MUTED : "none"}
               strokeWidth={1.4}
             />
             {labels ? (
@@ -777,7 +777,7 @@ export function LightGun(p: DiagramProps) {
               </>
             ) : (
               <text x={122} y={y + 30} fontSize={11} fontWeight={700} fill={MUTED}>
-                {s.id === "white" ? "Flashing" : "Steady"}
+                {s.id === "flashing-green" ? "Flashing" : "Steady"}
               </text>
             )}
           </g>
@@ -786,7 +786,7 @@ export function LightGun(p: DiagramProps) {
 
       {labels && (
         <text x={250} y={274} textAnchor="middle" fontSize={9.8} fontWeight={700} fill={CAUTION}>
-          Flashing white is &ldquo;return for landing&rdquo; — steady green is the clearance
+          Flashing green is &ldquo;return for landing&rdquo; — steady green is the clearance
         </text>
       )}
     </Diagram>

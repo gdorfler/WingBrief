@@ -490,26 +490,7 @@ export const U1_QUESTIONS: Question[] = [
     difficulty: 1,
     source: BASIC(["2.42", "2.43", "2.44", "2.45", "2.46"]),
   },
-  {
-    id: "q-u1-025",
-    type: "mcq",
-    unit: "u1",
-    conceptIds: ["c-tas-altitude"],
-    prompt: "At 5,000 ft MSL, IAS is ___ TAS and ___ as TAS ___.",
-    options: [
-      "less than, increases, decreases",
-      "greater than, decreases, increases",
-      "less than, decreases, decreases",
-      "greater than, remains constant, decreases",
-    ],
-    answer: 0,
-    explanation:
-      "Above sea level the local density is lower than ρ₀, so TAS exceeds IAS. As TAS increases at that altitude, the gap widens further — so IAS increasingly falls behind.",
-    knowCold: "Above sea level, IAS < TAS, and the gap grows with speed and altitude.",
-    difficulty: 3,
-    officialStyle: true,
-    source: BASIC(["2.45", "2.47"]),
-  },
+
   {
     id: "q-u1-026",
     type: "mcq",

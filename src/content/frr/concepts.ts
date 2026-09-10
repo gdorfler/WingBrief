@@ -331,9 +331,9 @@ export const CONCEPTS: Concept[] = [
     unit: "f4",
     name: "Aldis lamp signals",
     definition:
-      "Coded light signals used by the tower for aircraft that cannot be reached by radio. Steady green means cleared to land. Steady red means give way to other aircraft and continue circling. Flashing white means return for landing.",
+      "Coded light signals used by the tower for aircraft that cannot be reached by radio. Steady green means cleared to land. Steady red means give way to other aircraft and continue circling. Flashing green means return for landing.",
     commonTraps: [
-      "Flashing white is 'return for landing', not 'cleared to land'. Steady green is the clearance.",
+      "Flashing green is 'return for landing', not 'cleared to land'. Steady green is the clearance.",
     ],
     source: VIFR(["2.361"]),
   },

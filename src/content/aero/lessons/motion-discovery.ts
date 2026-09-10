@@ -1,0 +1,75 @@
+import type { LessonScreen } from "@/lib/types";
+
+/** Exploration is unscored; the interleaved retrieval screens drive mastery. */
+export const MOTION_DISCOVERY_SCREENS: LessonScreen[] = [
+  { kind: "hook", headline: "Get a feel for what moves you.", line: "Move a force. Change the air. Bank an aircraft. Build the language of motion by seeing what changes." },
+  {
+    kind: "discovery", experiment: "moment",
+    headline: "Same push. More turning effect.",
+    line: "A moment is force × perpendicular distance from the pivot.",
+    prediction: "Keep the force fixed. What happens if you double its distance from the pivot?",
+    options: ["The moment doubles", "The moment stays the same", "The moment halves"], answer: 0,
+    task: "Move the force out to 2× the original arm.",
+    takeaway: "Twice the arm, twice the moment. Distance is measured perpendicular to the force.",
+    controlLabel: "Moment arm",
+  },
+  { kind: "question", questionId: "q-u1-001" },
+  {
+    kind: "discovery", experiment: "density",
+    headline: "Same air. More room.",
+    line: "Density tells you how much mass fits into a volume: ρ = m ÷ V.",
+    prediction: "The mass stays fixed. Double the volume and the air becomes…",
+    options: ["Twice as dense", "Half as dense", "The same density"], answer: 1,
+    task: "Slide right to expand the chamber to 2× its volume.",
+    takeaway: "Same mass ÷ twice the volume = half the density. No particles were added or removed.",
+    controlLabel: "Move the piston →",
+    flightConnection: {
+      line: "For the same wing at the same true airspeed and lift coefficient, lower air density means less lift. Air density matters to aircraft performance.",
+      caveat: "This chamber isolates mass ÷ volume. It is not an altitude model: the atmosphere has no piston, and its pressure and temperature also vary.",
+    },
+  },
+  { kind: "question", questionId: "q-u1-002" },
+  {
+    kind: "discovery", experiment: "energy",
+    headline: "Higher is stored opportunity.",
+    line: "Kinetic energy comes from motion. Gravitational potential energy comes from height.",
+    prediction: "At the same mass and speed, which energy increases with height?",
+    options: ["Kinetic energy", "Gravitational potential energy", "Both increase"], answer: 1,
+    task: "Raise the aircraft to 2× its height above the reference level. Keep speed fixed.",
+    takeaway: "More height means more gravitational potential energy. At the same speed and mass, kinetic energy is unchanged.",
+    controlLabel: "Height above reference",
+  },
+  { kind: "question", questionId: "q-u1-003" },
+  {
+    kind: "discovery", experiment: "balance",
+    headline: "A steady turn is still a turn.",
+    line: "Equilibrium needs zero net force AND zero net moment. Trimmed flight needs zero net moment.",
+    prediction: "In a steady, constant-bank turn with balanced moments, the aircraft is…",
+    options: ["In equilibrium and trimmed", "Trimmed, but not in equilibrium", "Neither trimmed nor in equilibrium"], answer: 1,
+    task: "Switch from straight flight to a steady turn. Look for the inward net force.",
+    takeaway: "Balanced moments keep the turn trimmed. The inward net force changes direction, so the aircraft is not in equilibrium.",
+    controlLabel: "Flight condition",
+  },
+  { kind: "question", questionId: "q-u1-005" },
+  { kind: "question", questionId: "trap-u1-007" },
+  {
+    kind: "model", headline: "Three laws. Three different ideas.",
+    diagram: { id: "newton-interaction" },
+    line: "Zero net force means no acceleration. A net force changes velocity. Interaction forces act on different bodies.",
+    bullets: [
+      "1 · Equilibrium: motion stays unchanged without a net force.",
+      "2 · Acceleration: net force = mass × acceleration.",
+      "3 · Interaction: the aircraft pushes air; the air pushes the aircraft with an equal, opposite force.",
+    ],
+  },
+  { kind: "question", questionId: "q-u1-004" },
+  {
+    kind: "anchor", headline: "Your pocket flight brief.",
+    statements: [
+      "Moment = force × perpendicular arm. Work = force × displacement along the force. Power = work ÷ time.",
+      "Density = mass ÷ volume. Kinetic energy is motion; potential energy is position.",
+      "A scalar has magnitude. A vector has magnitude and direction.",
+      "Equilibrium means zero net forces AND moments. Trimmed means zero net moments.",
+    ],
+  },
+];
