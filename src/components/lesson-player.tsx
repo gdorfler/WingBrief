@@ -34,6 +34,8 @@ import { useProgress } from "@/lib/progress-store";
 import { useCourse, useEnsureCourse } from "@/lib/course";
 import { signalLessonCompleted } from "@/lib/route-marker-signal";
 
+import { LessonIcon } from "./lesson-icon";
+import { SegmentedProgress } from "./segmented-progress";
 import { DiagramHost } from "./diagrams/registry";
 import { NavToolPanel, WorkedExample } from "./nav/lesson-screens";
 import { Widget } from "./lab/widgets";
@@ -46,7 +48,6 @@ import {
   Card,
   Formula,
   Pill,
-  ProgressBar,
   LoadingState,
   TrendChip,
   cn,
@@ -90,7 +91,8 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
 
   const screens = lesson.screens;
   const screen = screens[index];
-  const progress = finished ? 1 : index / screens.length;
+  const unit = content.units.find(u => u.id === lesson.unit);
+  const lessonNumber = [...content.lessons].filter(l => l.unit === lesson.unit).sort((a, b) => a.index - b.index).findIndex(l => l.id === lesson.id) + 1;
 
   useEffect(() => {
     if (!courseReady || locked || finished) return;
@@ -185,12 +187,13 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
                 {index + 1} / {screens.length}
               </span>
             </div>
-            <ProgressBar value={progress} tone="brand" height={6} className="mt-1.5" />
+            <SegmentedProgress completed={index} total={screens.length} label="Lesson screens completed" className="mt-1.5" />
           </div>
         </div>
       </header>
 
       <main ref={screenFocus} tabIndex={-1} className="lesson-screen mx-auto w-full max-w-3xl flex-1 px-4 py-6 pb-28 outline-none">
+        <div className="lesson-reference"><LessonIcon name={lesson.mapIcon} className="h-4 w-4" /><span>{COURSE_OF_UNIT[lesson.unit].toUpperCase()} / LESSON {unit?.index}.{lessonNumber}</span>{lesson.enablingObjectives[0] && <span title="Enabling objective">EO {lesson.enablingObjectives[0]}</span>}</div>
         {/*
           Keyed remount replays the entry animation on every screen change.
           Deliberately enter-only: an exit animation that fails to settle would

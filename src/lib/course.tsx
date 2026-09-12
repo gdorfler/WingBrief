@@ -7,10 +7,9 @@
  * is what makes a screen course-agnostic: the lesson map, review queue and exam
  * builder have no idea whether they are showing Aerodynamics or Engines.
  *
- * The active course also drives theming. `data-course` is written to the
- * document root and the stylesheet re-points the whole accent palette off that
- * one attribute, so switching courses recolours the app without a single
- * component re-reading a colour.
+ * The active course is exposed as `data-course` for course-specific layouts.
+ * Shared paper, ink and metadata typography remain consistent across courses;
+ * subject symbols carry course identity.
  */
 
 import { createContext, useContext, useEffect, useMemo } from "react";

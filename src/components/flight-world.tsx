@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import { Compass, Fan, Navigation, Wind, CloudSun, Flame, Star } from "lucide-react";
+import { TechnicalSymbol, COURSE_MARKS } from "./technical-symbol";
+import { Flame, Star } from "lucide-react";
 import type { CourseId } from "@/lib/types";
 import { useProgress } from "@/lib/progress-store";
 import { liveStreak } from "@/lib/xp";
@@ -15,8 +16,7 @@ export const WORLD_COPY: Record<CourseId, { name: string; caption: string }> = {
   nav: { name: "The chart room", caption: "Turn a heading into a destination." },
 };
 export function WorldBadge({ course, className }: { course: CourseId; className?: string }) {
-  const Icon = { aero: Wind, engines: Fan, frr: Navigation, weather: CloudSun, nav: Compass }[course];
-  return <span className={cn("world-badge", className)} data-world={course} aria-hidden="true"><Icon strokeWidth={1.6} /></span>;
+  return <span className={cn("world-badge", className)} data-world={course} aria-hidden="true"><TechnicalSymbol name={COURSE_MARKS[course]} /></span>;
 }
 export function WorldAtmosphere(_props: { course?: CourseId }) {
   return null;

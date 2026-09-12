@@ -288,7 +288,7 @@ function ExamPaper({ config }: { config: ExamConfig }) {
           initial={{ opacity: 0, x: 12 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-2xl bg-surface p-4 sm:p-5"
+          className="rounded-[3px] bg-surface p-4 sm:p-5"
         >
           <QuestionPlayer
             question={question}
@@ -346,10 +346,10 @@ function ExamPaper({ config }: { config: ExamConfig }) {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-sm rounded-2xl bg-surface p-5"
+            className="w-full max-w-sm rounded-[3px] bg-surface p-5"
           >
             <div className="mb-3 flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-caution-soft text-caution">
+              <span className="flex h-9 w-9 items-center justify-center rounded-[3px] bg-caution-soft text-caution">
                 <AlertTriangle size={18} />
               </span>
               <h2 className="text-lg text-navy">Submit exam?</h2>

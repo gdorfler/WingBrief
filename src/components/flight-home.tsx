@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check, Target } from "lucide-react";
+import { LessonIcon } from "./lesson-icon";
+import { TechnicalSymbol } from "./technical-symbol";
+import { ArrowRight, Target } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useCourse } from "@/lib/course";
 import { useProgress } from "@/lib/progress-store";
@@ -36,7 +38,7 @@ export function FlightHome({ platform = false }: { platform?: boolean }) {
     </div>
     <section className="study-next" aria-labelledby="next-flight-title">
       <div className="study-next-copy">
-        <p className="study-eyebrow">{meta.name} <span>/</span> {next ? "Next lesson" : "Course complete"}</p>
+        <p className="study-eyebrow study-subject">{next && <LessonIcon name={next.mapIcon} className="h-4 w-4" />}{meta.name} <span>/</span> {next ? "Next lesson" : "Course complete"}</p>
         <h1 id="next-flight-title">{next?.title ?? "Keep your knowledge sharp."}</h1>
         <p className="study-subtitle">{next?.subtitle ?? "Revisit the ideas that need practice, or test what you know."}</p>
         <div className="study-next-action">
@@ -57,11 +59,11 @@ export function FlightHome({ platform = false }: { platform?: boolean }) {
         <ol className="study-plan">{orderedFlight.slice(0, 3).map((item, i) => <li key={item.kind}>
           <Link href={item.href}><span className="study-step">{String(i + 1).padStart(2, "0")}</span><span className="study-plan-title">{item.title}</span><span className="study-duration">{item.minutes} min</span><ArrowRight size={16} /></Link>
         </li>)}</ol>
-        <div className="study-goal">{doneToday >= DAILY_LESSON_GOAL ? <Check size={16} /> : <Target size={16} />}<span>{doneToday} of {DAILY_LESSON_GOAL} daily lessons completed</span></div>
+        <div className="study-goal"><span className="status-dot" data-complete={doneToday >= DAILY_LESSON_GOAL} aria-hidden="true" /><span>{doneToday} of {DAILY_LESSON_GOAL} daily lessons completed</span></div>
       </section>
       <section className="study-review">
         <SectionHeading title="Worth another look" />
-        {weak.length ? <ul className="study-weak">{weak.map(w => <li key={w.concept.id}><Link href={`/review/concept/${w.concept.id}`}><span>{w.concept.name}</span><ArrowRight size={15} /></Link></li>)}</ul> : <p className="study-empty">{state.attempts.length ? "No weak areas right now. Keep building with your next lesson." : "Your review list will take shape as you learn."}</p>}
+        {weak.length ? <ul className="study-weak">{weak.map(w => <li key={w.concept.id}><Link href={`/review/concept/${w.concept.id}`}><span>{w.concept.name}</span><ArrowRight size={15} /></Link></li>)}</ul> : <div className="study-empty"><TechnicalSymbol name="propeller" size={28} /><p>{state.attempts.length ? "No weak areas right now. Keep building with your next lesson." : "Your review list will take shape as you learn."}</p></div>}
         <Link className="study-text-link" href="/review">Open review <ArrowRight size={14} /></Link>
         {id === "nav" && <Link className="study-text-link" href="/nav-desk"><Target size={16} />Navigation tools <ArrowRight size={14} /></Link>}
       </section>

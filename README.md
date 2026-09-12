@@ -6,12 +6,12 @@ and Student Naval Flight Officers.
 Duolingo-style progression + NotebookLM-style visual explainers + NIFE exam-focused content.
 
 Five courses ship today. They share one engine, one design language and one streak, but
-keep separate mastery, review queues, exams and visual identity — the way five languages
+keep separate mastery, review queues, exams and subject symbols — the way five languages
 sit inside one language app.
 
 | | Aerodynamics | Engines | Flight Rules | Weather | Navigation |
 |---|---|---|---|---|---|
-| Identity | Aviation blue · air and flow | Burnt amber · power and machinery | Indigo · rules and charts | Teal · the moving atmosphere | Emerald on chart paper · the navigator's desk |
+| Symbols | Airfoils and airflow | Turbine sections and circuits | Airspace and procedural marks | Isobars, fronts and wind | Compass roses and plotting marks |
 | Asks | Why does the aircraft behave this way? | What is happening inside the machine? | What rule applies, and what next? | What is the atmosphere doing? | Given this, how do I find the answer? |
 | Units | 6 | 7 | 8 | 10 | 10 |
 | Lessons | 33 (~226 min) | 30 (~172 min) | 32 (~162 min) | 30 (~169 min) | 33 (~233 min) |
@@ -140,10 +140,12 @@ nothing — the next successful save carries it up.
 
 ### Interface
 
-The interface uses warm paper, dark ink, muted course accents, and a consistent rust
-primary action. Home prioritizes the next lesson and a short study plan; lessons use
-a compact outline with visible completion and mastery states. Study resources stay
-accessible through the sidebar and home links. Instructional diagrams remain interactive.
+The interface uses warm paper with subtle grain, dark ink, rust actions, and green
+completion marks. All courses share serif headings, sans-serif body text, and restrained
+monospace metadata; subject symbols distinguish their content. Lessons keep their technical
+symbols as status changes, with numbered entries, a unit index, and one progress tick per
+lesson. Exam modes form a ruled menu beside a dated score log. Structural corners are
+nearly square, and instructional diagrams remain interactive.
 
 ### Screens
 

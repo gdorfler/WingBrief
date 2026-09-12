@@ -1,83 +1,61 @@
 "use client";
 
-
+import { useEffect, useState } from "react";
 import { lessonStates, unitReadiness } from "@/lib/review";
+import { conceptFraction } from "@/lib/mastery";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { LessonMap } from "@/components/lesson-map";
-import { ChipRail, PageHeader, Pill, cn } from "@/components/ui";
+import { SegmentedProgress } from "@/components/segmented-progress";
+import { PageHeader } from "@/components/ui";
 import { PlacementBanner } from "@/components/placement-banner";
+
+const AERO_INDEX = ["Language", "Wing", "Drag", "Performance", "Maneuvering", "Hazards"];
 
 export default function LessonsPage() {
   const { state } = useProgress();
-  const { content, stats, meta } = useCourse();
+  const { id, content, stats, meta } = useCourse();
   const states = lessonStates(content.lessons, state);
   const readiness = unitReadiness(content.units, content.concepts, content.lessons, state);
-  const readinessByUnit = Object.fromEntries(readiness.map((r) => [r.unit, r.readiness]));
-  const completed = Object.values(states).filter((s) => s !== "locked" && s !== "current").length;
+  const readinessByUnit = Object.fromEntries(readiness.map(r => [r.unit, r.readiness]));
+  const masteryByLesson = Object.fromEntries(content.lessons.map(l => [l.id,
+    Math.round(l.conceptIds.reduce((sum, c) => sum + conceptFraction(state.mastery[c]), 0) / Math.max(1, l.conceptIds.length) * 100),
+  ]));
+  const completed = content.lessons.filter(l => state.lessons[l.id]?.completed).length;
+  const currentUnit = content.lessons.find(l => states[l.id] === "current")?.unit ?? content.units[0]?.id;
+  const [visibleUnit, setVisibleUnit] = useState<string | null>(null);
 
-  return (
-    <>
-      <PageHeader
-        eyebrow="Course outline"
-        title={meta.name}
-        subtitle="Pick up where you left off, or revisit a completed lesson."
-        actions={
-          <Pill tone="brand">
-            {completed}/{stats.lessons} complete
-          </Pill>
-        }
-      >
-        {/*
-          Each chip carries its own progress. A row of unit names is a table of
-          contents; the same row with "6/6" against each one tells a student
-          where they actually are before they have scrolled anywhere, and marks
-          the finished units without needing a second colour.
-        */}
-        <div className="mt-4">
-          <ChipRail>
-            {content.units.map((u) => {
-              const unitLessons = content.lessons.filter((l) => l.unit === u.id);
-              const doneInUnit = unitLessons.filter(
-                (l) => states[l.id] !== "locked" && states[l.id] !== "current",
-              ).length;
-              const finished = doneInUnit === unitLessons.length && unitLessons.length > 0;
-              return (
-                <a
-                  key={u.id}
-                  href={`#${u.id}`}
-                  className={cn(
-                    "flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors",
-                    finished
-                      ? "border-go/40 bg-go-soft text-go hover:border-go/60"
-                      : "border-line bg-surface text-navy-soft hover:border-line-strong hover:text-navy",
-                  )}
-                >
-                  <span className="tabular text-navy-faint">{u.index}</span>
-                  <span>{u.title}</span>
-                  <span
-                    className={cn(
-                      "tabular text-[12px] font-extrabold",
-                      finished ? "text-go" : "text-navy-faint",
-                    )}
-                  >
-                    {doneInUnit}/{unitLessons.length}
-                  </span>
-                </a>
-              );
-            })}
-          </ChipRail>
-        </div>
-      </PageHeader>
+  useEffect(() => {
+    const update = () => {
+      const sections = content.units.map(u => document.getElementById(u.id)).filter((el): el is HTMLElement => !!el);
+      const passed = sections.filter(el => el.getBoundingClientRect().top <= 180);
+      // A short final unit cannot reach the reading line when the page ends.
+      const atEnd = window.scrollY > 0 && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      setVisibleUnit((atEnd ? sections.at(-1) : passed.at(-1))?.id ?? null);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [content.units]);
 
-      <details className="mb-5 text-sm text-navy-soft"><summary className="cursor-pointer py-2">Already know this material?</summary><PlacementBanner /></details>
-
-      <LessonMap
-        units={content.units}
-        lessons={content.lessons}
-        states={states}
-        readinessByUnit={readinessByUnit}
-      />
-    </>
-  );
+  return <>
+    <PageHeader eyebrow="Training manual / Course outline" title={meta.name}
+      subtitle="Pick up where you left off, or revisit a completed lesson."
+      actions={<div className="outline-completion"><p><strong>{String(completed).padStart(2, "0")}</strong> / {stats.lessons}<span>LESSONS COMPLETE</span></p><SegmentedProgress completed={completed} total={stats.lessons} label="Lessons completed" /></div>}>
+      <nav className="unit-index" aria-label="Unit index">
+        {content.units.map(u => {
+          const unitLessons = content.lessons.filter(l => l.unit === u.id);
+          const done = unitLessons.filter(l => state.lessons[l.id]?.completed).length;
+          return <a key={u.id} href={`#${u.id}`} aria-current={(visibleUnit ?? currentUnit) === u.id ? "location" : undefined}>
+            <span className="unit-index-number">{String(u.index).padStart(2, "0")}</span>
+            <span>{id === "aero" ? AERO_INDEX[u.index - 1] ?? u.title : u.title}</span>
+            <small data-complete={done === unitLessons.length}>{done}/{unitLessons.length}</small>
+          </a>;
+        })}
+      </nav>
+    </PageHeader>
+    <details className="placement-note"><summary>Already know this material?</summary><PlacementBanner /></details>
+    <LessonMap units={content.units} lessons={content.lessons} states={states}
+      readinessByUnit={readinessByUnit} masteryByLesson={masteryByLesson} />
+  </>;
 }

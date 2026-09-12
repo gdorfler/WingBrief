@@ -315,7 +315,7 @@ function Feedback({
   return (
     <div
       className={cn(
-        "relative rounded-2xl border p-4",
+        "relative rounded-[3px] border p-4",
         correct ? "border-go/25 bg-go-soft" : "border-nogo/25 bg-nogo-soft",
       )}
       role="status"
@@ -354,7 +354,7 @@ function Feedback({
         </p>
       )}
       {question.knowCold && (
-        <div className="mt-3 rounded-xl bg-surface/80 px-3 py-2">
+        <div className="mt-3 rounded-[3px] bg-surface/80 px-3 py-2">
           <p className="eyebrow text-navy-faint">Know cold</p>
           <p className="mt-0.5 text-[13px] font-semibold leading-snug text-navy">
             {question.knowCold}
@@ -479,7 +479,7 @@ function OptionRow({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "flex w-full items-start gap-3 rounded-xl border p-3 text-left transition-all",
+        "flex w-full items-start gap-3 rounded-[3px] border p-3 text-left transition-all",
         state === "idle" &&
           (selected
             ? "border-brand bg-brand-soft"
@@ -542,7 +542,7 @@ function ChoiceBody({
   return (
     <div className="space-y-3">
       {q.diagram && (
-        <div className="overflow-hidden rounded-2xl border border-line bg-surface p-3">
+        <div className="overflow-hidden rounded-[3px] border border-line bg-surface p-3">
           <DiagramHost id={q.diagram.id} props={q.diagram.props} caption={q.diagram.caption} />
         </div>
       )}
@@ -644,7 +644,7 @@ function CurveShiftBody({
 
   return (
     <div className="space-y-3">
-      <div className="rounded-2xl border border-line bg-surface p-3">
+      <div className="rounded-[3px] border border-line bg-surface p-3">
         <div className="mb-2 flex flex-wrap items-center gap-2 px-1">
           <Pill tone="nogo" size="sm">
             {q.change}
@@ -676,7 +676,7 @@ function CurveShiftBody({
               type="button"
               onClick={() => !graded && onChange(serializeAnswer({ kind: "index", value: i }))}
               className={cn(
-                "flex flex-col items-center gap-1 rounded-xl border py-3 transition-all",
+                "flex flex-col items-center gap-1 rounded-[3px] border py-3 transition-all",
                 state === "idle" &&
                   (selected === i
                     ? "border-brand bg-brand-soft"
@@ -717,7 +717,7 @@ function TapBody({
 
   return (
     <div className="space-y-2">
-      <div className="relative overflow-hidden rounded-2xl border border-line bg-surface p-3">
+      <div className="relative overflow-hidden rounded-[3px] border border-line bg-surface p-3">
         <div className="relative">
           <DiagramHost id={q.diagram.id} props={q.diagram.props} />
           <svg
@@ -835,7 +835,7 @@ function DragLabelBody({
 
   return (
     <div className="space-y-3">
-      <div className="relative overflow-hidden rounded-2xl border border-line bg-surface p-3">
+      <div className="relative overflow-hidden rounded-[3px] border border-line bg-surface p-3">
         <div className="relative">
           <DiagramHost id={q.diagram.id} props={q.diagram.props} />
           <svg viewBox="0 0 500 300" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
@@ -945,7 +945,7 @@ function DragLabelBody({
               type="button"
               onClick={() => setActiveLabel(activeLabel === label ? null : label)}
               className={cn(
-                "rounded-xl border px-3 py-2 text-[13px] font-semibold transition-all",
+                "rounded-[3px] border px-3 py-2 text-[13px] font-semibold transition-all",
                 activeLabel === label
                   ? "border-brand bg-brand text-white"
                   : "border-line bg-surface text-navy hover:border-line-strong",
@@ -1014,7 +1014,7 @@ function ConnectChainBody({
 
   return (
     <div className="space-y-2">
-      <div className="rounded-xl bg-ink-800 px-4 py-3">
+      <div className="rounded-[3px] bg-ink-800 px-4 py-3">
         <p className="eyebrow text-[#8fb0d4]">Trigger</p>
         <p className="mt-0.5 text-[14px] font-semibold text-white">{q.trigger}</p>
       </div>
@@ -1026,7 +1026,7 @@ function ConnectChainBody({
             <li key={step}>
               <div
                 className={cn(
-                  "flex items-center gap-3 rounded-xl border p-3 transition-colors",
+                  "flex items-center gap-3 rounded-[3px] border p-3 transition-colors",
                   graded
                     ? ok
                       ? "border-go bg-go-soft"
@@ -1079,7 +1079,7 @@ function ConnectChainBody({
       </ul>
 
       {graded && (
-        <div className="rounded-xl bg-surface-2 p-3">
+        <div className="rounded-[3px] bg-surface-2 p-3">
           <p className="eyebrow mb-1.5 text-navy-faint">Correct order</p>
           <ol className="space-y-1">
             {q.steps.map((s, i) => (
@@ -1128,8 +1128,8 @@ function BeforeAfterBody({
 
   return (
     <div className="space-y-3">
-      <div className="rounded-2xl border border-line bg-surface p-3">
-        <div className="mb-2 flex gap-1 rounded-xl bg-surface-3 p-1">
+      <div className="rounded-[3px] border border-line bg-surface p-3">
+        <div className="mb-2 flex gap-1 rounded-[3px] bg-surface-3 p-1">
           {[0, 1].map((i) => (
             <button
               key={i}
@@ -1155,7 +1155,7 @@ function BeforeAfterBody({
           const chosen = values[ri];
           const rowGraded = graded;
           return (
-            <li key={row.label} className="rounded-xl border border-line bg-surface p-3">
+            <li key={row.label} className="rounded-[3px] border border-line bg-surface p-3">
               <div className="mb-2 flex items-center justify-between gap-2">
                 <p className="text-[13px] font-semibold text-navy">{row.label}</p>
                 {rowGraded && (
@@ -1234,7 +1234,7 @@ export function QuestionReview({
 
       <AnswerSummary question={question} givenAnswer={givenAnswer} />
 
-      <div className="rounded-xl bg-surface-2 p-3">
+      <div className="rounded-[3px] bg-surface-2 p-3">
         <p className="text-[13px] leading-relaxed text-navy">{question.explanation}</p>
         {question.knowCold && (
           <p className="mt-2 text-[12.5px] font-semibold text-navy">
@@ -1263,7 +1263,7 @@ function AnswerSummary({
     return (
       <div
         className={cn(
-          "rounded-xl px-3 py-2.5",
+          "rounded-[3px] px-3 py-2.5",
           givenAnswer !== undefined && isCorrect(question, givenAnswer)
             ? "bg-go-soft"
             : "bg-nogo-soft",
@@ -1301,14 +1301,14 @@ function AnswerSummary({
 
   return (
     <div className="grid gap-2 sm:grid-cols-2">
-      <div className={cn("rounded-xl px-3 py-2", wasCorrect ? "bg-go-soft" : "bg-nogo-soft")}>
+      <div className={cn("rounded-[3px] px-3 py-2", wasCorrect ? "bg-go-soft" : "bg-nogo-soft")}>
         <p className="eyebrow text-navy-faint">Your answer</p>
         <p className={cn("mt-0.5 text-[13px] font-semibold", wasCorrect ? "text-go" : "text-nogo")}>
           {describe(givenAnswer)}
         </p>
       </div>
       {!wasCorrect && (
-        <div className="rounded-xl bg-go-soft px-3 py-2">
+        <div className="rounded-[3px] bg-go-soft px-3 py-2">
           <p className="eyebrow text-navy-faint">Correct answer</p>
           <p className="mt-0.5 text-[13px] font-semibold text-go">{describe(key)}</p>
         </div>

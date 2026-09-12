@@ -37,8 +37,8 @@ export const COURSES: Record<CourseId, CourseMeta> = {
     sourceLabel: "Engines · Condensed Notes",
     icon: "turbine",
     theme: "engines",
-    accent: "#8e543b",
-    accentSoft: "#eee3d8",
+    accent: "#456879",
+    accentSoft: "#e3e9e8",
     labLabel: "Sim Lab",
     labIntro: {
       title: "Drive the engine, watch what moves",
@@ -53,8 +53,8 @@ export const COURSES: Record<CourseId, CourseMeta> = {
     sourceLabel: "NAVAVSCOLSCOM-SG-200 Module 7 · CNAF M-3710.7",
     icon: "waypoint",
     theme: "frr",
-    accent: "#68617a",
-    accentSoft: "#e8e4ec",
+    accent: "#456879",
+    accentSoft: "#e3e9e8",
     labLabel: "Scenario Lab",
     labIntro: {
       title: "Set the situation, read the ruling",
@@ -69,8 +69,8 @@ export const COURSES: Record<CourseId, CourseMeta> = {
     sourceLabel: "NAVAVSCOLSCOM-SG-200 · EOs 2.199–2.279",
     icon: "atmosphere",
     theme: "weather",
-    accent: "#426b65",
-    accentSoft: "#e2ebe4",
+    accent: "#456879",
+    accentSoft: "#e3e9e8",
     labLabel: "Weather Lab",
     labIntro: {
       title: "Change a condition, watch the atmosphere answer",
@@ -85,8 +85,8 @@ export const COURSES: Record<CourseId, CourseMeta> = {
     sourceLabel: "NAVAVSCOLSCOM-SG-200 Unit 6 · CIN Q-9B-0020L",
     icon: "plotter",
     theme: "nav",
-    accent: "#626d43",
-    accentSoft: "#e8eadc",
+    accent: "#456879",
+    accentSoft: "#e3e9e8",
     labLabel: "Nav Bench",
     labIntro: {
       title: "Pick the instrument up",

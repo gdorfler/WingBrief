@@ -1,18 +1,10 @@
 "use client";
 
-/**
- * Every course, at full size, in its own colours.
- *
- * Each card hands its own palette and ground down as inline custom
- * properties. That is not a flourish: `bg-ink-900` and `--color-brand` both
- * resolve to whatever course is *active*, so a card that did not override
- * them rendered in the wrong colour entirely — five Engines-brown cards while
- * Engines was selected.
- */
+/** Course directory: shared ink and typography, distinct subject symbols. */
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import type { CSSProperties } from "react";
+
 
 import type { CourseId } from "@/lib/types";
 import { contentFor } from "@/content";
@@ -20,7 +12,7 @@ import { overallReadiness } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
 import { WorldBadge } from "./flight-world";
-import { ProgressBar } from "./ui";
+import { SegmentedProgress } from "./segmented-progress";
 
 
 export interface CourseRow {
@@ -88,11 +80,10 @@ export function CourseGrid({ rows }: { rows: CourseRow[] }) {
   const { id: activeId, setCourse } = useCourse();
   return <ul className="course-worlds">{rows.map(row => <li key={row.id}>
     <button type="button" className="course-world" aria-current={row.id === activeId ? "true" : undefined}
-      onClick={() => { setCourse(row.id); router.push("/course"); }}
-      style={{ "--color-brand": row.accent, "--color-brand-dark": row.accent, "--color-brand-soft": row.accentSoft } as CSSProperties}>
+      onClick={() => { setCourse(row.id); router.push("/course"); }}>
       <WorldBadge course={row.id}/>
       <div className="course-world-label"><h3>{row.name}</h3><p>{row.id === activeId ? "Current course" : "Open course"}</p></div>
       <div className="world-progress"><span>{row.lessonsDone} / {row.lessonsTotal} lessons</span>
-      <ProgressBar value={row.lessonsDone/Math.max(1,row.lessonsTotal)} height={5} className="mt-2"/></div>
+      <SegmentedProgress completed={row.lessonsDone} total={row.lessonsTotal} label={`${row.name} lessons completed`} className="mt-2"/></div>
     </button></li>)}</ul>;
 }

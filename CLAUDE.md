@@ -18,11 +18,11 @@ Five courses live on one engine:
 
 | id | Course | Identity |
 |---|---|---|
-| `aero` | Aerodynamics | blue, airflow |
-| `engines` | Engines | orange, mechanical |
-| `frr` | Flight Rules and Regulations | indigo, procedural |
-| `weather` | Weather | teal, atmospheric |
-| `nav` | Navigation | emerald, chart and calculation |
+| `aero` | Aerodynamics | airfoil and airflow symbols |
+| `engines` | Engines | turbine and mechanical sections |
+| `frr` | Flight Rules and Regulations | procedural and airspace marks |
+| `weather` | Weather | meteorological symbols |
+| `nav` | Navigation | plotting and calculation marks |
 
 ## Stack
 
@@ -37,11 +37,10 @@ another local project.
   and never imports from components. One engine hosts every course; adding a
   course means adding an id to `CourseId`, a row in `courses.ts`, a content
   bundle and a palette block — no changes to the learning, review or exam logic.
-- **Theming is one attribute.** The active course writes `data-course` on the
-  document root and `globals.css` repoints the brand ramp. Anything using
-  `text-brand` / `bg-brand` / `--color-brand` re-themes for free. A component
-  that needs a *non-active* course's colour must hand the variables down
-  itself — see `course-grid.tsx`.
+- **One shared visual system.** `data-course` identifies the active course, but
+  all courses share paper, navy ink, rust actions and green completion marks.
+  `minimal.css` owns the tokens; `courses.ts` matches them. Technical symbols
+  distinguish courses without changing themes. Preserve semantic diagram colors.
 - **Progress is one multi-course document**, flattened to the active course for
   screens (`toView` in `progress-store`). Screens read `state`; only a
   genuinely platform-wide screen reads the whole document via `exportState`.
@@ -52,18 +51,22 @@ another local project.
 ## Design language
 
 Minimal, conservative, and inspired by vintage aviation manuals. The user's
-September 10 direction supersedes the earlier night-sky and badge-heavy design.
+September 12 technical-manual direction supersedes the earlier night-sky and badge-heavy design.
 
-- Warm paper, dark green-grey ink, muted rust for primary actions, and restrained
-  blue, brown, slate, teal, and olive course accents. Shared theme tokens live
-  in `src/app/minimal.css`, loaded after the legacy styles. Course metadata
-  accents in `courses.ts` must match those tokens.
+- Warm paper with almost invisible grain, dark ink, rust for actions/current
+  selection, and green for completion/mastery. Shared tokens live in
+  `src/app/minimal.css`, loaded after legacy styles. Structural radii are 2–4px.
 - One clear next action per screen, simple line icons, fine rules, and generous
   spacing. Serif page titles pair with sans-serif body text and small mono labels.
+- Lesson subject symbols stay visible in all states; status is written as small
+  mono text, never substituted with a check or review arrow. Use real lesson
+  counts for segmented progress and real EOs for marginal references. Exam modes
+  and recent results use rules and typographic menus/logs rather than cards.
 - Home shows the next lesson, a brief study plan, review priorities, and plain
   course rows. The lesson route is a compact outline with explicit progress states.
 - Keep instructional diagrams and interactive models. Avoid decorative background
-  patterns, floating aircraft, gradients, and badge displays on study screens.
+  patterns (apart from subtle paper grain), floating aircraft, gradients, and
+  badge displays on study screens.
 - Keep gamification tied to real work: streak, XP, mastery, and the daily goal.
   Detailed rewards and activity belong on the profile or completion screen.
   Do not add chests, timed rewards, or invented leaderboard/percentile claims.
