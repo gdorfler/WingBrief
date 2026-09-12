@@ -228,14 +228,19 @@ export function ProgressProvider({
     if (!ready) return;
     const gen = generation.current;
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
+    const persist = () => {
       // A store swap between scheduling and firing would file this state under
       // the wrong account, so anything from a previous generation is discarded.
       if (gen !== generation.current) return;
       void storeRef.current.save(stored);
-    }, 250);
+    };
+    saveTimer.current = setTimeout(persist, 250);
+    // A reload or external navigation can happen before the debounce fires.
+    // Both stores write their local cache synchronously before network work.
+    window.addEventListener("pagehide", persist);
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
+      window.removeEventListener("pagehide", persist);
     };
   }, [stored, ready]);
 

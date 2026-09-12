@@ -138,11 +138,18 @@ nothing — the next successful save carries it up.
 | Know Cold cards | 344 |
 | Enabling Objectives mapped | 408 — all taught **and** assessed |
 
+### Interface
+
+The interface uses warm paper, dark ink, muted course accents, and a consistent rust
+primary action. Home prioritizes the next lesson and a short study plan; lessons use
+a compact outline with visible completion and mastery states. Study resources stay
+accessible through the sidebar and home links. Instructional diagrams remain interactive.
+
 ### Screens
 
 - **Course switcher** — sidebar, mobile header and profile; shows each course's readiness
-- **Home** — course readiness, streak, XP, Today's Flight, weak areas, explainers, achievements
-- **Lessons** — the flight path: a snaking route through the course's units, per-node state
+- **Home** — next lesson, course readiness, daily study plan, review priorities, and courses
+- **Lessons** — a compact course outline with lesson states, durations, and unit exam links
 - **Lesson player** — hook → visual model → manipulation → cause-effect chain → Know Cold → retrieval
 - **Review** — spaced review, weak areas, mistakes, saved, plus per-concept detail pages
 - **Sim Lab / Scenario Lab / Weather Lab / Nav Bench** — interactive sections per course,

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "katex/dist/katex.min.css";
 import "./globals.css";
+import "./minimal.css";
 import { AuthProvider } from "@/lib/auth";
 import { ProgressProvider } from "@/lib/progress-store";
 import { CourseProvider } from "@/lib/course";
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0d1c2e",
+  themeColor: "#f5f1e8",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

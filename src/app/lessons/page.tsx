@@ -19,9 +19,9 @@ export default function LessonsPage() {
   return (
     <>
       <PageHeader
-        eyebrow={meta.layout === "desk" ? "Your route" : "Your flight path"}
-        title={`${meta.name}. One flight at a time.`}
-        subtitle="Follow your aircraft. Earn your wings along the way."
+        eyebrow="Course outline"
+        title={meta.name}
+        subtitle="Pick up where you left off, or revisit a completed lesson."
         actions={
           <Pill tone="brand">
             {completed}/{stats.lessons} complete

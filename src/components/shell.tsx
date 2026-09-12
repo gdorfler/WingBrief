@@ -3,7 +3,7 @@
 /**
  * Application shell.
  *
- * Desktop gets a persistent left rail with the readiness ring always visible.
+ * Desktop gets a persistent left rail with expandable study resources.
  * Mobile gets a bottom bar. Immersive routes — the lesson player, an exam in
  * progress, a full-screen explainer — drop the chrome entirely so the student
  * is looking at one thing.
@@ -13,7 +13,6 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Check,
   ClipboardCheck,
   Compass,
   FlaskConical,
@@ -31,10 +30,9 @@ import { overallReadiness } from "@/lib/review";
 import { liveStreak } from "@/lib/xp";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
-import { LoadingState, ProgressRing, cn } from "./ui";
+import { LoadingState, cn } from "./ui";
 import { CourseSwitcher } from "./course-switcher";
 import { StreakFlame } from "./reward";
-import { StreakWeek } from "./streak-week";
 import { claimsFor, evaluateClaims, summariseClaims } from "@/lib/claims";
 import { AwardToasts } from "./awards";
 import { useAuth } from "@/lib/auth";
@@ -71,12 +69,15 @@ const DESK_NAV: NavItem[] = [
 ];
 
 const SECONDARY: NavItem[] = [
+  { href: "/lab", label: "", icon: FlaskConical },
+  { href: "/know-cold", label: "Know cold", icon: Layers },
   { href: "/explainers", label: "Explainers", icon: Sparkles },
   { href: "/click", label: "Make it click", icon: Lightbulb },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
 const DESK_SECONDARY: NavItem[] = [
+  { href: "/know-cold", label: "Know cold", icon: Layers },
   { href: "/missions", label: "Missions", icon: Target },
   { href: "/review", label: "Review", icon: RotateCcw },
   { href: "/lab", label: "", icon: FlaskConical },
@@ -152,109 +153,20 @@ function NavItem({
 }
 
 function SideNav() {
-  const { state, ready } = useProgress();
-  const { id: course, content, meta } = useCourse();
-  const readiness = overallReadiness(content.concepts, state.mastery);
-  const claims = claimsFor(course);
-  const claimSummary = useMemo(
-    () => (claims.length ? summariseClaims(evaluateClaims(content, state.attempts, claims)) : null),
-    [claims, content, state.attempts],
-  );
-  const streak = liveStreak(state.streak, Date.now());
+  const { meta } = useCourse();
+  const pathname = usePathname();
   const { primary, secondary } = navFor(meta.layout);
-
-  return (
-    <aside className="flight-sidebar sticky top-0 hidden h-dvh w-60 shrink-0 flex-col overflow-y-auto border-r border-line bg-surface px-4 py-7 lg:flex xl:w-64">
-      <Link href="/" className="mb-3 flex items-center gap-2.5 px-2">
-        <WingMark />
-        <p className="text-[15px] font-extrabold tracking-tight text-navy">WINGBRIEF</p>
-      </Link>
-
-      <div className="mb-4">
-        <CourseSwitcher />
-      </div>
-
-      <div className="sr-only">
-        {/*
-          A course that reports claims must not also report coverage. Leaving
-          the readiness ring in the rail would put the metric the hero exists to
-          replace back on screen, three inches to the left of it.
-        */}
-        {claimSummary ? (
-          <div className="min-w-0">
-            <p className="eyebrow text-[#8fb0d4]">What I&apos;ll vouch for</p>
-            {claimSummary.earned.length > 0 ? (
-              <ul className="mt-2 space-y-1.5">
-                {claimSummary.earned.slice(0, 3).map((s) => (
-                  <li key={s.claim.id} className="flex items-start gap-2">
-                    <Check size={13} strokeWidth={3} className="mt-0.5 shrink-0 text-go" />
-                    <span className="text-[11.5px] font-semibold leading-tight text-[#c9dcf0]">
-                      {s.claim.label}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-1.5 text-[11.5px] font-semibold leading-tight text-[#c9dcf0]">
-                Nothing yet. Applied work earns a claim.
-              </p>
-            )}
-            {claimSummary.contested.length > 0 && (
-              <p className="mt-2 text-[11px] font-bold leading-tight text-caution">
-                {claimSummary.contested.length} withdrawn
-              </p>
-            )}
-          </div>
-        ) : (
-        <div className="flex items-center gap-3.5">
-          <ProgressRing
-            value={ready ? readiness / 100 : 0}
-            size={62}
-            stroke={7}
-            tone={readiness >= 80 ? "go" : readiness >= 50 ? "brand" : "caution"}
-            trackClassName="stroke-ink-600"
-          >
-            <span className="tabular text-[15px] font-extrabold text-white">{readiness}</span>
-          </ProgressRing>
-          <div className="min-w-0">
-            <p className="eyebrow text-[#8fb0d4]">{meta.name} readiness</p>
-            <p className="mt-1 text-[11.5px] font-semibold leading-tight text-[#c9dcf0]">
-              {readiness >= 85
-                ? "Checkride ready"
-                : readiness >= 60
-                  ? "Solid progress"
-                  : readiness > 0
-                    ? "Building the base"
-                    : "Start your first flight"}
-            </p>
-          </div>
-        </div>
-        )}
-      </div>
-
-      {/* The week, not just the count: an unfilled ring on today is a far
-          better prompt than a number that has stopped going up. */}
-      <nav className="flex flex-col gap-1">
-        {primary.map((item) => (
-          <NavItem key={item.href} {...item} label={item.label || meta.labLabel} />
-        ))}
-      </nav>
-
-      <div className="my-4 h-px bg-line" />
-
-      <nav className="flex flex-col gap-0.5">
-        {secondary.map((item) => (
-          <NavItem key={item.href} {...item} label={item.label || meta.labLabel} compact />
-        ))}
-      </nav>
-
-      <div className="mt-auto px-3 pt-4">
-        <StreakWeek history={state.streak.history} current={streak} />
-        <Link href="/#courses" className="mt-6 block text-sm font-semibold text-navy-soft">Explore all courses →</Link>
-        <p className="mt-5 text-xs text-navy-faint">A little better. Every flight.</p>
-      </div>
-    </aside>
-  );
+  const resources = secondary.filter(item => item.href !== "/profile");
+  return <aside className="flight-sidebar sticky top-0 hidden h-dvh w-60 shrink-0 flex-col overflow-y-auto border-r border-line lg:flex">
+    <Link href="/" className="mb-7 flex items-center gap-2.5 px-2"><WingMark /><span className="text-sm font-semibold tracking-widest">WINGBRIEF</span></Link>
+    <div className="mb-6"><CourseSwitcher /></div>
+    <nav aria-label="Main navigation" className="flex flex-col gap-1">{primary.map(item => <NavItem key={item.href} {...item} label={item.label || meta.labLabel} />)}</nav>
+    <details key={pathname} className="sidebar-resources" open={resources.some(item => pathname === item.href || pathname.startsWith(item.href + "/"))}>
+      <summary>Study resources</summary>
+      <nav aria-label="Study resources" className="flex flex-col gap-1">{resources.map(item => <NavItem key={item.href} {...item} label={item.label || meta.labLabel} compact />)}</nav>
+    </details>
+    <div className="sidebar-footer"><Link href="/#courses">All courses</Link><Link href="/profile"><User size={15} />Profile & progress</Link><p>NIFE / Ground school</p></div>
+  </aside>;
 }
 
 function TopBarMobile() {
@@ -364,44 +276,13 @@ function BottomNavItem({
   );
 }
 
-/**
- * The WingBrief mark: a wing in planform under a nose chevron.
- *
- * The plate is a gradient rather than a flat fill so the mark has the same
- * sense of depth as the cards, and the accent is drawn from the course ramp so
- * the mark changes with the course like everything else.
- *
- * The gradient ids are fixed rather than generated. Two instances of this mark
- * are on screen at once (the rail and the mobile bar) and both emit the same
- * defs, so `url(#id)` resolving to whichever comes first in document order is
- * harmless — the definitions are identical. A generated id would be worse here:
- * it would have to be stable across server and client to avoid a mismatch.
- */
+/** Flat wing mark; no shared SVG IDs between hidden and visible navigation. */
 export function WingMark({ size = 30 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden className="shrink-0">
-      <defs>
-        <linearGradient id="wb-mark-plate" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--color-ink-700)" />
-          <stop offset="100%" stopColor="var(--color-ink-900)" />
-        </linearGradient>
-        <linearGradient id="wb-mark-wing" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#e95d29" />
-          <stop offset="55%" stopColor="#ffb477" />
-          <stop offset="100%" stopColor="#e95d29" />
-        </linearGradient>
-      </defs>
-      <rect width="32" height="32" rx="9" fill="url(#wb-mark-plate)" />
-      {/* A highlight along the top edge, the same trick the progress bar uses. */}
-      <rect width="32" height="15" rx="9" fill="#fff" opacity="0.06" />
-      <path
-        d="M6 19.5 C11 16.5 14 15.6 16 15.6 C18 15.6 21 16.5 26 19.5 L26 21.4 C20.6 19.6 18 19 16 19 C14 19 11.4 19.6 6 21.4 Z"
-        fill="url(#wb-mark-wing)"
-      />
-      <path d="M16 8.6 L17.9 13.4 L16 15 L14.1 13.4 Z" fill="#fff" />
-      <circle cx="16" cy="23.6" r="1.5" fill="var(--color-brand-light)" />
-    </svg>
-  );
+  return <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden className="shrink-0">
+    <rect width="32" height="32" rx="6" fill="var(--color-navy)" />
+    <path d="M6 19.5 C11 16.5 14 15.6 16 15.6 C18 15.6 21 16.5 26 19.5 L26 21.4 C20.6 19.6 18 19 16 19 C14 19 11.4 19.6 6 21.4 Z" fill="var(--color-surface-2)" />
+    <path d="M16 8.6 L17.9 13.4 L16 15 L14.1 13.4 Z" fill="var(--color-surface-2)" />
+  </svg>;
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {

@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { Compass, Fan, Navigation, Wind, CloudSun, Flame, Star } from "lucide-react";
 import type { CourseId } from "@/lib/types";
-import { useCourse } from "@/lib/course";
 import { useProgress } from "@/lib/progress-store";
 import { liveStreak } from "@/lib/xp";
 import { pilotRecord } from "@/lib/pilot-record";
@@ -19,9 +18,8 @@ export function WorldBadge({ course, className }: { course: CourseId; className?
   const Icon = { aero: Wind, engines: Fan, frr: Navigation, weather: CloudSun, nav: Compass }[course];
   return <span className={cn("world-badge", className)} data-world={course} aria-hidden="true"><Icon strokeWidth={1.6} /></span>;
 }
-export function WorldAtmosphere({ course }: { course?: CourseId }) {
-  const { id } = useCourse();
-  return <div className="world-atmosphere" data-world={course ?? id} aria-hidden="true"><span /><span /><span /></div>;
+export function WorldAtmosphere(_props: { course?: CourseId }) {
+  return null;
 }
 export function Aviator({ className }: { className?: string }) {
   return <Image src="/brand/aviator.png" alt="WingBrief aviator" width={1024} height={1024} className={cn("aviator-art", className)} />;

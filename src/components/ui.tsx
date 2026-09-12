@@ -93,13 +93,12 @@ type ButtonSize = "sm" | "md" | "lg";
  * raise, so it stays flat rather than pretending to have depth.
  */
 const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold disabled:pointer-events-none disabled:opacity-45 select-none";
+  "ui-button inline-flex items-center justify-center gap-2 rounded-lg font-semibold disabled:pointer-events-none disabled:opacity-45 select-none";
 
 const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
-  // The one call to action on a screen gets the solid lip; everything else
-  // keeps the softer elevation so the primary still reads as the primary.
+  // Rust marks the primary action consistently across courses.
   primary:
-    "chunky [--lip:#bd481b] bg-orange text-white hover:brightness-[1.04]",
+    "bg-orange text-white transition-colors hover:brightness-95",
   secondary: "pressable bg-surface-2 text-navy hover:bg-surface-3 border border-line",
   ghost: "text-navy-soft transition-colors duration-150 hover:bg-surface-2 hover:text-navy",
   danger: "pressable bg-nogo text-white hover:brightness-95",
@@ -396,7 +395,7 @@ export function Formula({
 
   return (
     <span
-      className={cn(display ? "block text-center" : "inline-block", className)}
+      className={cn(display ? "formula-display block max-w-full overflow-x-auto text-center" : "inline-block", className)}
       aria-label={tex}
     >
       {failed ? <code className="font-mono text-sm">{tex}</code> : <span ref={ref} />}

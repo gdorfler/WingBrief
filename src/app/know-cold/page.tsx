@@ -119,12 +119,12 @@ function KnowCold() {
                 <h2 className="text-lg text-navy">{cat.label}</h2>
                 <p className="text-[12.5px] text-navy-soft">{cat.blurb}</p>
               </div>
-              <ul className="grid gap-3 md:grid-cols-2">
+              <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {(grouped.get(cat.key) ?? []).map((c) => {
                   const saved = state.savedKnowColdIds.includes(c.id);
                   const unit = UNIT_BY_ID[c.unit];
                   return (
-                    <li key={c.id}>
+                    <li key={c.id} className="min-w-0">
                       <Card
                         className={cn(
                           "h-full",

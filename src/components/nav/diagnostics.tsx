@@ -243,9 +243,9 @@ export function NavReviewPanel({
           </Link>
         }
       />
-      <ul className="mb-6 grid gap-3 sm:grid-cols-2">
+      <ul className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {plan.map((item) => (
-          <li key={`${item.kind}-${item.id}`}>
+          <li key={`${item.kind}-${item.id}`} className="min-w-0">
             <Link
               href={item.kind === "mission" ? `/missions/${item.id}` : `/drills/${item.id}`}
               className="group flex h-full items-center gap-3.5 rounded-2xl border border-line bg-surface p-4 transition-all hover:border-brand/40 hover:shadow-sm"

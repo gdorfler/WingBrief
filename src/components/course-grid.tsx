@@ -19,7 +19,7 @@ import { contentFor } from "@/content";
 import { overallReadiness } from "@/lib/review";
 import { useProgress } from "@/lib/progress-store";
 import { useCourse } from "@/lib/course";
-import { WorldBadge, WorldAtmosphere, WORLD_COPY } from "./flight-world";
+import { WorldBadge } from "./flight-world";
 import { ProgressBar } from "./ui";
 
 
@@ -90,9 +90,9 @@ export function CourseGrid({ rows }: { rows: CourseRow[] }) {
     <button type="button" className="course-world" aria-current={row.id === activeId ? "true" : undefined}
       onClick={() => { setCourse(row.id); router.push("/course"); }}
       style={{ "--color-brand": row.accent, "--color-brand-dark": row.accent, "--color-brand-soft": row.accentSoft } as CSSProperties}>
-      <WorldAtmosphere course={row.id}/><WorldBadge course={row.id}/>
-      <h3>{row.name}</h3><p>{WORLD_COPY[row.id].caption}</p>
-      <div className="world-progress"><span>{row.lessonsDone ? `${row.lessonsDone} / ${row.lessonsTotal} lessons` : "Ready for your first flight"}</span>
+      <WorldBadge course={row.id}/>
+      <div className="course-world-label"><h3>{row.name}</h3><p>{row.id === activeId ? "Current course" : "Open course"}</p></div>
+      <div className="world-progress"><span>{row.lessonsDone} / {row.lessonsTotal} lessons</span>
       <ProgressBar value={row.lessonsDone/Math.max(1,row.lessonsTotal)} height={5} className="mt-2"/></div>
     </button></li>)}</ul>;
 }

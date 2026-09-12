@@ -51,19 +51,22 @@ another local project.
 
 ## Design language
 
-Night sky, badge tokens, restrained gamification. Specifics:
+Minimal, conservative, and inspired by vintage aviation manuals. The user's
+September 10 direction supersedes the earlier night-sky and badge-heavy design.
 
-- `SkyBackdrop` is the shared background (SVG stars, cloud bank, flight arc),
-  re-tinting per course. Pass a `clouds` fraction on tall panels.
-- `LessonToken` owns every lesson node's appearance. Faces are a state colour
-  mixed into a **dark base**, never into `transparent` — translucent faces turn
-  to mud over a warm course theme and the icons stop reading.
-- `chunky` is the solid-lip press. Reserved for the primary action on a screen
-  and the lesson nodes. Using it everywhere turns the app into a toy.
-- Gamification is limited to things that measure real work: streak, XP, level,
-  mastery, a single reachable daily goal. **Do not add** chests, timed rewards,
-  or leaderboard/percentile claims — two of those would require inventing data
-  the app does not have, and all reward opening the app rather than learning.
+- Warm paper, dark green-grey ink, muted rust for primary actions, and restrained
+  blue, brown, slate, teal, and olive course accents. Shared theme tokens live
+  in `src/app/minimal.css`, loaded after the legacy styles. Course metadata
+  accents in `courses.ts` must match those tokens.
+- One clear next action per screen, simple line icons, fine rules, and generous
+  spacing. Serif page titles pair with sans-serif body text and small mono labels.
+- Home shows the next lesson, a brief study plan, review priorities, and plain
+  course rows. The lesson route is a compact outline with explicit progress states.
+- Keep instructional diagrams and interactive models. Avoid decorative background
+  patterns, floating aircraft, gradients, and badge displays on study screens.
+- Keep gamification tied to real work: streak, XP, mastery, and the daily goal.
+  Detailed rewards and activity belong on the profile or completion screen.
+  Do not add chests, timed rewards, or invented leaderboard/percentile claims.
 
 ## Content rules
 
@@ -94,6 +97,6 @@ Night sky, badge tokens, restrained gamification. Specifics:
 
 ## Before calling anything done
 
-`npx tsc --noEmit`, `npm run lint`, `npx vitest run` (510 tests), and
+`npx tsc --noEmit`, `npm run lint`, `npx vitest run`, and
 `npm run build`. Verify UI changes in a browser against seeded progress rather
 than an empty account — most of the design only exists once there is data.
